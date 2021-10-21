@@ -2,17 +2,12 @@
 
 # run libraries
 library(tidyverse)
-
-#Source the personal setup
-#Manuel step source("Personal Setup.R")
-
-#Read in the tracker file
-UIC.Tracker <- rio::import(file="Data/UIC Tracker.xlsx", which="UIC Tracker 211007")
+UIC.Tracker <- rio::import(file="Data/UIC Tracker.xlsx", which="UIC Tracker 211014")
 
 #Get the List of PLH Tables
 plh_tables <- dbListTables(plh_con)
 df <- dbReadTable(plh_con, plh_tables[2])
-  
+
 # create empty list to store the data frames
 appdata_df <- list()
 
@@ -33,12 +28,21 @@ plhdata_org <- dplyr::full_join(x=plhdata, y=UIC.Tracker, by=c("app_user_id"="UI
 #'This could be a fuzzy join'
 plhdata_org_fuzzy <- fuzzyjoin::stringdist_full_join(x=plhdata, y=UIC.Tracker, by=c("app_user_id"="UIC"))
 
-#plhdata_org<- plhdata_org_fuzzy
+#check the fuzzy matches 
+plhdata_org_fuzzy_comp <- plhdata_org_fuzzy %>% 
+  filter(!is.na(plhdata_org_fuzzy$UIC)) %>% 
+  filter(app_user_id!=UIC) %>% 
+  select(app_user_id, UIC)
+View(plhdata_org_fuzzy_comp)
+
+#Accept the fuzzy matches
+plhdata_org<- plhdata_org_fuzzy
+
 # View it all
 # View(plhdata_org)
 
 # save data as a csv file
-write.csv(plhdata_org, 'plhdata_org.csv')
+#write.csv(plhdata_org, 'plhdata_org.csv')
 
 # look at and convert Organisation and rp.contact.field.organisation_code to factor after replacing missing values by Miss so that it is a factor level
 sjmisc::frq(x=plhdata_org$Organisation, out="txt")
@@ -51,10 +55,15 @@ plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,plh
 
 # look and Recode Factor organisation_full to just the main levels
 sjmisc::frq(x=plhdata_org$organisation_full, out="txt")
-plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, replace=c(`Miss.Miss` =  "Miss", `Nontobeko.Miss` = "Nontobeko", `Joy.Miss` = "Joy", `Dlalanathi.Miss` = "Dlalanathi", `Miss.baba` = "Other", `Miss.` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other", `Miss.Hillcrest facilitator` = "Hillcrest", `Miss.hillcrest` = "Hillcrest", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other", `Miss.null` = "Other", `Dlalanathi.null` = "Dlalanathi", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko", `Miss.idems Margherita` = "Other", `Miss.NontobekoM` = "Nontobeko", `Nontobeko.NontobekoM` = "Nontobeko", `Miss.dlanathiThandeka` = "Dlalanathi", `Miss.dlalanathiThandeka` = "Dlalanathi", `Miss.dlalanathi` = "Dlalanathi", `Miss.Hillcrest Facilitator ` = "Hillcrest", `Miss.Hillcrest Facilitator` = "Hillcrest", `Miss.IDEMS Ohad` = "Other", `Nontobeko.nontobekoM` = "Nontobeko", `Miss.dlalanathThandeka`= "Dlalanathi", `Miss.dlalanithi Thandeka`="Dlalanathi",`Miss.Research team `="Other",`Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other"))
+plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, replace=c(`Miss.Miss` =  "Miss", `Nontobeko.Miss` = "Nontobeko", `Joy.Miss` = "Joy", `Dlalanathi.Miss` = "Dlalanathi", `Miss.baba` = "Other", `Miss.` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other", `Miss.Hillcrest facilitator` = "Hillcrest", `Miss.hillcrest` = "Hillcrest", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other", `Dlalanathi.null` = "Dlalanathi", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko", `Miss.idems Margherita` = "Other", `Miss.NontobekoM` = "Nontobeko", `Nontobeko.NontobekoM` = "Nontobeko", `Miss.dlanathiThandeka` = "Dlalanathi", `Miss.dlalanathiThandeka` = "Dlalanathi", `Miss.dlalanathi` = "Dlalanathi", `Miss.Hillcrest Facilitator ` = "Hillcrest", `Miss.Hillcrest Facilitator` = "Hillcrest", `Miss.IDEMS Ohad` = "Other", `Nontobeko.nontobekoM` = "Nontobeko", `Miss.dlalanathThandeka`= "Dlalanathi", `Miss.dlalanithi Thandeka`="Dlalanathi",`Miss.Research team `="Other",`Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other"))
 
 # Look at the organisation data
 sjmisc::frq(x=plhdata_org$Org, out="txt")
+
+#Source the personal setup
+#Manuel step source("Personal Setup.R")
+
+#Read in the tracker file
 
 #####Create a subset for cleaned organisations ####
 #plhdata_org_clean<-filter(plhdata_org,Org!="Miss")

@@ -1,5 +1,6 @@
 #Ignore anything in config folder for password files
 config/
+data/
 
 # History files
 .Rhistory

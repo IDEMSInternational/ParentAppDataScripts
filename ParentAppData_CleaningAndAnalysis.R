@@ -1,12 +1,12 @@
 # run libraries
 library(tidyverse)
+library(here)
 
 #Source the personal setup for data
-#Manuel step source("Personal Setup Data.R")
+source(here("config", "Personal Setup.R"))
 
 #Get data from excel
-
-UIC.Tracker <- rio::import(file="Data/UIC Tracker.xlsx", which="UIC Tracker 211014")
+UIC.Tracker <- rio::import(file = here("data", "UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 
 #Get the List of PLH Tables and data from server
 plh_tables <- dbListTables(plh_con)
@@ -16,7 +16,7 @@ df <- dbReadTable(plh_con, plh_tables[2])
 #Manuel step source("Personal Setup Script.R")
 
 #Source the data cleaning and setup
-source("ParentAppData_setupclean.R")
+source(here("ParentAppData_setupclean.R"))
 
 # Define list of organisations
 orgs_list <- levels(plhdata_org_clean$Org)
@@ -25,28 +25,124 @@ orgs_list <- levels(plhdata_org_clean$Org)
 
 sjPlot::sjtab(data=plhdata_org_clean, Org, app_version, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-# Show the summary of app versions, self care workshop started(1st Workshop)
+#Subset the data
+#####Create a subset for an organisation NONTOBEKO####
+
+# Create subsets of the data based on organisation NONTOBEKO
+plhdata_org_NONTOBEKO <- filter(plhdata_org, Org == "Nontobeko")
+
+# Show any app user ids that are invalid and do not come from the app.
+plhdata_org_NONTOBEKO %>% filter(is.na(plhdata_org_NONTOBEKO$'app_version')) %>% select('app_user_id')
+
+# Create subsets of the data based on valid NONTOBEKOM app user ID's
+plhdata_org_NONTOBEKO <- filter(plhdata_org_NONTOBEKO, !is.na(plhdata_org_NONTOBEKO$'app_version'))
+
+# Show the summary of app versions
+sjmisc::frq(x=plhdata_org_NONTOBEKO$'app_version', out="txt")
+
+
+#####Create a subset for an organisation DLALANATHI####
+# Create subsets of the data based on organisation DLALANATHI
+plhdata_org_DLALANATHI <- filter(plhdata_org, Org == "Dlalanathi")
+
+# Show any app user ids that are invalid and do not come from the app.
+plhdata_org_DLALANATHI %>% filter(is.na(plhdata_org_DLALANATHI$'app_version')) %>% select('app_user_id')
+
+# Show any app user ids that are invalid and do not come from the app.
+plhdata_org_DLALANATHI %>% select('app_user_id', Organisation, 'app_version')
+
+# Create subsets of the data based on valid DLALANATHI app user ID's
+plhdata_org_DLALANATHI <- filter(plhdata_org_DLALANATHI, !is.na(plhdata_org_DLALANATHI$'app_version'))
+
+# Show the summary of app versions
+sjmisc::frq(x=plhdata_org_DLALANATHI$'app_version', out="txt")
+
+
+#####Create a subset for an organisation HILLCREST####
+
+# Create subsets of the data based on organisation HILLCREST
+plhdata_org_HILLCREST <- filter(plhdata_org, Org == "Hillcrest")
+
+# Show any app user ids that are invalid and do not come from the app.
+plhdata_org_HILLCREST %>% filter(is.na(plhdata_org_HILLCREST$'app_version')) %>% select('app_user_id')
+
+# Create subsets of the data based on valid HILLCREST app user ID's
+plhdata_org_HILLCREST <- filter(plhdata_org_HILLCREST, !is.na(plhdata_org_HILLCREST$'app_version'))
+
+# Show the summary of app versions
+sjmisc::frq(x=plhdata_org_HILLCREST$'app_version', out="txt")
+
+#####Create a subset for an organisation Joy####
+
+# Create subsets of the data based on organisation Joy
+plhdata_org_Joy <- filter(plhdata_org, Org == "Joy")
+
+# Show any app user ids that are invalid and do not come from the app.
+plhdata_org_Joy %>% filter(is.na(plhdata_org_Joy$'app_version')) %>% select('app_user_id')
+
+# Create subsets of the data based on valid Joy app user ID's
+plhdata_org_Joy <- filter(plhdata_org_Joy, !is.na(plhdata_org_Joy$'app_version'))
+
+# Show the summary of app versions
+sjmisc::frq(x=plhdata_org_Joy$'app_version', out="txt")
+
+
+#####Create a subset for an organisation Amathuba####
+
+# Create subsets of the data based on organisation Amathuba
+plhdata_org_Amathuba <- filter(plhdata_org, Org == "Amathuba")
+
+# Show any app user ids that are invalid and do not come from the app.
+plhdata_org_Amathuba %>% filter(is.na(plhdata_org_Amathuba$'app_version')) %>% select('app_user_id')
+
+# Create subsets of the data based on valid Joy app user ID's
+plhdata_org_Amathuba <- filter(plhdata_org_Amathuba, !is.na(plhdata_org_Amathuba$'app_version'))
+
+# Show the summary of app versions
+sjmisc::frq(x=plhdata_org_Amathuba$'app_version', out="txt")
+
+
+
+#Workshop started & completed analysis
+
+# Show the summary of Self care workshop started(1st Workshop)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_started, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-# Show the summary of app versions, self care workshop completion(1st Workshop)
+# Show the summary of Self care workshop completion(1st Workshop)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_completed  , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-# Show the summary of app versions, One-on-One Time started(2nd Workshop)
+# Show the summary of One-on-One Time started(2nd Workshop)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_1on1_started  , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-# Show the summary of app versions, One-on-One Time completion(2nd Workshop)
+# Show the summary of  One-on-One Time completion(2nd Workshop)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_1on1_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-# Show the summary of app versions, Praise(3rd Workshop)
+# Show the summary of Praise started(3rd workshop) 
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_praise_started , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+# Show the summary of Praise(3rd Workshop)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_praise_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-# Show the summary of app versions, baseline survey 
-sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.survey_welcome_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+## Show the summary of Positive Instructions(4th workshop)
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_instruct_started , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-#Show the summary of app versions,user gender
+# Show the summary of Positive Instructions(4th workshop)
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_instruct_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+
+
+
+
+#Baseline survey
+
+# Show the summary of  baseline survey completion
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.survey_welcome_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+ 
+#Descriptive statistics
+#Show the summary of user gender
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.user_gender, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-#Show the summary of app versions,user age
+#Show the summary of ,user age
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.user_age, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
 #show the summary of app versions, household adults
@@ -61,9 +157,9 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.household_babies, sh
 #show the summary of app versions, household children
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.household_children, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
+#Parent Points
 
 ##Show summary  for each Parent Point, all time number of clicks - for each user
-
 user_id_print <- function(field) {
   for (o in orgs_list) {
     # print organisation first
@@ -82,11 +178,8 @@ user_id_print("rp.contact.field.parent_point_count_relax")
 
 # Replaced by above
 # plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax")
-# 
 # plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax")
-# 
 # plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax")
-# 
 # plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax")
 
 
@@ -94,130 +187,44 @@ user_id_print("rp.contact.field.parent_point_count_relax")
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_treat_yourself, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_treat_yourself")
 
-# Replaced by above
-# plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself")
-# 
-# plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself")
-# 
-# plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself")
-# 
-# plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself")
-
-
 #HABIT: Praise yourself
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_praise_yourself, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_praise_yourself")
-
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself")
 
 
 #HABIT:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_spend_time, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_spend_time")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time")
-
-#lhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time")
-
 
 #HABIT:Praise your teen
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_praise_teen, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_praise_teen")
-
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen")
 
 
 #HABIT:Get Positive
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_instruct_positively, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_instruct_positively")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_instruct_positively")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_instruct_positively")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_instruct_positively")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_instruct_positively")
-
 
 #HABIT:Breathe not yell
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_breathe, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_breathe")
-
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe")
 
 
 #HABIT:Good money choice
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_money, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_money")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_money")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_money")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_money")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_money")
-
 
 #HABIT:Calm consequence
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_consequence, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_consequence")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence")
-
 
 #HABIT:Safe
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_safe, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_safe")
-
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe")
-
-
-
-
 
 
 ##Show the summary for each parent point and each week, number of clicks in that week for each user.
@@ -226,7 +233,7 @@ user_id_print("rp.contact.field.parent_point_count_safe")
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_relax_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_relax_w_self_care")
 
-#Replaced by above
+#Replace by above
 #plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax_w_self_care")
 
 #plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax_w_self_care")
@@ -240,242 +247,80 @@ user_id_print("rp.contact.field.parent_point_count_relax_w_self_care")
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_treat_yourself_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_treat_yourself_w_self_care")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself_w_self_care")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself_w_self_care")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself_w_self_care")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself_w_self_care")
-
 
 #HABIT:Praise yourself well  WORKSHOP:Self Care
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_praise_yourself_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_praise_yourself_w_self_care")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself_w_self_care")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself_w_self_care")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself_w_self_care")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself_w_self_care")
-
-
 #HABIT:One-on-one time  WORKSHOP:Self Care
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_spend_time_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_spend_time_w_self_care")
-
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time_w_self_care")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time_w_self_care")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time_w_self_care")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time_w_self_care")
-
 
 #HABIT:Praise your teen  WORKSHOP:Self Care
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_praise_teen_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_praise_teen_w_self_care")
 
-#Relaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen_w_self_care")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen_w_self_care")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen_w_self_care")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen_w_self_care")
-
-
 #HABIT:Breathe not yell  WORKSHOP:Self Care
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_breathe_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_breathe_w_self_care")
-
-#Replace by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe_w_self_care")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe_w_self_care")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe_w_self_care")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe_w_self_care")
-
 
 #HABIT:Good Money Choice  WORKSHOP:Self Care
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_money_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_money_w_self_care")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_money_w_self_care")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_money_w_self_care")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_money_w_self_care")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_money_w_self_care")
-
-
 #HABIT:Calm Consequence  WORKSHOP:Self Care
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_consequence_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_consequence_w_self_care")
-
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence_w_self_care")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence_w_self_care")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence_w_self_care")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence_w_self_care")
 
 #HABIT:Safe  WORKSHOP:Self Care
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_safe_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_safe_w_self_care")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe_w_self_care")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe_w_self_care")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe_w_self_care")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe_w_self_care")
-
-
-
 #HABIT:Relax  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_relax_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_relax_w_1on1")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax_w_1on1")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax_w_1on1")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax_w_1on1")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax_w_1on1")
-
-
 #HABIT:Treat yourself well  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_treat_yourself_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_treat_yourself_w_1on1")
-
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself_w_1on1")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself_w_self_w_1on1")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself_w_1on1")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_treat_yourself_w_1on1")
 
 
 #HABIT:Praise yourself well  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_praise_yourself_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_treat_yourself_w_1on1")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself_w_1on1")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself_w_1on1")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself_w_1on1")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_yourself_w_1on1")
-
-
 #HABIT:One-on-one time  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_spend_time_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_spend_time_w_1on1")
-
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time_w_1on1")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time_w_1on1")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time_w_1on1")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_spend_time_w_1on1")
 
 
 #HABIT:Praise your teen  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_praise_teen_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_praise_teen_w_1on1")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen_w_1on1")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen_w_1on1")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen_w_1on1")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_praise_teen_w_1on1")
-
 
 #HABIT:Breathe not yell  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_breathe_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_breathe_w_1on1")
-
-#Repalced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe_w_1on1")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe_w_1on1")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe_w_1on1")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_breathe_w_1on1")
 
 
 #HABIT:Good Money Choice  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_money_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_money_w_1on1")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_money_w_1on1")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_money_w_1on1")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_money_w_1on1")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_money_w_1on1")
-
 
 #HABIT:Calm Consequence  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_consequence_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_consequence_w_1on1")
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence_w_1on1")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence_w_1on1")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence_w_1on1")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_consequence_w_1on1")
 
 #HABIT:Safe  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_safe_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_safe_w_1on1")
 
 
-#Replaced by above
-#plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe_w_1on1")
-
-#plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe_w_1on1")
-
-#plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe_w_1on1")
-
-#plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.parent_point_count_safe_w_1on1")
-
-
-
-#####show the summary of total number of activities viewed out of total number of workshop activities (steppers)#####
+#Workshop completion level
+#show the summary of total number of activities viewed out of total number of workshop activities (steppers)#####
 #percentage corresponding to the proportion the proportion out of the 9 items of the stepper. For example, 4/9  =0.4444444 = 45.
 #which is the best way to identify the number of steppers for each workshop?###
 
@@ -677,22 +522,228 @@ sjmisc::frq(x=plhdata_org_DLALANATHI$rp.contact.field.survey_welcome_completed, 
 user_id_print("rp.contact.field.survey_welcome_completed")
 
 
+
 #In-app reminders(Number of in-app message clicks per workshop week),Per quick start button, per workshop week 
-sjmisc::frq(x=plhdata_org$rp.contact.field.click_hs_weekly_workshops_quick_start, out="txt")
 
-#####Create a subset for an organisation Joy####
+user_id_print <- function(field) {
+  for (o in orgs_list) {
+    # print organisation first
+    print(o)
+    # print filtered data
+    print(
+      plhdata_org %>%
+        filter(Org == o) %>%
+        select('app_user_id', field)
+    )
+  }
+}
 
-# Create subsets of the data based on organisation Joy
-plhdata_org_Joy <- filter(plhdata_org, Org == "Joy")
 
-# Show any app user ids that are invalid and do not come from the app.
-plhdata_org_Joy %>% filter(is.na(plhdata_org_Joy$'app_version')) %>% select('app_user_id')
 
-# Create subsets of the data based on valid Joy app user ID's
-plhdata_org_Joy <- filter(plhdata_org_Joy, !is.na(plhdata_org_Joy$'app_version'))
+plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
 
-# Show the summary of app versions
-sjmisc::frq(x=plhdata_org_Joy$'app_version', out="txt")
+sjPlot::sjtab(data=plhdata_org_clean, Org, hsqsclickedws1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care")
+
+
+
+plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
+
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, hsqsclickedws2, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+
+#Test 1
+
+user_id_print <- function(field) {
+  for (o in orgs_list) {
+    # print organisation first
+    print(o)
+    # print filtered data
+    print(
+      plhdata_org %>%
+        filter(Org == o) %>%
+        select('app_user_id', field)
+    )
+  }
+}
+
+#plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
+
+
+
+#plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
+plhdata_org_clean$hsqsclickedcountws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
+
+#sjPlot::sjtab(data=plhdata_org_clean, Org, hsqsclickedws1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+sjPlot::sjtab(data=plhdata_org_clean, Org,hsqsclickedcountws1 , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
+
+plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
+                                                                   click_hs_weekly_workshops_quick_start_count_w_self_care
+
+plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
+
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, hsqsclickedws2, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+
+#Test 2 Priority 22 (how to interpret data?)
+#Number of in-app message clicks per workshop week.Per quick start button, per workshop week 
+#Workshops
+#Self Care workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#replaced by above(contact field is non-existent-removed count)
+#sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+
+#One-on-one time workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Praise
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_praise, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Positive Instructions
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_instruct, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Managing Stress
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_stress, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Family Budgets
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_money, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Rules
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_rules, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Calm Consequence
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_consequence, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Problem Solving
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_solve, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Teen Safety
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_safe, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Dealing with crisis(how to interpret:could mean that people have not interacted with the app)
+# sjPlot::sjtab(data=plhdata_org_clean, 
+#               Org,
+#               rp.contact.field.click_hs_weekly_workshops_quick_start_w_crisis, 
+#               show.summary=FALSE, 
+#               digits=0, fun="xtab",
+#               title="",
+#               string,
+#               total="Total")
+table(plhdata_org_clean$Org,plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_crisis)
+
+
+
+
+#Celebration and Next Steps
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_celebrate, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+
+
+#Parent center
+#Self Care workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_centre_quick_start_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#One-on-one time workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_centre_quick_start_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+
+
+#Parent points
+#Self Care workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_points_quick_start_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#One-on-one time workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_points_quick_start_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+
+#Priority 23 
+#In-app reminders
+#Total number of in-app message clicks.By User
+#Weekly workshops
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_count, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Parent center
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_centre_quick_start_count, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+
+#Priority 19
+#App-opens
+#Total number of app-opens for each user(cumulative)
+
+user_id_print <- function(field) {
+  for (o in orgs_list) {
+    # print organisation first
+    print(o)
+    # print filtered data
+    print(
+      plhdata_org %>%
+        filter(Org == o) %>%
+        select('app_user_id', field)
+    )
+  }
+}
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.app_launch_count, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+user_id_print("rp.contact.field.app_launch_count")
+
+##Priority 20
+#App-opens
+#Number of app opens within a workshop week for each user
+
+#Self Care Workshop
+user_id_print <- function(field) {
+  for (o in orgs_list) {
+    # print organisation first
+    print(o)
+    # print filtered data
+    print(
+      plhdata_org %>%
+        filter(Org == o) %>%
+        select('app_user_id', field)
+    )
+  }
+}
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.app_launch_count_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+user_id_print("rp.contact.field.app_launch_count_w_self_care")
+
+#One-on-one time workshop
+
+user_id_print <- function(field) {
+  for (o in orgs_list) {
+    # print organisation first
+    print(o)
+    # print filtered data
+    print(
+      plhdata_org %>%
+        filter(Org == o) %>%
+        select('app_user_id', field)
+    )
+  }
+}
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.app_launch_count_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+user_id_print("rp.contact.field.app_launch_count_w_1on1")
+
+##Priority 21
+#App-opens
+#Maximum time between app-opens - for each user.Time in full days 
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.max_days_between_app_launches, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
 #####Completion rate of introductory session(Workshop 1:Selfcare)####
 # Show the summary of self care completion
@@ -709,19 +760,6 @@ plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
 
 
 
-#####Create a subset for an organisation NONTOBEKO####
-
-# Create subsets of the data based on organisation NONTOBEKO
-plhdata_org_NONTOBEKO <- filter(plhdata_org, Org == "Nontobeko")
-
-# Show any app user ids that are invalid and do not come from the app.
-plhdata_org_NONTOBEKO %>% filter(is.na(plhdata_org_NONTOBEKO$'app_version')) %>% select('app_user_id')
-
-# Create subsets of the data based on valid NONTOBEKOM app user ID's
-plhdata_org_NONTOBEKO <- filter(plhdata_org_NONTOBEKO, !is.na(plhdata_org_NONTOBEKO$'app_version'))
-
-# Show the summary of app versions
-sjmisc::frq(x=plhdata_org_NONTOBEKO$'app_version', out="txt")
 
 #####Completion rate of introductory session(Workshop 1:Selfcare)####
 # Show the summary of self care completion
@@ -730,10 +768,10 @@ sjmisc::frq(x=plhdata_org_NONTOBEKO$rp.contact.field.w_self_care_completed, out=
 # Show app user ids and whether they have completed selfcare.
 plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.w_self_care_completed")
 
-# Show app user ids and whether they have completed selfcare.
+# Show app user ids and whether they have started selfcare.
 plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.w_self_care_started")
 
-# Show app user ids and whether they have started selfcare.
+# Show app user ids and whether they have started one-on-one time
 plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
 
 
@@ -1144,21 +1182,7 @@ plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.user_age")
 
 
 
-#####Create a subset for an organisation DLALANATHI####
-# Create subsets of the data based on organisation DLALANATHI
-plhdata_org_DLALANATHI <- filter(plhdata_org, Org == "Dlalanathi")
 
-# Show any app user ids that are invalid and do not come from the app.
-plhdata_org_DLALANATHI %>% filter(is.na(plhdata_org_DLALANATHI$'app_version')) %>% select('app_user_id')
-
-# Show any app user ids that are invalid and do not come from the app.
-plhdata_org_DLALANATHI %>% select('app_user_id', Organisation, 'app_version')
-
-# Create subsets of the data based on valid DLALANATHI app user ID's
-plhdata_org_DLALANATHI <- filter(plhdata_org_DLALANATHI, !is.na(plhdata_org_DLALANATHI$'app_version'))
-
-# Show the summary of app versions
-sjmisc::frq(x=plhdata_org_DLALANATHI$'app_version', out="txt")
 
 #####Completion rate of introductory session(Workshop 1:Selfcare)####
 # Show the summary of self care completion
@@ -1180,19 +1204,7 @@ plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.w_self_care_
 plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
 
 
-#####Create a subset for an organisation HILLCREST####
 
-# Create subsets of the data based on organisation HILLCREST
-plhdata_org_HILLCREST <- filter(plhdata_org, Org == "Hillcrest")
-
-# Show any app user ids that are invalid and do not come from the app.
-plhdata_org_HILLCREST %>% filter(is.na(plhdata_org_HILLCREST$'app_version')) %>% select('app_user_id')
-
-# Create subsets of the data based on valid HILLCREST app user ID's
-plhdata_org_HILLCREST <- filter(plhdata_org_HILLCREST, !is.na(plhdata_org_HILLCREST$'app_version'))
-
-# Show the summary of app versions
-sjmisc::frq(x=plhdata_org_HILLCREST$'app_version', out="txt")
 
 #####Completion rate of introductory session(Workshop 1:Selfcare)####
 # Show the summary of self care completion
@@ -1207,3 +1219,16 @@ plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.w_self_care_s
 ## Show app user ids and whether they have started one-one-time
 plhdata_org_HILLCREST %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
 
+
+#####Completion rate of introductory session(Workshop 1:Selfcare)####
+# Show the summary of self care completion
+sjmisc::frq(x=plhdata_org_Amathuba$rp.contact.field.w_self_care_completed, out="txt")
+
+# Show app user ids and whether they have completed selfcare.
+plhdata_org_Amathuba %>%  select('app_user_id', "rp.contact.field.w_self_care_completed")
+
+# Show app user ids and whether they have started selfcare.
+plhdata_org_Amathuba %>%  select('app_user_id', "rp.contact.field.w_self_care_started")
+
+## Show app user ids and whether they have started one-one-time
+plhdata_org_Amathuba %>%  select('app_user_id', "rp.contact.field.w_1on1_started")

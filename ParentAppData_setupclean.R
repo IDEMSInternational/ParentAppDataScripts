@@ -17,14 +17,21 @@ plhdata <- bind_cols(df,appdata)
 plhdata_org <- dplyr::full_join(x=plhdata, y=UIC.Tracker, by=c("app_user_id"="UIC"))
 
 #'This could be a fuzzy join'
-plhdata_org_fuzzy <- fuzzyjoin::stringdist_full_join(x=plhdata, y=UIC.Tracker, by=c("app_user_id"="UIC"))
+plhdata_org_fuzzy <- fuzzyjoin::stringdist_full_join(x=plhdata, y=UIC.Tracker, by=c("app_user_id"="UIC"), max_dist = 5)
 
 #check the fuzzy matches 
 plhdata_org_fuzzy_comp <- plhdata_org_fuzzy %>% 
   filter(!is.na(plhdata_org_fuzzy$UIC)) %>% 
-  filter(app_user_id!=UIC) %>% 
+  filter(app_user_id!=UIC | is.na(app_user_id)) %>% 
   select(app_user_id, UIC)
 View(plhdata_org_fuzzy_comp)
+
+plhdata_org_no_match <- plhdata_org_fuzzy %>% 
+  filter(!is.na(plhdata_org_fuzzy$UIC)) %>% 
+  filter(is.na(app_user_id)) %>% 
+  select(app_user_id, UIC)
+View(plhdata_org_no_match)
+
 
 #Accept the fuzzy matches
 plhdata_org<- plhdata_org_fuzzy
@@ -46,7 +53,7 @@ plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,plh
 
 # look and Recode Factor organisation_full to just the main levels
 sjmisc::frq(x=plhdata_org$organisation_full, out="txt")
-plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, replace=c(`Miss.Miss` =  "Miss", `Nontobeko.Miss` = "Nontobeko", `Joy.Miss` = "Joy", `Dlalanathi.Miss` = "Dlalanathi", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other", `Miss.Hillcrest facilitator` = "Hillcrest", `Miss.hillcrest` = "Hillcrest", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other", `Dlalanathi.null` = "Dlalanathi", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko", `Miss.idems Margherita` = "Other",  `Nontobeko.NontobekoM` = "Nontobeko", `Miss.dlalanathiThandeka` = "Dlalanathi", `Miss.Hillcrest Facilitator ` = "Hillcrest", `Miss.Hillcrest Facilitator` = "Hillcrest", `Miss.IDEMS Ohad` = "Other", `Nontobeko.nontobekoM` = "Nontobeko",`Miss.Research team `="Other",`Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other", `Joy.c9097349f34b364c` ="Joy", `Nontobeko.null` ="Nontobeko", `Joy.null` ="Joy", `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other", `Miss.other` ="Other", `Amathuba Collective.Miss` ="Amathuba", `Dlalanathi.dlanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", `Miss.zlto` ="Other", `Miss.amathuba` ="Amathuba"))
+plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, replace=c(`Miss.Miss` =  "Miss", `Nontobeko.Miss` = "Nontobeko", `Joy.Miss` = "Joy", `Dlalanathi.Miss` = "Dlalanathi", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other", `Miss.Hillcrest facilitator` = "Hillcrest", `Miss.hillcrest` = "Hillcrest", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other", `Dlalanathi.null` = "Dlalanathi", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko", `Miss.idems Margherita` = "Other",  `Nontobeko.NontobekoM` = "Nontobeko", `Miss.dlalanathiThandeka` = "Dlalanathi", `Miss.Hillcrest Facilitator ` = "Hillcrest", `Miss.Hillcrest Facilitator` = "Hillcrest", `Miss.IDEMS Ohad` = "Other", `Nontobeko.nontobekoM` = "Nontobeko",`Miss.Research team `="Other",`Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other", `Joy.c9097349f34b364c` ="Joy", `Nontobeko.null` ="Nontobeko", `Joy.null` ="Joy", `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other", `Miss.other` ="Other", `Amathuba Collective.Miss` ="Amathuba", `Dlalanathi.dlanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", `Miss.zlto` ="Other"))
                                                                             
 # Look at the organisation data
 sjmisc::frq(x=plhdata_org$Org, out="txt")
@@ -67,3 +74,8 @@ plhdata_org_clean <- filter(plhdata_org_clean, !is.na(plhdata_org_clean$app_vers
 
 #write.csv(plhdata_org_clean, 'plhdata_org_clean.csv')
 
+
+# Look at the numbers per organisation from clear data 
+sjmisc::frq(x=plhdata_org_clean$Org, out="txt")
+
+nrow(filter(plhdata_org_clean,( 'App Version'== "0.11.3" | 'App Version'== "0.11.2")&('Org'=="Nontobeko")  & is.na(plhdata_org_clean$rp.contact.field.w_1on1_completion_level)))

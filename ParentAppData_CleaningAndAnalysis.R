@@ -157,6 +157,7 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.household_babies, sh
 #show the summary of app versions, household children
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.household_children, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
+
 #Parent Points
 
 ##Show summary  for each Parent Point, all time number of clicks - for each user
@@ -525,13 +526,13 @@ user_id_print("rp.contact.field.survey_welcome_completed")
 
 #In-app reminders(Number of in-app message clicks per workshop week),Per quick start button, per workshop week 
 
-user_id_print <- function(field) {
-  for (o in orgs_list) {
+user_id_print <- function(data = plhdata_org_clean, field) {
+  for (o in unique(data$Org)) {
     # print organisation first
     print(o)
     # print filtered data
     print(
-      plhdata_org %>%
+      data %>%
         filter(Org == o) %>%
         select('app_user_id', field)
     )
@@ -544,7 +545,7 @@ plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.clic
 
 sjPlot::sjtab(data=plhdata_org_clean, Org, hsqsclickedws1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care")
+user_id_print(data =plhdata_org_DLALANATHI, field = "rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care")
 
 
 
@@ -586,7 +587,7 @@ sjPlot::sjtab(data=plhdata_org_clean, Org,hsqsclickedcountws1 , show.summary=FAL
 user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
 
 plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
-                                                                   click_hs_weekly_workshops_quick_start_count_w_self_care
+                                                                   
 
 plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
 
@@ -676,6 +677,9 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_work
 #Parent center
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_centre_quick_start_count, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
+#Parent points
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_points_quick_start_count, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
 
 #Priority 19
 #App-opens
@@ -745,9 +749,34 @@ user_id_print("rp.contact.field.app_launch_count_w_1on1")
 
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.max_days_between_app_launches, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
-#####Completion rate of introductory session(Workshop 1:Selfcare)####
-# Show the summary of self care completion
-sjmisc::frq(x=plhdata_org_Joy$rp.contact.field.w_self_care_completed, out="txt")
+#Priority 36
+#Emotional Check-in
+#Rate of users who respond “happy” ,"sad" & "ok"
+
+#Self Care Workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_welcome_individual_a_final, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+
+#One on one time workshop
+
+user_id_print <- function(data = plhdata_org_clean, field) {
+  for (o in unique(data$Org)) {
+    # print organisation first
+    print(o)
+    # print filtered data
+    print(
+      data %>%
+        filter(Org == o) %>%
+        select('app_user_id', field)
+    )
+  }
+}
+
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_1on1_welcome_individual_a_final, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+user_id_print(data =plhdata_org_DLALANATHI, field = "rp.contact.field.w_1on1_welcome_individual_a_final")
+
 
 # Show app user ids and whether they have completed selfcare.
 plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_self_care_completed")

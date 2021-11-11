@@ -18,11 +18,13 @@ df <- dbReadTable(plh_con, plh_tables[2])
 #Source the data cleaning and setup
 source(here("ParentAppData_setupclean.R"))
 
+#Write clean data back to Metabase
+dbWriteTable(parent_app_con, "Cleaned PLH data", select(plhdata_org_clean,!(contact_fields)), overwrite=TRUE)
+
 # Define list of organisations
 orgs_list <- levels(plhdata_org_clean$Org)
 
 # Show the summary of app versions
-
 sjPlot::sjtab(data=plhdata_org_clean, Org, app_version, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
 #Subset the data
@@ -39,6 +41,9 @@ plhdata_org_NONTOBEKO <- filter(plhdata_org_NONTOBEKO, !is.na(plhdata_org_NONTOB
 
 # Show the summary of app versions
 sjmisc::frq(x=plhdata_org_NONTOBEKO$'app_version', out="txt")
+
+# Show any app user ids that have only synced initial data.
+plhdata_org_NONTOBEKO %>% filter(is.na(plhdata_org_NONTOBEKO$rp.contact.field.first_app_open)) %>% select('app_user_id')
 
 
 #####Create a subset for an organisation DLALANATHI####
@@ -57,6 +62,9 @@ plhdata_org_DLALANATHI <- filter(plhdata_org_DLALANATHI, !is.na(plhdata_org_DLAL
 # Show the summary of app versions
 sjmisc::frq(x=plhdata_org_DLALANATHI$'app_version', out="txt")
 
+# Show any app user ids that have only synced initial data [done for each Org under subsetting but also with for loop further below]
+plhdata_org_DLALANATHI %>% filter(is.na(plhdata_org_DLALANATHI$rp.contact.field.first_app_open)) %>% select('app_user_id')
+
 
 #####Create a subset for an organisation HILLCREST####
 
@@ -72,6 +80,10 @@ plhdata_org_HILLCREST <- filter(plhdata_org_HILLCREST, !is.na(plhdata_org_HILLCR
 # Show the summary of app versions
 sjmisc::frq(x=plhdata_org_HILLCREST$'app_version', out="txt")
 
+# Show any app user ids that have only synced initial data.
+plhdata_org_HILLCREST %>% filter(is.na(plhdata_org_HILLCREST$rp.contact.field.first_app_open)) %>% select('app_user_id')
+
+
 #####Create a subset for an organisation Joy####
 
 # Create subsets of the data based on organisation Joy
@@ -85,6 +97,10 @@ plhdata_org_Joy <- filter(plhdata_org_Joy, !is.na(plhdata_org_Joy$'app_version')
 
 # Show the summary of app versions
 sjmisc::frq(x=plhdata_org_Joy$'app_version', out="txt")
+
+# Show any app user ids that have only synced initial data.
+plhdata_org_Joy %>% filter(is.na(plhdata_org_Joy$rp.contact.field.first_app_open)) %>% select('app_user_id')
+
 
 
 #####Create a subset for an organisation Amathuba####
@@ -100,6 +116,9 @@ plhdata_org_Amathuba <- filter(plhdata_org_Amathuba, !is.na(plhdata_org_Amathuba
 
 # Show the summary of app versions
 sjmisc::frq(x=plhdata_org_Amathuba$'app_version', out="txt")
+
+# Show any app user ids that have only synced initial data.
+plhdata_org_Amathuba %>% filter(is.na(plhdata_org_Amathuba$rp.contact.field.first_app_open)) %>% select('app_user_id')
 
 
 
@@ -234,7 +253,7 @@ user_id_print("rp.contact.field.parent_point_count_safe")
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_relax_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_relax_w_self_care")
 
-#Replace by above
+#Replaced by above
 #plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax_w_self_care")
 
 #plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.parent_point_count_relax_w_self_care")
@@ -318,6 +337,11 @@ user_id_print("rp.contact.field.parent_point_count_consequence_w_1on1")
 #HABIT:Safe  WORKSHOP:One-on-one time
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.parent_point_count_safe_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.parent_point_count_safe_w_1on1")
+
+
+## Show any app user ids that have only synced initial data [Not working as expected]
+# sjPlot::sjtab(data=plhdata_org_clean, Org, is.na(rp.contact.field.first_app_open), show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+# user_id_print("rp.contact.field.first_app_open")
 
 
 #Workshop completion level

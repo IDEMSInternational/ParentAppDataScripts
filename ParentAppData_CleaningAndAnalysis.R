@@ -148,6 +148,17 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_instruct_started ,
 # Show the summary of Positive Instructions(4th workshop)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_instruct_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
+# Show the summary of Managing Stress(5th workshop)
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_stress_started , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+# Show the summary of Managing Stress(5th workshop)
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_stress_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+# Show the summary of Family Budgets(6th workshop)
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_money_started , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+# Show the summary of Family Budgets(6th workshop)
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_money_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
 
 
@@ -362,10 +373,14 @@ user_id_print <- function(field) {
   }
 }
 
-
 #(Welcome and Self-Care Workshop)
+#change column names to numeric
+plhdata_org_clean$rp.contact.field.w_self_care_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_self_care_completion_level")
+
+
+
 
 #Replaced by above
 #Show app user ids and  their completion levels(Selfcare):NONTOBEKO
@@ -380,46 +395,57 @@ user_id_print("rp.contact.field.w_self_care_completion_level")
 
 
 #One-on-One Time
+plhdata_org_clean$rp.contact.field.w_1on1_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_1on1_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_1on1_completion_level")
 
 #Praise
+plhdata_org_clean$rp.contact.field.w_praise_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_praise_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_praise_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_praise_completion_level")
 
 #Positive Instructions
+plhdata_org_clean$rp.contact.field.w_instruct_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_instruct_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_instruct_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_instruct_completion_level")
 
 #Managing Stress
+plhdata_org_clean$rp.contact.field.w_stress_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_stress_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_stress_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_stress_completion_level")
 
 #Family Budgets
+plhdata_org_clean$rp.contact.field.w_money_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_money_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_money_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_money_completion_level")
 
 #Rules
+plhdata_org_clean$rp.contact.field.w_safe_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_safe_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_safe_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_safe_completion_level")
 
 #Calm Consequences
+plhdata_org_clean$rp.contact.field.w_consequence_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_consequence_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_consequence_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_consequence_completion_level")
 
 #Problem Solving
+plhdata_org_clean$rp.contact.field.w_solve_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_solve_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_solve_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_solve_completion_level")
 
 #Teen Safety
+plhdata_org_clean$rp.contact.field.w_safe_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_safe_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_safe_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_safe_completion_level")
 
 #Dealing with Crisis
+plhdata_org_clean$rp.contact.field.w_crisis_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_crisis_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_crisis_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_crisis_completion_level")
 
 #Celebration and Next Steps
+plhdata_org_clean$rp.contact.field.w_celebrate_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_celebrate_completion_level)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_celebrate_completion_level, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.w_celebrate_completion_level")
 
@@ -503,7 +529,7 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_pc_my_tips_cou
 user_id_print("rp.contact.field.click_pc_my_tips_count")
 
 #Essential Tools
-sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_pc_esential_tools_count, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_pc_essential_tools_count, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 user_id_print("rp.contact.field.click_pc_esential_tools_count")
 
 #COVID
@@ -565,7 +591,7 @@ user_id_print <- function(data = plhdata_org_clean, field) {
 
 
 
-plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
+plhdata_org_clean$hsqsclickedws1<-is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
 
 sjPlot::sjtab(data=plhdata_org_clean, Org, hsqsclickedws1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
@@ -600,7 +626,7 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_work
 
 user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
 
-
+user_id_print("Org")
 
 #plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
 plhdata_org_clean$hsqsclickedcountws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
@@ -628,6 +654,9 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_work
 #replaced by above(contact field is non-existent-removed count)
 #sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
+#In-app reminders(Number of in-app message clicks per workshop week),Per quick start button, per workshop week 
+plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
+sjPlot::sjtab(data=plhdata_org_clean, Org, hsqsclickedws1, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
 #One-on-one time workshop
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
@@ -708,6 +737,9 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_poin
 #Priority 19
 #App-opens
 #Total number of app-opens for each user(cumulative)
+
+#cabrine <- plhdata_org_clean
+
 
 user_id_print <- function(field) {
   for (o in orgs_list) {
@@ -800,6 +832,19 @@ user_id_print <- function(data = plhdata_org_clean, field) {
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_1on1_welcome_individual_a_final, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
 user_id_print(data =plhdata_org_DLALANATHI, field = "rp.contact.field.w_1on1_welcome_individual_a_final")
+
+
+#Praise Workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_praise_welcome_individual_a_final, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Positive Instructions Workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_instruct_welcome_individual_a_final, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Managing Stress Workshop
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_stress_welcome_individual_a_final, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Family Budgets
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_money_welcome_individual_a_final, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
 
 # Show app user ids and whether they have completed selfcare.

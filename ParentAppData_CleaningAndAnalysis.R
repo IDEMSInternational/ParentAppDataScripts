@@ -168,24 +168,59 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_money_completed , 
 # Show the summary of  baseline survey completion
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.survey_welcome_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
  
+
 #Descriptive statistics
 #Show the summary of user gender
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.user_gender, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
 #Show the summary of ,user age
+plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.user_age, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-#show the summary of app versions, household adults
+#show the summary , household adults
+plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.household_adults, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-#show the summary of app versions, household teens
+#show the summary of , household teens
+plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_clean$rp.contact.field.household_teens)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.household_teens, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-#show the summary of app versions, household babies
+#show the summary of , household babies
+plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_clean$rp.contact.field.household_babies)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.household_babies, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-#show the summary of app versions, household children
+#show the summary of , household children
+plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.household_children, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+#show the summary of app versions, language
+user_id_print <- function(field) {
+  for (o in orgs_list) {
+    # print organisation first
+    print(o)
+    # print filtered data
+    print(
+      plhdata_org %>%
+        filter(Org == o) %>%
+        select('app_user_id', field)
+    )
+  }
+}
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field._app_language, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+user_id_print("rp.contact.field._app_language")
+
+
+
+#Time spent on the workshops.
+#Self care workshop
+plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_diff_started_completed, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+
+#One on one time workshop
+
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_1on1_diff_started_completed, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
 
 #Parent Points

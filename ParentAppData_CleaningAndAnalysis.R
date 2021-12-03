@@ -31,16 +31,19 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, app_version, show.summary=FALSE, digi
 #####Create a subset for an organisation NONTOBEKO####
 
 # Create subsets of the data based on organisation NONTOBEKO
-plhdata_org_NONTOBEKO <- filter(plhdata_org, Org == "Nontobeko")
+
+Organization_Table(data=plhdata_org, Org_name = "Nontobeko")
+
+#plhdata_org_NONTOBEKO <- filter(plhdata_org, Org == "Nontobeko")
 
 # Show any app user ids that are invalid and do not come from the app.
-plhdata_org_NONTOBEKO %>% filter(is.na(plhdata_org_NONTOBEKO$'app_version')) %>% select('app_user_id')
+#plhdata_org_NONTOBEKO %>% filter(is.na(plhdata_org_NONTOBEKO$'app_version')) %>% select('app_user_id')
 
 # Create subsets of the data based on valid NONTOBEKOM app user ID's
-plhdata_org_NONTOBEKO <- filter(plhdata_org_NONTOBEKO, !is.na(plhdata_org_NONTOBEKO$'app_version'))
+#plhdata_org_NONTOBEKO <- filter(plhdata_org_NONTOBEKO, !is.na(plhdata_org_NONTOBEKO$'app_version'))
 
 # Show the summary of app versions
-sjmisc::frq(x=plhdata_org_NONTOBEKO$'app_version', out="txt")
+#sjmisc::frq(x=plhdata_org_NONTOBEKO$'app_version', out="txt")
 
 # Show any app user ids that have only synced initial data.
 plhdata_org_NONTOBEKO %>% filter(is.na(plhdata_org_NONTOBEKO$rp.contact.field.first_app_open)) %>% select('app_user_id')
@@ -48,37 +51,26 @@ plhdata_org_NONTOBEKO %>% filter(is.na(plhdata_org_NONTOBEKO$rp.contact.field.fi
 
 #####Create a subset for an organisation DLALANATHI####
 # Create subsets of the data based on organisation DLALANATHI
-plhdata_org_DLALANATHI <- filter(plhdata_org, Org == "Dlalanathi")
+Organization_Table(data=plhdata_org, Org_name = "Dlalanathi")
 
-# Show any app user ids that are invalid and do not come from the app.
-plhdata_org_DLALANATHI %>% filter(is.na(plhdata_org_DLALANATHI$'app_version')) %>% select('app_user_id')
-
-# Show any app user ids that are invalid and do not come from the app.
-plhdata_org_DLALANATHI %>% select('app_user_id', Organisation, 'app_version')
-
-# Create subsets of the data based on valid DLALANATHI app user ID's
-plhdata_org_DLALANATHI <- filter(plhdata_org_DLALANATHI, !is.na(plhdata_org_DLALANATHI$'app_version'))
-
-# Show the summary of app versions
-sjmisc::frq(x=plhdata_org_DLALANATHI$'app_version', out="txt")
 
 # Show any app user ids that have only synced initial data [done for each Org under subsetting but also with for loop further below]
 plhdata_org_DLALANATHI %>% filter(is.na(plhdata_org_DLALANATHI$rp.contact.field.first_app_open)) %>% select('app_user_id')
 
 
 #####Create a subset for an organisation HILLCREST####
+Organization_Table(data=plhdata_org, Org_name = "Hillcrest")
 
-# Create subsets of the data based on organisation HILLCREST
-plhdata_org_HILLCREST <- filter(plhdata_org, Org == "Hillcrest")
+#plhdata_org_HILLCREST <- filter(plhdata_org, Org == "Hillcrest")
 
 # Show any app user ids that are invalid and do not come from the app.
-plhdata_org_HILLCREST %>% filter(is.na(plhdata_org_HILLCREST$'app_version')) %>% select('app_user_id')
+#plhdata_org_HILLCREST %>% filter(is.na(plhdata_org_HILLCREST$'app_version')) %>% select('app_user_id')
 
 # Create subsets of the data based on valid HILLCREST app user ID's
-plhdata_org_HILLCREST <- filter(plhdata_org_HILLCREST, !is.na(plhdata_org_HILLCREST$'app_version'))
+#plhdata_org_HILLCREST <- filter(plhdata_org_HILLCREST, !is.na(plhdata_org_HILLCREST$'app_version'))
 
 # Show the summary of app versions
-sjmisc::frq(x=plhdata_org_HILLCREST$'app_version', out="txt")
+#sjmisc::frq(x=plhdata_org_HILLCREST$'app_version', out="txt")
 
 # Show any app user ids that have only synced initial data.
 plhdata_org_HILLCREST %>% filter(is.na(plhdata_org_HILLCREST$rp.contact.field.first_app_open)) %>% select('app_user_id')
@@ -86,17 +78,19 @@ plhdata_org_HILLCREST %>% filter(is.na(plhdata_org_HILLCREST$rp.contact.field.fi
 
 #####Create a subset for an organisation Joy####
 
+Organization_Table(data=plhdata_org, Org_name = "Joy")
+
 # Create subsets of the data based on organisation Joy
-plhdata_org_Joy <- filter(plhdata_org, Org == "Joy")
+#plhdata_org_Joy <- filter(plhdata_org, Org == "Joy")
 
 # Show any app user ids that are invalid and do not come from the app.
-plhdata_org_Joy %>% filter(is.na(plhdata_org_Joy$'app_version')) %>% select('app_user_id')
+#plhdata_org_Joy %>% filter(is.na(plhdata_org_Joy$'app_version')) %>% select('app_user_id')
 
 # Create subsets of the data based on valid Joy app user ID's
-plhdata_org_Joy <- filter(plhdata_org_Joy, !is.na(plhdata_org_Joy$'app_version'))
+#plhdata_org_Joy <- filter(plhdata_org_Joy, !is.na(plhdata_org_Joy$'app_version'))
 
 # Show the summary of app versions
-sjmisc::frq(x=plhdata_org_Joy$'app_version', out="txt")
+#sjmisc::frq(x=plhdata_org_Joy$'app_version', out="txt")
 
 # Show any app user ids that have only synced initial data.
 plhdata_org_Joy %>% filter(is.na(plhdata_org_Joy$rp.contact.field.first_app_open)) %>% select('app_user_id')
@@ -105,17 +99,19 @@ plhdata_org_Joy %>% filter(is.na(plhdata_org_Joy$rp.contact.field.first_app_open
 
 #####Create a subset for an organisation Amathuba####
 
+Organization_Table(data=plhdata_org, Org_name = "Amathuba")
+
 # Create subsets of the data based on organisation Amathuba
-plhdata_org_Amathuba <- filter(plhdata_org, Org == "Amathuba")
+#plhdata_org_Amathuba <- filter(plhdata_org, Org == "Amathuba")
 
 # Show any app user ids that are invalid and do not come from the app.
-plhdata_org_Amathuba %>% filter(is.na(plhdata_org_Amathuba$'app_version')) %>% select('app_user_id')
+#plhdata_org_Amathuba %>% filter(is.na(plhdata_org_Amathuba$'app_version')) %>% select('app_user_id')
 
 # Create subsets of the data based on valid Joy app user ID's
-plhdata_org_Amathuba <- filter(plhdata_org_Amathuba, !is.na(plhdata_org_Amathuba$'app_version'))
+#plhdata_org_Amathuba <- filter(plhdata_org_Amathuba, !is.na(plhdata_org_Amathuba$'app_version'))
 
 # Show the summary of app versions
-sjmisc::frq(x=plhdata_org_Amathuba$'app_version', out="txt")
+#sjmisc::frq(x=plhdata_org_Amathuba$'app_version', out="txt")
 
 # Show any app user ids that have only synced initial data.
 plhdata_org_Amathuba %>% filter(is.na(plhdata_org_Amathuba$rp.contact.field.first_app_open)) %>% select('app_user_id')
@@ -126,6 +122,8 @@ plhdata_org_Amathuba %>% filter(is.na(plhdata_org_Amathuba$rp.contact.field.firs
 
 # Show the summary of Self care workshop started(1st Workshop)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_started, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
+#plhdata_org_clean%>%dplyr::filter(Nontobeko,Joy,Amathuba,Dlalanathi)%>%sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_started, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
 # Show the summary of Self care workshop completion(1st Workshop)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_completed  , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
@@ -176,6 +174,7 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.user_gender, show.su
 #Show the summary of ,user age
 plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.user_age, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
 
 #show the summary , household adults
 plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
@@ -1336,7 +1335,20 @@ plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.w_self_care_
 # Show app user ids and whether they have started one on one time
 plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
 
+# Show app user ids and whether they have started 
+plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
 
+# Show app user ids and whether they have completed  workshop
+plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.w_self_care_completed")
+
+# Show app user ids and whether they have completed Praise workshop
+plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.w_praise_completed")
+
+# Show app user ids and whether they have completed Positive Instructions workshop
+plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.w_instruct_completed")
+
+# Show app user ids and whether they have completed 5 workshops------------------
+plhdata_org_DLALANATHI %>%  select('app_user_id', "rp.contact.field.w_self_care_completed", "rp.contact.field.w_1on1_completed", "rp.contact.field.w_praise_completed", "rp.contact.field.w_instruct_completed", "rp.contact.field.w_stress_completed")
 
 
 #####Completion rate of introductory session(Workshop 1:Selfcare)####
@@ -1365,3 +1377,194 @@ plhdata_org_Amathuba %>%  select('app_user_id', "rp.contact.field.w_self_care_st
 
 ## Show app user ids and whether they have started one-one-time
 plhdata_org_Amathuba %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
+
+# Show app user ids and whether they have completed 5 workshops--------------
+plhdata_org_Amathuba %>%  select('app_user_id', "rp.contact.field.w_self_care_completed", "rp.contact.field.w_1on1_completed", "rp.contact.field.w_praise_completed", "rp.contact.field.w_instruct_completed", "rp.contact.field.w_stress_completed")
+
+
+#####Completion rate of introductory session(Workshop 1:Selfcare)####
+# Show the summary of self care completion
+sjmisc::frq(x=plhdata_org_NONTOBEKO$rp.contact.field.w_self_care_completed, out="txt")
+
+# Show app user ids and whether they have completed selfcare.
+plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.w_self_care_completed")
+
+# Show app user ids and whether they have started selfcare.
+plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.w_self_care_started")
+
+## Show app user ids and whether they have started one-one-time
+plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
+
+# Show app user ids and whether they have completed 5 workshops------------------
+plhdata_org_NONTOBEKO %>%  select('app_user_id', "rp.contact.field.w_self_care_completed", "rp.contact.field.w_1on1_completed", "rp.contact.field.w_praise_completed", "rp.contact.field.w_instruct_completed", "rp.contact.field.w_stress_completed")
+
+#####Completion rate of introductory session(Workshop 1:Selfcare)####
+# Show the summary of self care completion
+sjmisc::frq(x=plhdata_org_Joy$rp.contact.field.w_self_care_completed, out="txt")
+
+# Show app user ids and whether they have completed selfcare.
+plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_self_care_completed")
+
+# Show app user ids and whether they have started selfcare.
+plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_self_care_started")
+
+## Show app user ids and whether they have started one-one-time
+plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
+
+# do it for clean data, then you dont have to do it each time for the diffeernt organisation data
+plhdata_org$rp.contact.field.w_self_care_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_self_care_completion_level))
+plhdata_org$rp.contact.field.w_1on1_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_1on1_completion_level))
+plhdata_org$rp.contact.field.w_praise_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_praise_completion_level))
+plhdata_org$rp.contact.field.w_instruct_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_instruct_completion_level))
+plhdata_org$rp.contact.field.w_stress_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_stress_completion_level))
+plhdata_org$rp.contact.field.w_money_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_money_completion_level))
+plhdata_org$rp.contact.field.w_rules_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_rules_completion_level))
+
+
+
+#All groups
+plhdata_group_ids <- plhdata_org %>%  select('app_user_id',  'Organisation', "rp.contact.field.w_self_care_completion_level", 
+                                "rp.contact.field.w_1on1_completion_level", "rp.contact.field.w_praise_completion_level",
+                                "rp.contact.field.w_instruct_completion_level", "rp.contact.field.w_stress_completion_level" ,
+                                "rp.contact.field.w_money_completion_level", "rp.contact.field.w_rules_completion_level") %>%
+  mutate(group_4 = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50 &
+                            rp.contact.field.w_1on1_completion_level> 50 & rp.contact.field.w_stress_completion_level>50 &
+                            rp.contact.field.w_instruct_completion_level>50 & rp.contact.field.w_money_completion_level>50 & 
+                            rp.contact.field.w_rules_completion_level>50, 
+                          1,
+                          0)) %>%  
+  mutate(group_3 = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50 &
+                                rp.contact.field.w_1on1_completion_level> 50 & rp.contact.field.w_stress_completion_level>50 &
+                                rp.contact.field.w_instruct_completion_level>50,
+                              1,
+                              0)) %>%
+  mutate(group_2bplus = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50  &
+                             rp.contact.field.w_1on1_completion_level> 50,
+                           1,
+                           0)) %>%
+  mutate(group_2b = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50  &
+                                rp.contact.field.w_1on1_completion_level> 50 & rp.contact.field.w_stress_completion_level< 1 &
+                                rp.contact.field.w_instruct_completion_level < 1,
+                              1,
+                              0)) %>%
+  mutate(group_2aplus = ifelse(rp.contact.field.w_self_care_completion_level > 50,
+                            1,
+                            0)) %>%
+  mutate(group_2a = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level < 1  &
+                             rp.contact.field.w_1on1_completion_level< 1 & rp.contact.field.w_stress_completion_level< 1 &
+                             rp.contact.field.w_instruct_completion_level < 1,
+                           1,
+                           0)) %>% rowwise() %>% 
+  mutate(group_2c = ifelse(mean(c(rp.contact.field.w_self_care_completion_level, rp.contact.field.w_praise_completion_level,
+                             rp.contact.field.w_1on1_completion_level, rp.contact.field.w_stress_completion_level,
+                             rp.contact.field.w_instruct_completion_level))> 50,
+                           1,
+                           0)) %>% 
+  
+  filter(Organisation != 'Miss')
+
+View(plhdata_group_ids)
+plhdata_group_ids %>% filter(group_4 == 1) %>%  select('app_user_id',  'Organisation', 'group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_3 == 1) %>%  select('app_user_id',  'Organisation' ,'group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_2c == 1) %>%  select('app_user_id',  'Organisation' ,'group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_2b == 1) %>%  select('app_user_id',  'Organisation','group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_2a == 1) %>%  select('app_user_id',  'Organisation','group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_2aplus == 1) %>%  select('app_user_id',  'Organisation','group_3', 'group_2c', 'group_2b', 'group_2a')
+
+
+
+#Group 3: Highly engaged,completed >50 of first five workshops--------------
+#Joy
+temp <- plhdata_org %>%  select('app_user_id',  'Organisation', "rp.contact.field.w_self_care_completion_level", 
+                            "rp.contact.field.w_1on1_completion_level", "rp.contact.field.w_praise_completion_level",
+                            "rp.contact.field.w_instruct_completion_level", "rp.contact.field.w_stress_completion_level") %>%
+  rowwise() %>%
+  mutate(conditional = ifelse(mean(c(rp.contact.field.w_self_care_completion_level, rp.contact.field.w_praise_completion_level,
+                                     rp.contact.field.w_1on1_completion_level, rp.contact.field.w_stress_completion_level,
+                                     rp.contact.field.w_instruct_completion_level))> 50,
+                              1,
+                              0)) %>% # creates a new column in the data set
+  filter(conditional == 1)
+
+#Group 2b: completed >50 of first 3 workshops
+
+plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_praise_completion_level" ,
+                            "rp.contact.field.w_1on1_completion_level")%>%
+  mutate(conditional = ifelse(rp.contact.field.w_self_care_completion_level > 50 & 
+                                rp.contact.field.w_1on1_completion_level> 50 & rp.contact.field.w_praise_completion_level >50,
+                              1,
+                              0)) %>% # creates a new column in the data set
+  filter(conditional == 1)
+
+#Alternative trial
+#Group 2b: completed >50 of first 3 workshops
+plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_self_care_completion_level", 
+                            "rp.contact.field.w_1on1_completion_level", "rp.contact.field.w_praise_completion_level",
+                            "rp.contact.field.w_instruct_completion_level", "rp.contact.field.w_stress_completion_level")%>%
+  mutate(conditional = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50  &
+                                rp.contact.field.w_1on1_completion_level> 50 & rp.contact.field.w_stress_completion_level< 1 &
+                                rp.contact.field.w_instruct_completion_level < 1,
+                              1,
+                              0)) %>% # creates a new column in the data set
+  filter(conditional == 1 )
+
+
+
+#Group 2a: completed >50 of first workshop
+
+plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_self_care_completion_level" 
+                           )%>%
+  mutate(conditional = ifelse(rp.contact.field.w_self_care_completion_level > 50,  
+                              1,
+                              0)) %>% # creates a new column in the data set
+  filter(conditional == 1)
+
+#Alternative Trial
+#Group 2a: completed >50 of first workshop
+plhdata_org_Amathuba %>%  select('app_user_id', "rp.contact.field.w_self_care_completion_level", 
+                                 "rp.contact.field.w_1on1_completion_level", "rp.contact.field.w_praise_completion_level",
+                                 "rp.contact.field.w_instruct_completion_level", "rp.contact.field.w_stress_completion_level")%>%
+  mutate(conditional = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level < 50  &
+                                rp.contact.field.w_1on1_completion_level < 50 & rp.contact.field.w_stress_completion_level< 50 &
+                                rp.contact.field.w_instruct_completion_level < 50,
+                              1,
+                              0)) %>% # creates a new column in the data set
+  filter(conditional == 1 )
+
+#Trial 
+#Group 2b: completed >50 of first 3 workshops
+plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_self_care_completion_level", 
+                            "rp.contact.field.w_1on1_completion_level", "rp.contact.field.w_praise_completion_level",
+                            "rp.contact.field.w_instruct_completion_level", "rp.contact.field.w_stress_completion_level")%>%
+  mutate(conditional = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50  &
+                                rp.contact.field.w_1on1_completion_level> 50 & rp.contact.field.w_stress_completion_level< 1 &
+                                rp.contact.field.w_instruct_completion_level < 1,
+                              1,
+                              0)) %>% # creates a new column in the data set
+  filter(conditional == 1 )
+
+
+#Group 2a: completed >50 of first workshop
+plhdata_org_Amathuba %>%  select('app_user_id', "rp.contact.field.w_self_care_completion_level", 
+                                 "rp.contact.field.w_1on1_completion_level", "rp.contact.field.w_praise_completion_level",
+                                 "rp.contact.field.w_instruct_completion_level", "rp.contact.field.w_stress_completion_level")%>%
+  mutate(conditional = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level < 50  &
+                                rp.contact.field.w_1on1_completion_level < 50 & rp.contact.field.w_stress_completion_level< 50 &
+                                rp.contact.field.w_instruct_completion_level < 50,
+                              1,
+                              0)) %>% # creates a new column in the data set
+  filter(conditional == 1 )
+
+
+
+
+
+
+
+
+
+#Trials-----------------
+plhdata_org_clean%>% select('app_user_id', "rp.contact.field.user_age")
+plhdata_org_clean%>% select('app_user_id', "rp.contact.field.user_gender")
+plhdata_org_Amathuba%>% select('app_user_id', "rp.contact.field.user_gender")
+mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)

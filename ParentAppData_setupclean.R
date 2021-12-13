@@ -53,7 +53,8 @@ plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,plh
 
 # look and Recode Factor organisation_full to just the main levels
 sjmisc::frq(x=plhdata_org$organisation_full, out="txt")
-plhdata_org$Org <- dplyr::revalue(x=plhdata_org$organisation_full, replace=c(`Miss.Miss` =  "Other", `Nontobeko.Miss` = "Nontobeko", `Joy.Miss` = "Joy", `Dlalanathi.Miss` = "Dlalanathi", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other", `Dlalanathi.null` = "Dlalanathi", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko", `Miss.idems Margherita` = "Other",  `Nontobeko.NontobekoM` = "Nontobeko", `Miss.dlalanathiThandeka` = "Dlalanathi",  `Miss.IDEMS Ohad` = "Other", `Nontobeko.nontobekoM` = "Nontobeko",`Miss.Research team `="Other",`Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other", `Joy.c9097349f34b364c` ="Joy", `Nontobeko.null` ="Nontobeko", `Joy.null` ="Joy", `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other", `Miss.other` ="Other", `Amathuba Collective.Miss` ="Amathuba", `Dlalanathi.dlanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", `Miss.zlto` ="Other", `Miss.hpccc` ="Other", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.seven_passes` ="Other", `Miss.amathuba` ="Amathuba", `Miss.Hillcrest facilitator` ="Other", `Miss.Hillcrest Facilitator ` ="Other"))
+plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
+                                  replace=c(`Miss.Miss` =  "Other", `Nontobeko.Miss` = "Nontobeko", `Joy.Miss` = "Joy", `Dlalanathi.Miss` = "Dlalanathi", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other", `Dlalanathi.null` = "Dlalanathi", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko", `Miss.idems Margherita` = "Other",  `Nontobeko.NontobekoM` = "Nontobeko", `Miss.dlalanathiThandeka` = "Dlalanathi",  `Miss.IDEMS Ohad` = "Other", `Nontobeko.nontobekoM` = "Nontobeko",`Miss.Research team `="Other",`Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other", `Joy.c9097349f34b364c` ="Joy", `Nontobeko.null` ="Nontobeko", `Joy.null` ="Joy", `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other", `Miss.other` ="Other", `Amathuba Collective.Miss` ="Amathuba", `Dlalanathi.dlanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", `Miss.zlto` ="Other", `Miss.hpccc` ="Other", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.seven_passes` ="Other", `Miss.amathuba` ="Amathuba", `Miss.Hillcrest facilitator` ="Other", `Miss.Hillcrest Facilitator ` ="Other",`Miss.a00af0c3b3887330` = "Miss" ))
                                                                             
 # Look at the organisation data
 sjmisc::frq(x=plhdata_org$Org, out="txt")
@@ -61,8 +62,8 @@ sjmisc::frq(x=plhdata_org$Org, out="txt")
 #Read in the tracker file
 
 #####Create a subset for cleaned organisations ####
-#plhdata_org_clean<-filter(plhdata_org,Org!="Miss")
-plhdata_org_clean<-filter(plhdata_org,Org!="Other")
+plhdata_org_clean<-filter(plhdata_org,Org!="Miss")
+#plhdata_org_clean<-filter(plhdata_org,Org!="Other")
 
 plhdata_org$Org <- factor(plhdata_org$Org, levels = unique(plhdata_org$Org))
 
@@ -78,5 +79,7 @@ plhdata_org_clean <- filter(plhdata_org_clean, !is.na(plhdata_org_clean$app_vers
 # Look at the numbers per organisation from clear data 
 sjmisc::frq(x=plhdata_org_clean$Org, out="txt")
 
-nrow(filter(plhdata_org_clean,( 'App Version'== "0.11.3" | 'App Version'== "0.11.2")&('Org'=="Nontobeko")  & is.na(plhdata_org_clean$rp.contact.field.w_1on1_completion_level)))
+
+
+#nrow(filter(plhdata_org_clean,( 'App Version'== "0.11.3" | 'App Version'== "0.11.2")&('Org'=="Nontobeko")  & is.na(plhdata_org_clean$rp.contact.field.w_1on1_completion_level)))
 

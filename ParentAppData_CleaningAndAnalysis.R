@@ -120,7 +120,7 @@ plhdata_org_Amathuba %>% filter(is.na(plhdata_org_Amathuba$rp.contact.field.firs
 
 #Workshop started & completed analysis
 
-# Show the summary of Self care workshop started(1st Workshop)
+# Show the summary of Self care workshop started(1st Workshop)                            
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_started, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
 #plhdata_org_clean%>%dplyr::filter(Nontobeko,Joy,Amathuba,Dlalanathi)%>%sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_started, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
@@ -162,7 +162,6 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_money_completed , 
 
 
 #Baseline survey
-
 # Show the summary of  baseline survey completion
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.survey_welcome_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
  
@@ -171,7 +170,7 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.survey_welcome_compl
 #Show the summary of user gender
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.user_gender, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
-#Show the summary of ,user age
+#Show the summary of user age
 plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.user_age, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
@@ -199,7 +198,7 @@ user_id_print <- function(field) {
     print(o)
     # print filtered data
     print(
-      plhdata_org %>%
+      plhdata_org%>%
         filter(Org == o) %>%
         select('app_user_id', field)
     )
@@ -880,6 +879,12 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_stress_welcome_ind
 #Family Budgets
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_money_welcome_individual_a_final, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
+#Rules
+sjPlot::sjtab(data=plhdata_org_clean, Organisation, rp.contact.field.w_rules_welcome_individual_a_final, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+
+
+
 
 # Show app user ids and whether they have completed selfcare.
 plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_self_care_completed")
@@ -1470,7 +1475,6 @@ plhdata_group_ids %>% filter(group_2c == 1) %>%  select('app_user_id',  'Organis
 plhdata_group_ids %>% filter(group_2b == 1) %>%  select('app_user_id',  'Organisation','group_3', 'group_2c', 'group_2b', 'group_2a')
 plhdata_group_ids %>% filter(group_2a == 1) %>%  select('app_user_id',  'Organisation','group_3', 'group_2c', 'group_2b', 'group_2a')
 plhdata_group_ids %>% filter(group_2aplus == 1) %>%  select('app_user_id',  'Organisation','group_3', 'group_2c', 'group_2b', 'group_2a')
-
 
 
 #Group 3: Highly engaged,completed >50 of first five workshops--------------

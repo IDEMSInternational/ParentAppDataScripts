@@ -123,6 +123,8 @@ plhdata_org_Amathuba %>% filter(is.na(plhdata_org_Amathuba$rp.contact.field.firs
 # Show the summary of Self care workshop started(1st Workshop)                            
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_started, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
+#plhdata_org_clean%>%dplyr::filter(Nontobeko,Joy,Amathuba,Dlalanathi)%>%sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_started, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
+
 # Show the summary of Self care workshop completion(1st Workshop)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_completed  , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
 
@@ -1414,8 +1416,65 @@ plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_self_care_started
 ## Show app user ids and whether they have started one-one-time
 plhdata_org_Joy %>%  select('app_user_id', "rp.contact.field.w_1on1_started")
 
+# do it for clean data, then you dont have to do it each time for the diffeernt organisation data
+plhdata_org$rp.contact.field.w_self_care_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_self_care_completion_level))
+plhdata_org$rp.contact.field.w_1on1_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_1on1_completion_level))
+plhdata_org$rp.contact.field.w_praise_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_praise_completion_level))
+plhdata_org$rp.contact.field.w_instruct_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_instruct_completion_level))
+plhdata_org$rp.contact.field.w_stress_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_stress_completion_level))
+plhdata_org$rp.contact.field.w_money_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_money_completion_level))
+plhdata_org$rp.contact.field.w_rules_completion_level <- as.numeric(as.character(plhdata_org$rp.contact.field.w_rules_completion_level))
 
 
+
+#All groups
+plhdata_group_ids <- plhdata_org %>%  select('app_user_id',  'Organisation', "rp.contact.field.w_self_care_completion_level", 
+                                "rp.contact.field.w_1on1_completion_level", "rp.contact.field.w_praise_completion_level",
+                                "rp.contact.field.w_instruct_completion_level", "rp.contact.field.w_stress_completion_level" ,
+                                "rp.contact.field.w_money_completion_level", "rp.contact.field.w_rules_completion_level") %>%
+  mutate(group_4 = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50 &
+                            rp.contact.field.w_1on1_completion_level> 50 & rp.contact.field.w_stress_completion_level>50 &
+                            rp.contact.field.w_instruct_completion_level>50 & rp.contact.field.w_money_completion_level>50 & 
+                            rp.contact.field.w_rules_completion_level>50, 
+                          1,
+                          0)) %>%  
+  mutate(group_3 = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50 &
+                                rp.contact.field.w_1on1_completion_level> 50 & rp.contact.field.w_stress_completion_level>50 &
+                                rp.contact.field.w_instruct_completion_level>50,
+                              1,
+                              0)) %>%
+  mutate(group_2bplus = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50  &
+                             rp.contact.field.w_1on1_completion_level> 50,
+                           1,
+                           0)) %>%
+  mutate(group_2b = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level > 50  &
+                                rp.contact.field.w_1on1_completion_level> 50 & rp.contact.field.w_stress_completion_level< 1 &
+                                rp.contact.field.w_instruct_completion_level < 1,
+                              1,
+                              0)) %>%
+  mutate(group_2aplus = ifelse(rp.contact.field.w_self_care_completion_level > 50,
+                            1,
+                            0)) %>%
+  mutate(group_2a = ifelse(rp.contact.field.w_self_care_completion_level > 50 & rp.contact.field.w_praise_completion_level < 1  &
+                             rp.contact.field.w_1on1_completion_level< 1 & rp.contact.field.w_stress_completion_level< 1 &
+                             rp.contact.field.w_instruct_completion_level < 1,
+                           1,
+                           0)) %>% rowwise() %>% 
+  mutate(group_2c = ifelse(mean(c(rp.contact.field.w_self_care_completion_level, rp.contact.field.w_praise_completion_level,
+                             rp.contact.field.w_1on1_completion_level, rp.contact.field.w_stress_completion_level,
+                             rp.contact.field.w_instruct_completion_level))> 50,
+                           1,
+                           0)) %>% 
+  
+  filter(Organisation != 'Miss')
+
+View(plhdata_group_ids)
+plhdata_group_ids %>% filter(group_4 == 1) %>%  select('app_user_id',  'Organisation', 'group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_3 == 1) %>%  select('app_user_id',  'Organisation' ,'group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_2c == 1) %>%  select('app_user_id',  'Organisation' ,'group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_2b == 1) %>%  select('app_user_id',  'Organisation','group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_2a == 1) %>%  select('app_user_id',  'Organisation','group_3', 'group_2c', 'group_2b', 'group_2a')
+plhdata_group_ids %>% filter(group_2aplus == 1) %>%  select('app_user_id',  'Organisation','group_3', 'group_2c', 'group_2b', 'group_2a')
 
 
 #Group 3: Highly engaged,completed >50 of first five workshops--------------

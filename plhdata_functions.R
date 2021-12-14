@@ -1,7 +1,7 @@
 
 # Creating a subset for an organisation------------- 
 Organization_Table<-function(data,Org_name){
-  plhdata_org_Filter <- filter(data, Org == {{Org_name}})
+  plhdata_org_Filter <- dplyr::filter(data, Org == {{Org_name}})
   
   # Show any app user ids that are invalid and do not come from the app.
   plhdata_org_Filter %>% filter(is.na(plhdata_org_Filter$'app_version')) %>% select('app_user_id')

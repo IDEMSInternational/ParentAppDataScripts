@@ -160,7 +160,6 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_money_completed , 
 
 
 
-
 #Baseline survey
 # Show the summary of  baseline survey completion
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.survey_welcome_completed , show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
@@ -745,7 +744,6 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_cent
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_centre_quick_start_w_1on1, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
 
-
 #Parent points
 #Self Care workshop
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.click_hs_parent_points_quick_start_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
@@ -787,6 +785,7 @@ user_id_print <- function(field) {
   }
 }
 
+plhdata_org_clean$rp.contact.field.app_launch_count <- as.numeric(plhdata_org_clean$rp.contact.field.app_launch_count)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.app_launch_count, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
 user_id_print("rp.contact.field.app_launch_count")
@@ -811,6 +810,8 @@ user_id_print <- function(field) {
 
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.app_launch_count_w_self_care, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
+
+
 user_id_print("rp.contact.field.app_launch_count_w_self_care")
 
 #One-on-one time workshop
@@ -832,10 +833,16 @@ sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.app_launch_count_w_1
 
 user_id_print("rp.contact.field.app_launch_count_w_1on1")
 
+#Rules workshop 7
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.app_launch_count_w_rules, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
+#Calm Consequences workshop 8
+sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.app_launch_count_w_consequence, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
+
 ##Priority 21
 #App-opens
 #Maximum time between app-opens - for each user.Time in full days 
-
+plhdata_org_clean$rp.contact.field.max_days_between_app_launches <- as.numeric(plhdata_org_clean$rp.contact.field.max_days_between_app_launches)
 sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.max_days_between_app_launches, show.summary=FALSE, digits=0, fun="xtab", title="",string.total="Total")
 
 #Priority 36

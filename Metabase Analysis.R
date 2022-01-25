@@ -3,23 +3,16 @@
 df <- get_metabase_data()
 plhdata_org <- get_user_data(merge_check = FALSE) # select 1 if you want to merge in changes (yes)
 
-### clean data ----------------------------------------------------------------------
+## Data Cleaning ## --------------------------------------------------------
 
-#plhdata_org1 <- plhdata_org
-#plhdata_org <- plhdata_org1
 ## Tidy up "Organisation" Variable:
 # replace missing values in Organisation and rp.contact.field.organisation_code by Miss so that it is a factor level
-#sjmisc::frq(x=plhdata_org$Organisation, out="txt")
 plhdata_org$Organisation <- forcats::as_factor(tidyr::replace_na(plhdata_org$Organisation, "Miss"))
 
-#sjmisc::frq(x=plhdata_org$rp.contact.field.organisation_code, out="txt")
 # Question: What about "null"?
 plhdata_org$rp.contact.field.organisation_code <- forcats::as_factor(tidyr::replace_na(plhdata_org$rp.contact.field.organisation_code, "Miss"))
 
 # look and Recode Factor organisation_full to just the main levels
-#sjmisc::frq(x=plhdata_org$organisation_full, out="txt")
-
-
 plhdata_org$rp.contact.field.organisation_code<-as_factor(replace_na(plhdata_org$rp.contact.field.organisation_code, "Miss"))
 
 # Combine Factors Organisation and rp.contact.field.organisation_code 
@@ -27,7 +20,7 @@ plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,
                                                     plhdata_org$rp.contact.field.organisation_code), drop=TRUE)
 
 # look and Recode Factor organisation_full to just the main levels
-sjmisc::frq(x=plhdata_org$organisation_full, out="txt")
+#sjmisc::frq(x=plhdata_org$organisation_full, out="txt")
 plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
                                  replace=c(`Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
                                            `Miss.idems Margherita` = "Other", `Miss.IDEMS Ohad` = "Other", `Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other",  `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other",
@@ -55,7 +48,6 @@ plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full,
 # Look at the organisation data
 sjmisc::frq(x=plhdata_org$Org, out="txt")
 
-
 #####Create a subset for cleaned organisations ####
 # TODO: none are called Miss in "Org" due to how you defined it
 plhdata_org_clean <- plhdata_org %>%
@@ -68,7 +60,6 @@ plhdata_org_clean <- plhdata_org_clean %>%
 
 # Look at the numbers per organisation from clear data 
 sjmisc::frq(x=plhdata_org_clean$Org, out="txt")
-
 
 # More cleaning
 # TODO: Add here any to make numeric.
@@ -84,7 +75,6 @@ plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.nu
 
 # Write clean data back -------------------------------------------------------
 
-
 # Analysis - tables - separate for different groups.
 plhdata_org_clean_2 <- plhdata_org_clean %>% filter(!is.na(app_version))
 
@@ -96,9 +86,10 @@ for (i in levels(plhdata_org_clean$Org)){
 
 #get_app_user_IDs(data = plhdata_org_clean_2, Org, "Nontobeko", show_invalid = FALSE)
 
-# Summary tables of started/completed things ---------------------------
 
+## Data Analysis ## --------------------------------------------------------
 
+# Summary tables of started/completed things
 # Show the summary of Self care workshop started(1st Workshop)                            
 two_way_table(row_var = rp.contact.field.w_self_care_started)
 
@@ -137,8 +128,6 @@ two_way_table(row_var = rp.contact.field.w_money_started)
 # Show the summary of Family Budgets(6th workshop)
 two_way_table(row_var = rp.contact.field.w_money_completed)
 
-
-
 #Baseline survey ------------------------------------------------------------------------------------
 data_baseline_survey <- with(plhdata_org_clean, data.frame(app_user_id,
                                                            Org,
@@ -159,7 +148,7 @@ for (i in 3:length(data_baseline_survey)){
 }
 names(two_way_table_baseline) <- names(data_baseline_survey)[3:length(data_baseline_survey)]
 # then to access a table:
-two_way_table_baseline$`User gender`
+two_way_table_baseline$`Household babies`
 
 
 ###Completion status of baseline survey
@@ -227,11 +216,8 @@ for (i in 3:length(data_habit_parent_points)){
 }
 names(two_way_table_habits) <- names(data_habit_parent_points)[3:length(data_habit_parent_points)]
 # then to access a table:
-two_way_table_habits$`Spend time`
+two_way_table_habits$`Instruct positively`
 # etc.
-
-
-
 
 # Completion Level ----------------------------------------------------------------------------
 # Not habits - what are these? ------------------------------------------------------------------
@@ -263,8 +249,6 @@ two_way_table_completion_level$Praise
 
 # or to get all tables:
 two_way_table_completion_level
-
-
 
 # Survey - past week  ----------------------------------------------------------------------------
 data_survey_past_week <- with(plhdata_org_clean, data.frame(app_user_id,
@@ -372,23 +356,25 @@ names(two_way_tableweekly_workshops) <- names(data_weekly_workshops)[3:length(da
 two_way_tableweekly_workshops$Stress
 
 
+#In-app reminders(Number of in-app message clicks per workshop week),Per quick start button, per workshop week  -------------------------
+# TODO: hsqsclickedws1, hsqsclickedws2 is defined twice, differently each time. Should have different names - is this intentional?
+plhdata_org_clean$hsqsclickedws1<-is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
+plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
+
+two_way_table(row_var = hsqsclickedws1)
+two_way_table(row_var = hsqsclickedws2)
+
+#Test 1
+plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
+plhdata_org_clean$hsqsclickedcountws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
+plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
+two_way_table(row_var = rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care, replace = "rp.contact.field.click_hs_")
+user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+two_way_table(row_var = hsqsclickedws1)
+two_way_table(row_var = hsqsclickedcountws1)
+two_way_table(row_var = hsqsclickedws2)
 
 #Priority 23 
 #In-app reminders
@@ -436,7 +422,7 @@ two_way_table(row_var = rp.contact.field.max_days_between_app_launches, replace 
 
 #Priority 36 --------------------------------------------------------------------------------
 #Emotional Check-in
-#Rate of users who respond “happy” ,"sad" & "ok"
+#Rate of users who respond "happy" ,"sad" & "ok"
 data_emotional_check_in <- with(plhdata_org_clean, data.frame(app_user_id, Org,
                                                               rp.contact.field.w_self_care_welcome_individual_a_final, rp.contact.field.w_1on1_welcome_individual_a_final, 
                                                               rp.contact.field.w_praise_welcome_individual_a_final, rp.contact.field.w_instruct_welcome_individual_a_final, 
@@ -461,18 +447,18 @@ multiple_summary_PT(summary_var = rp.contact.field.w_self_care_completed)
 #plhdata_org_clean %>% group_by(Org) %>% select('app_user_id', "rp.contact.field.w_1on1_started")
 
 # Completion status of baseline survey ------------------------------------------------
-multiple_summary_PT(summary_var = rp.contact.field.survey_welcome_completed, replace = "rp.contact.field.survey")
-
+multiple_summary_PT(summary_var = rp.contact.field.survey_welcome_completed,
+                    replace = "rp.contact.field.survey")
 
 # Descriptive Statistics ------------------------------------------------------------------------------------------
 # Gender of App Users
 gender_table <- multiple_summary_PT(summary_var = rp.contact.field.user_gender)
 gender_table$Nontobeko
+gender_table$Amathuba
 
 # Age of App Users
 age_table <- multiple_summary_PT(summary_var = rp.contact.field.user_age)
 age_table$Nontobeko
-
 
 #Trials-----------------
 plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")

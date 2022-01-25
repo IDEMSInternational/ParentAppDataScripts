@@ -1,36 +1,28 @@
 # run libraries
 library(tidyverse)
 library(here)
-library(mmtable2)
 library(yesno)
+library(gt)
 
 #' Interaction with chatbot
-#' 1. Defining package environment -------------------------------------------
-#' Sorting set and get calls for: key, site
-#' 
-#' 
-#' Define package environment
-setwd("C:/Users/lzc1n17/OneDrive - University of Southampton/PhD/IDEMS/ParentApp")
 
 #Source the personal setup for data
-source("Personal Setup.R")
 source(here("Personal Setup.R"))
 
 #Get data from excel
-UIC.Tracker <- rio::import(file = "UIC Tracker.xlsx", which = "UIC Tracker 211014")
 UIC.Tracker <- rio::import(file = here("UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 
 # Reading in Data ------------------------------------------
 
 #Get the List of PLH Tables and data from server
-get_metabase_data <- function(site = plh_con){  # can add in date_from, date_to and filter. 
+get_metabase_data <- function(site = plh_con){ 
   plh_tables <- dbListTables(site)
   df <- dbReadTable(conn = site,
                     name = plh_tables[2])
   return(df)
 }
 
-get_user_data <- function(site = plh_con, date_from = NULL, date_to = NULL, format_date = "%Y-%m-%d", tzone_date = "UTC", include_UIC_data = TRUE, merge_check = TRUE, UIC_Tracker = UIC.Tracker, join_UIC = "UIC", max_dist = 5){ # ideally would have flatten = FALSE in there, but seems that this isn't an option from metabase.
+get_user_data <- function(site = plh_con, date_from, date_to = NULL, format_date = "%Y-%m-%d", tzone_date = "UTC", include_UIC_data = TRUE, merge_check = TRUE, UIC_Tracker = UIC.Tracker, join_UIC = "UIC", max_dist = 5){ # ideally would have flatten = FALSE in there, but seems that this isn't an option from metabase.
   df <- get_metabase_data(site = site)
   
   # create empty list to store the data frames
@@ -83,7 +75,7 @@ get_user_data <- function(site = plh_con, date_from = NULL, date_to = NULL, form
   return(return_data)
 }
 
-# Write back to metabase
+# Write back to metabase - TODO: make into function?
 dbWriteTable(parent_app_con, "Cleaned PLH data", select(plhdata_org_clean,!(contact_fields)), overwrite=TRUE)
 
 
@@ -160,8 +152,6 @@ multiple_summary_PT <- function(data = plhdata_org_clean, by = Org, summary_var,
 }
 
 
-
-
 # not sure if you want this sort of function or not, and if so, what it should do. Will come back to.
 get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, show_invalid = FALSE){
   
@@ -181,10 +171,6 @@ get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, 
   # Show any app user ids that have only synced initial data.
   data_filter %>% filter(is.na(rp.contact.field.first_app_open)) %>% select('app_user_id')
 }
-
-
-sjPlot::sjtab(data=plhdata_org_clean, Org, rp.contact.field.w_self_care_started, show.summary=FALSE, digits=0, fun="xtab", title="", string.total="Total")
-
 
 # a two-way table
 two_way_table <- function(data = plhdata_org_clean, column_var = Org, row_var, replace = "rp.contact.field.w_"){
@@ -231,3 +217,4 @@ user_id_print <- function(data = plhdata_org, field, group_by = plhdata_org_clea
     arrange(Org)
   return(plhdata_org_list)
 }
+

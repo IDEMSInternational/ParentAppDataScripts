@@ -34,6 +34,9 @@ source('config/Personal Setup.R')
 #set_rapidpro_site(site = "https://app.rapidpro.io/api/v2/")
 #set_rapidpro_uuid_names()
 
+data<-read.csv('~/Documents/GitHub/ParentAppDataScripts/data/malaysia_data_20220111.csv')
+
+
 # 2. Data Cleaning -----------------------------------------------------------------
                                             #**MPH REMOVE as I think this is done in our setup and clean file
 source('ParentAppData_CleaningAndAnalysis.R')

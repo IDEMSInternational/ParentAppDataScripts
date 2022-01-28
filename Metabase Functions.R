@@ -136,18 +136,44 @@ summary_PT <- function(data = df, summary_var, denominator = NULL, denominator_l
   }
 }
 
+
 multiple_summary_PT <- function(data = plhdata_org_clean, by = Org, summary_var, denominator = Org, together = TRUE, naming_convention = TRUE,
                                 replace = "rp.contact.field."){
   attach(data, warn.conflicts = FALSE)
   var_by_Org <- NULL
+table_output <- NULL
   for (i in levels(Org)){
     var_by_Org[[i]] <- summary_PT(data = data, summary_var = {{ summary_var }}, denominator = {{ denominator }}, denominator_level = i,
                                   together = together, naming_convention = naming_convention,
                                   replace = replace)
     #plhdata_org_clean %>% filter(Org == i) %>% select('app_user_id', "rp.contact.field.user_var")
-      }
-  names(var_by_Org) <- levels(Org)
-  return(var_by_Org)
+ #     }
+  #names(var_by_Org) <- levels(Org)
+  #for (i in 1:length(gender_table)) {
+    
+    demographics_table<-var_by_Org[[i]]
+    print(levels(Org)[i])
+    table_output[[i]]<-gt(demographics_table) %>% tab_header(title=paste(names(demographics_table)[1]," in ",levels(Org)[i]))%>% 
+      tab_style(location=list(cells_body(columns = everything())),
+                style = list(cell_borders(
+                  sides = "left",
+                  color = "black",
+                  weight = px(2)),
+                  cell_text(weight = "bold"))) %>%
+      # We use tab_style() to change style of cells
+      # cell_borders() provides the formatting
+      # locations tells it where
+      # Add black borders to the bottom of all the column labels
+      tab_style(locations = list(cells_column_labels(columns = gt::everything())),
+                style = list(cell_borders(
+                  sides = "bottom",
+                  color = "black",
+                  weight = px(2)),
+                  cell_text(weight = "bold")))
+     
+  }
+names(table_output) <- levels(Org)   
+return(table_output)
   detach(data)
 }
 

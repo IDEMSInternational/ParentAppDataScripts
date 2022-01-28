@@ -71,7 +71,7 @@ plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_
 plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
 plhdata_org_clean$rp.contact.field.w_self_care_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
 plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.numeric(plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care)
-
+plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.Date(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
 
 # Write clean data back -------------------------------------------------------
 

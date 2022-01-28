@@ -455,6 +455,8 @@ multiple_summary_PT(summary_var = rp.contact.field.survey_welcome_completed,
 gender_table <- multiple_summary_PT(summary_var = rp.contact.field.user_gender)
 gender_table$Nontobeko
 gender_table$Amathuba
+gender_table
+
 
 # Age of App Users
 age_table <- multiple_summary_PT(summary_var = rp.contact.field.user_age)

@@ -7,10 +7,10 @@ library(gt)
 #' Interaction with chatbot
 
 #Source the personal setup for data
-source(here("Personal Setup.R"))
+source(here("config/Personal Setup.R"))
 
 #Get data from excel
-UIC.Tracker <- rio::import(file = here("UIC Tracker.xlsx"), which = "UIC Tracker 211014")
+UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 
 # Reading in Data ------------------------------------------
 
@@ -142,7 +142,7 @@ multiple_summary_PT <- function(data = plhdata_org_clean, by = Org, summary_var,
   attach(data, warn.conflicts = FALSE)
   var_by_Org <- NULL
 table_output <- NULL
-  for (i in levels(Org)){
+  for (i in levels(by)){
     var_by_Org[[i]] <- summary_PT(data = data, summary_var = {{ summary_var }}, denominator = {{ denominator }}, denominator_level = i,
                                   together = together, naming_convention = naming_convention,
                                   replace = replace)
@@ -152,8 +152,7 @@ table_output <- NULL
   #for (i in 1:length(gender_table)) {
     
     demographics_table<-var_by_Org[[i]]
-    print(levels(Org)[i])
-    table_output[[i]]<-gt(demographics_table) %>% tab_header(title=paste(names(demographics_table)[1]," in ",levels(Org)[i]))%>% 
+    table_output[[i]]<-gt(demographics_table) %>% tab_header(title=paste(names(demographics_table)[1]," in ",i))%>% 
       tab_style(location=list(cells_body(columns = everything())),
                 style = list(cell_borders(
                   sides = "left",
@@ -172,7 +171,7 @@ table_output <- NULL
                   cell_text(weight = "bold")))
      
   }
-names(table_output) <- levels(Org)   
+names(table_output) <- levels(by)   
 return(table_output)
   detach(data)
 }

@@ -17,7 +17,7 @@ library(jsonlite)
 
 
 ##
-#source("Functions.R")  ***MPH adapt to actual name source(here("ParentAppData_setupclean.R")) or source(here("ParentAppData_CleaningAndAnalysis.R"))
+source("Metabase Functions.R")
 
 #install_github("lilyclements/Rapidreadr")   **MPH was commented out, not sure if needs to be replaced by anything
 #library(Rapidreadr)
@@ -38,21 +38,22 @@ data<-read.csv('~/Documents/GitHub/ParentAppDataScripts/data/malaysia_data_20220
 
 
 # 2. Data Cleaning -----------------------------------------------------------------
-                                            #**MPH REMOVE as I think this is done in our setup and clean file
-source('ParentAppData_CleaningAndAnalysis.R')
+
+#source("Metabase Analysis")
                                             
   
 
 # 3. Define UI -----------------------------------------------------------------------------
-                                          #**MPH play with basic setup of UI and add labels relevant for ParentApp
+
 ui <- dashboardPage(
-  header = dashboardHeader(title = "ParentText Dashboard"),
+  header = dashboardHeader(title = "ParentApp Dashboard"),
+  dashboardPage(skin = "green"),
   
   sidebar = dashboardSidebar(
     sidebarMenu(
-      menuItem("Demographics", tabName = "demographics", icon = icon("users")),
-      menuItem("Engagement", tabName = "engagement", icon = icon("clipboard")),
-      menuItem("Behaviours", tabName = "behaviours", icon = icon("brain"))
+      menuItem("Overview and Demographics", tabName = "demographics", icon = icon("users")),
+      menuItem("Workshops Engagement", tabName = "workshops", icon = icon("lightbulb")),
+      menuItem("Parent Points", tabName = "parentpoints", icon = icon("star"))
     )),
   dashboardBody(
     fluidRow(
@@ -78,7 +79,7 @@ ui <- dashboardPage(
                            collapsible = FALSE,
                            solidHeader = TRUE,
                            background = "light-blue",
-                           height = "95px"))),
+                           height = "95px"))), #closes fluid row
               
               # On the first page we want two tabs: Overall, and ByGroup.
               tabsetPanel(type = "tabs",
@@ -197,10 +198,10 @@ ui <- dashboardPage(
       ), # close tab
       
       # Second tab content
-      tabItem(tabName = "engagement",
+      tabItem(tabName = "workshops",
       ), # close engagement tab
       
-      tabItem(tabName = "behaviours",
+      tabItem(tabName = "parentpoints",
       ) # close behaviour tab
     ) # close items
   ) # close body

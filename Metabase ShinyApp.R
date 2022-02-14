@@ -10,11 +10,10 @@ library(jsonlite)
 #library(here)          
 
 # 1. Calling the data ---------------------------------------------------------------------
-testdata <- read.csv('~/Documents/GitHub/ParentAppDataScripts/data/malaysia_data_20220111.csv')
-
+# not needed - data is just called plhdata_org_clean
 
 # 2. Data Cleaning -------------------------------------------------------------------------
-
+# not needed - data is clean
 
 # 3. Define UI -----------------------------------------------------------------------------
 ui <- dashboardPage(skin = "blue",
@@ -192,8 +191,7 @@ server <- function(input, output) {
   # df_enrolled <- df_enrolled %>% mutate(group =  enrolled, count = enrolled_n) %>% dplyr::select(c(group, count))
   
   table_parent_gender <- reactive({
-      testdata %>% 
-        group_by(parent_gender) %>% summarise(n())
+    two_way_table_baseline$`User gender`
   }) #closes parent gender table
   
   plot_parent_gender  <- reactive({

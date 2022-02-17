@@ -51,7 +51,7 @@ sjmisc::frq(x=plhdata_org$Org, out="txt")
 #####Create a subset for cleaned organisations ####
 # TODO: none are called Miss in "Org" due to how you defined it
 plhdata_org_clean <- plhdata_org %>%
-  filter(Org != "Miss")%>%
+  filter(Org != "Other")%>%
   mutate(Org = factor(Org))
 
 # Create subsets of the data based on valid app user ID's
@@ -62,7 +62,7 @@ plhdata_org_clean <- plhdata_org_clean %>%
 sjmisc::frq(x=plhdata_org_clean$Org, out="txt")
 
 # More cleaning
-# TODO: Add here any to make numeric.
+# TODO: Add here any to make numeric. check with Esmee about w_self_care_diff_started_completed stored
 plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
 plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
 plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_clean$rp.contact.field.household_teens)
@@ -70,9 +70,7 @@ plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_cl
 plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
 plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
 plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.numeric(plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care)
-<<<<<<< Updated upstream
 
-=======
 plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
 plhdata_org_clean$rp.contact.field.w_self_care_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
 plhdata_org_clean$rp.contact.field.w_1on1_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_completion_level)
@@ -92,21 +90,20 @@ plhdata_org_clean <- plhdata_org_clean %>%
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(across(starts_with("rp.contact.field.parent_point"), ~as.numeric(.)))
 plhdata_org_clean$rp.contact.field.app_launch_count <- as.numeric(plhdata_org_clean$rp.contact.field.app_launch_count)
->>>>>>> Stashed changes
+
+plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
+
 
 # Write clean data back -------------------------------------------------------
 
-# Analysis - tables - separate for different groups.
-plhdata_org_clean_2 <- plhdata_org_clean %>% filter(!is.na(app_version))
+# Analysis - tables - separate for different groups. 
 
 for (i in levels(plhdata_org_clean$Org)){
-<<<<<<< Updated upstream
-  summary_PT(data = plhdata_org_clean_2, summary_var = app_version, denominator = Org,
-             denominator_level = i, together = TRUE, naming_convention = FALSE)
-=======
+
+  
   print(summary_PT(data = plhdata_org_clean, summary_var = app_version, denominator = Org,
              denominator_level = i, together = TRUE, naming_convention = FALSE))
->>>>>>> Stashed changes
+
 }
 
 two_way_table(row_var = app_version)
@@ -175,6 +172,8 @@ for (i in 3:length(data_baseline_survey)){
 names(two_way_table_baseline) <- names(data_baseline_survey)[3:length(data_baseline_survey)]
 # then to access a table:
 two_way_table_baseline$`Household babies`
+two_way_table_baseline$`User gender`
+
 
 
 ###Completion status of baseline survey

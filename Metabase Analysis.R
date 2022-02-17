@@ -1,6 +1,6 @@
 
 ### extract data ----------------------------------------------------------------------
-df <- get_metabase_data()
+#df <- get_metabase_data()
 plhdata_org <- get_user_data(merge_check = FALSE) # select 1 if you want to merge in changes (yes)
 
 ## Data Cleaning ## --------------------------------------------------------
@@ -69,20 +69,44 @@ plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_cle
 plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_clean$rp.contact.field.household_babies)
 plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
 plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
-plhdata_org_clean$rp.contact.field.w_self_care_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
 plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.numeric(plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care)
+
 plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
+plhdata_org_clean$rp.contact.field.w_self_care_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
+plhdata_org_clean$rp.contact.field.w_1on1_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_completion_level)
+plhdata_org_clean$rp.contact.field.w_praise_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_praise_completion_level)
+plhdata_org_clean$rp.contact.field.w_instruct_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_instruct_completion_level)
+plhdata_org_clean$rp.contact.field.w_stress_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_stress_completion_level)
+plhdata_org_clean$rp.contact.field.w_money_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_money_completion_level)
+plhdata_org_clean$rp.contact.field.w_rules_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_rules_completion_level)
+plhdata_org_clean$rp.contact.field.w_consequence_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_consequence_completion_level)
+plhdata_org_clean$rp.contact.field.w_solve_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_solve_completion_level)
+plhdata_org_clean$rp.contact.field.w_safe_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_safe_completion_level)
+plhdata_org_clean$rp.contact.field.w_crisis_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_crisis_completion_level)
+plhdata_org_clean$rp.contact.field.w_celebrate_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_celebrate_completion_level)
+
+plhdata_org_clean <- plhdata_org_clean %>%
+  mutate(across(ends_with("_completion_level"), ~as.numeric(.)))
+plhdata_org_clean <- plhdata_org_clean %>%
+  mutate(across(starts_with("rp.contact.field.parent_point"), ~as.numeric(.)))
+plhdata_org_clean$rp.contact.field.app_launch_count <- as.numeric(plhdata_org_clean$rp.contact.field.app_launch_count)
+
+plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
+
 
 # Write clean data back -------------------------------------------------------
 
 # Analysis - tables - separate for different groups. 
 
 for (i in levels(plhdata_org_clean$Org)){
-  summary_PT(data = plhdata_org_clean, summary_var = app_version, denominator = Org,
-             denominator_level = i, together = TRUE, naming_convention = FALSE)
+
+  
+  print(summary_PT(data = plhdata_org_clean, summary_var = app_version, denominator = Org,
+             denominator_level = i, together = TRUE, naming_convention = FALSE))
+
 }
 
-
+two_way_table(row_var = app_version)
 #get_app_user_IDs(data = plhdata_org_clean_2, Org, "Nontobeko", show_invalid = FALSE)
 
 
@@ -217,19 +241,29 @@ for (i in 3:length(data_habit_parent_points)){
 }
 names(two_way_table_habits) <- names(data_habit_parent_points)[3:length(data_habit_parent_points)]
 # then to access a table:
+two_way_table_habits$`Relax`
+two_way_table_habits$`Treat yourself`
+two_way_table_habits$`Praise yourself`
+two_way_table_habits$`Spend time`
+two_way_table_habits$`Praise teen`
+two_way_table_habits$`Praise yourself`
 two_way_table_habits$`Instruct positively`
+two_way_table_habits$`Breathe`
+two_way_table_habits$`Money`
+two_way_table_habits$`Consequence`
+two_way_table_habits$`Safe`
 # etc.
 
 # Completion Level ----------------------------------------------------------------------------
 # Not habits - what are these? ------------------------------------------------------------------
 data_completion_level <- with(plhdata_org_clean, data.frame(app_user_id,
                                                             Org,
-                                                            rp.contact.field.w_1on1_completion_level, rp.contact.field.w_praise_completion_level, rp.contact.field.w_instruct_completion_level, rp.contact.field.w_stress_completion_level,
+                                                            rp.contact.field.w_self_care_completion_level,rp.contact.field.w_1on1_completion_level, rp.contact.field.w_praise_completion_level, rp.contact.field.w_instruct_completion_level, rp.contact.field.w_stress_completion_level,
                                                             rp.contact.field.w_money_completion_level, rp.contact.field.w_safe_completion_level, #you have "safe_completion" under rules. Is this right?
                                                             rp.contact.field.w_consequence_completion_level, rp.contact.field.w_solve_completion_level, rp.contact.field.w_safe_completion_level,
-                                                            rp.contact.field.w_crisis_completion_level))
+                                                            rp.contact.field.w_crisis_completion_level, rp.contact.field.w_celebrate_completion_level ))
 
-completion_vars <- c("One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis")
+completion_vars <- c("Self Care", "One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
 names(data_completion_level) <- c("app_user_id", "Org", completion_vars)
 
 two_way_table_completion_level <- NULL
@@ -245,7 +279,18 @@ for (i in 3:length(data_completion_level)){
 names(two_way_table_completion_level) <- completion_vars
 
 # then to access a table:
+two_way_table_completion_level$`Self Care`
+two_way_table_completion_level$`One-on-one Time`
 two_way_table_completion_level$Praise
+two_way_table_completion_level$`Positive Instructions`
+two_way_table_completion_level$`Managing Stress`
+two_way_table_completion_level$`Family Budgets`
+two_way_table_completion_level$Rules
+two_way_table_completion_level$`Calm Consequences`
+two_way_table_completion_level$`Problem Solving`
+two_way_table_completion_level$`Teen Safety`
+two_way_table_completion_level$`Dealing with Crisis`
+two_way_table_completion_level$`Celebration & Next Steps`
 # etc.
 
 # or to get all tables:
@@ -393,7 +438,7 @@ two_way_table(row_var = rp.contact.field.click_hs_parent_points_quick_start_coun
 #Priority 19
 #App-opens
 #Total number of app-opens for each user(cumulative)
-plhdata_org_clean$rp.contact.field.app_launch_count <- as.numeric(plhdata_org_clean$rp.contact.field.app_launch_count)
+
 two_way_table(row_var = rp.contact.field.app_launch_count, replace = "rp.contact.field.")
 user_id_print("rp.contact.field.app_launch_count")
 
@@ -402,18 +447,35 @@ user_id_print("rp.contact.field.app_launch_count")
 #Number of app opens within a workshop week for each user
 data_app_opens <- with(plhdata_org_clean, data.frame(app_user_id, Org,
                                                      rp.contact.field.app_launch_count_w_self_care, rp.contact.field.app_launch_count_w_1on1,
-                                                     rp.contact.field.app_launch_count_w_rules, rp.contact.field.app_launch_count_w_consequence))
-colnames(data_app_opens)[3:length(data_app_opens)] <- c("Self care", "One-on-one time", "Rules (w/s 7)", "Calm consequences (w/s 8)")
+                                                     rp.contact.field.app_launch_count_w_praise,rp.contact.field.app_launch_count_w_instruct,
+                                                     rp.contact.field.app_launch_count_w_stress, rp.contact.field.app_launch_count_w_money,
+                                                     rp.contact.field.app_launch_count_w_rules, rp.contact.field.app_launch_count_w_consequence,
+                                                     rp.contact.field.app_launch_count_w_solve, rp.contact.field.app_launch_count_w_safe,
+                                                     rp.contact.field.app_launch_count_w_crisis, rp.contact.field.app_launch_count_w_celebrate))
+colnames(data_app_opens)[3:length(data_app_opens)] <- c("Welcome and Self care(1)", "One-on-one time(2)", "Praise (3)", "Positive Instructions(4)",
+                                                        "Managing Stress(5)", "Family Budget(6)","Rules(7)", "Calm Consequences(8)",  
+                                                        "Problem Solving(9)", "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
+
 head(data_app_opens)
 # have it all as a data set.
 tables_app_opens <- NULL
 for (i in 3:length(data_app_opens)){
-  tables_app_opens[[(i-2)]] <- summary_PT(data = data_app_opens,
-                                          summary_var = names(data_app_opens)[i],
-                                          together = TRUE)
+  tables_app_opens[[(i-2)]]  <- two_way_table(data = data_app_opens,
+                                                                                       row_var = names(data_app_opens)[i])
 }
 names(tables_app_opens) <- colnames(data_app_opens)[3:length(data_app_opens)]
-tables_app_opens$`Self care`
+tables_app_opens$`Welcome and Self care`
+tables_app_opens$`One-on-one time`
+tables_app_opens$`Praise`
+tables_app_opens$`Positive Instructions`
+tables_app_opens$`Managing Stress`
+tables_app_opens$`Family Budget`
+tables_app_opens$`Rules`
+tables_app_opens$`Calm Consequences`
+tables_app_opens$`Problem Solving`
+tables_app_opens$`Teen Safety`
+tables_app_opens$`Crisis`
+tables_app_opens$`Celebration & Next Steps`
 
 ##Priority 21
 #App-opens
@@ -460,8 +522,10 @@ gender_table
 
 
 # Age of App Users
-age_table <- multiple_summary_PT(summary_var = rp.contact.field.user_age)
-age_table$Nontobeko
+#age_table <- multiple_summary_PT(summary_var = rp.contact.field.user_age)
+#age_table$Nontobeko
+
+plhdata_org_clean %>% group_by(Org) %>% summarise(mean_age = mean(rp.contact.field.user_age, na.rm = TRUE))
 
 #Trials-----------------
 plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")

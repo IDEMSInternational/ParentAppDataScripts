@@ -51,9 +51,9 @@ get_user_data <- function(site = plh_con, date_from, date_to = NULL, format_date
     
     if (merge_check){
       if (yesno::yesno2("Fuzzy matches are:\n",
-                 paste0(capture.output(plhdata_org_fuzzy_comp), collapse = "\n"),
-                 "\nDo you want to merge these changes in?") == TRUE){
-       return_data <- plhdata_org_fuzzy
+                        paste0(capture.output(plhdata_org_fuzzy_comp), collapse = "\n"),
+                        "\nDo you want to merge these changes in?") == TRUE){
+        return_data <- plhdata_org_fuzzy
       } else {
         return_data <- dplyr::full_join(x=plhdata, y=UIC_Tracker, by=c("app_user_id" = join_UIC))
       }
@@ -91,91 +91,12 @@ naming_conventions <- function(x, replace, replace_after) {
   x
 }
 
-# same function used in parent text
-summary_PT <- function(data = df, summary_var, denominator = NULL, denominator_level = "Yes", together = FALSE, naming_convention = FALSE, replace = "rp.contact.field.w_"){
-  
-  if (!missing(denominator)) {
-    summary_perc <- data %>%
-      dplyr::filter({{ denominator }} == denominator_level) %>%
-      dplyr::group_by(dplyr::across({{ summary_var }}), .drop = FALSE) %>%
-      dplyr::summarise("{{summary_var}}_n" := n(),
-                "{{summary_var}}_perc" := n()/nrow(.) * 100)
-    
-    if (together == TRUE){
-      colnames(summary_perc)[length(summary_perc)-1] <- "n"
-      colnames(summary_perc)[length(summary_perc)] <- "perc"
-      summary_perc <- summary_perc %>%
-        mutate("Count (%)" := str_c(`n`, ' (', round(`perc`, 2), ")")) %>%
-        dplyr::select(-c(n, perc))
-    }
-    
-    if (naming_convention == TRUE){
-      colnames(summary_perc) <- naming_conventions(colnames(summary_perc), replace = replace)
-    }
-    
-    return(summary_perc)
-  } else {
-    summary_n <- data %>%
-      group_by(across({{ summary_var }}), .drop = FALSE) %>%
-      summarise(Count = n(),
-                     perc = n()/nrow(.) * 100)
-    
-    if (together == TRUE){
-      colnames(summary_n)[length(summary_n)-1] <- "n"
-      colnames(summary_n)[length(summary_n)] <- "perc"
-      summary_n <- summary_n %>%
-        mutate("Count (%)" := str_c(`n`, ' (', round(`perc`, 2), ")")) %>%
-        dplyr::select(-c(n, perc))
-    }
-    
-    if (naming_convention == TRUE){
-      colnames(summary_n) <- naming_conventions(colnames(summary_n), replace = replace)
-    }
-    
-    return(summary_n)
-  }
+user_id_print <- function(data = plhdata_org, field, group_by = plhdata_org_clean$Org) {
+  plhdata_org_list <- plhdata_org %>%
+    select(c('app_user_id', rp.contact.field.parent_point_count_relax, Org)) %>%
+    arrange(Org)
+  return(plhdata_org_list)
 }
-
-
-multiple_summary_PT <- function(data = plhdata_org_clean, by = Org, summary_var, denominator = Org, together = TRUE, naming_convention = TRUE,
-                                replace = "rp.contact.field."){
-  attach(data, warn.conflicts = FALSE)
-  var_by_Org <- NULL
-table_output <- NULL
-  for (i in levels(by)){
-    var_by_Org[[i]] <- summary_PT(data = data, summary_var = {{ summary_var }}, denominator = {{ denominator }}, denominator_level = i,
-                                  together = together, naming_convention = naming_convention,
-                                  replace = replace)
-    #plhdata_org_clean %>% filter(Org == i) %>% select('app_user_id', "rp.contact.field.user_var")
- #     }
-  #names(var_by_Org) <- levels(Org)
-  #for (i in 1:length(gender_table)) {
-    
-    demographics_table<-var_by_Org[[i]]
-    table_output[[i]]<-gt(demographics_table) %>% tab_header(title=paste(names(demographics_table)[1]," in ",i))%>% 
-      tab_style(location=list(cells_body(columns = everything())),
-                style = list(cell_borders(
-                  sides = "left",
-                  color = "black",
-                  weight = px(2)),
-                  cell_text(weight = "bold"))) %>%
-      # We use tab_style() to change style of cells
-      # cell_borders() provides the formatting
-      # locations tells it where
-      # Add black borders to the bottom of all the column labels
-      tab_style(locations = list(cells_column_labels(columns = gt::everything())),
-                style = list(cell_borders(
-                  sides = "bottom",
-                  color = "black",
-                  weight = px(2)),
-                  cell_text(weight = "bold")))
-     
-  }
-names(table_output) <- levels(by)   
-return(table_output)
-  detach(data)
-}
-
 
 # not sure if you want this sort of function or not, and if so, what it should do. Will come back to.
 get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, show_invalid = FALSE){
@@ -197,49 +118,71 @@ get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, 
   data_filter %>% filter(is.na(rp.contact.field.first_app_open)) %>% select('app_user_id')
 }
 
-# a two-way table
-two_way_table <- function(data = plhdata_org_clean, column_var = Org, row_var, replace = "rp.contact.field.w_"){
+# same function used in parent text
+summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise, summaries = c("frequencies", "mean"),
+                                together = FALSE){
   
-  summary_n <- summary_PT(data = data,
-                            summary_var = c({{ column_var }}, {{ row_var }}),
-                            naming_convention = TRUE,
-                            replace = replace)
-    
-    # TODO: add in mmtable2 into the function. Can't do this yet because of issues
-    #summary_table <- (mmtable(summary_n, cells = Count) +
-    #         header_left_top(summary_n[1]) +
-    #         header_top_left(summary_n[2]))
-    
-    summary_n_wider <- summary_n %>% pivot_wider(id_cols = names(summary_n)[1], names_from = names(summary_n)[2], values_from = Count)
-    
-    summary_table <- gt(as_tibble(summary_n_wider)) %>%
-      tab_header(
-        title = paste("Frequencies of `", names(summary_n)[2], "` by `", names(summary_n)[1], "`.")
-      ) %>%
-      tab_style(locations = list(cells_body(columns = 1)),
-                style = list(cell_borders(
-                  sides = "right",
-                  color = "black",
-                  weight = px(2)),
-                  cell_text(weight = "bold"))) %>%
-      # We use tab_style() to change style of cells
-      # cell_borders() provides the formatting
-      # locations tells it where
-      # Add black borders to the bottom of all the column labels
-      tab_style(locations = list(cells_column_labels(columns = gt::everything())),
-                style = list(cell_borders(
-                  sides = "bottom",
-                  color = "black",
-                  weight = px(2)),
-                  cell_text(weight = "bold")))
-  
-    return(summary_table)
+  summaries <- match.arg(summaries)
+  if (summaries == "frequencies"){
+    summary_output <- data %>%
+      group_by(across(c({{ factors }}, {{ columns_to_summarise }})), .drop = FALSE) %>%
+      summarise(n = n())
+    #perc = n/nrow(.) * 100)
+  } else {
+    summary_output <- data %>%
+      group_by(across({{ factors }}), .drop = FALSE) %>%
+      #mutate(across({{ columns_to_summarise }}, ~as.numeric(.))) %>%
+      summarise(across({{ columns_to_summarise }}, ~mean(.x, na.rm = TRUE)))
+  }
+  return(summary_output)
 }
 
-user_id_print <- function(data = plhdata_org, field, group_by = plhdata_org_clean$Org) {
-  plhdata_org_list <- plhdata_org %>%
-    select(c('app_user_id', rp.contact.field.parent_point_count_relax, Org)) %>%
-    arrange(Org)
-  return(plhdata_org_list)
-}
+summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise, summaries = c("frequencies", "mean"),
+                          replace = "rp.contact.field.",
+                          display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,
+                          together = TRUE){
+  
+  summaries <- match.arg(summaries)
+  
+  return_table <- summary_calculation(data = data,
+                                      factors = c({{ factors }}),
+                                      columns_to_summarise = c({{ columns_to_summarise }}),
+                                      summaries = summaries,
+                                      together = together)
 
+  return_table_names <- naming_conventions(colnames(return_table), replace = replace)
+  if (display_table){
+    if (summaries == "frequencies"){
+      return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n)
+    } else {
+      if (naming_convention){
+        colnames(return_table) <- naming_conventions(colnames(return_table), replace = replace)
+      }
+    }
+    
+    return_table <- gt(as_tibble(return_table)) %>%
+    tab_header(
+      title = paste(return_table_names[1], "by", return_table_names[2])  # fix up. 
+    ) %>%
+    tab_style(locations = list(cells_body(columns = 1)),
+              style = list(cell_borders(
+                sides = "right",
+                color = "black",
+                weight = px(2)),
+                cell_text(weight = "bold"))) %>%
+    tab_style(locations = list(cells_column_labels(columns = gt::everything())),
+              style = list(cell_borders( 
+                sides = "bottom",
+                color = "black",
+                weight = px(2)),
+                cell_text(weight = "bold")))
+    #if (summaries == "mean"){
+    #  names(return_table$`_data`) <- naming_conventions(names(return_table$`_data`), replace = replace)
+    #}
+  } else {
+    if (naming_convention){
+      colnames(return_table) <- return_table_names
+    }
+  }
+  return(return_table)
+}

@@ -186,3 +186,18 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
   }
   return(return_table)
 }
+
+summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_convention = TRUE, replace = "rp.contact.field.") {
+  x_axis_label = naming_conventions(colnames(data%>%select({{columns_to_summarise}})), replace = replace)
+  
+  return(ggplot(data, aes(x = {{columns_to_summarise}})) +
+    geom_histogram(stat = "count") +
+    viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
+    labs(x = x_axis_label, y = "Count") +
+    theme_classic()
+  )
+}
+                         
+                         
+                         
+                         

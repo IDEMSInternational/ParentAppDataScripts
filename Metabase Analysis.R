@@ -96,7 +96,7 @@ plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.nume
 # Write clean data back -------------------------------------------------------
 
 # Analysis - tables - separate for different groups.
-summary_table(columns_to_summarise = app_version, display_table = TRUE)
+summary_table(columns_to_summarise = app_version, display_table = FALSE)
 
 
 ## Data Analysis ## --------------------------------------------------------
@@ -148,10 +148,19 @@ data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.conta
 baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.contact.field.")
 
 summary_table_baseline <- plhdata_org_clean %>%
-  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x))
+  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = TRUE))
 names(summary_table_baseline) <- baseline_names_neat
 summary_table_baseline$`Household babies`
 summary_table_baseline$`User gender`
+
+#plots - commented out ones don't work because colums are read as strings (quotes around variables in data_baseline_survey)
+# summary_plot_baseline <- plhdata_org_clean %>%
+#   map(.x = data_baseline_survey, .f = ~summary_plot(columns_to_summarise = .x))
+# names(summary_plot_baseline) <- baseline_names_neat
+# summary_plot_baseline$`User gender`
+
+summary_plot(plhdata_org_clean, rp.contact.field.user_gender)
+
 
 ###Completion status of baseline survey
 # Show the summary of baseline survey completion(Organisaton-wise)
@@ -417,3 +426,5 @@ plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")
 plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_gender")
 plhdata_org_clean %>% filter(Org == "Amathuba") %>% select('app_user_id', "rp.contact.field.user_gender")
 mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
+
+

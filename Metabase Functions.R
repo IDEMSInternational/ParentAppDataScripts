@@ -125,7 +125,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
   summaries <- match.arg(summaries)
   if (summaries == "frequencies"){
     summary_output <- data %>%
-      group_by(across(c({{ factors }}, {{ columns_to_summarise }})), .drop = FALSE) %>%
+      group_by(across(c({{ columns_to_summarise }}, {{ factors }})), .drop = FALSE) %>%
       summarise(n = n())
     #perc = n/nrow(.) * 100)
   } else {

@@ -91,11 +91,13 @@ naming_conventions <- function(x, replace, replace_after) {
   x
 }
 
+
 user_id_print <- function(data = plhdata_org, field, group_by = plhdata_org_clean$Org) {
   plhdata_org_list <- plhdata_org %>%
     select(c('app_user_id', rp.contact.field.parent_point_count_relax, Org)) %>%
     arrange(Org)
   return(plhdata_org_list)
+
 }
 
 # not sure if you want this sort of function or not, and if so, what it should do. Will come back to.

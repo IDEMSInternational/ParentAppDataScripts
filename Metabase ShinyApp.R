@@ -191,7 +191,7 @@ server <- function(input, output) {
   # df_enrolled <- df_enrolled %>% mutate(group =  enrolled, count = enrolled_n) %>% dplyr::select(c(group, count))
   
   table_parent_gender <- reactive({
-    two_way_table_baseline$`User gender`
+    summary_table_baseline$`User gender`
   }) #closes parent gender table
   
   plot_parent_gender  <- reactive({

@@ -142,7 +142,7 @@ multiple_summary_PT <- function(data = plhdata_org_clean, by = Org, summary_var,
   attach(data, warn.conflicts = FALSE)
   var_by_Org <- NULL
 table_output <- NULL
-  for (i in levels(by)){
+  for (i in levels(Org)){
     var_by_Org[[i]] <- summary_PT(data = data, summary_var = {{ summary_var }}, denominator = {{ denominator }}, denominator_level = i,
                                   together = together, naming_convention = naming_convention,
                                   replace = replace)
@@ -152,7 +152,8 @@ table_output <- NULL
   #for (i in 1:length(gender_table)) {
     
     demographics_table<-var_by_Org[[i]]
-    table_output[[i]]<-gt(demographics_table) %>% tab_header(title=paste(names(demographics_table)[1]," in ",i))%>% 
+    print(levels(Org)[i])
+    table_output[[i]]<-gt(demographics_table) %>% tab_header(title=paste(names(demographics_table)[1]," in ",levels(Org)[i]))%>% 
       tab_style(location=list(cells_body(columns = everything())),
                 style = list(cell_borders(
                   sides = "left",
@@ -171,7 +172,7 @@ table_output <- NULL
                   cell_text(weight = "bold")))
      
   }
-names(table_output) <- levels(by)   
+names(table_output) <- levels(Org)   
 return(table_output)
   detach(data)
 }

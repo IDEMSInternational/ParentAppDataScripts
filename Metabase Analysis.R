@@ -140,18 +140,23 @@ summary_table(columns_to_summarise = rp.contact.field.w_money_started)
 # Show the summary of Family Budgets(6th workshop)
 summary_table(columns_to_summarise = rp.contact.field.w_money_completed)
 
-#Baseline survey ------------------------------------------------------------------------------------
+#survey ------------------------------------------------------------------------------------
 data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
                           "rp.contact.field.user_age", "rp.contact.field.household_adults",
                           "rp.contact.field.household_teens", "rp.contact.field.household_babies",
                           "rp.contact.field.household_children")
 baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.contact.field.")
 
+#TO DO: replace "NA" with "unknown" for nicer display in Shiny
+
 summary_table_baseline <- plhdata_org_clean %>%
-  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = TRUE))
+  map(.x = data_baseline_survey, .f = ~replace_na(.x, "unknown"))  %>%
+  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = FALSE))
 names(summary_table_baseline) <- baseline_names_neat
 summary_table_baseline$`Household babies`
-summary_table_baseline$`User gender`
+summary_table_baseline$`User gender`  %>% filter(Org %in% c(("Dlalanathi"))) %>%
+                                          pivot_wider(names_from = `User gender`, values_from = N)
+
 
 #plots - commented out ones don't work because colums are read as strings (quotes around variables in data_baseline_survey)
 # summary_plot_baseline <- plhdata_org_clean %>%
@@ -160,6 +165,11 @@ summary_table_baseline$`User gender`
 # summary_plot_baseline$`User gender`
 
 summary_plot(plhdata_org_clean, rp.contact.field.user_gender)
+summary_plot(plhdata_org_clean, rp.contact.field.household_adults)
+summary_plot(plhdata_org_clean, rp.contact.field.household_teens)
+summary_plot(plhdata_org_clean, rp.contact.field.household_children)
+summary_plot(plhdata_org_clean, rp.contact.field.household_babies)
+
 
 
 ###Completion status of baseline survey

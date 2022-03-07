@@ -91,11 +91,13 @@ naming_conventions <- function(x, replace, replace_after) {
   x
 }
 
+
 user_id_print <- function(data = plhdata_org, field, group_by = plhdata_org_clean$Org) {
   plhdata_org_list <- plhdata_org %>%
     select(c('app_user_id', rp.contact.field.parent_point_count_relax, Org)) %>%
     arrange(Org)
   return(plhdata_org_list)
+
 }
 
 # not sure if you want this sort of function or not, and if so, what it should do. Will come back to.
@@ -125,7 +127,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
   summaries <- match.arg(summaries)
   if (summaries == "frequencies"){
     summary_output <- data %>%
-      group_by(across(c({{ factors }}, {{ columns_to_summarise }})), .drop = FALSE) %>%
+      group_by(across(c({{ columns_to_summarise }}, {{ factors }})), .drop = FALSE) %>%
       summarise(n = n())
     #perc = n/nrow(.) * 100)
   } else {

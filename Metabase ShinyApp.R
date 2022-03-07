@@ -56,8 +56,15 @@ ui <- dashboardPage(skin = "blue",
                   
                   fluidRow(
                     box(
-                      checkboxInput("somevalue1", "Include women", FALSE, width=5)),
-                    verbatimTextOutput("value1"),
+                      checkboxGroupInput(inputId = "Org",
+                                         label = "Organisations to show:",
+                                         choices = c("Amathuba" = "Amathuba",
+                                           "Dlalanathi" = "Dlalanathi",
+                                           "Joy" = "Joy",
+                                           "Nontobeko" = "Nontobeko"),
+                                         selected = c("Amathuba","Dlalanathi",
+                                           "Joy","Nontobeko")
+                                         )),
                     
                     box(
                       checkboxInput("somevalue2", "Include teenagers", FALSE, width=5)),
@@ -88,11 +95,11 @@ ui <- dashboardPage(skin = "blue",
                         box(width = 4,
                             collapsible = FALSE,
                             solidHeader = TRUE,
-                            title = "Parent goals",
+                            title = "Adults in household",
                             status = "primary", # primary, success, info, warning, danger
                             #background = "orange",
-                            plotlyOutput(outputId = "plot_parent_goals", height = "240"),
-                            shiny::tableOutput("table_parent_goals")
+                            plotlyOutput(outputId = "plot_household_adults", height = "240"),
+                            shiny::tableOutput("table_household_adults")
                         ) #closes box
                 ), #closes fluidRow
                 
@@ -100,31 +107,31 @@ ui <- dashboardPage(skin = "blue",
                         box(width = 4,
                             collapsible = FALSE,
                             solidHeader = TRUE,
-                            title = "Child gender",
+                            title = "Teens in household",
                             status = "danger", # primary, success, info, warning, danger
                             #background = "orange",
-                            plotlyOutput(outputId = "plot_child_gender", height = "240"),
-                            shiny::tableOutput("table_child_gender")
+                            plotlyOutput(outputId = "plot_household_teens", height = "240"),
+                            shiny::tableOutput("table_household_teens")
                         ), #closes box
                         
                         box(width = 4,
                             collapsible = FALSE,
                             solidHeader = TRUE,
-                            title = "Child age",
+                            title = "Children in household",
                             status = "danger", # primary, success, info, warning, danger
                             #background = "orange",
-                            plotlyOutput(outputId = "plot_child_age", height = "240"),
-                            shiny::tableOutput("table_child_age")
+                            plotlyOutput(outputId = "plot_household_children", height = "240"),
+                            shiny::tableOutput("table_household_children")
                         ), #closes box
                         
                         box(width = 4,
                             collapsible = FALSE,
                             solidHeader = TRUE,
-                            title = "Challenging type",
+                            title = "Babies in household",
                             status = "danger", # primary, success, info, warning, danger
                             #background = "orange",
-                            plotlyOutput(outputId = "plot_child_type", height = "240"),
-                            shiny::tableOutput("table_child_type")
+                            plotlyOutput(outputId = "plot_household_babies", height = "240"),
+                            shiny::tableOutput("table_household_babies")
                         ) #closes box
                 ) #closes fluid row
                   
@@ -158,31 +165,42 @@ ui <- dashboardPage(skin = "blue",
         # Third tab content
         tabItem(tabName = "parentpoints",
                 fluidRow(
+                  box(
+                    checkboxGroupInput(inputId = "Org",
+                                       label = "Organisations to show:",
+                                       choices = c("Amathuba" = "Amathuba",
+                                                   "Dlalanathi" = "Dlalanathi",
+                                                   "Joy" = "Joy",
+                                                   "Nontobeko" = "Nontobeko"),
+                                       selected = c("Amathuba","Dlalanathi",
+                                                    "Joy","Nontobeko")
+                    )),
+                fluidRow(
                   box(width = 6,
                       collapsible = FALSE,
                       solidHeader = TRUE,
-                      title = "Parentpoint data",
+                      title = "Parent points: Self Care",
                       status = "info", # primary, success, info, warning, danger
                       #background = "orange",
-                      plotlyOutput(outputId = "plot_consent8", height = "240"),
-                      shiny::tableOutput("consent_summary8")
+                      plotlyOutput(outputId = "plot_pp_selfcare", height = "240"),
+                      shiny::tableOutput("table_pp_selfcare")
                   ), #closes box
                   
                   box(width = 6,
                       collapsible = FALSE,
                       solidHeader = TRUE,
-                      title = "Parentpoint data",
+                      title = "Parent points: One-on-one Time",
                       status = "info", # primary, success, info, warning, danger
                       #background = "orange",
-                      plotlyOutput(outputId = "plot_consent9", height = "240"),
-                      shiny::tableOutput("consent_summary9")
+                      plotlyOutput(outputId = "plot_pp_1on1", height = "240"),
+                      shiny::tableOutput("table_pp_1on1")
                   ) #closes box
                 ) #closes fluid row
         ) # closes third tabItem
         
       ) # closes tabItems
   ) # closes dashboardBody
-  )# closes dashboardPage
+  ))# closes dashboardPage
   
 # 4. Define Server -----------------------------------------------------------------------------
 server <- function(input, output) {
@@ -190,32 +208,44 @@ server <- function(input, output) {
   # df_enrolled <- summary_PT(df1,  enrolled,  enrolled, "Yes")
   # df_enrolled <- df_enrolled %>% mutate(group =  enrolled, count = enrolled_n) %>% dplyr::select(c(group, count))
   
+
+  #SUMMARY STATS HEADER displays (same for all tabs)
+  
+  output$myvaluebox1 <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox(nrow(plhdata_org_clean), subtitle = "Enrolled", icon = icon("user"),
+                             color = "aqua")})
+  output$myvaluebox2 <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox( nrow(testdata %>% filter(consent == "Yes")), subtitle = "Consented", icon = icon("user"),
+                              color = "yellow")})
+  
+  
+  #1st tab DEMOGRAPHICS
+  
+  #Parent gender plot and table
   table_parent_gender <- reactive({
-    summary_table_baseline$`User gender`
-  }) #closes parent gender table
-  
+    summary_table_baseline$`User gender` %>% filter(Org %in% c((input$Org)))%>%
+                                            pivot_wider(names_from = `User gender`, values_from = N) }) 
   plot_parent_gender  <- reactive({
-    ggplot(testdata, aes(x = parent_gender)) +
-      geom_histogram(stat = "count") +
-      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-      labs(x = "parent gender", y = "Count") +
-      theme_classic()
-  }) #closes parent gender plot
+    summary_plot(plhdata_org_clean, rp.contact.field.user_gender) }) 
   
+  output$table_parent_gender <- shiny::renderTable({(table_parent_gender())}, striped = TRUE)
+  output$plot_parent_gender <- renderPlotly({plot_parent_gender()})
+  
+  
+  #Parent age plot and table
   table_parent_age <- reactive({
-    testdata %>%
-       summarise(`mean age`=(mean(parent_age, na.rm = TRUE)))
-  }) #closes parent age table
+    plhdata_org_clean %>%
+    summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean")}) 
+    ##previously, but with new contact field summarise(`mean age`=(mean(rp.contact.field.user_gender, na.rm = TRUE)))
+    
+  plot_parent_age  <- reactive({summary_plot(plhdata_org_clean, rp.contact.field.user_age) })
   
-  plot_parent_age  <- reactive({
-    ggplot(testdata, aes(x = parent_age)) +
-      geom_histogram(stat = "count") +
-      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-      labs(x = "parent age", y = "Count") +
-      theme_classic()
-  }) #closes parent age plot
   
-  table_parent_goals <- reactive({
+  output$table_parent_age <- shiny::renderTable({(table_parent_age())}, striped = TRUE)
+  output$plot_parent_age <- renderPlotly({plot_parent_age()})
+  
+  #Adults in household plot and table
+  table_household_adults <- reactive({
     testdata %>% 
       group_by(parenting_goals) %>% summarise(n())
   }) #closes parent goals table
@@ -228,6 +258,9 @@ server <- function(input, output) {
       theme_classic() +
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
   }) #closes parent goals plot
+  
+  output$table_parent_goals <- shiny::renderTable({(table_parent_goals())}, striped = TRUE)
+  output$plot_parent_goals <- renderPlotly({plot_parent_goals()})
   
   table_child_gender <- reactive({
     testdata %>% 
@@ -269,33 +302,9 @@ server <- function(input, output) {
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
   }) #closes child behaviour plot
   
-  #SUMMARY stats first tab
-  
-  output$myvaluebox1 <- shinydashboard::renderValueBox({
-    shinydashboard::valueBox(nrow(testdata), subtitle = "Enrolled", icon = icon("user"),
-                             color = "aqua")
-  })
-  
-  output$myvaluebox2 <- shinydashboard::renderValueBox({
-    shinydashboard::valueBox( nrow(testdata %>% filter(consent == "Yes")), subtitle = "Consented", icon = icon("user"),
-                             color = "yellow")
-  })
   
   
-  #CHECKBOXES first tab
-  
-  output$value <- renderText({ input$somevalue1 })
-  
-  #PARENT outputs first tab
-  
-  output$table_parent_gender <- shiny::renderTable({(table_parent_gender())}, striped = TRUE)
-  output$plot_parent_gender <- renderPlotly({plot_parent_gender()})
-  
-  output$table_parent_age <- shiny::renderTable({(table_parent_age())}, striped = TRUE)
-  output$plot_parent_age <- renderPlotly({plot_parent_age()})
-  
-  output$table_parent_goals <- shiny::renderTable({(table_parent_goals())}, striped = TRUE)
-  output$plot_parent_goals <- renderPlotly({plot_parent_goals()})
+ 
   
   #CHILD outputs first tab
 

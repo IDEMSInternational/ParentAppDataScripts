@@ -68,6 +68,7 @@ plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_cle
 plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_clean$rp.contact.field.household_babies)
 plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
 plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
+
 plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.numeric(plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care)
 
 plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
@@ -144,7 +145,7 @@ summary_table(columns_to_summarise = rp.contact.field.w_money_completed)
 data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
                           "rp.contact.field.user_age", "rp.contact.field.household_adults",
                           "rp.contact.field.household_teens", "rp.contact.field.household_babies",
-                          "rp.contact.field.household_children")
+                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
 baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.contact.field.")
 
 #TO DO: replace "NA" with "unknown" for nicer display in Shiny
@@ -154,6 +155,10 @@ summary_table_baseline <- plhdata_org_clean %>%
   map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = FALSE))
 names(summary_table_baseline) <- baseline_names_neat
 summary_table_baseline$`Household babies`
+summary_table_baseline$` app language`
+summary_table_baseline$`App version`
+summary_table_baseline$`Do workshops together`
+
 summary_table_baseline$`User gender`  %>% filter(Org %in% c(("Dlalanathi"))) %>%
                                           pivot_wider(names_from = `User gender`, values_from = N)
 
@@ -197,11 +202,12 @@ user_id_print("rp.contact.field._app_language")
 # TODO: factor levels? that should be done in cleaning step.
 
 # HABITS ------------------------------------------------------------------------------------
-data_habit_parent_points <- c("rp.contact.field.parent_point_count_relax", "rp.contact.field.parent_point_count_treat_yourself",
+data_habit_parent_points_all <- c("rp.contact.field.parent_point_count_relax", "rp.contact.field.parent_point_count_treat_yourself",
                                                                 "rp.contact.field.parent_point_count_praise_yourself", "rp.contact.field.parent_point_count_spend_time",
                                                                 "rp.contact.field.parent_point_count_praise_teen", "rp.contact.field.parent_point_count_instruct_positively", "rp.contact.field.parent_point_count_breathe",
-                                                                "rp.contact.field.parent_point_count_money", "rp.contact.field.parent_point_count_consequence", "rp.contact.field.parent_point_count_safe",
-                                                                "rp.contact.field.parent_point_count_relax_w_self_care", "rp.contact.field.parent_point_count_treat_yourself_w_self_care", "rp.contact.field.parent_point_count_praise_yourself_w_self_care",
+                                                                "rp.contact.field.parent_point_count_money", "rp.contact.field.parent_point_count_consequence", "rp.contact.field.parent_point_count_safe")
+
+data_habit_parent_points <- c("rp.contact.field.parent_point_count_relax_w_self_care", "rp.contact.field.parent_point_count_treat_yourself_w_self_care", "rp.contact.field.parent_point_count_praise_yourself_w_self_care",
                                                                 "rp.contact.field.parent_point_count_spend_time_w_self_care", "rp.contact.field.parent_point_count_praise_teen_w_self_care", 
                                                                 "rp.contact.field.parent_point_count_breathe_w_self_care", "rp.contact.field.parent_point_count_money_w_self_care", 
                                                                 "rp.contact.field.parent_point_count_consequence_w_self_care", "rp.contact.field.parent_point_count_safe_w_self_care", 
@@ -210,10 +216,11 @@ data_habit_parent_points <- c("rp.contact.field.parent_point_count_relax", "rp.c
                                                                 "rp.contact.field.parent_point_count_praise_teen_w_1on1", "rp.contact.field.parent_point_count_breathe_w_1on1", 
                                                                 "rp.contact.field.parent_point_count_money_w_1on1", "rp.contact.field.parent_point_count_consequence_w_1on1", 
                                                                 "rp.contact.field.parent_point_count_safe_w_1on1")
-data_habit_parent_points_neat <- naming_conventions(data_habit_parent_points, replace = "rp.contact.field.parent_point_count_")
+
+data_habit_parent_points_neat <- naming_conventions(data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_")
 
 summary_table_habits <- plhdata_org_clean %>%
-  map(.x = data_habit_parent_points, .f = ~summary_table(columns_to_summarise = .x))
+  map(.x = data_habit_parent_points_all, .f = ~summary_table(columns_to_summarise = .x))
 names(summary_table_habits) <- data_habit_parent_points_neat
 summary_table_habits$`Relax`
 summary_table_habits$`Treat yourself`
@@ -227,6 +234,16 @@ summary_table_habits$`Money`
 summary_table_habits$`Consequence`
 summary_table_habits$`Safe`
 
+#mean average number of parent points given per org
+
+summary_mean_habits <- plhdata_org_clean %>%
+  group_by(Org)  %>%
+  summarise(across(data_habit_parent_points_all, mean, na.rm = TRUE))
+
+colnames(summary_mean_habits) <- naming_conventions(colnames(summary_mean_habits), "rp.contact.field.parent_point_count_")
+
+summary_mean_habits
+
 
 # Completion Level ----------------------------------------------------------------------------
 data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
@@ -236,7 +253,7 @@ data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.
                            "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
 completion_vars <- c("Self Care", "One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
 summary_table_completion_level <- plhdata_org_clean %>%
-  map(.x = data_completion_level, .f = ~summary_table(columns_to_summarise = .x))
+  map(.x = data_completion_level, .f = ~summary_table(columns_to_summarise = .x, display = FALSE))
 names(summary_table_completion_level) <- completion_vars
 
 # then to access a table:
@@ -256,6 +273,15 @@ summary_table_completion_level$`Celebration & Next Steps`
 
 # or to get all tables:
 summary_table_completion_level
+
+#mean average completion level per org
+summary_mean_completion_level <- plhdata_org_clean %>%
+  group_by(Org)  %>%
+  summarise(across(data_completion_level, mean, na.rm = TRUE))
+
+colnames(summary_mean_completion_level) <- naming_conventions(colnames(summary_mean_completion_level), "rp.contact.field.w_", "_completion_level")
+
+summary_mean_completion_level
 
 # Survey - past week  ----------------------------------------------------------------------------
 data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",

@@ -55,22 +55,49 @@ ui <- dashboardPage(skin = "blue",
                     ), #closes fluid row
                   
                   fluidRow(
-                    box(
-                      checkboxGroupInput(inputId = "Org",
+                    box(width = 12,
+                      checkboxGroupInput(inputId = "OrgDem",
                                          label = "Organisations to show:",
                                          choices = c("Amathuba" = "Amathuba",
                                            "Dlalanathi" = "Dlalanathi",
                                            "Joy" = "Joy",
                                            "Nontobeko" = "Nontobeko"),
                                          selected = c("Amathuba","Dlalanathi",
-                                           "Joy","Nontobeko")
-                                         )),
-                    
-                    box(
-                      checkboxInput("somevalue2", "Include teenagers", FALSE, width=5)),
-                    verbatimTextOutput("value2")
-                  ), #closes fluidRow
+                                                      "Joy","Nontobeko")
+                                         ))), #closes fluidRow
 
+                  fluidRow(
+                    box(width = 4,
+                        collapsible = FALSE,
+                        solidHeader = TRUE,
+                        title = "Langauge",
+                        status = "primary", # primary, success, info, warning, danger
+                        #background = "orange",
+                        plotlyOutput(outputId = "plot_language", height = "240"), #generates graph
+                        shiny::tableOutput("table_language")  #generates table
+                    ), #closes box
+                    
+                    box(width = 4,
+                        collapsible = FALSE,
+                        solidHeader = TRUE,
+                        title = "Workshop format",
+                        status = "primary", # primary, success, info, warning, danger
+                        #background = "orange",
+                        plotlyOutput(outputId = "plot_ws_format", height = "240"),
+                        shiny::tableOutput("table_ws_format")
+                    ), #closes box
+                    
+                    box(width = 4,
+                        collapsible = FALSE,
+                        solidHeader = TRUE,
+                        title = "App version",
+                        status = "primary", # primary, success, info, warning, danger
+                        #background = "orange",
+                        plotlyOutput(outputId = "plot_app_version", height = "240"),
+                        shiny::tableOutput("table_app_version")
+                    ) #closes box
+                  ), #closes fluidRow
+                  
                 fluidRow(
                         box(width = 4,
                             collapsible = FALSE,
@@ -165,8 +192,8 @@ ui <- dashboardPage(skin = "blue",
         # Third tab content
         tabItem(tabName = "parentpoints",
                 fluidRow(
-                  box(
-                    checkboxGroupInput(inputId = "Org",
+                  box(width = 12,
+                    checkboxGroupInput(inputId = "OrgPP",
                                        label = "Organisations to show:",
                                        choices = c("Amathuba" = "Amathuba",
                                                    "Dlalanathi" = "Dlalanathi",
@@ -175,7 +202,20 @@ ui <- dashboardPage(skin = "blue",
                                        selected = c("Amathuba","Dlalanathi",
                                                     "Joy","Nontobeko")
                     )),
-                fluidRow(
+                
+                  fluidRow(
+                    box(width = 12,
+                        collapsible = FALSE,
+                        solidHeader = TRUE,
+                        title = "Average parent points",
+                        status = "info", # primary, success, info, warning, danger
+                        #background = "orange",
+                        plotlyOutput(outputId = "plot_pp_totals", height = "240"),
+                        shiny::tableOutput("table_pp_totals")
+                    )#closes box
+                  ), #closes fluid row
+                  
+                  fluidRow(
                   box(width = 6,
                       collapsible = FALSE,
                       solidHeader = TRUE,
@@ -223,8 +263,9 @@ server <- function(input, output) {
   
   #Parent gender plot and table
   table_parent_gender <- reactive({
-    summary_table_baseline$`User gender` %>% filter(Org %in% c((input$Org)))%>%
-                                            pivot_wider(names_from = `User gender`, values_from = N) }) 
+    summary_table_baseline$`User gender` %>% filter(Org %in% c((input$OrgDem))) %>%
+                                            pivot_wider(names_from = `User gender`, values_from = N)
+    }) 
   plot_parent_gender  <- reactive({
     summary_plot(plhdata_org_clean, rp.contact.field.user_gender) }) 
   
@@ -316,6 +357,22 @@ server <- function(input, output) {
   
   output$table_child_type <- shiny::renderTable({(table_child_type())}, striped = TRUE)
   output$plot_child_type <- renderPlotly({plot_child_type()})
+  
+  
+  #3rd Tab Parent Points
+  
+  #Table of averages
+
+  table_pp_totals <- reactive({
+    summary_mean_habits %>% filter(Org %in% c((input$OrgPP))) 
+  }) 
+  plot_pp_totals  <- reactive({
+     }) 
+  
+  output$table_pp_totals <- shiny::renderTable({(table_pp_totals())}, striped = TRUE)
+  output$plot_pp_totals <- renderPlotly({})
+  
+  
 } #close server
 
 

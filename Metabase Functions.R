@@ -91,13 +91,11 @@ naming_conventions <- function(x, replace, replace_after) {
   x
 }
 
-
 user_id_print <- function(data = plhdata_org, field, group_by = plhdata_org_clean$Org) {
   plhdata_org_list <- plhdata_org %>%
     select(c('app_user_id', rp.contact.field.parent_point_count_relax, Org)) %>%
     arrange(Org)
   return(plhdata_org_list)
-
 }
 
 # not sure if you want this sort of function or not, and if so, what it should do. Will come back to.
@@ -122,25 +120,67 @@ get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, 
 
 # same function used in parent text
 summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise, summaries = c("frequencies", "mean"),
-                                together = FALSE){
+                                together = FALSE, include_margins = FALSE){
   
   summaries <- match.arg(summaries)
   if (summaries == "frequencies"){
     summary_output <- data %>%
       group_by(across(c({{ columns_to_summarise }}, {{ factors }})), .drop = FALSE) %>%
       summarise(n = n())
-    #perc = n/nrow(.) * 100)
+    
+    if (include_margins){
+      cts_margin <- data %>%
+        group_by(across(c({{ columns_to_summarise }})), .drop = FALSE) %>%
+        summarise(n = n())
+      
+      ftr_margin <- data %>%
+        group_by(across(c({{ factors }})), .drop = FALSE) %>%
+        summarise(n = n())
+      
+      corner_margin <- data %>%
+        summarise(n = n())
+      
+      summary_output <- bind_rows(summary_output, cts_margin, ftr_margin, corner_margin, .id = "id")
+      
+      summary_output <- summary_output %>%
+        ungroup() %>%
+        mutate(across({{ factors }}, as.character)) %>%
+        mutate(across({{ factors }}, ~ifelse(id %in% c(2, 4), "Total", .x))) %>%
+        mutate(across({{ columns_to_summarise }}, ~ifelse(id %in% c(3, 4), "Total", .x)))
+      
+      summary_output <- summary_output %>%
+        mutate(across({{ factors }}, ~fct_relevel(.x, "Total", after = Inf))) %>%
+        mutate(across({{ columns_to_summarise }}, ~fct_relevel(.x, "Total", after = Inf))) %>%
+        select(-c("id"))
+    }
   } else {
     summary_output <- data %>%
       group_by(across({{ factors }}), .drop = FALSE) %>%
       #mutate(across({{ columns_to_summarise }}, ~as.numeric(.))) %>%
       summarise(across({{ columns_to_summarise }}, ~mean(.x, na.rm = TRUE)))
+    
+    if (include_margins){
+      corner_margin <- data %>%
+        summarise(across(c({{ columns_to_summarise }}), ~mean(.x, na.rm  = TRUE)))
+      
+      summary_output <- bind_rows(summary_output, corner_margin, .id = "id")
+      
+      summary_output <- summary_output %>%
+        ungroup() %>%
+        mutate(across({{ factors }}, as.character)) %>%
+        mutate(across({{ factors }}, ~ifelse(id == 2, "Total", .x)))
+      
+      summary_output <- summary_output %>%
+        mutate(across({{ factors }}, ~fct_relevel(.x, "Total", after = Inf))) %>%
+        select(-c("id"))
+    }
+    
   }
   return(summary_output)
 }
 
 summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise, summaries = c("frequencies", "mean"),
-                          replace = "rp.contact.field.",
+                          replace = "rp.contact.field.", include_margins = FALSE,
                           display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,
                           together = TRUE){
   
@@ -149,6 +189,7 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
   return_table <- summary_calculation(data = data,
                                       factors = c({{ factors }}),
                                       columns_to_summarise = c({{ columns_to_summarise }}),
+                                      include_margins = include_margins,
                                       summaries = summaries,
                                       together = together)
 
@@ -189,17 +230,13 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
   return(return_table)
 }
 
-summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_convention = TRUE, replace = "rp.contact.field.") {
-  x_axis_label = naming_conventions(colnames(data%>%select({{columns_to_summarise}})), replace = replace)
-  
-  return(ggplot(data, aes(x = {{columns_to_summarise}})) +
-    geom_histogram(stat = "count") +
-    viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-    labs(x = x_axis_label, y = "Count") +
-    theme_classic()
-  )
+summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_convention = TRUE, replace = "rp.contact.field.") {	
+  x_axis_label = naming_conventions(colnames(data%>%select({{columns_to_summarise}})), replace = replace)	
+
+  return(ggplot(data, aes(x = {{columns_to_summarise}})) +	
+    geom_histogram(stat = "count") +	
+    viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +	
+    labs(x = x_axis_label, y = "Count") +	
+    theme_classic()	
+  )	
 }
-                         
-                         
-                         
-                         

@@ -220,7 +220,7 @@ data_habit_parent_points <- c("rp.contact.field.parent_point_count_relax_w_self_
 data_habit_parent_points_neat <- naming_conventions(data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_")
 
 summary_table_habits <- plhdata_org_clean %>%
-  map(.x = data_habit_parent_points_all, .f = ~summary_table(columns_to_summarise = .x))
+  map(.x = data_habit_parent_points_all, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE)
 names(summary_table_habits) <- data_habit_parent_points_neat
 summary_table_habits$`Relax`
 summary_table_habits$`Treat yourself`

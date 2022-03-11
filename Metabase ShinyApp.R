@@ -28,8 +28,11 @@ ui <- dashboardPage(skin = "blue",
  
    dashboardBody(  # Boxes need to be put in a row (or column)
         fluidRow(
-          shinydashboard::valueBoxOutput("myvaluebox1", width=2), #boxes along top for ParentText
+          shinydashboard::valueBoxOutput("myvaluebox1", width=2), 
           shinydashboard::valueBoxOutput("myvaluebox2", width=2),
+          shinydashboard::valueBoxOutput("myvaluebox3", width=2),
+          shinydashboard::valueBoxOutput("myvaluebox4", width=2),
+          shinydashboard::valueBoxOutput("myvaluebox5", width=2)
         ), #closes fluidRow
         
           
@@ -42,14 +45,14 @@ ui <- dashboardPage(skin = "blue",
                            # splitLayout gets two boxes side by side.
                            # in this case, it is just the header (h2), and an icon
                            # we want 80% of the width to be the header (h2) and 20% the icon (hence cellWidths = ...)
-                           box(splitLayout(h2("TEST with Malasian data"), icon("users", "fa-6x"),
+                           box(splitLayout(h2("User Overivew and Demographics"), icon("users", "fa-6x"),
                                            cellArgs = list(style = "vertical-align: top"),
                                            cellWidths = c("80%", "20%")),
                                width = 15,
                                title = NULL,
                                collapsible = FALSE,
                                solidHeader = TRUE,
-                               background = "green",
+                               background = "black",
                                height = "95px")
                            ) #closes box
                     ), #closes fluid row
@@ -70,7 +73,7 @@ ui <- dashboardPage(skin = "blue",
                     box(width = 4,
                         collapsible = FALSE,
                         solidHeader = TRUE,
-                        title = "Langauge",
+                        title = "Language",
                         status = "primary", # primary, success, info, warning, danger
                         #background = "orange",
                         plotlyOutput(outputId = "plot_language", height = "240"), #generates graph
@@ -166,6 +169,48 @@ ui <- dashboardPage(skin = "blue",
         
         # Second tab content
         tabItem(tabName = "workshops",
+                
+                fluidRow(
+                  column(12, align = "centre",
+                         # splitLayout gets two boxes side by side.
+                         # in this case, it is just the header (h2), and an icon
+                         # we want 80% of the width to be the header (h2) and 20% the icon (hence cellWidths = ...)
+                         box(splitLayout(h2("Workshop engagement"), icon("lightbulb", "fa-6x"),
+                                         cellArgs = list(style = "vertical-align: top"),
+                                         cellWidths = c("80%", "20%")),
+                             width = 15,
+                             title = NULL,
+                             collapsible = FALSE,
+                             solidHeader = TRUE,
+                             background = "black",
+                             height = "95px")
+                  ) #closes box
+                ), #closes fluid row
+                
+                fluidRow(
+                  box(width = 12,
+                      checkboxGroupInput(inputId = "OrgWS",
+                                         label = "Organisations to show:",
+                                         choices = c("Amathuba" = "Amathuba",
+                                                     "Dlalanathi" = "Dlalanathi",
+                                                     "Joy" = "Joy",
+                                                     "Nontobeko" = "Nontobeko"),
+                                         selected = c("Amathuba","Dlalanathi",
+                                                      "Joy","Nontobeko")
+                      ))), #closes fluidRow
+                
+                fluidRow(
+                  box(width = 12,
+                      collapsible = FALSE,
+                      solidHeader = TRUE,
+                      title = "Average workshop completion",
+                      status = "info", # primary, success, info, warning, danger
+                      #background = "orange",
+                      plotlyOutput(outputId = "plot_ws_totals", height = "240"),
+                      shiny::tableOutput("table_ws_totals")
+                  )#closes box
+                ), #closes fluid row
+                
                 fluidRow(
                   box(width = 6,
                       collapsible = FALSE,
@@ -191,6 +236,24 @@ ui <- dashboardPage(skin = "blue",
         
         # Third tab content
         tabItem(tabName = "parentpoints",
+                
+                fluidRow(
+                  column(12, align = "centre",
+                         # splitLayout gets two boxes side by side.
+                         # in this case, it is just the header (h2), and an icon
+                         # we want 80% of the width to be the header (h2) and 20% the icon (hence cellWidths = ...)
+                         box(splitLayout(h2("Parent points"), icon("star", "fa-6x"),
+                                         cellArgs = list(style = "vertical-align: top"),
+                                         cellWidths = c("80%", "20%")),
+                             width = 15,
+                             title = NULL,
+                             collapsible = FALSE,
+                             solidHeader = TRUE,
+                             background = "black",
+                             height = "95px")
+                  ) #closes box
+                ), #closes fluid row
+                
                 fluidRow(
                   box(width = 12,
                     checkboxGroupInput(inputId = "OrgPP",
@@ -255,11 +318,54 @@ server <- function(input, output) {
     shinydashboard::valueBox(nrow(plhdata_org_clean), subtitle = "Enrolled", icon = icon("user"),
                              color = "aqua")})
   output$myvaluebox2 <- shinydashboard::renderValueBox({
-    shinydashboard::valueBox( nrow(testdata %>% filter(consent == "Yes")), subtitle = "Consented", icon = icon("user"),
+    shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Amathuba")), subtitle = "Amathuba", icon = icon("user"),
                               color = "yellow")})
+  output$myvaluebox3 <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Dlalanathi")), subtitle = "Dlalanathi", icon = icon("user"),
+                              color = "red")})
+  output$myvaluebox4 <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Joy")), subtitle = "Joy", icon = icon("user"),
+                              color = "purple")})
+  output$myvaluebox5 <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Nontobeko")), subtitle = "Nontobeko", icon = icon("user"),
+                              color = "teal")})
   
   
-  #1st tab DEMOGRAPHICS
+  #First tab DEMOGRAPHICS
+  
+  #Languages plot and table
+  table_language <- reactive({
+    summary_table_baseline$` app language` %>% filter(Org %in% c((input$OrgDem))) %>%
+      pivot_wider(names_from = `User gender`, values_from = N)
+  }) 
+  plot_language  <- reactive({
+    summary_plot(plhdata_org_clean, rp.contact.field._app_language) }) 
+  
+  output$table_language <- shiny::renderTable({(table_language())}, striped = TRUE)
+  output$plot_language <- renderPlotly({plot_language()})
+  
+  #Workshop format plot and table
+  table_language <- reactive({
+    summary_table_baseline$`Do workshops together` %>% filter(Org %in% c((input$OrgDem))) %>%
+      pivot_wider(names_from = `Do workshops together`, values_from = N)
+  }) 
+  plot_language  <- reactive({
+    summary_plot(plhdata_org_clean, rp.contact.field.do_workshops_together) }) 
+  
+  output$table_ws_format <- shiny::renderTable({(table_ws_format())}, striped = TRUE)
+  output$plot_ws_format <- renderPlotly({plot_ws_format()})
+  
+  #App version
+  table_language <- reactive({
+    summary_table_baseline$`App version` %>% filter(Org %in% c((input$OrgDem))) %>%
+      pivot_wider(names_from = `App version`, values_from = N)
+  }) 
+  plot_language  <- reactive({
+    summary_plot(plhdata_org_clean, app_version) }) 
+  
+  output$table_app_version <- shiny::renderTable({(table_app_version())}, striped = TRUE)
+  output$plot_app_version <- renderPlotly({plot_app_version()})
+  
   
   #Parent gender plot and table
   table_parent_gender <- reactive({
@@ -281,88 +387,57 @@ server <- function(input, output) {
     
   plot_parent_age  <- reactive({summary_plot(plhdata_org_clean, rp.contact.field.user_age) })
   
-  
   output$table_parent_age <- shiny::renderTable({(table_parent_age())}, striped = TRUE)
   output$plot_parent_age <- renderPlotly({plot_parent_age()})
   
   #Adults in household plot and table
   table_household_adults <- reactive({
-    testdata %>% 
-      group_by(parenting_goals) %>% summarise(n())
-  }) #closes parent goals table
+    plhdata_org_clean %>%
+      summary_table(columns_to_summarise = rp.contact.field.household_adults, summaries = "mean")}) 
   
-  plot_parent_goals  <- reactive({
-    ggplot(testdata, aes(x = parenting_goals)) +
-      geom_histogram(stat = "count") +
-      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-      labs(x = "parent goal", y = "Count") +
-      theme_classic() +
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-  }) #closes parent goals plot
+  plot_household_adults  <- reactive({summary_plot(plhdata_org_clean, rp.contact.field.household_adults) })
   
-  output$table_parent_goals <- shiny::renderTable({(table_parent_goals())}, striped = TRUE)
-  output$plot_parent_goals <- renderPlotly({plot_parent_goals()})
-  
-  table_child_gender <- reactive({
-    testdata %>% 
-      group_by(child_gender) %>% summarise(n())
-  }) #closes child gender table
-  
-  plot_child_gender  <- reactive({
-    ggplot(testdata, aes(x = child_gender)) +
-      geom_histogram(stat = "count") +
-      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-      labs(x = "child gender", y = "Count") +
-      theme_classic()
-  }) #closes parent goals plot
-   
-  table_child_age <- reactive({
-    testdata %>% 
-      group_by(child_age_group) %>% summarise(n())
-  }) #closes child age table
-  
-  plot_child_age  <- reactive({
-    ggplot(testdata, aes(x = child_age_group)) +
-      geom_histogram(stat = "count") +
-      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-      labs(x = "child age group", y = "Count") +
-      theme_classic()
-  }) #closes child age plot
-  
-  table_child_type <- reactive({
-    testdata %>% 
-      group_by(challenging_type) %>% summarise(n())
-  }) #closes child behaviour table
-  
-  plot_child_type  <- reactive({
-    ggplot(testdata, aes(x = challenging_type)) +
-      geom_histogram(stat = "count") +
-      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-      labs(x = "child behaviour", y = "Count") +
-      theme_classic() +
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-  }) #closes child behaviour plot
-  
-  
-  
- 
-  
-  #CHILD outputs first tab
+  output$ table_household_adults <- shiny::renderTable({( table_household_adults())}, striped = TRUE)
+  output$plot_parent_age <- renderPlotly({plot_parent_age()})
 
-  output$table_child_gender <- shiny::renderTable({(table_child_gender())}, striped = TRUE)
-  output$plot_child_gender <- renderPlotly({plot_child_gender()})
-  
-  output$table_child_age <- shiny::renderTable({(table_child_age())}, striped = TRUE)
-  output$plot_child_age <- renderPlotly({plot_child_age()})
-  
-  output$table_child_type <- shiny::renderTable({(table_child_type())}, striped = TRUE)
-  output$plot_child_type <- renderPlotly({plot_child_type()})
+  plot_household_adults
   
   
-  #3rd Tab Parent Points
+  ### Former format with testdata
+  # table_child_type <- reactive({
+  #   testdata %>% 
+  #     group_by(challenging_type) %>% summarise(n())
+  # }) #closes child behaviour table
+  # 
+  # plot_child_type  <- reactive({
+  #   ggplot(testdata, aes(x = challenging_type)) +
+  #     geom_histogram(stat = "count") +
+  #     viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
+  #     labs(x = "child behaviour", y = "Count") +
+  #     theme_classic() +
+  #     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  # }) #closes child behaviour plot
+  # 
+  # output$table_child_type <- shiny::renderTable({(table_child_type())}, striped = TRUE)
+  # output$plot_child_type <- renderPlotly({plot_child_type()})
+  
+  
+  #Second Tab Workshop Data
   
   #Table of averages
+  table_ws_totals <- reactive({
+    summary_mean_completion_level %>% filter(Org %in% c((input$OrgWS))) 
+  }) 
+  plot_pp_totals  <- reactive({
+  }) 
+  
+  output$table_ws_totals <- shiny::renderTable({(table_ws_totals())}, striped = TRUE)
+  output$plot_ws_totals <- renderPlotly({})
+  
 
+  #Third Tab Parent Points
+  
+  #Table of averages
   table_pp_totals <- reactive({
     summary_mean_habits %>% filter(Org %in% c((input$OrgPP))) 
   }) 

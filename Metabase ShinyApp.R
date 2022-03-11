@@ -45,7 +45,7 @@ ui <- dashboardPage(skin = "blue",
                            # splitLayout gets two boxes side by side.
                            # in this case, it is just the header (h2), and an icon
                            # we want 80% of the width to be the header (h2) and 20% the icon (hence cellWidths = ...)
-                           box(splitLayout(h2("User Overivew and Demographics"), icon("users", "fa-6x"),
+                           box(splitLayout(h2("User Overview and Demographics"), icon("users", "fa-6x"),
                                            cellArgs = list(style = "vertical-align: top"),
                                            cellWidths = c("80%", "20%")),
                                width = 15,
@@ -345,22 +345,22 @@ server <- function(input, output) {
   output$plot_language <- renderPlotly({plot_language()})
   
   #Workshop format plot and table
-  table_language <- reactive({
+  table_ws_format <- reactive({
     summary_table_baseline$`Do workshops together` %>% filter(Org %in% c((input$OrgDem))) %>%
       pivot_wider(names_from = `Do workshops together`, values_from = N)
   }) 
-  plot_language  <- reactive({
+  plot_ws_format  <- reactive({
     summary_plot(plhdata_org_clean, rp.contact.field.do_workshops_together) }) 
   
   output$table_ws_format <- shiny::renderTable({(table_ws_format())}, striped = TRUE)
   output$plot_ws_format <- renderPlotly({plot_ws_format()})
   
   #App version
-  table_language <- reactive({
+  table_app_version <- reactive({
     summary_table_baseline$`App version` %>% filter(Org %in% c((input$OrgDem))) %>%
       pivot_wider(names_from = `App version`, values_from = N)
   }) 
-  plot_language  <- reactive({
+  plot_app_version  <- reactive({
     summary_plot(plhdata_org_clean, app_version) }) 
   
   output$table_app_version <- shiny::renderTable({(table_app_version())}, striped = TRUE)

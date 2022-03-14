@@ -29,10 +29,10 @@ plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full,
                                            `Joy.Miss` = "Joy", `Joy.c9097349f34b364c` ="Joy", `Joy.null` ="Joy",
                                            `Dlalanathi.Miss` = "Dlalanathi",  `Dlalanathi.null` = "Dlalanathi", `Miss.dlalanathiThandeka` = "Dlalanathi",  `Dlalanathi.dlanathiThandeka` ="Dlalanathi",
                                            `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", 
-                                           `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba"))
+                                           `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba", `Miss.dlalanathi`="Dlalanathi" ))
 
-# so do the Miss. to Other first:
-#plhdata_org <- plhdata_org %>%
+# so do the Miss. to Other first: [no longer commented out 14 March '22 by Margherita]
+# plhdata_org <- plhdata_org %>%
 #  mutate(Org = ifelse(Organisation == "Miss", "Other",
 #                      ifelse(Organisation == "Dlalanathi", "Dlalanathi",
 #                             ifelse(rp.contact.field.organisation_code == "dlalanathiThandeka", "Dlalanathi",
@@ -152,7 +152,7 @@ baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.co
 
 summary_table_baseline <- plhdata_org_clean %>%
   map(.x = data_baseline_survey, .f = ~replace_na(.x, "unknown"))  %>%
-  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = FALSE))
+  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
 names(summary_table_baseline) <- baseline_names_neat
 summary_table_baseline$`Household babies`
 summary_table_baseline$` app language`
@@ -207,32 +207,281 @@ data_habit_parent_points_all <- c("rp.contact.field.parent_point_count_relax", "
                                                                 "rp.contact.field.parent_point_count_praise_teen", "rp.contact.field.parent_point_count_instruct_positively", "rp.contact.field.parent_point_count_breathe",
                                                                 "rp.contact.field.parent_point_count_money", "rp.contact.field.parent_point_count_consequence", "rp.contact.field.parent_point_count_safe")
 
-data_habit_parent_points <- c("rp.contact.field.parent_point_count_relax_w_self_care", "rp.contact.field.parent_point_count_treat_yourself_w_self_care", "rp.contact.field.parent_point_count_praise_yourself_w_self_care",
-                                                                "rp.contact.field.parent_point_count_spend_time_w_self_care", "rp.contact.field.parent_point_count_praise_teen_w_self_care", 
-                                                                "rp.contact.field.parent_point_count_breathe_w_self_care", "rp.contact.field.parent_point_count_money_w_self_care", 
-                                                                "rp.contact.field.parent_point_count_consequence_w_self_care", "rp.contact.field.parent_point_count_safe_w_self_care", 
-                                                                "rp.contact.field.parent_point_count_relax_w_1on1", "rp.contact.field.parent_point_count_treat_yourself_w_1on1",
-                                                                "rp.contact.field.parent_point_count_praise_yourself_w_1on1", "rp.contact.field.parent_point_count_spend_time_w_1on1",
-                                                                "rp.contact.field.parent_point_count_praise_teen_w_1on1", "rp.contact.field.parent_point_count_breathe_w_1on1", 
-                                                                "rp.contact.field.parent_point_count_money_w_1on1", "rp.contact.field.parent_point_count_consequence_w_1on1", 
-                                                                "rp.contact.field.parent_point_count_safe_w_1on1")
+data_habit_parent_points_w_self_care <- c("rp.contact.field.parent_point_count_relax_w_self_care", "rp.contact.field.parent_point_count_treat_yourself_w_self_care", "rp.contact.field.parent_point_count_praise_yourself_w_self_care",
+                                                                "rp.contact.field.parent_point_count_spend_time_w_self_care", "rp.contact.field.parent_point_count_praise_teen_w_self_care",
+                                                                "rp.contact.field.parent_point_count_breathe_w_self_care", "rp.contact.field.parent_point_count_money_w_self_care",
+                                                                "rp.contact.field.parent_point_count_consequence_w_self_care", "rp.contact.field.parent_point_count_safe_w_self_care")
 
-data_habit_parent_points_neat <- naming_conventions(data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_")
+data_habit_parent_points_w_1on1 <- c("rp.contact.field.parent_point_count_relax_w_1on1", "rp.contact.field.parent_point_count_treat_yourself_w_1on1",
+                                          "rp.contact.field.parent_point_count_praise_yourself_w_1on1", "rp.contact.field.parent_point_count_spend_time_w_1on1",
+                                          "rp.contact.field.parent_point_count_praise_teen_w_1on1", "rp.contact.field.parent_point_count_breathe_w_1on1",
+                                          "rp.contact.field.parent_point_count_money_w_1on1", "rp.contact.field.parent_point_count_consequence_w_1on1",
+                                          "rp.contact.field.parent_point_count_safe_w_1on1")
 
-summary_table_habits <- plhdata_org_clean %>%
-  map(.x = data_habit_parent_points_all, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE)
-names(summary_table_habits) <- data_habit_parent_points_neat
-summary_table_habits$`Relax`
-summary_table_habits$`Treat yourself`
-summary_table_habits$`Praise yourself`
-summary_table_habits$`Spend time`
-summary_table_habits$`Praise teen`
-summary_table_habits$`Praise yourself`
-summary_table_habits$`Instruct positively`
-summary_table_habits$`Breathe`
-summary_table_habits$`Money`
-summary_table_habits$`Consequence`
-summary_table_habits$`Safe`
+data_habit_parent_points_w_praise <- c("rp.contact.field.parent_point_count_relax_w_praise", "rp.contact.field.parent_point_count_treat_yourself_w_praise",
+                                     "rp.contact.field.parent_point_count_praise_yourself_w_praise", "rp.contact.field.parent_point_count_spend_time_w_praise",
+                                     "rp.contact.field.parent_point_count_praise_teen_w_praise", "rp.contact.field.parent_point_count_breathe_w_praise",
+                                     "rp.contact.field.parent_point_count_money_w_praise", "rp.contact.field.parent_point_count_consequence_w_praise",
+                                     "rp.contact.field.parent_point_count_safe_w_praise")
+
+data_habit_parent_points_w_instruct <- c("rp.contact.field.parent_point_count_relax_w_instruct", "rp.contact.field.parent_point_count_treat_yourself_w_instruct",
+                                       "rp.contact.field.parent_point_count_praise_yourself_w_instruct", "rp.contact.field.parent_point_count_spend_time_w_instruct",
+                                       "rp.contact.field.parent_point_count_praise_teen_w_instruct", "rp.contact.field.parent_point_count_breathe_w_instruct",
+                                       "rp.contact.field.parent_point_count_money_w_instruct", "rp.contact.field.parent_point_count_consequence_w_instruct",
+                                       "rp.contact.field.parent_point_count_safe_w_instruct")
+
+data_habit_parent_points_w_stress <- c("rp.contact.field.parent_point_count_relax_w_stress", "rp.contact.field.parent_point_count_treat_yourself_w_stress",
+                                         "rp.contact.field.parent_point_count_praise_yourself_w_stress", "rp.contact.field.parent_point_count_spend_time_w_stress",
+                                         "rp.contact.field.parent_point_count_praise_teen_w_stress", "rp.contact.field.parent_point_count_breathe_w_stress",
+                                         "rp.contact.field.parent_point_count_money_w_stress", "rp.contact.field.parent_point_count_consequence_w_stress",
+                                         "rp.contact.field.parent_point_count_safe_w_stress")
+
+data_habit_parent_points_w_money <- c("rp.contact.field.parent_point_count_relax_w_money", "rp.contact.field.parent_point_count_treat_yourself_w_money",
+                                       "rp.contact.field.parent_point_count_praise_yourself_w_money", "rp.contact.field.parent_point_count_spend_time_w_money",
+                                       "rp.contact.field.parent_point_count_praise_teen_w_money", "rp.contact.field.parent_point_count_breathe_w_money",
+                                       "rp.contact.field.parent_point_count_money_w_money", "rp.contact.field.parent_point_count_consequence_w_money",
+                                       "rp.contact.field.parent_point_count_safe_w_money")
+
+data_habit_parent_points_w_rules <- c("rp.contact.field.parent_point_count_relax_w_rules", "rp.contact.field.parent_point_count_treat_yourself_w_rules",
+                                      "rp.contact.field.parent_point_count_praise_yourself_w_rules", "rp.contact.field.parent_point_count_spend_time_w_rules",
+                                      "rp.contact.field.parent_point_count_praise_teen_w_rules", "rp.contact.field.parent_point_count_breathe_w_rules",
+                                      "rp.contact.field.parent_point_count_money_w_rules", "rp.contact.field.parent_point_count_consequence_w_rules",
+                                      "rp.contact.field.parent_point_count_safe_w_rules")
+
+data_habit_parent_points_w_consequence <- c("rp.contact.field.parent_point_count_relax_w_consequence", "rp.contact.field.parent_point_count_treat_yourself_w_consequence",
+                                      "rp.contact.field.parent_point_count_praise_yourself_w_consequence", "rp.contact.field.parent_point_count_spend_time_w_consequence",
+                                      "rp.contact.field.parent_point_count_praise_teen_w_consequence", "rp.contact.field.parent_point_count_breathe_w_consequence",
+                                      "rp.contact.field.parent_point_count_money_w_consequence", "rp.contact.field.parent_point_count_consequence_w_consequence",
+                                      "rp.contact.field.parent_point_count_safe_w_consequence")
+
+data_habit_parent_points_w_solve <- c("rp.contact.field.parent_point_count_relax_w_solve", "rp.contact.field.parent_point_count_treat_yourself_w_solve",
+                                            "rp.contact.field.parent_point_count_praise_yourself_w_solve", "rp.contact.field.parent_point_count_spend_time_w_solve",
+                                            "rp.contact.field.parent_point_count_praise_teen_w_solve", "rp.contact.field.parent_point_count_breathe_w_solve",
+                                            "rp.contact.field.parent_point_count_money_w_solve", "rp.contact.field.parent_point_count_consequence_w_solve",
+                                            "rp.contact.field.parent_point_count_safe_w_solve")
+
+data_habit_parent_points_w_safe <- c("rp.contact.field.parent_point_count_relax_w_safe", "rp.contact.field.parent_point_count_treat_yourself_w_safe",
+                                      "rp.contact.field.parent_point_count_praise_yourself_w_safe", "rp.contact.field.parent_point_count_spend_time_w_safe",
+                                      "rp.contact.field.parent_point_count_praise_teen_w_safe", "rp.contact.field.parent_point_count_breathe_w_safe",
+                                      "rp.contact.field.parent_point_count_money_w_safe", "rp.contact.field.parent_point_count_consequence_w_safe",
+                                      "rp.contact.field.parent_point_count_safe_w_safe")
+
+data_habit_parent_points_w_crisis <- c("rp.contact.field.parent_point_count_relax_w_crisis", "rp.contact.field.parent_point_count_treat_yourself_w_crisis",
+                                     "rp.contact.field.parent_point_count_praise_yourself_w_crisis", "rp.contact.field.parent_point_count_spend_time_w_crisis",
+                                     "rp.contact.field.parent_point_count_praise_teen_w_crisis", "rp.contact.field.parent_point_count_breathe_w_crisis",
+                                     "rp.contact.field.parent_point_count_money_w_crisis", "rp.contact.field.parent_point_count_consequence_w_crisis",
+                                     "rp.contact.field.parent_point_count_safe_w_crisis")
+
+data_habit_parent_points_w_celebrate <- c("rp.contact.field.parent_point_count_relax_w_celebrate", "rp.contact.field.parent_point_count_treat_yourself_w_celebrate",
+                                       "rp.contact.field.parent_point_count_praise_yourself_w_celebrate", "rp.contact.field.parent_point_count_spend_time_w_celebrate",
+                                       "rp.contact.field.parent_point_count_praise_teen_w_celebrate", "rp.contact.field.parent_point_count_breathe_w_celebrate",
+                                       "rp.contact.field.parent_point_count_money_w_celebrate", "rp.contact.field.parent_point_count_consequence_w_celebrate",
+                                       "rp.contact.field.parent_point_count_safe_w_celebrate")
+
+
+data_habit_parent_points_all_neat <- naming_conventions(data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_")
+data_habit_parent_points_w_self_care_neat <- naming_conventions(data_habit_parent_points_w_self_care, replace = "rp.contact.field.parent_point_count_", replace_after = "_w_self_care")
+data_habit_parent_points_w_1on1_neat <- naming_conventions(data_habit_parent_points_w_1on1, replace = "rp.contact.field.parent_point_count_", replace_after = "w_1on1")
+data_habit_parent_points_w_praise_neat <- naming_conventions(data_habit_parent_points_w_praise, replace = "rp.contact.field.parent_point_count_", replace_after = "w_praise")
+data_habit_parent_points_w_instruct_neat <- naming_conventions(data_habit_parent_points_w_instruct, replace = "rp.contact.field.parent_point_count_", replace_after = "w_instruct")
+data_habit_parent_points_w_stress_neat <- naming_conventions(data_habit_parent_points_w_stress, replace = "rp.contact.field.parent_point_count_", replace_after = "w_stress")
+data_habit_parent_points_w_money_neat <- naming_conventions(data_habit_parent_points_w_money, replace = "rp.contact.field.parent_point_count_", replace_after = "w_money")
+data_habit_parent_points_w_rules_neat <- naming_conventions(data_habit_parent_points_w_rules, replace = "rp.contact.field.parent_point_count_", replace_after = "w_rules")
+data_habit_parent_points_w_consequence_neat <- naming_conventions(data_habit_parent_points_w_consequence, replace = "rp.contact.field.parent_point_count_", replace_after = "w_consequence")
+data_habit_parent_points_w_solve_neat <- naming_conventions(data_habit_parent_points_w_solve, replace = "rp.contact.field.parent_point_count_", replace_after = "w_solve")
+data_habit_parent_points_w_safe_neat <- naming_conventions(data_habit_parent_points_w_safe, replace = "rp.contact.field.parent_point_count_", replace_after = "w_safe")
+data_habit_parent_points_w_crisis_neat <- naming_conventions(data_habit_parent_points_w_crisis, replace = "rp.contact.field.parent_point_count_", replace_after = "w_crisis")
+data_habit_parent_points_w_celebrate_neat <- naming_conventions(data_habit_parent_points_w_celebrate, replace = "rp.contact.field.parent_point_count_", replace_after = "w_celebrate")
+
+
+summary_table_habits_all <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_all, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_all) <- data_habit_parent_points_all_neat
+summary_table_habits_all$`Relax`
+summary_table_habits_all$`Treat yourself`
+summary_table_habits_all$`Praise yourself`
+summary_table_habits_all$`Spend time`
+summary_table_habits_all$`Praise teen`
+summary_table_habits_all$`Instruct positively`
+summary_table_habits_all$`Breathe`
+summary_table_habits_all$`Money`
+summary_table_habits_all$`Consequence`
+summary_table_habits_all$`Safe`
+
+summary_table_habits_self_care <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_self_care, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_self_care) <- data_habit_parent_points_w_self_care_neat
+summary_table_habits_self_care$`Relax`
+summary_table_habits_self_care$`Treat yourself`
+summary_table_habits_self_care$`Praise yourself`
+summary_table_habits_self_care$`Spend time`
+summary_table_habits_self_care$`Praise teen`
+summary_table_habits_self_care$`Instruct positively`
+summary_table_habits_self_care$`Breathe`
+summary_table_habits_self_care$`Money`
+summary_table_habits_self_care$`Consequence`
+summary_table_habits_self_care$`Safe`
+
+summary_table_habits_1on1 <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_1on1, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_1on1) <- data_habit_parent_points_w_1on1_neat
+summary_table_habits_1on1$`Relax`
+summary_table_habits_1on1$`Treat yourself`
+summary_table_habits_1on1$`Praise yourself`
+summary_table_habits_1on1$`Spend time`
+summary_table_habits_1on1$`Praise teen`
+summary_table_habits_1on1$`Instruct positively`
+summary_table_habits_1on1$`Breathe`
+summary_table_habits_1on1$`Money`
+summary_table_habits_1on1$`Consequence`
+summary_table_habits_1on1$`Safe`
+
+summary_table_habits_praise <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_praise, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_praise) <- data_habit_parent_points_w_praise_neat
+summary_table_habits_praise$`Relax`
+summary_table_habits_praise$`Treat yourself`
+summary_table_habits_praise$`Praise yourself`
+summary_table_habits_praise$`Spend time`
+summary_table_habits_praise$`Praise teen`
+summary_table_habits_praise$`Instruct positively`
+summary_table_habits_praise$`Breathe`
+summary_table_habits_praise$`Money`
+summary_table_habits_praise$`Consequence`
+summary_table_habits_praise$`Safe`
+
+summary_table_habits_instruct <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_instruct, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_instruct) <- data_habit_parent_points_w_instruct_neat
+summary_table_habits_instruct$`Relax`
+summary_table_habits_instruct$`Treat yourself`
+summary_table_habits_instruct$`Praise yourself`
+summary_table_habits_instruct$`Spend time`
+summary_table_habits_instruct$`Praise teen`
+summary_table_habits_instruct$`Instruct positively`
+summary_table_habits_instruct$`Breathe`
+summary_table_habits_instruct$`Money`
+summary_table_habits_instruct$`Consequence`
+summary_table_habits_instruct$`Safe`
+
+summary_table_habits_stress <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_stress, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_stress) <- data_habit_parent_points_w_stress_neat
+summary_table_habits_stress$`Relax`
+summary_table_habits_stress$`Treat yourself`
+summary_table_habits_stress$`Praise yourself`
+summary_table_habits_stress$`Spend time`
+summary_table_habits_stress$`Praise teen`
+summary_table_habits_stress$`Instruct positively`
+summary_table_habits_stress$`Breathe`
+summary_table_habits_stress$`Money`
+summary_table_habits_stress$`Consequence`
+summary_table_habits_stress$`Safe`
+
+#NB error as Column `rp.contact.field.parent_point_count_consequence_w_money` doesn't exist.
+#the tables seems to require all values to exist at least once in order to create the table for any of the parent points in that week.
+#false: more likely issue is that R truncated some long contact field names and now cannot find them...
+summary_table_habits_money <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_money, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_money) <- data_habit_parent_points_w_money_neat
+summary_table_habits_money$`Relax`
+summary_table_habits_money$`Treat yourself`
+summary_table_habits_money$`Praise yourself`
+summary_table_habits_money$`Spend time`
+summary_table_habits_money$`Praise teen`
+summary_table_habits_money$`Instruct positively`
+summary_table_habits_money$`Breathe`
+summary_table_habits_money$`Money`
+summary_table_habits_money$`Consequence`
+summary_table_habits_money$`Safe
+
+#NB error as Column `rp.contact.field.parent_point_count_money_w_rules` doesn't exist.
+summary_table_habits_rules <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_rules, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_rules) <- data_habit_parent_points_w_rules_neat
+summary_table_habits_rules$`Relax`
+summary_table_habits_rules$`Treat yourself`
+summary_table_habits_rules$`Praise yourself`
+summary_table_habits_rules$`Spend time`
+summary_table_habits_rules$`Praise teen`
+summary_table_habits_rules$`Instruct positively`
+summary_table_habits_rules$`Breathe`
+summary_table_habits_rules$`Money`
+summary_table_habits_rules$`Consequence`
+summary_table_habits_rules$`Safe`
+
+#Error as Column `rp.contact.field.parent_point_count_money_w_consequence` doesn't exist.
+summary_table_habits_consequence <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_consequence, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_consequence) <- data_habit_parent_points_w_consequence_neat
+summary_table_habits_consequence$`Relax`
+summary_table_habits_consequence$`Treat yourself`
+summary_table_habits_consequence$`Praise yourself`
+summary_table_habits_consequence$`Spend time`
+summary_table_habits_consequence$`Praise teen`
+summary_table_habits_consequence$`Instruct positively`
+summary_table_habits_consequence$`Breathe`
+summary_table_habits_consequence$`Money`
+summary_table_habits_consequence$`Consequence`
+summary_table_habits_consequence$`Safe`
+
+summary_table_habits_solve <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_solve, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_solve) <- data_habit_parent_points_w_solve_neat
+summary_table_habits_solve$`Relax`
+summary_table_habits_solve$`Treat yourself`
+summary_table_habits_solve$`Praise yourself`
+summary_table_habits_solve$`Spend time`
+summary_table_habits_solve$`Praise teen`
+summary_table_habits_solve$`Instruct positively`
+summary_table_habits_solve$`Breathe`
+summary_table_habits_solve$`Money`
+summary_table_habits_solve$`Consequence`
+summary_table_habits_solve$`Safe`
+
+summary_table_habits_safe <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_safe, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_safe) <- data_habit_parent_points_w_safe_neat
+summary_table_habits_safe$`Relax`
+summary_table_habits_safe$`Treat yourself`
+summary_table_habits_safe$`Praise yourself`
+summary_table_habits_safe$`Spend time`
+summary_table_habits_safe$`Praise teen`
+summary_table_habits_safe$`Instruct positively`
+summary_table_habits_safe$`Breathe`
+summary_table_habits_safe$`Money`
+summary_table_habits_safe$`Consequence`
+summary_table_habits_safe$`Safe`
+
+#Error as Column `rp.contact.field.parent_point_count_money_w_crisis` doesn't exist.
+summary_table_habits_crisis <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_crisis, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_crisis) <- data_habit_parent_points_w_crisis_neat
+summary_table_habits_crisis$`Relax`
+summary_table_habits_crisis$`Treat yourself`
+summary_table_habits_crisis$`Praise yourself`
+summary_table_habits_crisis$`Spend time`
+summary_table_habits_crisis$`Praise teen`
+summary_table_habits_crisis$`Instruct positively`
+summary_table_habits_crisis$`Breathe`
+summary_table_habits_crisis$`Money`
+summary_table_habits_crisis$`Consequence`
+summary_table_habits_crisis$`Safe`
+
+#Error as rp.contact.field.parent_point_count_praise_teen_w_celebrate does not exist
+summary_table_habits_celebrate <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_celebrate, .f = ~summary_table(columns_to_summarise = .x), display_table = TRUE, include_margins = TRUE)
+names(summary_table_habits_celebrate) <- data_habit_parent_points_w_celebrate_neat
+summary_table_habits_celebrate$`Relax`
+summary_table_habits_celebrate$`Treat yourself`
+summary_table_habits_celebrate$`Praise yourself`
+summary_table_habits_celebrate$`Spend time`
+summary_table_habits_celebrate$`Praise teen`
+summary_table_habits_celebrate$`Instruct positively`
+summary_table_habits_celebrate$`Breathe`
+summary_table_habits_celebrate$`Money`
+summary_table_habits_celebrate$`Consequence`
+summary_table_habits_celebrate$`Safe`
 
 #mean average number of parent points given per org
 
@@ -384,20 +633,21 @@ user_id_print("rp.contact.field.app_launch_count")
 ##Priority 20
 #App-opens
 #Number of app opens within a workshop week for each user
-data_app_opens <- c("rp.contact.field.app_launch_count_w_self_care", "rp.contact.field.app_launch_count_w_1on1",
+data_app_opens <- c("rp.contact.field.app_launch_count","rp.contact.field.app_launch_count_w_self_care", "rp.contact.field.app_launch_count_w_1on1",
                     "rp.contact.field.app_launch_count_w_praise","rp.contact.field.app_launch_count_w_instruct",
                     "rp.contact.field.app_launch_count_w_stress", "rp.contact.field.app_launch_count_w_money",
                     "rp.contact.field.app_launch_count_w_rules", "rp.contact.field.app_launch_count_w_consequence",
                     "rp.contact.field.app_launch_count_w_solve", "rp.contact.field.app_launch_count_w_safe",
                     "rp.contact.field.app_launch_count_w_crisis", "rp.contact.field.app_launch_count_w_celebrate")
 
-data_app_opens_neat <- c("Welcome and Self care(1)", "One-on-one time(2)", "Praise (3)", "Positive Instructions(4)",
+data_app_opens_neat <- c("Total", "Welcome and Self care(1)", "One-on-one time(2)", "Praise (3)", "Positive Instructions(4)",
                          "Managing Stress(5)", "Family Budget(6)","Rules(7)", "Calm Consequences(8)",  
                          "Problem Solving(9)", "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
 
 tables_app_opens <- plhdata_org_clean %>%
   map(.x = data_app_opens, .f = ~summary_table(columns_to_summarise = .x))
 names(tables_app_opens) <- data_app_opens_neat
+tables_app_opens$`Total`
 tables_app_opens$`Welcome and Self care`
 tables_app_opens$`One-on-one time`
 tables_app_opens$`Praise`

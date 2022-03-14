@@ -23,7 +23,9 @@ ui <- dashboardPage(skin = "blue",
     sidebarMenu(
       menuItem("Overview and Demographics", tabName = "demographics", icon = icon("users")),
       menuItem("Workshop Engagement", tabName = "workshops", icon = icon("lightbulb")),
-      menuItem("Parent Points", tabName = "parentpoints", icon = icon("star"))
+      menuItem("Parent Points", tabName = "parentpoints", icon = icon("star")),
+      menuItem("In-week Engagement", tabName = "xtraengagement", icon = icon("user-check")),
+      menuItem("Surveys", tabName = "surveys", icon = icon("question"))
     )), #closes sidebarMenu and dashboardSidebar
  
    dashboardBody(  # Boxes need to be put in a row (or column)
@@ -35,11 +37,9 @@ ui <- dashboardPage(skin = "blue",
           shinydashboard::valueBoxOutput("myvaluebox5", width=2)
         ), #closes fluidRow
         
-          
         tabItems(
-          # First tab content
+          # FIRST tab content
           tabItem(tabName = "demographics",
-                  
                   fluidRow(
                     column(12, align = "centre",
                            # splitLayout gets two boxes side by side.
@@ -52,7 +52,7 @@ ui <- dashboardPage(skin = "blue",
                                title = NULL,
                                collapsible = FALSE,
                                solidHeader = TRUE,
-                               background = "black",
+                               background = "aqua",
                                height = "95px")
                            ) #closes box
                     ), #closes fluid row
@@ -164,12 +164,10 @@ ui <- dashboardPage(skin = "blue",
                             shiny::tableOutput("table_household_babies")
                         ) #closes box
                 ) #closes fluid row
-                  
-        ),#closes tabItem
+        ),#closes first tabItem
         
-        # Second tab content
+        # SECOND tab content
         tabItem(tabName = "workshops",
-                
                 fluidRow(
                   column(12, align = "centre",
                          # splitLayout gets two boxes side by side.
@@ -182,7 +180,7 @@ ui <- dashboardPage(skin = "blue",
                              title = NULL,
                              collapsible = FALSE,
                              solidHeader = TRUE,
-                             background = "black",
+                             background = "aqua",
                              height = "95px")
                   ) #closes box
                 ), #closes fluid row
@@ -234,9 +232,9 @@ ui <- dashboardPage(skin = "blue",
                 ) #closes fluid row
         ), #closes tabItem
         
-        # Third tab content
+        # THIRD tab content
         tabItem(tabName = "parentpoints",
-                
+        
                 fluidRow(
                   column(12, align = "centre",
                          # splitLayout gets two boxes side by side.
@@ -249,9 +247,9 @@ ui <- dashboardPage(skin = "blue",
                              title = NULL,
                              collapsible = FALSE,
                              solidHeader = TRUE,
-                             background = "black",
+                             background = "aqua",
                              height = "95px")
-                  ) #closes box
+                  ) #closes column
                 ), #closes fluid row
                 
                 fluidRow(
@@ -264,7 +262,7 @@ ui <- dashboardPage(skin = "blue",
                                                    "Nontobeko" = "Nontobeko"),
                                        selected = c("Amathuba","Dlalanathi",
                                                     "Joy","Nontobeko")
-                    )),
+                    ))),
                 
                   fluidRow(
                     box(width = 12,
@@ -299,11 +297,145 @@ ui <- dashboardPage(skin = "blue",
                       shiny::tableOutput("table_pp_1on1")
                   ) #closes box
                 ) #closes fluid row
-        ) # closes third tabItem
+        ), # closes third tabItem
+        
+        #FOURTH tab content
+        tabItem(tabName = "xtraengagement",
+                
+                fluidRow(
+                  column(12, align = "centre",
+                         # splitLayout gets two boxes side by side.
+                         # in this case, it is just the header (h2), and an icon
+                         # we want 80% of the width to be the header (h2) and 20% the icon (hence cellWidths = ...)
+                         box(splitLayout(h2("In-week Engagement"), icon("user-check", "fa-6x"),
+                                         cellArgs = list(style = "vertical-align: top"),
+                                         cellWidths = c("80%", "20%")),
+                             width = 15,
+                             title = NULL,
+                             collapsible = FALSE,
+                             solidHeader = TRUE,
+                             background = "aqua",
+                             height = "95px")
+                  ) #closes box
+                ), #closes fluid row
+                
+                fluidRow(
+                  box(width = 12,
+                      checkboxGroupInput(inputId = "OrgXE",
+                                         label = "Organisations to show:",
+                                         choices = c("Amathuba" = "Amathuba",
+                                                     "Dlalanathi" = "Dlalanathi",
+                                                     "Joy" = "Joy",
+                                                     "Nontobeko" = "Nontobeko"),
+                                         selected = c("Amathuba","Dlalanathi",
+                                                      "Joy","Nontobeko")
+                      ))),
+                  
+                  fluidRow(
+                    box(width = 12,
+                        collapsible = FALSE,
+                        solidHeader = TRUE,
+                        title = "App opens",
+                        status = "info", # primary, success, info, warning, danger
+                        #background = "orange",
+                        plotlyOutput(outputId = "plot_appopen_total", height = "240"),
+                        shiny::tableOutput("table_appopen_total")
+                    )#closes box
+                  ), #closes fluid row
+                  
+                  fluidRow(
+                    box(width = 6,
+                        collapsible = FALSE,
+                        solidHeader = TRUE,
+                        title = "App opens: Self Care",
+                        status = "info", # primary, success, info, warning, danger
+                        #background = "orange",
+                        plotlyOutput(outputId = "plot_appopen_selfcare", height = "240"),
+                        shiny::tableOutput("table_appopen_selfcare")
+                    ), #closes box
+                    
+                    box(width = 6,
+                        collapsible = FALSE,
+                        solidHeader = TRUE,
+                        title = "Parent points: One-on-one Time",
+                        status = "info", # primary, success, info, warning, danger
+                        #background = "orange",
+                        plotlyOutput(outputId = "plot_pp_1on1", height = "240"),
+                        shiny::tableOutput("table_pp_1on1")
+                    ) #closes box
+                  ) #closes fluid row
+                ), # closes fourth tabItem
+                
+                #FIFTH tab content
+                tabItem(tabName = "surveys",
+                        
+                        fluidRow(
+                          column(12, align = "centre",
+                                 # splitLayout gets two boxes side by side.
+                                 # in this case, it is just the header (h2), and an icon
+                                 # we want 80% of the width to be the header (h2) and 20% the icon (hence cellWidths = ...)
+                                 box(splitLayout(h2("Surveys"), icon("question", "fa-6x"),
+                                                 cellArgs = list(style = "vertical-align: top"),
+                                                 cellWidths = c("80%", "20%")),
+                                     width = 15,
+                                     title = NULL,
+                                     collapsible = FALSE,
+                                     solidHeader = TRUE,
+                                     background = "aqua",
+                                     height = "95px")
+                          ) #closes box
+                        ), #closes fluid row
+                        
+                        fluidRow(
+                          box(width = 12,
+                              checkboxGroupInput(inputId = "OrgSV",
+                                                 label = "Organisations to show:",
+                                                 choices = c("Amathuba" = "Amathuba",
+                                                             "Dlalanathi" = "Dlalanathi",
+                                                             "Joy" = "Joy",
+                                                             "Nontobeko" = "Nontobeko"),
+                                                 selected = c("Amathuba","Dlalanathi",
+                                                              "Joy","Nontobeko")
+                              )),
+                          
+                          fluidRow(
+                            box(width = 12,
+                                collapsible = FALSE,
+                                solidHeader = TRUE,
+                                title = "Average parent points",
+                                status = "info", # primary, success, info, warning, danger
+                                #background = "orange",
+                                plotlyOutput(outputId = "plot_pp_totals", height = "240"),
+                                shiny::tableOutput("table_pp_totals")
+                            )#closes box
+                          ), #closes fluid row
+                          
+                          fluidRow(
+                            box(width = 6,
+                                collapsible = FALSE,
+                                solidHeader = TRUE,
+                                title = "Parent points: Self Care",
+                                status = "info", # primary, success, info, warning, danger
+                                #background = "orange",
+                                plotlyOutput(outputId = "plot_pp_selfcare", height = "240"),
+                                shiny::tableOutput("table_pp_selfcare")
+                            ), #closes box
+                            
+                            box(width = 6,
+                                collapsible = FALSE,
+                                solidHeader = TRUE,
+                                title = "Parent points: One-on-one Time",
+                                status = "info", # primary, success, info, warning, danger
+                                #background = "orange",
+                                plotlyOutput(outputId = "plot_pp_1on1", height = "240"),
+                                shiny::tableOutput("table_pp_1on1")
+                            ) #closes box
+                          ) #closes fluid row
+                        )) # closes fifth tabItem
         
       ) # closes tabItems
   ) # closes dashboardBody
-  ))# closes dashboardPage
+  )# closes dashboardPage
   
 # 4. Define Server -----------------------------------------------------------------------------
 server <- function(input, output) {
@@ -331,7 +463,7 @@ server <- function(input, output) {
                               color = "teal")})
   
   
-  #First tab DEMOGRAPHICS
+  #FIRST tab DEMOGRAPHICS
   
   #Languages plot and table
   table_language <- reactive({
@@ -422,7 +554,7 @@ server <- function(input, output) {
   # output$plot_child_type <- renderPlotly({plot_child_type()})
   
   
-  #Second Tab Workshop Data
+  #SECOND Tab Workshop Data
   
   #Table of averages
   table_ws_totals <- reactive({
@@ -435,7 +567,7 @@ server <- function(input, output) {
   output$plot_ws_totals <- renderPlotly({})
   
 
-  #Third Tab Parent Points
+  #THIRD Tab Parent Points
   
   #Table of averages
   table_pp_totals <- reactive({
@@ -446,6 +578,12 @@ server <- function(input, output) {
   
   output$table_pp_totals <- shiny::renderTable({(table_pp_totals())}, striped = TRUE)
   output$plot_pp_totals <- renderPlotly({})
+  
+  
+  #FOURTH Tab In-week Engagement
+  
+  
+  #FIFTH Tab Surveys
   
   
 } #close server

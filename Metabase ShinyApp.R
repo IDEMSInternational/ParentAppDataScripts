@@ -228,7 +228,7 @@ ui <- dashboardPage(skin = "blue",
                       status = "info",  
                       #background = "orange",
                       plotlyOutput(outputId = "plot_w_1on1", height = "240"),
-                      shiny::tableOutput("plot_w_1on1")
+                      shiny::tableOutput("table_w_1on1")
                   ) #closes box
                 ), #closes fluid row
                 
@@ -250,7 +250,7 @@ ui <- dashboardPage(skin = "blue",
                       status = "info",  
                       #background = "orange",
                       plotlyOutput(outputId = "plot_w_instruct", height = "240"),
-                      shiny::tableOutput("plot_w_instruct")
+                      shiny::tableOutput("table_w_instruct")
                   ) #closes box
                 ), #closes fluid row
                 
@@ -272,7 +272,7 @@ ui <- dashboardPage(skin = "blue",
                       status = "info",  
                       #background = "orange",
                       plotlyOutput(outputId = "plot_w_money", height = "240"),
-                      shiny::tableOutput("plot_w_money")
+                      shiny::tableOutput("table_w_money")
                   ) #closes box
                 ), #closes fluid row
                 
@@ -294,7 +294,7 @@ ui <- dashboardPage(skin = "blue",
                       status = "info",  
                       #background = "orange",
                       plotlyOutput(outputId = "plot_w_consequence", height = "240"),
-                      shiny::tableOutput("plot_w_consequence")
+                      shiny::tableOutput("table_w_consequence")
                   ) #closes box
                 ), #closes fluid row
                 
@@ -316,7 +316,7 @@ ui <- dashboardPage(skin = "blue",
                       status = "info",  
                       #background = "orange",
                       plotlyOutput(outputId = "plot_w_safe", height = "240"),
-                      shiny::tableOutput("plot_w_safe")
+                      shiny::tableOutput("table_w_safe")
                   ) #closes box
                 ), #closes fluid row
                 
@@ -338,7 +338,7 @@ ui <- dashboardPage(skin = "blue",
                       status = "info",  
                       #background = "orange",
                       plotlyOutput(outputId = "plot_w_celebrate", height = "240"),
-                      shiny::tableOutput("plot_w_celebrate")
+                      shiny::tableOutput("table_w_celebrate")
                   ) #closes box
                 ) #closes fluid row
         ), #closes tabItem
@@ -978,7 +978,7 @@ server <- function(input, output) {
   table_ws_totals <- reactive({
     summary_mean_completion_level %>% filter(Org %in% c((input$OrgWS))) 
   }) 
-  plot_pp_totals  <- reactive({
+  plot_ws_totals  <- reactive({
   }) 
   output$table_ws_totals <- shiny::renderTable({(table_ws_totals())}, striped = TRUE)
   output$plot_ws_totals <- renderPlotly({plot_ws_totals})

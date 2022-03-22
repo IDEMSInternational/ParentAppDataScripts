@@ -180,7 +180,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
 }
 
 summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise, summaries = c("frequencies", "mean"),
-                          replace = "rp.contact.field.", include_margins = FALSE,
+                          replace = "rp.contact.field.", include_margins = FALSE, wider_table = FALSE,
                           display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,
                           together = TRUE){
   
@@ -192,7 +192,7 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
                                       include_margins = include_margins,
                                       summaries = summaries,
                                       together = together)
-
+  
   return_table_names <- naming_conventions(colnames(return_table), replace = replace)
   if (display_table){
     if (summaries == "frequencies"){
@@ -204,27 +204,27 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
     }
     
     return_table <- gt(as_tibble(return_table)) %>%
-    tab_header(
-      title = paste(return_table_names[1], "by", return_table_names[2])  # fix up. 
-    ) %>%
-    tab_style(locations = list(cells_body(columns = 1)),
-              style = list(cell_borders(
-                sides = "right",
-                color = "black",
-                weight = px(2)),
-                cell_text(weight = "bold"))) %>%
-    tab_style(locations = list(cells_column_labels(columns = gt::everything())),
-              style = list(cell_borders( 
-                sides = "bottom",
-                color = "black",
-                weight = px(2)),
-                cell_text(weight = "bold")))
+      tab_header(
+        title = paste(return_table_names[1], "by", return_table_names[2])  # fix up. 
+      ) %>%
+      tab_style(locations = list(cells_body(columns = 1)),
+                style = list(cell_borders(
+                  sides = "right",
+                  color = "black",
+                  weight = px(2)),
+                  cell_text(weight = "bold"))) %>%
+      tab_style(locations = list(cells_column_labels(columns = gt::everything())),
+                style = list(cell_borders( 
+                  sides = "bottom",
+                  color = "black",
+                  weight = px(2)),
+                  cell_text(weight = "bold")))
     #if (summaries == "mean"){
     #  names(return_table$`_data`) <- naming_conventions(names(return_table$`_data`), replace = replace)
     #}
   } else {
-    if (naming_convention){
-      colnames(return_table) <- return_table_names
+    if (wider_table){
+      return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n, names_prefix = "")
     }
   }
   return(return_table)

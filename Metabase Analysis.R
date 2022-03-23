@@ -152,12 +152,13 @@ baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.co
 
 summary_table_baseline <- plhdata_org_clean %>%
   map(.x = data_baseline_survey, .f = ~replace_na(.x, "unknown"))  %>%
-  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
+  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE, summaries = "frequencies"))
 names(summary_table_baseline) <- baseline_names_neat
 summary_table_baseline$`Household babies`
 summary_table_baseline$` app language`
 summary_table_baseline$`App version`
 summary_table_baseline$`Do workshops together`
+summary_table_baseline$`Household adults`
 
 summary_table_baseline$`User gender`  %>% filter(Org %in% c(("Dlalanathi"))) %>%
   pivot_wider(names_from = `User gender`, values_from = N)
@@ -496,7 +497,6 @@ colnames(summary_mean_habits) <- naming_conventions(colnames(summary_mean_habits
 
 summary_mean_habits
 
-
 # Completion Level ----------------------------------------------------------------------------
 data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
                            "rp.contact.field.w_instruct_completion_level",  "rp.contact.field.w_stress_completion_level",
@@ -523,6 +523,7 @@ summary_table_completion_level$`Dealing with Crisis`
 summary_table_completion_level$`Celebration & Next Steps`
 # etc.
 
+
 # or to get all tables:
 summary_table_completion_level
 
@@ -535,6 +536,8 @@ colnames(summary_mean_completion_level) <- naming_conventions(colnames(summary_m
 
 #Issue: "rules" workshop data was missing - needed to be added in list creation for "data_completion_level"
 summary_mean_completion_level
+
+
 
 # Survey - past week  ----------------------------------------------------------------------------
 data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
@@ -642,7 +645,9 @@ summary_table(columns_to_summarise = rp.contact.field.click_hs_parent_points_qui
 #Priority 19
 #App-opens
 #Total number of app-opens for each user(cumulative)
-summary_table(columns_to_summarise = rp.contact.field.app_launch_count, replace = "rp.contact.field.")
+#app_open_summary <- plhdata_org_clean %>%
+#  group_by(Org) %>%
+#  summarise(sum(rp.contact.field.app_launch_count))
 user_id_print("rp.contact.field.app_launch_count")
 
 ##Priority 20
@@ -727,4 +732,3 @@ plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")
 plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_gender")
 plhdata_org_clean %>% filter(Org == "Amathuba") %>% select('app_user_id', "rp.contact.field.user_gender")
 mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
-

@@ -1,16 +1,21 @@
 # run libraries
 library(tidyverse)
 library(here)
+library(mmtable2)
 library(yesno)
 library(gt)
 
 #' Interaction with chatbot
+#' 1. Defining package environment -------------------------------------------
+#' 
+#' Define wd
+setwd("C:/Users/lzc1n17/OneDrive - University of Southampton/PhD/IDEMS/ParentApp")
 
 #Source the personal setup for data
-source(here("config/Personal Setup.R"))
+source("Personal Setup.R")
 
 #Get data from excel
-UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
+UIC.Tracker <- rio::import(file = "UIC Tracker.xlsx", which = "UIC Tracker 211014")
 
 # Reading in Data ------------------------------------------
 
@@ -180,7 +185,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
 }
 
 summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise, summaries = c("frequencies", "mean"),
-                          replace = "rp.contact.field.", include_margins = FALSE, wider_table = FALSE,
+                          replace = "rp.contact.field.", include_margins = FALSE, wider_table = TRUE,
                           display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,
                           together = TRUE){
   
@@ -194,13 +199,14 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
                                       together = together)
   
   return_table_names <- naming_conventions(colnames(return_table), replace = replace)
+  if (summaries == "mean"){
+    if (naming_convention){
+      colnames(return_table) <- naming_conventions(colnames(return_table), replace = replace)
+    }
+  }
   if (display_table){
     if (summaries == "frequencies"){
       return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n)
-    } else {
-      if (naming_convention){
-        colnames(return_table) <- naming_conventions(colnames(return_table), replace = replace)
-      }
     }
     
     return_table <- gt(as_tibble(return_table)) %>%
@@ -223,7 +229,7 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
     #  names(return_table$`_data`) <- naming_conventions(names(return_table$`_data`), replace = replace)
     #}
   } else {
-    if (wider_table){
+    if (wider_table & summaries == "frequencies"){
       return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n, names_prefix = "")
     }
   }

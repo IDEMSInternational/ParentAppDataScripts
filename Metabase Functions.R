@@ -1,21 +1,16 @@
 # run libraries
 library(tidyverse)
 library(here)
-library(mmtable2)
 library(yesno)
 library(gt)
 
 #' Interaction with chatbot
-#' 1. Defining package environment -------------------------------------------
-#' 
-#' Define wd
-setwd("C:/Users/lzc1n17/OneDrive - University of Southampton/PhD/IDEMS/ParentApp")
 
 #Source the personal setup for data
-source("Personal Setup.R")
+source(here("config/Personal Setup.R"))
 
 #Get data from excel
-UIC.Tracker <- rio::import(file = "UIC Tracker.xlsx", which = "UIC Tracker 211014")
+UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 
 # Reading in Data ------------------------------------------
 

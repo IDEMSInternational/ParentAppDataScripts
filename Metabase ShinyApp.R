@@ -11,6 +11,11 @@ library(jsonlite)
 
 # 1. Calling the data ---------------------------------------------------------------------
 # not needed - data is just called plhdata_org_clean
+data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
+                          "rp.contact.field.user_age", "rp.contact.field.household_adults",
+                          "rp.contact.field.household_teens", "rp.contact.field.household_babies",
+                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
+baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.contact.field.")
 
 # 2. Data Cleaning -------------------------------------------------------------------------
 # not needed - data is clean
@@ -393,313 +398,313 @@ ui <- dashboardPage(skin = "blue",
                                 
                                 tabsetPanel(type = "tabs",
                                             tabPanel("Cumulative Parent Points",
-                                
-                                fluidRow(
-                                  box(width = 12,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points summary",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_totals", height = "240"),
-                                      shiny::tableOutput("table_pp_totals")
-                                  )#closes box
-                                ), #closes fluid row
-                                
-                                fluidRow(
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: Relax",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_relax", height = "240"),
-                                      shiny::tableOutput("table_pp_relax")
-                                  ), #closes box
-                                  
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: Treat yourself well",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_treat_yourself", height = "240"),
-                                      shiny::tableOutput("table_pp_treat_yourself")
-                                  ) #closes box
-                                ), #closes fluid row
-                                
-                                fluidRow(
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: Praise yourself",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_praise_yourself", height = "240"),
-                                      shiny::tableOutput("table_pp_praise_yourself")
-                                  ), #closes box
-                                  
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: One-on-one Time",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_spend_time", height = "240"),
-                                      shiny::tableOutput("table_pp_spend_time")
-                                  ) #closes box
-                                ), #closes fluid row
-                                
-                                fluidRow(
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: Praise your teen",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_praise_teen", height = "240"),
-                                      shiny::tableOutput("table_pp_praise_teen")
-                                  ), #closes box
-                                  
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: Get positive",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_instruct_positively", height = "240"),
-                                      shiny::tableOutput("table_pp_instruct_positively")
-                                  ) #closes box
-                                ), #closes fluid row
-                                
-                                fluidRow(
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: Breathe not yell",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_breathe", height = "240"),
-                                      shiny::tableOutput("table_pp_breathe")
-                                  ), #closes box
-                                  
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: Good money choice",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_money", height = "240"),
-                                      shiny::tableOutput("table_pp_money")
-                                  ) #closes box
-                                ), #closes fluid row
-                                
-                                fluidRow(
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: Calm consequence",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_consequence", height = "240"),
-                                      shiny::tableOutput("table_pp_consequence")
-                                  ), #closes box
-                                  
-                                  box(width = 6,
-                                      collapsible = FALSE,
-                                      solidHeader = TRUE,
-                                      title = "Parent points: Safe",
-                                      status = "warning",  
-                                      #background = "orange",
-                                      plotlyOutput(outputId = "plot_pp_safe", height = "240"),
-                                      shiny::tableOutput("table_pp_safe")
-                                  ) #closes box
-                                ) #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 12,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points summary",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_totals", height = "240"),
+                                                           shiny::tableOutput("table_pp_totals")
+                                                       )#closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: Relax",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: Treat yourself well",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_treat_yourself", height = "240"),
+                                                           shiny::tableOutput("table_pp_treat_yourself")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: Praise yourself",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_praise_yourself", height = "240"),
+                                                           shiny::tableOutput("table_pp_praise_yourself")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: One-on-one Time",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_spend_time", height = "240"),
+                                                           shiny::tableOutput("table_pp_spend_time")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: Praise your teen",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_praise_teen", height = "240"),
+                                                           shiny::tableOutput("table_pp_praise_teen")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: Get positive",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_instruct_positively", height = "240"),
+                                                           shiny::tableOutput("table_pp_instruct_positively")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: Breathe not yell",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_breathe", height = "240"),
+                                                           shiny::tableOutput("table_pp_breathe")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: Good money choice",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_money", height = "240"),
+                                                           shiny::tableOutput("table_pp_money")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: Calm consequence",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_consequence", height = "240"),
+                                                           shiny::tableOutput("table_pp_consequence")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Parent points: Safe",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_safe", height = "240"),
+                                                           shiny::tableOutput("table_pp_safe")
+                                                       ) #closes box
+                                                     ) #closes fluid row
                                             ), #closes and tab panel
-                                
-                                tabPanel("Relax", #pp1
-                                         
-                                         fluidRow(
-                                           box(width = 12,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Average Relax Points per Workshop Week",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_ws_totals", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_ws_totals")
-                                           )#closes box
-                                         ), #closes fluid row
-                                         
-                                         fluidRow(
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 1: Welcome and Self-Care",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_self_care", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_self_care")
-                                           ), #closes box
-                                           
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 2: One-on-One Time",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_1on1", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_1on1")
-                                           ) #closes box
-                                         ), #closes fluid row
-                                         
-                                         fluidRow(
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 3: Praise",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_praise", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_praise")
-                                           ), #closes box
-                                           
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 4: Positive Instructions",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_instruct", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_instruct")
-                                           ) #closes box
-                                         ), #closes fluid row
-                                         
-                                         fluidRow(
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 5: Managing Stress",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_stress", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_stress")
-                                           ), #closes box
-                                           
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 6: Family Budgets",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_money", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_money")
-                                           ) #closes box
-                                         ), #closes fluid row
-                                         
-                                         fluidRow(
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 7: Rules",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_rules", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_rules")
-                                           ), #closes box
-                                           
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 8: Calm Consequences",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_consequence", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_consequence")
-                                           ) #closes box
-                                         ), #closes fluid row
-                                         
-                                         fluidRow(
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 9: Problem Solving",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_solve", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_solve")
-                                           ), #closes box
-                                           
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 10: Teen Safety",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_safe", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_safe")
-                                           ) #closes box
-                                         ), #closes fluid row
-                                         
-                                         fluidRow(
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 11: Dealing with Crisis",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_crisis", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_crisis")
-                                           ), #closes box
-                                           
-                                           box(width = 6,
-                                               collapsible = FALSE,
-                                               solidHeader = TRUE,
-                                               title = "Relax Points in Workshop 12: Celebration and Next Steps",
-                                               status = "warning",  
-                                               #background = "orange",
-                                               plotlyOutput(outputId = "plot_pp_relax_w_celebrate", height = "240"),
-                                               shiny::tableOutput("table_pp_relax_w_celebrate")
-                                           ) #closes box
-                                         ) #closes fluid row
-                                         
-                                ), #closes tab panel pp1 relax
-                                
-                                tabPanel("Treat", #pp2
-                                         
-                                ), #closes tab panel pp2 treat yourself well
-                                
-                                tabPanel("Praise Self", #pp3 praise yourself
-                                         
-                                ), #closes tab panel pp3 praise yourself
-                                
-                                tabPanel("1-on-1",  #pp4 spend time together
-                                         
-                                ), #closes tab panel pp4 spend time together
-                                
-                                tabPanel("Praise Teen", #pp5
-                                         
-                                ), #closes tab panel pp5 praise teen
-                                
-                                tabPanel("Positive", #pp6 get positive
-                                         
-                                ), #closes tab panel pp6 get positive
-                                
-                                tabPanel("Breathe", #pp7 breathe not yell
-                                         
-                                ), #closes tab panel pp7 breathe not yell
-                                
-                                tabPanel("Money", #pp8 good money choice
-                                         
-                                ), #closes tab panel pp8 good money choice
-                                
-                                tabPanel("Consequence", #pp9 calm consequence
-                                         
-                                ), #closes tab panel pp9 calm consequence
-                                
-                                tabPanel("Safe",  #pp10 safe
-                                         
-                                ) #closes tab panel pp10 safe
+                                            
+                                            tabPanel("Relax", #pp1
+                                                     
+                                                     fluidRow(
+                                                       box(width = 12,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Average Relax Points per Workshop Week",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_ws_totals", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_ws_totals")
+                                                       )#closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 1: Welcome and Self-Care",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_self_care", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_self_care")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 2: One-on-One Time",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_1on1", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_1on1")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 3: Praise",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_praise", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_praise")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 4: Positive Instructions",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_instruct", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_instruct")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 5: Managing Stress",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_stress", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_stress")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 6: Family Budgets",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_money", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_money")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 7: Rules",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_rules", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_rules")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 8: Calm Consequences",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_consequence", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_consequence")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 9: Problem Solving",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_solve", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_solve")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 10: Teen Safety",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_safe", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_safe")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 11: Dealing with Crisis",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_crisis", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_crisis")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 6,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Relax Points in Workshop 12: Celebration and Next Steps",
+                                                           status = "warning",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_pp_relax_w_celebrate", height = "240"),
+                                                           shiny::tableOutput("table_pp_relax_w_celebrate")
+                                                       ) #closes box
+                                                     ) #closes fluid row
+                                                     
+                                            ), #closes tab panel pp1 relax
+                                            
+                                            tabPanel("Treat", #pp2
+                                                     
+                                            ), #closes tab panel pp2 treat yourself well
+                                            
+                                            tabPanel("Praise Self", #pp3 praise yourself
+                                                     
+                                            ), #closes tab panel pp3 praise yourself
+                                            
+                                            tabPanel("1-on-1",  #pp4 spend time together
+                                                     
+                                            ), #closes tab panel pp4 spend time together
+                                            
+                                            tabPanel("Praise Teen", #pp5
+                                                     
+                                            ), #closes tab panel pp5 praise teen
+                                            
+                                            tabPanel("Positive", #pp6 get positive
+                                                     
+                                            ), #closes tab panel pp6 get positive
+                                            
+                                            tabPanel("Breathe", #pp7 breathe not yell
+                                                     
+                                            ), #closes tab panel pp7 breathe not yell
+                                            
+                                            tabPanel("Money", #pp8 good money choice
+                                                     
+                                            ), #closes tab panel pp8 good money choice
+                                            
+                                            tabPanel("Consequence", #pp9 calm consequence
+                                                     
+                                            ), #closes tab panel pp9 calm consequence
+                                            
+                                            tabPanel("Safe",  #pp10 safe
+                                                     
+                                            ) #closes tab panel pp10 safe
                                 ) #closes tabset panel         
                         ), # closes third tabItem
                         
@@ -1056,7 +1061,7 @@ ui <- dashboardPage(skin = "blue",
                                 
                                 tabsetPanel(type = "tabs",
                                             tabPanel("Main Option 1",
-                                            
+                                                     
                                                      tabsetPanel(type = "tabs",
                                                                  tabPanel("Sub Option 1",
                                                                  ), #closes Tab panel
@@ -1066,7 +1071,7 @@ ui <- dashboardPage(skin = "blue",
                                                                  
                                                      ) #closes Sub tabset panel      
                                                      
-                                                     ), #closes Tab panel
+                                            ), #closes Tab panel
                                             
                                             tabPanel("Main Option 2",
                                             ) #closes Tab panel
@@ -1101,16 +1106,23 @@ server <- function(input, output) {
     shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Nontobeko")), subtitle = "Nontobeko", icon = icon("user"),
                               color = "olive")})
   
-  
   #FIRST tab DEMOGRAPHICS
+#  demographics_plot_data <- reactive({
+#    plhdata_org_clean_demographics <- plhdata_org_clean %>%
+#      filter(Org %in% c((input$OrgDem)))
+#    summary_plot_baseline <- plhdata_org_clean %>%
+#      map(.x = data_baseline_survey, .f = ~summary_plot(columns_to_summarise = .x))
+#    names(summary_plot_baseline) <- baseline_names_neat
+#    return(summary_plot_baseline)
+#  })
   
   #Languages plot and table
   table_language <- reactive({
     summary_table_baseline$` app language` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_language  <- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field._app_language) }) 
-  
+    summary_plot_baseline$` app language`
+  }) 
   output$table_language <- shiny::renderTable({(table_language())}, striped = TRUE)
   output$plot_language <- renderPlotly({plot_language()})
   
@@ -1119,8 +1131,8 @@ server <- function(input, output) {
     summary_table_baseline$`Do workshops together` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_ws_format  <- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.do_workshops_together) }) 
-  
+    summary_plot_baseline$`Do workshops together`
+    }) 
   output$table_ws_format <- shiny::renderTable({(table_ws_format())}, striped = TRUE)
   output$plot_ws_format <- renderPlotly({plot_ws_format()})
   
@@ -1135,74 +1147,72 @@ server <- function(input, output) {
       viridis::scale_fill_viridis(discrete = TRUE) +
       labs(x = "App version")
     #summary_plot(plhdata_org_clean, app_version)
-    }) 
-  
+  }) 
   output$table_app_version <- shiny::renderTable({(table_app_version())}, striped = TRUE)
   output$plot_app_version <- renderPlotly({plot_app_version()})
-  
   
   #Parent gender plot and table
   table_parent_gender <- reactive({
     summary_table_baseline$`User gender` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_parent_gender  <- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.user_gender) }) 
-  
+    summary_plot_baseline$`User gender`
+    }) 
   output$table_parent_gender <- shiny::renderTable({(table_parent_gender())}, striped = TRUE)
   output$plot_parent_gender <- renderPlotly({plot_parent_gender()})
-  
   
   #Parent age plot and table
   table_parent_age <- reactive({
     plhdata_org_clean %>%
-      summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean")}) 
+      summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean") %>% filter(Org %in% c((input$OrgDem)))}) 
   ##previously, but with new contact field summarise(`mean age`=(mean(rp.contact.field.user_gender, na.rm = TRUE)))
-  
-  plot_parent_age  <- reactive({summary_plot(plhdata_org_clean, rp.contact.field.user_age) })
-  
+  plot_parent_age <- reactive({
+    summary_plot_baseline$`User age`
+    })
   output$table_parent_age <- shiny::renderTable({(table_parent_age())}, striped = TRUE)
   output$plot_parent_age <- renderPlotly({plot_parent_age()})
   
   #Adults in household plot and table
   table_household_adults <- reactive({
-    summary_table_baseline$`Household adults`
-    }) 
+    summary_table_baseline$`Household adults` %>% filter(Org %in% c((input$OrgDem)))
+  }) 
   plot_household_adults  <- reactive({
-    plhdata_org_clean_1 <- plhdata_org_clean %>% filter(Org %in% c((input$OrgDem)))
-    
-    summary_plot(plhdata_org_clean_1, rp.contact.field.household_adults)
-    })
-  
+    summary_plot_baseline$`Household adults`
+    #plhdata_org_clean_1 <- plhdata_org_clean %>% filter(Org %in% c((input$OrgDem)))
+    #summary_plot(plhdata_org_clean_1, rp.contact.field.household_adults)
+  })
   output$table_household_adults <- shiny::renderTable({( table_household_adults())}, striped = TRUE)
   output$plot_household_adults <- renderPlotly({plot_household_adults()})
   
   #Teens in household plot and table
   table_household_teens <- reactive({
-    summary_table_baseline$`Household teens`
+    summary_table_baseline$`Household teens` %>% filter(Org %in% c((input$OrgDem)))
   }) 
-  plot_household_teens  <- reactive({summary_plot(plhdata_org_clean, rp.contact.field.household_teens) })
-  
+  plot_household_teens  <- reactive({
+    summary_plot_baseline$`Household teens`
+  })
   output$table_household_teens <- shiny::renderTable({( table_household_teens())}, striped = TRUE)
   output$plot_household_teens <- renderPlotly({plot_household_teens()})
   
   #Children in household plot and table
   table_household_children <- reactive({
-    summary_table_baseline$`Household children`
+    summary_table_baseline$`Household children` %>% filter(Org %in% c((input$OrgDem)))
   }) 
-  plot_household_children  <- reactive({summary_plot(plhdata_org_clean, rp.contact.field.household_children) })
-  
+  plot_household_children  <- reactive({
+    summary_plot_baseline$`Household children`
+    })
   output$table_household_children <- shiny::renderTable({( table_household_children())}, striped = TRUE)
   output$plot_household_children <- renderPlotly({plot_household_children()})
   
   #Babies in household plot and table
   table_household_babies <- reactive({
-    summary_table_baseline$`Household babies`
+    summary_table_baseline$`Household babies` %>% filter(Org %in% c((input$OrgDem)))
   }) 
-  plot_household_babies  <- reactive({summary_plot(plhdata_org_clean, rp.contact.field.household_babies) })
-  
+  plot_household_babies  <- reactive({
+    summary_plot_baseline$`Household babies` # + facet_wrap(. ~ Org)
+  })
   output$table_household_babies <- shiny::renderTable({( table_household_babies())}, striped = TRUE)
   output$plot_household_babies <- renderPlotly({plot_household_babies()})
-  
   
   ### Former format with testdata
   # table_child_type <- reactive({
@@ -1221,7 +1231,6 @@ server <- function(input, output) {
   # 
   # output$table_child_type <- shiny::renderTable({(table_child_type())}, striped = TRUE)
   # output$plot_child_type <- renderPlotly({plot_child_type()})
-  
   
   #SECOND Tab Workshop Data
   
@@ -1242,7 +1251,7 @@ server <- function(input, output) {
   #1
   table_w_self_care <- reactive({
     summary_table_completion_level$`Self Care` %>% filter(Org %in% c((input$OrgWS))) })
-  plot_w_self_care <- reactive({ summary_plot(plhdata_org_clean, rp.contact.field.w_self_care_completion_level, replace = "rp.contact.field.w_") }) 
+  plot_w_self_care <- reactive({ summary_plot(plhdata_org_clean, "rp.contact.field.w_self_care_completion_level", replace = "rp.contact.field.w_") }) 
   output$table_w_self_care <- shiny::renderTable({(table_w_self_care())}, striped = TRUE)
   output$plot_w_self_care <- renderPlotly({plot_w_self_care()})
   
@@ -1250,7 +1259,7 @@ server <- function(input, output) {
   table_w_1on1 <- reactive({
     summary_table_completion_level$`One-on-one Time` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_1on1<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_1on1_completion_level, replace = "rp.contact.field.w_", plot_type = "boxplot")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_1on1_completion_level", replace = "rp.contact.field.w_", plot_type = "boxplot")
   }) 
   output$table_w_1on1 <- shiny::renderTable({(table_w_1on1())}, striped = TRUE)
   output$plot_w_1on1 <- renderPlotly({plot_w_1on1()})
@@ -1258,7 +1267,7 @@ server <- function(input, output) {
   table_w_praise <- reactive({
     summary_table_completion_level$Praise %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_praise<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_praise_completion_level, replace = "rp.contact.field.w_", plot_type = "boxplot")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_praise_completion_level", replace = "rp.contact.field.w_", plot_type = "boxplot")
   }) 
   output$table_w_praise <- shiny::renderTable({(table_w_praise())}, striped = TRUE)
   output$plot_w_praise <- renderPlotly({plot_w_praise()})
@@ -1266,7 +1275,7 @@ server <- function(input, output) {
   table_w_instruct <- reactive({
     summary_table_completion_level$`Positive Instructions` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_instruct<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_instruct_completion_level, replace = "rp.contact.field.w_")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_instruct_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_instruct <- shiny::renderTable({(table_w_instruct())}, striped = TRUE)
   output$plot_w_instruct <- renderPlotly({plot_w_instruct()})
@@ -1274,7 +1283,7 @@ server <- function(input, output) {
   table_w_stress <- reactive({
     summary_table_completion_level$`Managing Stress` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_stress<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_stress_completion_level, replace = "rp.contact.field.w_")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_stress_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_stress <- shiny::renderTable({(table_w_stress())}, striped = TRUE)
   output$plot_w_stress <- renderPlotly({plot_w_stress()})
@@ -1282,7 +1291,7 @@ server <- function(input, output) {
   table_w_money <- reactive({
     summary_table_completion_level$`Family Budgets` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_money<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_money_completion_level, replace = "rp.contact.field.w_")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_money_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_money <- shiny::renderTable({(table_w_money())}, striped = TRUE)
   output$plot_w_money <- renderPlotly({plot_w_money()})
@@ -1290,7 +1299,7 @@ server <- function(input, output) {
   table_w_rules <- reactive({
     summary_table_completion_level$Rules %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_rules<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_rules_completion_level, replace = "rp.contact.field.w_")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_rules_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_rules <- shiny::renderTable({(table_w_rules())}, striped = TRUE)
   output$plot_w_rules <- renderPlotly({plot_w_rules()})
@@ -1298,7 +1307,7 @@ server <- function(input, output) {
   table_w_consequence <- reactive({
     summary_table_completion_level$`Calm Consequences` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_consequence <- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_consequence_completion_level, replace = "rp.contact.field.w_")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_consequence_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_consequence <- shiny::renderTable({(table_w_consequence())}, striped = TRUE)
   output$plot_w_consequence <- renderPlotly({plot_w_consequence()})
@@ -1306,7 +1315,7 @@ server <- function(input, output) {
   table_w_solve <- reactive({
     summary_table_completion_level$`Problem Solving` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_solve<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_solve_completion_level, replace = "rp.contact.field.w_")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_solve_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_solve <- shiny::renderTable({(table_w_solve())}, striped = TRUE)
   output$plot_w_solve <- renderPlotly({plot_w_solve()})
@@ -1314,7 +1323,7 @@ server <- function(input, output) {
   table_w_safe <- reactive({
     summary_table_completion_level$`Teen Safety` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_safe<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_safe_completion_level, replace = "rp.contact.field.w_")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_safe_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_safe <- shiny::renderTable({(table_w_safe())}, striped = TRUE)
   output$plot_w_safe <- renderPlotly({plot_w_safe()})
@@ -1322,7 +1331,7 @@ server <- function(input, output) {
   table_w_crisis <- reactive({
     summary_table_completion_level$`Dealing with Crisis` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_crisis<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_crisis_completion_level, replace = "rp.contact.field.w_")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_crisis_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_crisis <- shiny::renderTable({(table_w_crisis())}, striped = TRUE)
   output$plot_w_crisis <- renderPlotly({plot_w_crisis()})
@@ -1330,7 +1339,7 @@ server <- function(input, output) {
   table_w_celebrate <- reactive({
     summary_table_completion_level$`Celebration & Next Steps` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_celebrate<- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.w_celebrate_completion_level, replace = "rp.contact.field.w_")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_celebrate_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_celebrate <- shiny::renderTable({(table_w_celebrate())}, striped = TRUE)
   output$plot_w_celebrate <- renderPlotly({plot_w_celebrate()})
@@ -1363,7 +1372,7 @@ server <- function(input, output) {
   table_pp_relax <- reactive({
     summary_table_habits_all$`Relax` %>% filter(Org %in% c((input$OrgPP))) }) 
   plot_pp_relax  <- reactive({
-    summary_plot(plhdata_org_clean, rp.contact.field.parent_point_count_relax, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")
+    summary_plot_habits_all$`Relax`
   }) 
   output$table_pp_relax <- shiny::renderTable({(table_pp_relax())}, striped = TRUE)
   output$plot_pp_relax <- renderPlotly({plot_pp_relax()})

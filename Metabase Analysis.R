@@ -8,6 +8,7 @@ plhdata_org <- get_user_data(merge_check = FALSE) # select 1 if you want to merg
 # replace missing values in Organisation and rp.contact.field.organisation_code by Miss so that it is a factor level
 plhdata_org$Organisation <- forcats::as_factor(tidyr::replace_na(plhdata_org$Organisation, "Miss"))
 
+
 # Question: What about "null"?
 plhdata_org$rp.contact.field.organisation_code <- forcats::as_factor(tidyr::replace_na(plhdata_org$rp.contact.field.organisation_code, "Miss"))
 

@@ -161,22 +161,13 @@ summary_table_baseline$`App version`
 summary_table_baseline$`Do workshops together`
 summary_table_baseline$`Household adults`
 
-summary_table_baseline$`User gender`  %>% filter(Org %in% c(("Dlalanathi"))) %>%
-  pivot_wider(names_from = `User gender`, values_from = N)
+#summary_table_baseline$`User gender`  %>% filter(Org %in% c(("Dlalanathi"))) %>%
+#  pivot_wider(names_from = `User gender`, values_from = N)
 
-
-#plots - commented out ones don't work because colums are read as strings (quotes around variables in data_baseline_survey)
-# summary_plot_baseline <- plhdata_org_clean %>%
-#   map(.x = data_baseline_survey, .f = ~summary_plot(columns_to_summarise = .x))
-# names(summary_plot_baseline) <- baseline_names_neat
-# summary_plot_baseline$`User gender`
-
-summary_plot(plhdata_org_clean, rp.contact.field.user_gender)
-summary_plot(plhdata_org_clean, rp.contact.field.household_adults,  plot_type = "histogram")
-summary_plot(plhdata_org_clean, rp.contact.field.household_teens)
-summary_plot(plhdata_org_clean, rp.contact.field.household_children)
-summary_plot(plhdata_org_clean, rp.contact.field.household_babies)
-
+summary_plot_baseline <- plhdata_org_clean %>%
+  map(.x = data_baseline_survey, .f = ~summary_plot(columns_to_summarise = .x))
+names(summary_plot_baseline) <- baseline_names_neat
+summary_plot_baseline$`Survey welcome completed`
 
 
 ###Completion status of baseline survey
@@ -310,6 +301,11 @@ summary_table_habits_all$`Breathe`
 summary_table_habits_all$`Money`
 summary_table_habits_all$`Consequence`
 summary_table_habits_all$`Safe`
+
+summary_plot_habits_all <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_all, .f = ~summary_plot(columns_to_summarise = .x, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot"))
+names(summary_plot_habits_all) <- data_habit_parent_points_all_neat
+summary_plot_habits_all$Relax
 
 summary_table_habits_self_care <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_self_care, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
@@ -508,6 +504,10 @@ completion_vars <- c("Self Care", "One-on-one Time", "Praise", "Positive Instruc
 summary_table_completion_level <- plhdata_org_clean %>%
   map(.x = data_completion_level, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
 names(summary_table_completion_level) <- completion_vars
+
+summary_plot_completion_level <- plhdata_org_clean %>%
+  map(.x = data_completion_level, .f = ~summary_plot(columns_to_summarise = .x))
+names(summary_plot_completion_level) <- completion_vars
 
 # then to access a table:
 summary_table_completion_level$`Self Care`

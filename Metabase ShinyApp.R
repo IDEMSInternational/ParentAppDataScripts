@@ -391,6 +391,9 @@ ui <- dashboardPage(skin = "blue",
                                                          inline = TRUE
                                       ))),
                                 
+                                tabsetPanel(type = "tabs",
+                                            tabPanel("Cumulative Parent Points",
+                                
                                 fluidRow(
                                   box(width = 12,
                                       collapsible = FALSE,
@@ -512,6 +515,192 @@ ui <- dashboardPage(skin = "blue",
                                       shiny::tableOutput("table_pp_safe")
                                   ) #closes box
                                 ) #closes fluid row
+                                            ), #closes and tab panel
+                                
+                                tabPanel("Relax", #pp1
+                                         
+                                         fluidRow(
+                                           box(width = 12,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Average Relax Points per Workshop Week",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_ws_totals", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_ws_totals")
+                                           )#closes box
+                                         ), #closes fluid row
+                                         
+                                         fluidRow(
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 1: Welcome and Self-Care",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_self_care", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_self_care")
+                                           ), #closes box
+                                           
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 2: One-on-One Time",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_1on1", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_1on1")
+                                           ) #closes box
+                                         ), #closes fluid row
+                                         
+                                         fluidRow(
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 3: Praise",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_praise", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_praise")
+                                           ), #closes box
+                                           
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 4: Positive Instructions",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_instruct", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_instruct")
+                                           ) #closes box
+                                         ), #closes fluid row
+                                         
+                                         fluidRow(
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 5: Managing Stress",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_stress", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_stress")
+                                           ), #closes box
+                                           
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 6: Family Budgets",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_money", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_money")
+                                           ) #closes box
+                                         ), #closes fluid row
+                                         
+                                         fluidRow(
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 7: Rules",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_rules", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_rules")
+                                           ), #closes box
+                                           
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 8: Calm Consequences",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_consequence", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_consequence")
+                                           ) #closes box
+                                         ), #closes fluid row
+                                         
+                                         fluidRow(
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 9: Problem Solving",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_solve", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_solve")
+                                           ), #closes box
+                                           
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 10: Teen Safety",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_safe", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_safe")
+                                           ) #closes box
+                                         ), #closes fluid row
+                                         
+                                         fluidRow(
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 11: Dealing with Crisis",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_crisis", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_crisis")
+                                           ), #closes box
+                                           
+                                           box(width = 6,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Relax Points in Workshop 12: Celebration and Next Steps",
+                                               status = "warning",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_pp_relax_w_celebrate", height = "240"),
+                                               shiny::tableOutput("table_pp_relax_w_celebrate")
+                                           ) #closes box
+                                         ) #closes fluid row
+                                         
+                                ), #closes tab panel pp1 relax
+                                
+                                tabPanel("Treat", #pp2
+                                         
+                                ), #closes tab panel pp2 treat yourself well
+                                
+                                tabPanel("Praise Self", #pp3 praise yourself
+                                         
+                                ), #closes tab panel pp3 praise yourself
+                                
+                                tabPanel("1-on-1",  #pp4 spend time together
+                                         
+                                ), #closes tab panel pp4 spend time together
+                                
+                                tabPanel("Praise Teen", #pp5
+                                         
+                                ), #closes tab panel pp5 praise teen
+                                
+                                tabPanel("Positive", #pp6 get positive
+                                         
+                                ), #closes tab panel pp6 get positive
+                                
+                                tabPanel("Breathe", #pp7 breathe not yell
+                                         
+                                ), #closes tab panel pp7 breathe not yell
+                                
+                                tabPanel("Money", #pp8 good money choice
+                                         
+                                ), #closes tab panel pp8 good money choice
+                                
+                                tabPanel("Consequence", #pp9 calm consequence
+                                         
+                                ), #closes tab panel pp9 calm consequence
+                                
+                                tabPanel("Safe",  #pp10 safe
+                                         
+                                ) #closes tab panel pp10 safe
+                                ) #closes tabset panel         
                         ), # closes third tabItem
                         
                         #FOURTH tab content
@@ -664,6 +853,7 @@ ui <- dashboardPage(skin = "blue",
                                                            solidHeader = TRUE,
                                                            title = "Days of attention",
                                                            status = "danger",  
+                                                           h5("How many days in the past week were you able to give them your attention and do something that they enjoyed with them? [0-7]"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_attention", height = "240"),
                                                            shiny::tableOutput("table_sv1_attention")
@@ -673,7 +863,8 @@ ui <- dashboardPage(skin = "blue",
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
                                                            title = "Days of praise",
-                                                           status = "danger",  
+                                                           status = "danger",
+                                                           h5("How many days in the past week have you praised your teen? [0-7]"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_praise", height = "240"),
                                                            shiny::tableOutput("table_sv1_praise")
@@ -686,6 +877,7 @@ ui <- dashboardPage(skin = "blue",
                                                            solidHeader = TRUE,
                                                            title = "Days of stress",
                                                            status = "danger",  
+                                                           h5("How many days in the past week did you feel very stressed as a parent/caregiver? [0-7]"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_stress", height = "240"),
                                                            shiny::tableOutput("table_sv1_stress")
@@ -695,7 +887,7 @@ ui <- dashboardPage(skin = "blue",
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
                                                            title = "Days of shouting",
-                                                           status = "danger",  
+                                                           h5("How many days in the past week did you shout, scream or yell at your teen? [0-7]"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_shout", height = "240"),
                                                            shiny::tableOutput("table_sv1_shout")
@@ -708,6 +900,7 @@ ui <- dashboardPage(skin = "blue",
                                                            solidHeader = TRUE,
                                                            title = "Days of money worries",
                                                            status = "danger",  
+                                                           h5("How many days in the past week have you worried or felt anxious about money? [0-7]"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_money", height = "240"),
                                                            shiny::tableOutput("table_sv1_money")
@@ -718,6 +911,7 @@ ui <- dashboardPage(skin = "blue",
                                                            solidHeader = TRUE,
                                                            title = "Days out of food money (last month)",
                                                            status = "danger",  
+                                                           h5("How many days in the past month (30 days) did you run out of money to pay for food? [0-30]"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_food_money", height = "240"),
                                                            shiny::tableOutput("table_sv1_food_money")
@@ -729,7 +923,8 @@ ui <- dashboardPage(skin = "blue",
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
                                                            title = "Days of hitting",
-                                                           status = "danger",  
+                                                           status = "danger", 
+                                                           h5("In the past week, did you physically discipline your children by hitting, spanking, or slapping with your hand or an object like a stick or a belt? [0-7]"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_hitting", height = "240"),
                                                            shiny::tableOutput("table_sv1_hitting")
@@ -739,7 +934,9 @@ ui <- dashboardPage(skin = "blue",
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
                                                            title = "Days with knowledge of teen activity",
-                                                           status = "danger",  
+                                                           status = "danger", 
+                                                           h5("How many days in the past week did you know what your teen was doing and who they were with? [0-7]"),
+                                                           #h7("NB next question only asked if this one is answered with '7'"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_week_teen_activity", height = "240"),
                                                            shiny::tableOutput("table_sv1_week_teen_activity")
@@ -751,7 +948,9 @@ ui <- dashboardPage(skin = "blue",
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
                                                            title = "Lockdown",
-                                                           status = "danger",  
+                                                           status = "danger",
+                                                           h5("Were you in lockdown this week? [Yes/No]"),
+                                                           #h7("NB next question only asked if this one is answered with 'Yes'"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_lockdown", height = "240"),
                                                            shiny::tableOutput("table_sv1_lockdown")
@@ -761,7 +960,9 @@ ui <- dashboardPage(skin = "blue",
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
                                                            title = "Non-lockdown knowledge of teen activity",
-                                                           status = "danger",  
+                                                           status = "danger",
+                                                           h5("How many days in a typical non-lockdown week do you know what your teen is doing and who they are with? [0-7]"),
+                                                           #h7("NB this question is only asked if the parent said they had knowledge 7/7 days and then indicated that it was a lockdown week"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_reg_teen_activity", height = "240"),
                                                            shiny::tableOutput("table_sv1_reg_teen_activity")
@@ -774,6 +975,7 @@ ui <- dashboardPage(skin = "blue",
                                                            solidHeader = TRUE,
                                                            title = "Days of sexual safety talk (last month)",
                                                            status = "danger",  
+                                                           h5("How many days in the past month (30 days) did you talk with your teen about keeping safe from sexual violence online or offline? This could be when they are going out with friends, or talking about the websites they use. [0-30, steps of 5]"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_sex_talk", height = "240"),
                                                            shiny::tableOutput("table_sv1_sex_talk")
@@ -783,7 +985,8 @@ ui <- dashboardPage(skin = "blue",
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
                                                            title = "Days of COVID safe teenager behaviour",
-                                                           status = "danger",  
+                                                           status = "danger", 
+                                                           h5("How many days last week did your teenager stay safe through wearing a mask, keeping a distance from people and keeping away from crowded places? [0-7]"),
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_sv1_covid_safe", height = "240"),
                                                            shiny::tableOutput("table_sv1_covid_safe")
@@ -792,7 +995,7 @@ ui <- dashboardPage(skin = "blue",
                                             ), #closes baseline tab panel
                                             
                                             
-                                            tabPanel("Midline survey",
+                                            tabPanel("Endline survey",
                                                      fluidRow(
                                                        box(width = 12,
                                                            checkboxGroupInput(inputId = "OrgSV2",
@@ -841,7 +1044,7 @@ ui <- dashboardPage(skin = "blue",
                                 
                                 fluidRow(
                                   box(width = 12,
-                                      checkboxGroupInput(inputId = "OrgSV2",
+                                      checkboxGroupInput(inputId = "OrgLB",
                                                          label = "Organisations to show:",
                                                          choices = c("Amathuba" = "Amathuba",
                                                                      "Dlalanathi" = "Dlalanathi",
@@ -849,7 +1052,25 @@ ui <- dashboardPage(skin = "blue",
                                                                      "Nontobeko" = "Nontobeko"),
                                                          selected = c("Amathuba","Dlalanathi",
                                                                       "Joy","Nontobeko")
-                                      ))) #closes fluidRow
+                                      ))), #closes fluidRow
+                                
+                                tabsetPanel(type = "tabs",
+                                            tabPanel("Main Option 1",
+                                            
+                                                     tabsetPanel(type = "tabs",
+                                                                 tabPanel("Sub Option 1",
+                                                                 ), #closes Tab panel
+                                                                 
+                                                                 tabPanel("Sub Option 2",
+                                                                 ) #closes Tab panel
+                                                                 
+                                                     ) #closes Sub tabset panel      
+                                                     
+                                                     ), #closes Tab panel
+                                            
+                                            tabPanel("Main Option 2",
+                                            ) #closes Tab panel
+                                ) #closes mains tabset panel
                         ) #closes sixth tab item
                       ) # closes tabItems
                     ) # closes dashboardBody
@@ -869,16 +1090,16 @@ server <- function(input, output) {
                              color = "aqua")})
   output$myvaluebox2 <- shinydashboard::renderValueBox({
     shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Amathuba")), subtitle = "Amathuba", icon = icon("user"),
-                              color = "yellow")})
+                              color = "navy")})
   output$myvaluebox3 <- shinydashboard::renderValueBox({
     shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Dlalanathi")), subtitle = "Dlalanathi", icon = icon("user"),
-                              color = "red")})
+                              color = "teal")})
   output$myvaluebox4 <- shinydashboard::renderValueBox({
     shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Joy")), subtitle = "Joy", icon = icon("user"),
                               color = "purple")})
   output$myvaluebox5 <- shinydashboard::renderValueBox({
     shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Nontobeko")), subtitle = "Nontobeko", icon = icon("user"),
-                              color = "teal")})
+                              color = "olive")})
   
   
   #FIRST tab DEMOGRAPHICS
@@ -1142,15 +1363,10 @@ server <- function(input, output) {
   table_pp_relax <- reactive({
     summary_table_habits_all$`Relax` %>% filter(Org %in% c((input$OrgPP))) }) 
   plot_pp_relax  <- reactive({
-    #summary_plot()
-    # table_long <- pivot_longer(summary_table_habits_all$`Relax`, cols = !Org, names_to = "Relax Points", values_to = "Value") %>%
-    #   filter(`Relax Points` != "Total")
-    # ggplot(table_long, aes(x = Org, y = Value, fill = `Relax Points`)) +
-    #   geom_bar(stat = "identity", position = "dodge") +
-    #   viridis::scale_fill_viridis(discrete = TRUE)
+    summary_plot(plhdata_org_clean, rp.contact.field.parent_point_count_relax, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")
   }) 
   output$table_pp_relax <- shiny::renderTable({(table_pp_relax())}, striped = TRUE)
-  output$plot_pp_relax <- renderPlotly({plot_pp_relax})
+  output$plot_pp_relax <- renderPlotly({plot_pp_relax()})
   
   # pp_treat_yourself
   table_pp_treat_yourself <- reactive({
@@ -1252,7 +1468,7 @@ server <- function(input, output) {
     summary_table_survey_past_week$Attention %>% filter(Org %in% c((input$OrgPP))) }) 
   plot_sv1_attention  <- reactive({
   }) 
-  output$table_sv1_attention <- shiny::renderTable({(table_sv1_attention())}, striped = TRUE)
+  output$table_sv1_attention <- shiny::renderTable({(table_sv1_attention())}, striped = TRUE, caption = "Exact question 1 wording from survey")
   output$plot_sv1_attention <- renderPlotly({plot_sv1_attention})
   
   # sv1_praise

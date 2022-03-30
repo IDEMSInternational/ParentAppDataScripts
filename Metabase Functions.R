@@ -234,7 +234,7 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
 summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_convention = TRUE, replace = "rp.contact.field.",
                          plot_type = c("histogram", "boxplot")) {	
   plot_type <- match.arg(plot_type)
-  x_axis_label = naming_conventions(colnames(data%>%select({{columns_to_summarise}})), replace = replace)	
+  x_axis_label = naming_conventions(colnames(data%>%select(.data[[columns_to_summarise]])), replace = replace)	
   
   return_plot <- ggplot(data) +	
     viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +	
@@ -242,9 +242,9 @@ summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_
     theme_classic()	
   
   if(plot_type == "histogram"){
-    return_plot <- return_plot + geom_histogram(data = data, aes(x = {{columns_to_summarise}}), stat = "count")
+    return_plot <- return_plot + geom_histogram(data = data, aes(x = .data[[columns_to_summarise]]), stat = "count")
   } else {
-    return_plot <- return_plot + geom_boxplot(data = data, aes(y = {{columns_to_summarise}}))
+    return_plot <- return_plot + geom_boxplot(data = data, aes(y = .data[[columns_to_summarise]]))
   }
   
   return(return_plot)	

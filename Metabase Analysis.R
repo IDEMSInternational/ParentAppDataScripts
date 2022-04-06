@@ -94,6 +94,7 @@ plhdata_org_clean$rp.contact.field.app_launch_count <- as.numeric(plhdata_org_cl
 
 plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
 
+plhdata_org_clean$rp.contact.field.first_app_open <- as.Date(plhdata_org_clean$rp.contact.field.first_app_open)
 
 # Write clean data back -------------------------------------------------------
 
@@ -194,7 +195,52 @@ summary_table(columns_to_summarise = rp.contact.field._app_language, replace = "
 user_id_print("rp.contact.field._app_language")
 # TODO: factor levels? that should be done in cleaning step.
 
-# HABITS ------------------------------------------------------------------------------------
+#Define workshop week order
+week_order <- c("Self care", "1on1", "Praise", "Instruct", "Stress", "Money", "Rules", "Consequence", "Solve", "Safe",
+                "Crisis", "Celebrate" )
+
+
+#Each habit across workshop weeks
+#relax points in each week
+relax_workshop_vars <- c("rp.contact.field.parent_point_count_relax_w_1on1",
+                         "rp.contact.field.parent_point_count_relax_w_consequence", "rp.contact.field.parent_point_count_relax_w_stress",
+                         "rp.contact.field.parent_point_count_relax_w_crisis", "rp.contact.field.parent_point_count_relax_w_safe", 
+                         "rp.contact.field.parent_point_count_relax_w_self_care", "rp.contact.field.parent_point_count_relax_w_praise",
+                         "rp.contact.field.parent_point_count_relax_w_solve", "rp.contact.field.parent_point_count_relax_w_instruct",
+                         "rp.contact.field.parent_point_count_relax_w_rules", "rp.contact.field.parent_point_count_relax_w_celebrate",
+                         "rp.contact.field.parent_point_count_relax_w_money")
+
+# relax
+# treat_yourself
+# praise_yourself
+# spend_time
+# praise_teen
+# instruct_positively
+# breathe
+# money
+# consequence
+# safe
+
+#Code moved to RSHiny file in order to be able to filter by Org
+#Average relax parent points
+summary_relax_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(relax_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_relax_workshop) <- naming_conventions(colnames(summary_relax_workshop), "rp.contact.field.parent_point_count_relax_w_")
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_relax_workshop_long <- summary_relax_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+
+# Run the plot
+ggplot(summary_relax_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
+  geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  geom_line() + labs(x = "Workshop week", y = "Number of points")
+
+
+
+# HABITS by workshop week ------------------------------------------------------------------------------------
 data_habit_parent_points_all <- c("rp.contact.field.parent_point_count_relax", "rp.contact.field.parent_point_count_treat_yourself",
                                   "rp.contact.field.parent_point_count_praise_yourself", "rp.contact.field.parent_point_count_spend_time",
                                   "rp.contact.field.parent_point_count_praise_teen", "rp.contact.field.parent_point_count_instruct_positively", "rp.contact.field.parent_point_count_breathe",
@@ -291,21 +337,22 @@ data_habit_parent_points_w_celebrate_neat <- naming_conventions(data_habit_paren
 summary_table_habits_all <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_all, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_all) <- data_habit_parent_points_all_neat
-summary_table_habits_all$`Relax`
-summary_table_habits_all$`Treat yourself`
-summary_table_habits_all$`Praise yourself`
-summary_table_habits_all$`Spend time`
-summary_table_habits_all$`Praise teen`
-summary_table_habits_all$`Instruct positively`
-summary_table_habits_all$`Breathe`
-summary_table_habits_all$`Money`
-summary_table_habits_all$`Consequence`
-summary_table_habits_all$`Safe`
+# summary_table_habits_all$`Relax`
+# summary_table_habits_all$`Treat yourself`
+# summary_table_habits_all$`Praise yourself`
+# summary_table_habits_all$`Spend time`
+# summary_table_habits_all$`Praise teen`
+# summary_table_habits_all$`Instruct positively`
+# summary_table_habits_all$`Breathe`
+# summary_table_habits_all$`Money`
+# summary_table_habits_all$`Consequence`
+# summary_table_habits_all$`Safe`
 
 summary_plot_habits_all <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_all, .f = ~summary_plot(columns_to_summarise = .x, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot"))
 names(summary_plot_habits_all) <- data_habit_parent_points_all_neat
 summary_plot_habits_all$Relax
+
 
 summary_table_habits_self_care <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_self_care, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
@@ -320,6 +367,13 @@ summary_table_habits_self_care$`Breathe`
 summary_table_habits_self_care$`Money`
 summary_table_habits_self_care$`Consequence`
 summary_table_habits_self_care$`Safe`
+
+summary_plot_habits_self_care <- plhdata_org_clean %>%
+  map(.x = data_habit_parent_points_w_self_care, .f = ~summary_plot(columns_to_summarise = .x, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot"))
+names(summary_plot_habits_self_care) <- data_habit_parent_points_w_self_care_neat
+
+summary_plot_habits_self_care$Relax
+
 
 summary_table_habits_1on1 <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_1on1, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))

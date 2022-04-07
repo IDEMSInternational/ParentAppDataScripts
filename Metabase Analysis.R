@@ -30,7 +30,8 @@ plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full,
                                            `Joy.Miss` = "Joy", `Joy.c9097349f34b364c` ="Joy", `Joy.null` ="Joy",
                                            `Dlalanathi.Miss` = "Dlalanathi",  `Dlalanathi.null` = "Dlalanathi", `Miss.dlalanathiThandeka` = "Dlalanathi",  `Dlalanathi.dlanathiThandeka` ="Dlalanathi",
                                            `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", 
-                                           `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba", `Miss.dlalanathi`="Dlalanathi" ))
+                                           `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba", `Miss.dlalanathi`="Dlalanathi",
+                                           `Miss.organisation_1` = "Other", `Miss.organisation_2` = "Other",`Miss.organisation_6` = "Other"))
 
 # so do the Miss. to Other first: [no longer commented out 14 March '22 by Margherita]
 # plhdata_org <- plhdata_org %>%
@@ -202,42 +203,112 @@ week_order <- c("Self care", "1on1", "Praise", "Instruct", "Stress", "Money", "R
 
 #Each habit across workshop weeks
 #relax points in each week
-relax_workshop_vars <- c("rp.contact.field.parent_point_count_relax_w_1on1",
-                         "rp.contact.field.parent_point_count_relax_w_consequence", "rp.contact.field.parent_point_count_relax_w_stress",
-                         "rp.contact.field.parent_point_count_relax_w_crisis", "rp.contact.field.parent_point_count_relax_w_safe", 
-                         "rp.contact.field.parent_point_count_relax_w_self_care", "rp.contact.field.parent_point_count_relax_w_praise",
-                         "rp.contact.field.parent_point_count_relax_w_solve", "rp.contact.field.parent_point_count_relax_w_instruct",
-                         "rp.contact.field.parent_point_count_relax_w_rules", "rp.contact.field.parent_point_count_relax_w_celebrate",
-                         "rp.contact.field.parent_point_count_relax_w_money")
+relax_workshop_vars <- c( "rp.contact.field.parent_point_count_relax_w_self_care", "rp.contact.field.parent_point_count_relax_w_1on1",
+                          "rp.contact.field.parent_point_count_relax_w_praise", "rp.contact.field.parent_point_count_relax_w_instruct",
+                          "rp.contact.field.parent_point_count_relax_w_stress", "rp.contact.field.parent_point_count_relax_w_money",
+                          "rp.contact.field.parent_point_count_relax_w_rules", "rp.contact.field.parent_point_count_relax_w_consequence",
+                          "rp.contact.field.parent_point_count_relax_w_solve", "rp.contact.field.parent_point_count_relax_w_safe",
+                          "rp.contact.field.parent_point_count_relax_w_crisis","rp.contact.field.parent_point_count_relax_w_celebrate")
+# treat_yourself points in each week
+treat_yourself_workshop_vars <- c( "rp.contact.field.parent_point_count_treat_yourself_w_self_care", "rp.contact.field.parent_point_count_treat_yourself_w_1on1",
+                          "rp.contact.field.parent_point_count_treat_yourself_w_praise", "rp.contact.field.parent_point_count_treat_yourself_w_instruct",
+                          "rp.contact.field.parent_point_count_treat_yourself_w_stress", "rp.contact.field.parent_point_count_treat_yourself_w_money",
+                          "rp.contact.field.parent_point_count_treat_yourself_w_rules", "rp.contact.field.parent_point_count_treat_yourself_w_consequence",
+                          "rp.contact.field.parent_point_count_treat_yourself_w_solve", "rp.contact.field.parent_point_count_treat_yourself_w_safe",
+                          "rp.contact.field.parent_point_count_treat_yourself_w_crisis","rp.contact.field.parent_point_count_treat_yourself_w_celebrate")
+# praise_yourself points in each week
+praise_yourself_workshop_vars <- c( "rp.contact.field.parent_point_count_praise_yourself_w_self_care", "rp.contact.field.parent_point_count_praise_yourself_w_1on1",
+                          "rp.contact.field.parent_point_count_praise_yourself_w_praise", "rp.contact.field.parent_point_count_praise_yourself_w_instruct",
+                          "rp.contact.field.parent_point_count_praise_yourself_w_stress", "rp.contact.field.parent_point_count_praise_yourself_w_money",
+                          "rp.contact.field.parent_point_count_praise_yourself_w_rules", "rp.contact.field.parent_point_count_praise_yourself_w_consequence",
+                          "rp.contact.field.parent_point_count_praise_yourself_w_solve", "rp.contact.field.parent_point_count_praise_yourself_w_safe",
+                          "rp.contact.field.parent_point_count_praise_yourself_w_crisis","rp.contact.field.parent_point_count_praise_yourself_w_celebrate")
+# spend_time points in each week
+spend_time_workshop_vars <- c( "rp.contact.field.parent_point_count_spend_time_w_self_care", "rp.contact.field.parent_point_count_spend_time_w_1on1",
+                         "rp.contact.field.parent_point_count_spend_time_w_praise", "rp.contact.field.parent_point_count_spend_time_w_instruct",
+                         "rp.contact.field.parent_point_count_spend_time_w_stress", "rp.contact.field.parent_point_count_spend_time_w_money",
+                         "rp.contact.field.parent_point_count_spend_time_w_rules", "rp.contact.field.parent_point_count_spend_time_w_consequence",
+                         "rp.contact.field.parent_point_count_spend_time_w_solve", "rp.contact.field.parent_point_count_spend_time_w_safe",
+                         "rp.contact.field.parent_point_count_spend_time_w_crisis","rp.contact.field.parent_point_count_spend_time_w_celebrate")
+# praise_teen in each week
+praise_teen_workshop_vars <- c( "rp.contact.field.parent_point_count_praise_teen_w_self_care", "rp.contact.field.parent_point_count_praise_teen_w_1on1",
+                         "rp.contact.field.parent_point_count_praise_teen_w_praise", "rp.contact.field.parent_point_count_praise_teen_w_instruct",
+                         "rp.contact.field.parent_point_count_praise_teen_w_stress", "rp.contact.field.parent_point_count_praise_teen_w_money",
+                         "rp.contact.field.parent_point_count_praise_teen_w_rules", "rp.contact.field.parent_point_count_praise_teen_w_consequence",
+                         "rp.contact.field.parent_point_count_praise_teen_w_solve", "rp.contact.field.parent_point_count_praise_teen_w_safe",
+                         "rp.contact.field.parent_point_count_praise_teen_w_crisis","rp.contact.field.parent_point_count_praise_teen_w_celebrate")
+# instruct_positively points in each week
+instruct_positively_workshop_vars <- c( "rp.contact.field.parent_point_count_instruct_positively_w_self_care", "rp.contact.field.parent_point_count_instruct_positively_w_1on1",
+                         "rp.contact.field.parent_point_count_instruct_positively_w_praise", "rp.contact.field.parent_point_count_instruct_positively_w_instruct",
+                         "rp.contact.field.parent_point_count_instruct_positively_w_stress", "rp.contact.field.parent_point_count_instruct_positively_w_money",
+                         "rp.contact.field.parent_point_count_instruct_positively_w_rules", "rp.contact.field.parent_point_count_instruct_positively_w_consequence",
+                         "rp.contact.field.parent_point_count_instruct_positively_w_solve", "rp.contact.field.parent_point_count_instruct_positively_w_safe",
+                         "rp.contact.field.parent_point_count_instruct_positively_w_crisis","rp.contact.field.parent_point_count_instruct_positively_w_celebrate")
+# breathe points in each week
+breathe_workshop_vars <- c( "rp.contact.field.parent_point_count_breathe_w_self_care", "rp.contact.field.parent_point_count_breathe_w_1on1",
+                         "rp.contact.field.parent_point_count_breathe_w_praise", "rp.contact.field.parent_point_count_breathe_w_instruct",
+                         "rp.contact.field.parent_point_count_breathe_w_stress", "rp.contact.field.parent_point_count_breathe_w_money",
+                         "rp.contact.field.parent_point_count_breathe_w_rules", "rp.contact.field.parent_point_count_breathe_w_consequence",
+                         "rp.contact.field.parent_point_count_breathe_w_solve", "rp.contact.field.parent_point_count_breathe_w_safe",
+                         "rp.contact.field.parent_point_count_breathe_w_crisis","rp.contact.field.parent_point_count_breathe_w_celebrate")
+# money points in each week
+money_workshop_vars <- c( "rp.contact.field.parent_point_count_money_w_self_care", "rp.contact.field.parent_point_count_money_w_1on1",
+                         "rp.contact.field.parent_point_count_money_w_praise", "rp.contact.field.parent_point_count_money_w_instruct",
+                         "rp.contact.field.parent_point_count_money_w_stress", "rp.contact.field.parent_point_count_money_w_money",
+                         "rp.contact.field.parent_point_count_money_w_rules", "rp.contact.field.parent_point_count_money_w_consequence",
+                         "rp.contact.field.parent_point_count_money_w_solve", "rp.contact.field.parent_point_count_money_w_safe",
+                         "rp.contact.field.parent_point_count_money_w_crisis","rp.contact.field.parent_point_count_money_w_celebrate")
+# consequence points in each week
+consequence_workshop_vars <- c( "rp.contact.field.parent_point_count_consequence_w_self_care", "rp.contact.field.parent_point_count_consequence_w_1on1",
+                         "rp.contact.field.parent_point_count_consequence_w_praise", "rp.contact.field.parent_point_count_consequence_w_instruct",
+                         "rp.contact.field.parent_point_count_consequence_w_stress", "rp.contact.field.parent_point_count_consequence_w_money",
+                         "rp.contact.field.parent_point_count_consequence_w_rules", "rp.contact.field.parent_point_count_consequence_w_consequence",
+                         "rp.contact.field.parent_point_count_consequence_w_solve", "rp.contact.field.parent_point_count_consequence_w_safe",
+                         "rp.contact.field.parent_point_count_consequence_w_crisis","rp.contact.field.parent_point_count_consequence_w_celebrate")
+# safe points in each week
+safe_workshop_vars <- c( "rp.contact.field.parent_point_count_safe_w_self_care", "rp.contact.field.parent_point_count_safe_w_1on1",
+                         "rp.contact.field.parent_point_count_safe_w_praise", "rp.contact.field.parent_point_count_safe_w_instruct",
+                         "rp.contact.field.parent_point_count_safe_w_stress", "rp.contact.field.parent_point_count_safe_w_money",
+                         "rp.contact.field.parent_point_count_safe_w_rules", "rp.contact.field.parent_point_count_safe_w_consequence",
+                         "rp.contact.field.parent_point_count_safe_w_solve", "rp.contact.field.parent_point_count_safe_w_safe",
+                         "rp.contact.field.parent_point_count_safe_w_crisis","rp.contact.field.parent_point_count_safe_w_celebrate")
 
-# relax
-# treat_yourself
-# praise_yourself
-# spend_time
-# praise_teen
-# instruct_positively
-# breathe
-# money
-# consequence
-# safe
 
-#Code moved to RSHiny file in order to be able to filter by Org
-#Average relax parent points
+#Average relax parent points pp1
 summary_relax_workshop <- plhdata_org_clean %>%
   group_by(Org) %>%
   summarise(across(relax_workshop_vars, mean, na.rm = TRUE))
 colnames(summary_relax_workshop) <- naming_conventions(colnames(summary_relax_workshop), "rp.contact.field.parent_point_count_relax_w_")
+summary_relax_workshop
 
 # Make the table longer so that it is in a format for use in ggplot
 summary_relax_workshop_long <- summary_relax_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_relax_workshop_long
 
-# Run the plot
+# Run the plot (#Code moved to RSHiny file in order to be able to filter by Org)
 ggplot(summary_relax_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
   geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_line() + labs(x = "Workshop week", y = "Number of points")
 
+#Average treat_yourself parent points pp2
+summary_treat_yourself_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(treat_yourself_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_treat_yourself_workshop) <- naming_conventions(colnames(summary_treat_yourself_workshop), "rp.contact.field.parent_point_count_relax_w_")
+summary_treat_yourself_workshop
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_treat_yourself_workshop_long <- summary_treat_yourself_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_treat_yourself_workshop_long
+
+# Run the plot (#Code moved to RSHiny file in order to be able to filter by Org)
+ggplot(summary_treat_yourself_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
+  geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  geom_line() + labs(x = "Workshop week", y = "Number of points")
 
 
 # HABITS by workshop week ------------------------------------------------------------------------------------
@@ -358,15 +429,15 @@ summary_table_habits_self_care <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_self_care, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_self_care) <- data_habit_parent_points_w_self_care_neat
 summary_table_habits_self_care$`Relax`
-summary_table_habits_self_care$`Treat yourself`
-summary_table_habits_self_care$`Praise yourself`
-summary_table_habits_self_care$`Spend time`
-summary_table_habits_self_care$`Praise teen`
-summary_table_habits_self_care$`Instruct positively`
-summary_table_habits_self_care$`Breathe`
-summary_table_habits_self_care$`Money`
-summary_table_habits_self_care$`Consequence`
-summary_table_habits_self_care$`Safe`
+# summary_table_habits_self_care$`Treat yourself`
+# summary_table_habits_self_care$`Praise yourself`
+# summary_table_habits_self_care$`Spend time`
+# summary_table_habits_self_care$`Praise teen`
+# summary_table_habits_self_care$`Instruct positively`
+# summary_table_habits_self_care$`Breathe`
+# summary_table_habits_self_care$`Money`
+# summary_table_habits_self_care$`Consequence`
+# summary_table_habits_self_care$`Safe`
 
 summary_plot_habits_self_care <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_self_care, .f = ~summary_plot(columns_to_summarise = .x, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot"))
@@ -379,29 +450,29 @@ summary_table_habits_1on1 <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_1on1, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_1on1) <- data_habit_parent_points_w_1on1_neat
 summary_table_habits_1on1$`Relax`
-summary_table_habits_1on1$`Treat yourself`
-summary_table_habits_1on1$`Praise yourself`
-summary_table_habits_1on1$`Spend time`
-summary_table_habits_1on1$`Praise teen`
-summary_table_habits_1on1$`Instruct positively`
-summary_table_habits_1on1$`Breathe`
-summary_table_habits_1on1$`Money`
-summary_table_habits_1on1$`Consequence`
-summary_table_habits_1on1$`Safe`
+# summary_table_habits_1on1$`Treat yourself`
+# summary_table_habits_1on1$`Praise yourself`
+# summary_table_habits_1on1$`Spend time`
+# summary_table_habits_1on1$`Praise teen`
+# summary_table_habits_1on1$`Instruct positively`
+# summary_table_habits_1on1$`Breathe`
+# summary_table_habits_1on1$`Money`
+# summary_table_habits_1on1$`Consequence`
+# summary_table_habits_1on1$`Safe`
 
 summary_table_habits_praise <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_praise, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_praise) <- data_habit_parent_points_w_praise_neat
 summary_table_habits_praise$`Relax`
-summary_table_habits_praise$`Treat yourself`
-summary_table_habits_praise$`Praise yourself`
-summary_table_habits_praise$`Spend time`
-summary_table_habits_praise$`Praise teen`
-summary_table_habits_praise$`Instruct positively`
-summary_table_habits_praise$`Breathe`
-summary_table_habits_praise$`Money`
-summary_table_habits_praise$`Consequence`
-summary_table_habits_praise$`Safe`
+# summary_table_habits_praise$`Treat yourself`
+# summary_table_habits_praise$`Praise yourself`
+# summary_table_habits_praise$`Spend time`
+# summary_table_habits_praise$`Praise teen`
+# summary_table_habits_praise$`Instruct positively`
+# summary_table_habits_praise$`Breathe`
+# summary_table_habits_praise$`Money`
+# summary_table_habits_praise$`Consequence`
+# summary_table_habits_praise$`Safe`
 
 summary_table_habits_instruct <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_instruct, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))

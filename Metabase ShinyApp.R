@@ -2448,7 +2448,7 @@ server <- function(input, output) {
     summary_table_baseline$` app language` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_language  <- reactive({
-    summary_plot_baseline$` app language`
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field._app_language", replace = "rp.contact.field._")
   }) 
   output$table_language <- shiny::renderTable({(table_language())}, striped = TRUE)
   output$plot_language <- renderPlotly({plot_language()})
@@ -2458,8 +2458,8 @@ server <- function(input, output) {
     summary_table_baseline$`Do workshops together` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_ws_format  <- reactive({
-    summary_plot_baseline$`Do workshops together`
-    }) 
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.do_workshops_together", replace = "rp.contact.field.")
+  }) 
   output$table_ws_format <- shiny::renderTable({(table_ws_format())}, striped = TRUE)
   output$plot_ws_format <- renderPlotly({plot_ws_format()})
   
@@ -2483,8 +2483,8 @@ server <- function(input, output) {
     summary_table_baseline$`User gender` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_parent_gender  <- reactive({
-    summary_plot_baseline$`User gender`
-    }) 
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_gender", replace = "rp.contact.field.", plot_type = "boxplot")
+  }) 
   output$table_parent_gender <- shiny::renderTable({(table_parent_gender())}, striped = TRUE)
   output$plot_parent_gender <- renderPlotly({plot_parent_gender()})
   
@@ -2494,8 +2494,8 @@ server <- function(input, output) {
       summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean") %>% filter(Org %in% c((input$OrgDem)))}) 
   ##previously, but with new contact field summarise(`mean age`=(mean(rp.contact.field.user_gender, na.rm = TRUE)))
   plot_parent_age <- reactive({
-    summary_plot_baseline$`User age`
-    })
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_age", replace = "rp.contact.field.", plot_type = "histogram")
+  })
   output$table_parent_age <- shiny::renderTable({(table_parent_age())}, striped = TRUE)
   output$plot_parent_age <- renderPlotly({plot_parent_age()})
   
@@ -2504,7 +2504,7 @@ server <- function(input, output) {
     summary_table_baseline$`Household adults` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_household_adults  <- reactive({
-    summary_plot_baseline$`Household adults`
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.household_adults", replace = "rp.contact.field.", plot_type = "histogram")
     #plhdata_org_clean_1 <- plhdata_org_clean %>% filter(Org %in% c((input$OrgDem)))
     #summary_plot(plhdata_org_clean_1, rp.contact.field.household_adults)
   })
@@ -2516,7 +2516,7 @@ server <- function(input, output) {
     summary_table_baseline$`Household teens` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_household_teens  <- reactive({
-    summary_plot_baseline$`Household teens`
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.household_teens", replace = "rp.contact.field.", plot_type = "histogram")
   })
   output$table_household_teens <- shiny::renderTable({( table_household_teens())}, striped = TRUE)
   output$plot_household_teens <- renderPlotly({plot_household_teens()})
@@ -2526,8 +2526,8 @@ server <- function(input, output) {
     summary_table_baseline$`Household children` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_household_children  <- reactive({
-    summary_plot_baseline$`Household children`
-    })
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.household_children", replace = "rp.contact.field.", plot_type = "histogram")
+  })
   output$table_household_children <- shiny::renderTable({( table_household_children())}, striped = TRUE)
   output$plot_household_children <- renderPlotly({plot_household_children()})
   
@@ -2536,7 +2536,7 @@ server <- function(input, output) {
     summary_table_baseline$`Household babies` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_household_babies  <- reactive({
-    summary_plot_baseline$`Household babies` # + facet_wrap(. ~ Org)
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.household_babies", replace = "rp.contact.field.", plot_type = "histogram")
   })
   output$table_household_babies <- shiny::renderTable({( table_household_babies())}, striped = TRUE)
   output$plot_household_babies <- renderPlotly({plot_household_babies()})
@@ -2586,7 +2586,7 @@ server <- function(input, output) {
   table_w_1on1 <- reactive({
     summary_table_completion_level$`One-on-one Time` %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_1on1<- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.w_1on1_completion_level", replace = "rp.contact.field.w_", plot_type = "boxplot")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_1on1_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_1on1 <- shiny::renderTable({(table_w_1on1())}, striped = TRUE)
   output$plot_w_1on1 <- renderPlotly({plot_w_1on1()})
@@ -2594,7 +2594,7 @@ server <- function(input, output) {
   table_w_praise <- reactive({
     summary_table_completion_level$Praise %>% filter(Org %in% c((input$OrgWS))) })
   plot_w_praise<- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.w_praise_completion_level", replace = "rp.contact.field.w_", plot_type = "boxplot")
+    summary_plot(plhdata_org_clean, "rp.contact.field.w_praise_completion_level", replace = "rp.contact.field.w_")
   }) 
   output$table_w_praise <- shiny::renderTable({(table_w_praise())}, striped = TRUE)
   output$plot_w_praise <- renderPlotly({plot_w_praise()})

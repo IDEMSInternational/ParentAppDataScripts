@@ -3422,7 +3422,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   # Baseline survey completion levels
   table_sv1_totals <- reactive({
     summary_table_completion_level$`Baseline Survey` %>% filter(Org %in% c((input$OrgSV1))) })
-  plot_sv1_totals <- reactive({ summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", replace = "rp.contact.field.") }) 
+  plot_sv1_totals <- reactive({ summary_plot(data = selected_data_sv1(), columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", replace = "rp.contact.field.") }) 
   output$table_sv1_totals <- shiny::renderTable({(table_sv1_totals())}, striped = TRUE)
   output$plot_sv1_totals <- renderPlotly({plot_sv1_totals()})
   
@@ -3430,7 +3430,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_attention <- reactive({
     summary_table_survey_past_week$Attention %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_attention  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_1_final", replace = "rp.contact.field.")}) 
+    summary_plot(data = selected_data_sv1(), columns_to_summarise = "rp.contact.field.survey_welcome_a_1_final", replace = "rp.contact.field.")}) 
   output$table_sv1_attention <- shiny::renderTable({(table_sv1_attention())}, striped = TRUE,
   caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_attention <- renderPlotly({plot_sv1_attention()})

@@ -2044,16 +2044,23 @@ ui <- dashboardPage(skin = "blue",
                                 ), #closes fluid row
                                 
                                 fluidRow(
-                                  box(width = 6,
+                                  box(width = 4,
+                                      checkboxGroupInput(inputId = "CtryXE",
+                                                         label = "Countries to select:",
+                                                         choices = c("South Africa" = "plh_za",
+                                                                     "Tanzania" = "plh_tz"),
+                                                         selected = c("plh_za","plh_tz")
+                                      )),
+                                  box(width = 4,
                                       checkboxGroupInput(inputId = "OrgXE",
                                                          label = "Organisations to show:",
-                                                         choices = c("Amathuba" = "Amathuba",
-                                                                     "Dlalanathi" = "Dlalanathi",
-                                                                     "Joy" = "Joy",
-                                                                     "Nontobeko" = "Nontobeko"),
+                                                         choices = c("SA: Amathuba" = "Amathuba",
+                                                                     "SA: Dlalanathi" = "Dlalanathi",
+                                                                     "SA: Joy" = "Joy",
+                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
                                                          selected = c("Amathuba","Dlalanathi",
-                                                                      "Joy","Nontobeko")
-                                      )), #closes box
+                                                                      "Joy","Nontobeko", "ICS")
+                                      )),
                                   box(width = 6,
                                       checkboxGroupInput(inputId = "WsXE",
                                                          label = "Workshop weeks to show:",
@@ -2066,13 +2073,13 @@ ui <- dashboardPage(skin = "blue",
                                                                      "7 Rules" = "w_rules",
                                                                      "8 Calm Consequences" = "w_consequence" ,
                                                                      "9 Problem Solving" = "w_solve",
-                                                                     "10	Teen Safety" = "w_crisis",
+                                                                     "10	Teen Safety" = "w_safe",
                                                                      "11 Dealing with Crisis" = "w_praise",
                                                                      "12 Celebration and Next Steps" = "w_celebrate"),
-                                                         selected = c("w_self_care", "w_1on1", "w_praise", "w_instruct","w_stress","w_money", "w_rules", "w_consequence", "w_solve", "safe", "w_praise", "w_celebrate"),
-                                                         inline = TRUE)
-                                  )), #closes box and fluid row
-                                
+                                                         selected = c("w_self_care", "w_1on1", "w_praise", "w_instruct","w_stress","w_money", "w_rules", "w_consequence", "w_solve", "w_safe", "w_praise", "w_celebrate"),
+                                                         inline = TRUE))
+                                ), #closes fluidRow
+          
                                 tabsetPanel(type = "tabs",
                                             tabPanel("App Opens",
                                                      
@@ -2158,16 +2165,23 @@ ui <- dashboardPage(skin = "blue",
                                             tabPanel("Baseline survey",
                                                      
                                                      fluidRow(
-                                                       box(width = 12,
+                                                       box(width = 6,
+                                                           checkboxGroupInput(inputId = "CtrySV1",
+                                                                              label = "Countries to select:",
+                                                                              choices = c("South Africa" = "plh_za",
+                                                                                          "Tanzania" = "plh_tz"),
+                                                                              selected = c("plh_za","plh_tz")
+                                                           )),
+                                                       box(width = 6,
                                                            checkboxGroupInput(inputId = "OrgSV1",
                                                                               label = "Organisations to show:",
-                                                                              choices = c("Amathuba" = "Amathuba",
-                                                                                          "Dlalanathi" = "Dlalanathi",
-                                                                                          "Joy" = "Joy",
-                                                                                          "Nontobeko" = "Nontobeko"),
+                                                                              choices = c("SA: Amathuba" = "Amathuba",
+                                                                                          "SA: Dlalanathi" = "Dlalanathi",
+                                                                                          "SA: Joy" = "Joy",
+                                                                                          "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
                                                                               selected = c("Amathuba","Dlalanathi",
-                                                                                           "Joy","Nontobeko")
-                                                           ))),#closes group, box and fluidRow
+                                                                                           "Joy","Nontobeko", "ICS")
+                                                           ))), #closes fluidRow
                                                      
                                                      fluidRow(
                                                        box(width = 12,
@@ -2332,17 +2346,24 @@ ui <- dashboardPage(skin = "blue",
                                             
                                             tabPanel("Endline survey",
                                                      fluidRow(
-                                                       box(width = 12,
-                                                           checkboxGroupInput(inputId = "OrgSV2",
-                                                                              label = "Organisations to show:",
-                                                                              choices = c("Amathuba" = "Amathuba",
-                                                                                          "Dlalanathi" = "Dlalanathi",
-                                                                                          "Joy" = "Joy",
-                                                                                          "Nontobeko" = "Nontobeko"),
-                                                                              selected = c("Amathuba","Dlalanathi",
-                                                                                           "Joy","Nontobeko")
-                                                           )) #closes box
-                                                     ), #closes fluidRow
+                                                       fluidRow(
+                                                         box(width = 6,
+                                                             checkboxGroupInput(inputId = "CtrySV2",
+                                                                                label = "Countries to select:",
+                                                                                choices = c("South Africa" = "plh_za",
+                                                                                            "Tanzania" = "plh_tz"),
+                                                                                selected = c("plh_za","plh_tz")
+                                                             )),
+                                                         box(width = 6,
+                                                             checkboxGroupInput(inputId = "OrgSV2",
+                                                                                label = "Organisations to show:",
+                                                                                choices = c("SA: Amathuba" = "Amathuba",
+                                                                                            "SA: Dlalanathi" = "Dlalanathi",
+                                                                                            "SA: Joy" = "Joy",
+                                                                                            "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
+                                                                                selected = c("Amathuba","Dlalanathi",
+                                                                                             "Joy","Nontobeko", "ICS")
+                                                             ))), #closes fluidRow
                                                      
                                                      fluidRow(
                                                        box(width = 12,
@@ -2378,16 +2399,30 @@ ui <- dashboardPage(skin = "blue",
                                 ), #closes fluid row
                                 
                                 fluidRow(
-                                  box(width = 12,
+                                  box(width = 6,
+                                      checkboxGroupInput(inputId = "CtryLB",
+                                                         label = "Countries to select:",
+                                                         choices = c("South Africa" = "plh_za",
+                                                                     "Tanzania" = "plh_tz"),
+                                                         selected = c("plh_za","plh_tz")
+                                      )),
+                                  box(width = 6,
                                       checkboxGroupInput(inputId = "OrgLB",
                                                          label = "Organisations to show:",
-                                                         choices = c("Amathuba" = "Amathuba",
-                                                                     "Dlalanathi" = "Dlalanathi",
-                                                                     "Joy" = "Joy",
-                                                                     "Nontobeko" = "Nontobeko"),
+                                                         choices = c("SA: Amathuba" = "Amathuba",
+                                                                     "SA: Dlalanathi" = "Dlalanathi",
+                                                                     "SA: Joy" = "Joy",
+                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
                                                          selected = c("Amathuba","Dlalanathi",
-                                                                      "Joy","Nontobeko")
+                                                                      "Joy","Nontobeko", "ICS")
                                       ))), #closes fluidRow
+                                
+                                # "rp.contact.field.click_hs_parent_centre_count", "rp.contact.field.click_pc_help_count",
+                                # "rp.contact.field.click_pc_my_tips_count", "rp.contact.field.click_pc_essential_tools_count",
+                                # "rp.contact.field.click_pc_covid_count", "rp.contact.field.click_pc_customisation_count",
+                                # "rp.contact.field.click_pc_relax_and_activities_count", "rp.contact.field.click_pc_support_contacts_count",
+                                # "rp.contact.field.click_pc_evidence_base_count", "rp.contact.field.click_pc_technical_support_count",
+                                # "rp.contact.field.click_pc_message_archive_count"
                                 
                                 tabsetPanel(type = "tabs",
                                             tabPanel("Main Option 1",
@@ -3439,7 +3474,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_praise <- reactive({
     summary_table_survey_past_week$Praise %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_praise  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_2_final", replace = "rp.contact.field.")})
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_2_final", replace = "rp.contact.field.")})
   output$table_sv1_praise <- shiny::renderTable({(table_sv1_praise())}, striped = TRUE,
                                                 caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_praise <- renderPlotly({plot_sv1_praise()})
@@ -3448,7 +3483,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_stress <- reactive({
     summary_table_survey_past_week$Stress %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_stress  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_3_final", replace = "rp.contact.field.")})
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_3_final", replace = "rp.contact.field.")})
   output$table_sv1_stress <- shiny::renderTable({(table_sv1_stress())}, striped = TRUE,
                                                 caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_stress <- renderPlotly({plot_sv1_stress()})
@@ -3457,7 +3492,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_shout <- reactive({
     summary_table_survey_past_week$Shouting %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_shout  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_4_final", replace = "rp.contact.field.")})
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_4_final", replace = "rp.contact.field.")})
   output$table_sv1_shout <- shiny::renderTable({(table_sv1_shout())}, striped = TRUE,
                                                caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_shout <- renderPlotly({plot_sv1_shout()})
@@ -3466,7 +3501,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_money <- reactive({
     summary_table_survey_past_week$`Money worries` %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_money  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_5_part_1_final", replace = "rp.contact.field.")})
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_5_part_1_final", replace = "rp.contact.field.")})
   output$table_sv1_money <- shiny::renderTable({(table_sv1_money())}, striped = TRUE,
                                                caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_money <- renderPlotly({plot_sv1_money()})
@@ -3475,7 +3510,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_food_money <- reactive({
     summary_table_survey_past_week$Summary %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_food_money  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_5_part_2_final", replace = "rp.contact.field.")}) 
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_5_part_2_final", replace = "rp.contact.field.")}) 
   output$table_sv1_food_money <- shiny::renderTable({(table_sv1_food_money())}, striped = TRUE,
                                                     caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_food_money <- renderPlotly({plot_sv1_food_money()})
@@ -3484,7 +3519,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_hitting <- reactive({
     summary_table_survey_past_week$Hitting %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_hitting  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_6_final", replace = "rp.contact.field.")}) 
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_6_final", replace = "rp.contact.field.")}) 
   output$table_sv1_hitting <- shiny::renderTable({(table_sv1_hitting())}, striped = TRUE,
                                                  caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_hitting <- renderPlotly({plot_sv1_hitting()})
@@ -3493,7 +3528,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_week_teen_activity <- reactive({
     summary_table_survey_past_week$`Teen activity` %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_week_teen_activity  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_7_part_1_final", replace = "rp.contact.field.")})
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_7_part_1_final", replace = "rp.contact.field.")})
   output$table_sv1_week_teen_activity <- shiny::renderTable({(table_sv1_week_teen_activity())}, striped = TRUE,
                                                             caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_week_teen_activity <- renderPlotly({plot_sv1_week_teen_activity()})
@@ -3502,7 +3537,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_lockdown <- reactive({
     summary_table_survey_past_week$`Lockdown?` %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_lockdown  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_7_part_2_final", replace = "rp.contact.field.")})
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_7_part_2_final", replace = "rp.contact.field.")})
   output$table_sv1_lockdown <- shiny::renderTable({(table_sv1_lockdown())}, striped = TRUE,
                                                   caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_lockdown <- renderPlotly({plot_sv1_lockdown()})
@@ -3511,7 +3546,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_reg_teen_activity <- reactive({
     summary_table_survey_past_week$`Knowledge of teen activity in non-lockdown week` %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_reg_teen_activity  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_7_part_3_final", replace = "rp.contact.field.")}) 
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_7_part_3_final", replace = "rp.contact.field.")}) 
   output$table_sv1_reg_teen_activity <- shiny::renderTable({(table_sv1_reg_teen_activity())}, striped = TRUE,
                                                            caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_reg_teen_activity <- renderPlotly({plot_sv1_reg_teen_activity()})
@@ -3520,7 +3555,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_sex_talk <- reactive({
     summary_table_survey_past_week$`Sexual safety talk` %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_sex_talk  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_8_final", replace = "rp.contact.field.")})
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_8_final", replace = "rp.contact.field.")})
   output$table_sv1_sex_talk <- shiny::renderTable({(table_sv1_sex_talk())}, striped = TRUE,
                                                   caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_sex_talk <- renderPlotly({plot_sv1_sex_talk()})
@@ -3529,13 +3564,18 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   table_sv1_covid_safe <- reactive({
     summary_table_survey_past_week$`Teen COVID safe` %>% filter(Org %in% c((input$OrgSV1))) }) 
   plot_sv1_covid_safe  <- reactive({
-    summary_plot(plhdata_org_clean, "rp.contact.field.survey_welcome_a_9_final", replace = "rp.contact.field.")})
+    summary_plot(data = selected_data_sv1(), "rp.contact.field.survey_welcome_a_9_final", replace = "rp.contact.field.")})
   output$table_sv1_covid_safe <- shiny::renderTable({(table_sv1_covid_safe())}, striped = TRUE,
                                                     caption = "NA = survey not accessed or data not synced; <br> null = skipped using the nav buttons; <br> no_value = selected choose not to answer")
   output$plot_sv1_covid_safe <- renderPlotly({plot_sv1_covid_safe()})
   
   
   #SIXTH Tab Parent Library
+  
+  selected_data_lb <- reactive({
+    plhdata_checkgroup <- plhdata_org_clean %>% filter(Org %in% c((input$OrgSV1)))
+    return(plhdata_checkgroup)
+  })
   
 } #close server
 

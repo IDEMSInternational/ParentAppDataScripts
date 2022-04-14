@@ -5,7 +5,6 @@ library(yesno)
 library(gt)
 
 #' Interaction with chatbot
-
 #Source the personal setup for data
 source(here("config/Personal Setup.R"))
 
@@ -15,15 +14,35 @@ UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tr
 # Reading in Data ------------------------------------------
 
 #Get the List of PLH Tables and data from server
-get_metabase_data <- function(site = plh_con){ 
+get_metabase_data <- function(site = plh_con, name = "app_users"){   #name = "app_users", "app_notification_interaction"
   plh_tables <- dbListTables(site)
   df <- dbReadTable(conn = site,
-                    name = plh_tables[2])
+                    name = name)
   return(df)
 }
 
+get_nf_data <- function(site = plh_con){
+  df <- get_metabase_data(site = site, name = "app_notification_interaction")
+  appdata_df <- list()
+  
+    for (i in 1:nrow(df)) {
+      if (!is.na(df$notification_meta[i])){
+        appdata_df[[i]] <- data.frame(jsonlite::fromJSON(df$notification_meta[i]))
+      } else {
+        appdata_df[[i]] <- data.frame(i)
+      }
+    }
+  # combine the list into a data frame 
+  appdata <- plyr::ldply(appdata_df)
+  
+  # bind into main data frame
+  plhdata <- dplyr::bind_cols(df, appdata) %>% dplyr::select(-c("i"))
+  
+  return(plhdata)
+}
+
 get_user_data <- function(site = plh_con, date_from, date_to = NULL, format_date = "%Y-%m-%d", tzone_date = "UTC", include_UIC_data = TRUE, merge_check = TRUE, UIC_Tracker = UIC.Tracker, join_UIC = "UIC", max_dist = 5){ # ideally would have flatten = FALSE in there, but seems that this isn't an option from metabase.
-  df <- get_metabase_data(site = site)
+  df <- get_metabase_data(site = site, name = "app_users")
   
   # create empty list to store the data frames
   appdata_df <- list()

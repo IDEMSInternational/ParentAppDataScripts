@@ -698,21 +698,29 @@ summary_table_survey_past_week$`Teen COVID safe`
 
 
 # parent library ------------------------------------------------------------------
-data_click <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.field.click_pc_help_count",
+data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.field.click_pc_help_count",
                 "rp.contact.field.click_pc_my_tips_count", "rp.contact.field.click_pc_essential_tools_count",
                 "rp.contact.field.click_pc_covid_count", "rp.contact.field.click_pc_customisation_count",
                 "rp.contact.field.click_pc_relax_and_activities_count", "rp.contact.field.click_pc_support_contacts_count",
                 "rp.contact.field.click_pc_evidence_base_count", "rp.contact.field.click_pc_technical_support_count",
-                "rp.contact.field.click_pc_message_archive_count")
+                "rp.contact.field.click_pc_message_archive_count","rp.contact.field.click_pc_bereavement_count")
 
-data_click_neat <- naming_conventions(data_click, replace = "rp.contact.field.click_pc_", replace_after = "count")
-data_click_neat <- naming_conventions(data_click_neat, replace = "Rp.contact.field.click hs")
-summary_table_click <- plhdata_org_clean %>%
-  map(.x = data_click, .f = ~summary_table(columns_to_summarise = .x))
-names(summary_table_click) <- data_click_neat
+data_library_neat <- naming_conventions(data_library, replace = "rp.contact.field.click_pc_", replace_after = "count")
+data_library_neat <- naming_conventions(data_library_neat, replace = "Rp.contact.field.click hs")
+summary_table_library <- plhdata_org_clean %>%
+  map(.x = data_library, .f = ~summary_table(columns_to_summarise = .x, include_margins = TRUE))
+names(summary_table_library) <- data_library_neat
 
 # then to access a table:
-summary_table_click$`Help `
+# summary_table_library$`My tips `
+# summary_table_library$` parent centre `
+# summary_table_library$`Essential tools `
+# summary_table_library$`Relax and activities `
+# summary_table_library$`Customisation `
+# summary_table_library$`Help `
+# summary_table_library$`Technical support `
+# summary_table_library$`Covid `
+# summary_table_library$`Bereavement `
 
 #Test 2 Priority 22 (how to interpret data?)
 #Number of in-app message clicks per workshop week.Per quick start button, per workshop week 

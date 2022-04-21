@@ -191,7 +191,7 @@ ui <- dashboardPage(skin = "blue",
                                 ) #closes fluid row
                         ),#closes first tabItem
                         
-                        # Seconond tab content layout
+                        # Second tab content layout
                         tabItem(tabName = "workshops",
                                 fluidRow(
                                   column(12, align = "centre",
@@ -2696,20 +2696,23 @@ server <- function(input, output) {
   # output$table_child_type <- shiny::renderTable({(table_child_type())}, striped = TRUE)
   # output$plot_child_type <- renderPlotly({plot_child_type()})
   
-  #SECOND Tab Workshop Data
+  #SECOND Tab Workshop Engagement Data
   
   #Table of averages
   table_ws_totals <- reactive({
-    summary_mean_completion_level %>% filter(Org %in% c((input$OrgWS))) 
-  }) 
+    summary_mean_completion_level %>% filter(Org %in% c((input$OrgWS))) }) 
   plot_ws_totals  <- reactive({
     summary_mean_completion_level_long <- pivot_longer(summary_mean_completion_level, cols = !Org, names_to = "Workshop", values_to = "Value")
-    ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = Value, fill = Org)) +
+    ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = Value, fill = Org)) + 
       geom_bar(stat = "identity", position = "dodge") +
-      viridis::scale_fill_viridis(discrete = TRUE)
+      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
+      viridis::scale_fill_viridis(discrete = TRUE) 
+    #if needed: + flip axis coord_flip()
   }) 
   output$table_ws_totals <- shiny::renderTable({(table_ws_totals())}, striped = TRUE)
   output$plot_ws_totals <- renderPlotly({plot_ws_totals()})
+  
   
   #Workshop tables with filter by Org
   #1
@@ -3499,20 +3502,28 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
 
   
   #FOURTH Tab In-week Engagement
+
+selected_data_xe <- reactive({
+  plhdata_checkgroup <- plhdata_org_clean %>% filter(Org %in% c((input$OrgXE)))
+  return(plhdata_checkgroup)
+})
   
   table_appopen_totals <- reactive({
-    #   summary_table(columns_to_summarise = rp.contact.field.app_launch_count, replace = "rp.contact.field.") %>%
-    #     filter(Org %in% c((input$OrgXE)))
-    }) 
-  plot_appopen_totals <- reactive({
-  }) 
+    tables_app_opens$`Total` %>% filter(Org %in% c((input$OrgXE)))}) 
+  plot_appopen_totals <- reactive({summary_plot(data = selected_data_xe(), columns_to_summarise = "rp.contact.field.app_launch_count", replace = "rp.contact.field.")}) 
   output$table_appopen_totals <- shiny::renderTable({(table_appopen_totals())}, striped = TRUE)
   output$plot_appopen_totals <- renderPlotly({plot_appopen_totals()})
 
-  table_appopen_mean_week <- reactive({
+  table_appopen_mean_week <- reactive({ summary_mean_appopens %>% filter(Org %in% c((input$OrgXE)))
   }) 
   plot_appopen_mean_week <- reactive({
-  }) 
+    summary_mean_appopens_long <- summary_mean_appopens %>% filter(Org %in% c((input$OrgXE))) %>%
+      pivot_longer(cols = !Org, names_to = "Workshop Week", values_to = "Value") %>% mutate(`Workshop Week` = fct_relevel(`Workshop Week`, data_app_opens_neat))
+    ggplot(summary_mean_appopens_long, aes(x = `Workshop Week`, y = Value, fill = Org)) + 
+          geom_bar(stat = "identity", position = "dodge") +
+          scale_x_discrete(guide = guide_axis(angle = 90), limits = data_app_opens_neat) +
+          viridis::scale_fill_viridis(discrete = TRUE)
+    }) 
   output$table_appopen_mean_week <- shiny::renderTable({(table_appopen_mean_week())}, striped = TRUE)
   output$plot_appopen_mean_week <- renderPlotly({plot_appopen_mean_week()})
   
@@ -3540,7 +3551,7 @@ output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
   
   # Baseline survey completion levels
   table_sv1_totals <- reactive({
-    summary_table_completion_level$`Baseline Survey` %>% filter(Org %in% c((input$OrgSV1))) })
+    summary_table_survey_completion %>% filter(Org %in% c((input$OrgSV1))) })
   plot_sv1_totals <- reactive({ summary_plot(data = selected_data_sv1(), columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", replace = "rp.contact.field.") }) 
   output$table_sv1_totals <- shiny::renderTable({(table_sv1_totals())}, striped = TRUE)
   output$plot_sv1_totals <- renderPlotly({plot_sv1_totals()})

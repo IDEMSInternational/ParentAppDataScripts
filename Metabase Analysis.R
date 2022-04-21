@@ -64,7 +64,7 @@ sjmisc::frq(x=plhdata_org_clean$Org, out="txt")
 
 # More cleaning
 # TODO: Add here any to make numeric. check with Esmee about w_self_care_diff_started_completed stored
-plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level <- as.factor(plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level)
+plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level)
 plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
 plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
 plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_clean$rp.contact.field.household_teens)
@@ -97,6 +97,9 @@ plhdata_org_clean$rp.contact.field.app_launch_count <- as.numeric(plhdata_org_cl
 plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
 
 plhdata_org_clean$rp.contact.field.first_app_open <- as.Date(plhdata_org_clean$rp.contact.field.first_app_open)
+plhdata_org_clean <- plhdata_org_clean %>%
+  mutate(across(starts_with("rp.contact.field.app_launch_count"), ~as.numeric(.)))
+
 
 # Write clean data back -------------------------------------------------------
 
@@ -289,9 +292,9 @@ summary_relax_workshop_long <- summary_relax_workshop %>%
 summary_relax_workshop_long
 
 # Run the plot (#Code moved to RSHiny file in order to be able to filter by Org)
-ggplot(summary_relax_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-  geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_line() + labs(x = "Workshop week", y = "Number of points")
+# ggplot(summary_relax_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
+#   geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+#   geom_line() + labs(x = "Workshop week", y = "Number of points")
 
 #Average treat_yourself parent points pp2
 summary_treat_yourself_workshop <- plhdata_org_clean %>%
@@ -621,12 +624,12 @@ colnames(summary_mean_habits) <- naming_conventions(colnames(summary_mean_habits
 summary_mean_habits
 
 # Completion Level ----------------------------------------------------------------------------
-data_completion_level <- c("rp.contact.field.survey_welcome_and_setup_completion_level", "rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
+data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
                            "rp.contact.field.w_instruct_completion_level",  "rp.contact.field.w_stress_completion_level",
                            "rp.contact.field.w_money_completion_level",  "rp.contact.field.w_rules_completion_level", #you have "safe_completion" under rules. Is this right?
                            "rp.contact.field.w_consequence_completion_level",  "rp.contact.field.w_solve_completion_level",  "rp.contact.field.w_safe_completion_level",
                            "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
-completion_vars <- c("Baseline Survey", "Self Care", "One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
+completion_vars <- c("Self Care", "One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
 summary_table_completion_level <- plhdata_org_clean %>%
   map(.x = data_completion_level, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
 names(summary_table_completion_level) <- completion_vars
@@ -804,18 +807,31 @@ tables_app_opens <- plhdata_org_clean %>%
   map(.x = data_app_opens, .f = ~summary_table(columns_to_summarise = .x))
 names(tables_app_opens) <- data_app_opens_neat
 tables_app_opens$`Total`
-tables_app_opens$`Welcome and Self care`
-tables_app_opens$`One-on-one time`
-tables_app_opens$`Praise`
-tables_app_opens$`Positive Instructions`
-tables_app_opens$`Managing Stress`
-tables_app_opens$`Family Budget`
-tables_app_opens$`Rules`
-tables_app_opens$`Calm Consequences`
-tables_app_opens$`Problem Solving`
-tables_app_opens$`Teen Safety`
-tables_app_opens$`Crisis`
-tables_app_opens$`Celebration & Next Steps`
+# tables_app_opens$`Welcome and Self care`
+# tables_app_opens$`One-on-one time`
+# tables_app_opens$`Praise`
+# tables_app_opens$`Positive Instructions`
+# tables_app_opens$`Managing Stress`
+# tables_app_opens$`Family Budget`
+# tables_app_opens$`Rules`
+# tables_app_opens$`Calm Consequences`
+# tables_app_opens$`Problem Solving`
+# tables_app_opens$`Teen Safety`
+# tables_app_opens$`Crisis`
+# tables_app_opens$`Celebration & Next Steps`
+
+#Average app opens per ws week
+summary_mean_appopens <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(data_app_opens, mean, na.rm = TRUE))
+colnames(summary_mean_appopens) <- naming_conventions(colnames(summary_mean_appopens), "rp.contact.field.app_launch_count")
+summary_mean_appopens
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_mean_appopens_long <- summary_mean_appopens %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, data_app_opens_neat))   # set the order of variables
+summary_mean_appopens_long
 
 ##Priority 21
 #App-opens
@@ -847,7 +863,11 @@ plhdata_org_clean %>%
 # Completion status of baseline survey ------------------------------------------------
 plhdata_org_clean %>%
   split(.$Org) %>%
-  map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.survey_welcome_completed, replace = "rp.contact.field.survey"))
+  map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.survey_welcome_complppplheted, replace = "rp.contact.field.survey"))
+
+summary_table_survey_completion <- plhdata_org_clean %>%
+  summary_table(columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", display = FALSE, include_margins = TRUE)
+summary_table_survey_completion
 
 # Descriptive Statistics ------------------------------------------------------------------------------------------
 # Gender of App Users

@@ -74,7 +74,8 @@ get_user_data <- function(site = plh_con, date_from, date_to = NULL, format_date
                         "\nDo you want to merge these changes in?") == TRUE){
         return_data <- plhdata_org_fuzzy
       } else {
-        return_data <- dplyr::full_join(x=plhdata, y=UIC_Tracker, by=c("app_user_id" = join_UIC))
+        warning("merging in fuzzy matches:\n", paste0(capture.output(plhdata_org_fuzzy_comp %>% filter(complete.cases(app_user_id))), collapse = "\n"))
+        return_data <- plhdata_org_fuzzy
       }
     }else{
       return_data <- dplyr::full_join(x=plhdata, y=UIC_Tracker, by=c("app_user_id" = join_UIC))

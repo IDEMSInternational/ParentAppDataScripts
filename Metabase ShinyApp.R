@@ -2941,7 +2941,6 @@ server <- function(input, output) {
     summary_relax_workshop %>% filter(Org %in% c(input$OrgPP))
   })
   output$table_pp_relax_ws_totals <- shiny::renderTable({table_pp_relax_ws_totals()})
-  
   plot_pp_relax_ws_totals <- reactive({summary_relax_workshop_long <- summary_relax_workshop_long %>% filter(Org %in% c(input$OrgPP)) 
     ggplot(summary_relax_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
       geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -2953,7 +2952,7 @@ server <- function(input, output) {
  
    table_pp_treat_yourself_ws_totals <- reactive({
     summary_treat_yourself_workshop %>% filter(Org %in% c((input$OrgPP))) }) 
-  plot_pp_treat_yourself_ws_totals  <- reactive({summary_treat_yourself_workshop_long <- summary_treat_yourlself_workshop_long %>% filter(Org %in% c(input$OrgPP)) 
+  plot_pp_treat_yourself_ws_totals  <- reactive({summary_treat_yourself_workshop_long <- summary_treat_yourself_workshop_long %>% filter(Org %in% c(input$OrgPP)) 
   ggplot(summary_treat_yourself_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
     geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     geom_line() + labs(x = "Workshop week", y = "Number of points")
@@ -3017,7 +3016,7 @@ output$table_pp_treat_yourself_w_celebrate <- shiny::renderTable({(table_pp_trea
 output$plot_pp_treat_yourself_w_celebrate <- renderPlotly({plot_pp_treat_yourself_w_celebrate()})
 
 # Parent Point sub tab Praise Yourself points pp3
-table_pp_praise_yourself_ws_totals <- reactive({ XXX %>% filter(Org %in% c(input$OrgPP))})
+table_pp_praise_yourself_ws_totals <- reactive({ summary_praise_yourself_workshop %>% filter(Org %in% c(input$OrgPP))})
 plot_pp_praise_yourself_ws_totals <- reactive({})
 output$table_pp_praise_yourself_ws_totals <- shiny::renderTable({table_pp_praise_yourself_ws_totals()})
 output$plot_pp_praise_yourself_ws_totals <- renderPlotly({plot_pp_praise_yourself_ws_totals()})
@@ -3074,7 +3073,7 @@ output$table_pp_praise_yourself_w_crisis <- renderPlotly({table_pp_praise_yourse
 
 
 # Parent Point sub tab Spend Time points pp4
-table_pp_spend_time_ws_totals <- reactive({ XXX %>% filter(Org %in% c(input$OrgPP))})
+table_pp_spend_time_ws_totals <- reactive({ summary_spend_time_workshop %>% filter(Org %in% c(input$OrgPP))})
 plot_pp_spend_time_ws_totals <- reactive({})
 output$table_pp_spend_time_ws_totals <- shiny::renderTable({table_pp_spend_time_ws_totals()})
 output$plot_pp_spend_time_ws_totals <- renderPlotly({plot_pp_spend_time_ws_totals()})
@@ -3135,7 +3134,7 @@ output$table_pp_spend_time_w_celebrate <- shiny::renderTable({(table_pp_spend_ti
 output$table_pp_spend_time_w_celebrate <- renderPlotly({table_pp_spend_time_w_celebrate()})
 
 # Parent Point sub tab Praise Teen points pp5
-table_pp_praise_teen_ws_totals <- reactive({ XXX %>% filter(Org %in% c(input$OrgPP))})
+table_pp_praise_teen_ws_totals <- reactive({ summary_praise_teen_workshop %>% filter(Org %in% c(input$OrgPP))})
 plot_pp_praise_teen_ws_totals <- reactive({})
 output$table_pp_praise_teen_ws_totals <- shiny::renderTable({table_pp_praise_teen_ws_totals()})
 output$plot_pp_praise_teen_ws_totals <- renderPlotly({plot_pp_praise_teen_ws_totals()})
@@ -3196,7 +3195,7 @@ output$table_pp_praise_teen_w_celebrate <- shiny::renderTable({(table_pp_praise_
 output$table_pp_praise_teen_w_celebrate <- renderPlotly({table_pp_praise_teen_w_celebrate()})
 
 # Parent Point sub tab Instruct Positively points pp6
-table_pp_instruct_positively_ws_totals <- reactive({ XXX %>% filter(Org %in% c(input$OrgPP))})
+table_pp_instruct_positively_ws_totals <- reactive({ summary_instruct_positively_workshop %>% filter(Org %in% c(input$OrgPP))})
 plot_pp_instruct_positively_ws_totals <- reactive({})
 output$table_pp_instruct_positively_ws_totals <- shiny::renderTable({table_pp_instruct_positively_ws_totals()})
 output$plot_pp_instruct_positively_ws_totals <- renderPlotly({plot_pp_instruct_positively_ws_totals()})
@@ -3257,7 +3256,7 @@ output$table_pp_instruct_positively_w_celebrate <- shiny::renderTable({(table_pp
 output$table_pp_instruct_positively_w_celebrate <- renderPlotly({table_pp_instruct_positively_w_celebrate()})
 
 # Parent Point sub tab Breathe points pp7
-table_pp_breathe_ws_totals <- reactive({ XXX %>% filter(Org %in% c(input$OrgPP))})
+table_pp_breathe_ws_totals <- reactive({ summary_breathe_workshop %>% filter(Org %in% c(input$OrgPP))})
 plot_pp_breathe_ws_totals <- reactive({})
 output$table_pp_breathe_ws_totals <- shiny::renderTable({table_pp_breathe_ws_totals()})
 output$plot_pp_breathe_ws_totals <- renderPlotly({plot_pp_breathe_ws_totals()})
@@ -3318,7 +3317,7 @@ output$table_pp_breathe_w_celebrate <- shiny::renderTable({(table_pp_breathe_w_c
 output$table_pp_breathe_w_celebrate <- renderPlotly({table_pp_breathe_w_celebrate()})
 
 # Parent Point sub tab Money points pp8
-table_pp_money_ws_totals <- reactive({ XXX %>% filter(Org %in% c(input$OrgPP))})
+table_pp_money_ws_totals <- reactive({ summary_money_workshop %>% filter(Org %in% c(input$OrgPP))})
 plot_pp_money_ws_totals <- reactive({})
 output$table_pp_money_ws_totals <- shiny::renderTable({table_pp_money_ws_totals()})
 output$plot_pp_money_ws_totals <- renderPlotly({plot_pp_money_ws_totals()})
@@ -3379,7 +3378,7 @@ output$table_pp_money_w_celebrate <- shiny::renderTable({(table_pp_money_w_celeb
 output$table_pp_money_w_celebrate <- renderPlotly({table_pp_money_w_celebrate()})
 
 # Parent Point sub tab Consequence points pp9
-table_pp_consequence_ws_totals <- reactive({ XXX %>% filter(Org %in% c(input$OrgPP))})
+table_pp_consequence_ws_totals <- reactive({ summary_consequence_workshop %>% filter(Org %in% c(input$OrgPP))})
 plot_pp_consequence_ws_totals <- reactive({})
 output$table_pp_consequence_ws_totals <- shiny::renderTable({table_pp_consequence_ws_totals()})
 output$plot_pp_consequence_ws_totals <- renderPlotly({plot_pp_consequence_ws_totals()})
@@ -3440,7 +3439,7 @@ output$table_pp_consequence_w_celebrate <- shiny::renderTable({(table_pp_consequ
 output$table_pp_consequence_w_celebrate <- renderPlotly({table_pp_consequence_w_celebrate()})
 
 # Parent Point sub tab Safe points pp10
-table_pp_safe_ws_totals <- reactive({ XXX %>% filter(Org %in% c(input$OrgPP))})
+table_pp_safe_ws_totals <- reactive({ summary_safe_workshop %>% filter(Org %in% c(input$OrgPP))})
 plot_pp_safe_ws_totals <- reactive({})
 output$table_pp_safe_ws_totals <- shiny::renderTable({table_pp_safe_ws_totals()})
 output$plot_pp_safe_ws_totals <- renderPlotly({plot_pp_safe_ws_totals()})

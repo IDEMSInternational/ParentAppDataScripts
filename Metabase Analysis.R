@@ -303,7 +303,7 @@ summary_relax_workshop_long
 summary_treat_yourself_workshop <- plhdata_org_clean %>%
   group_by(Org) %>%
   summarise(across(treat_yourself_workshop_vars, mean, na.rm = TRUE))
-colnames(summary_treat_yourself_workshop) <- naming_conventions(colnames(summary_treat_yourself_workshop), "rp.contact.field.parent_point_count_relax_w_")
+colnames(summary_treat_yourself_workshop) <- naming_conventions(colnames(summary_treat_yourself_workshop), "rp.contact.field.parent_point_count_treat_yourself_w_")
 summary_treat_yourself_workshop
 
 # Make the table longer so that it is in a format for use in ggplot
@@ -313,9 +313,114 @@ summary_treat_yourself_workshop_long <- summary_treat_yourself_workshop %>%
 summary_treat_yourself_workshop_long
 
 # Run the plot (#Code moved to RSHiny file in order to be able to filter by Org)
-ggplot(summary_treat_yourself_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-  geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_line() + labs(x = "Workshop week", y = "Number of points")
+# ggplot(summary_treat_yourself_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
+#   geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+#   geom_line() + labs(x = "Workshop week", y = "Number of points")
+
+#Average praise_yourself parent points pp3
+summary_praise_yourself_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(praise_yourself_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_praise_yourself_workshop) <- naming_conventions(colnames(summary_praise_yourself_workshop), "rp.contact.field.parent_point_count_praise_yourself_w_")
+# summary_praise_yourself_workshop
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_praise_yourself_workshop_long <- summary_praise_yourself_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_praise_yourself_workshop_long
+
+#Average spend_time parent points pp4
+summary_spend_time_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(spend_time_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_spend_time_workshop) <- naming_conventions(colnames(summary_spend_time_workshop), "rp.contact.field.parent_point_count_spend_time_w_")
+# summary_spend_time_workshop
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_spend_time_workshop_long <- summary_spend_time_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_spend_time_workshop_long
+
+#Average praise_teen parent points pp5
+summary_praise_teen_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(praise_teen_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_praise_teen_workshop) <- naming_conventions(colnames(summary_praise_teen_workshop), "rp.contact.field.parent_point_count_praise_teen_w_")
+# summary_praise_teen_workshop
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_praise_teen_workshop_long <- summary_praise_teen_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_praise_teen_workshop_long
+
+#Average instruct_positively parent points pp6
+summary_instruct_positively_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(instruct_positively_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_instruct_positively_workshop) <- naming_conventions(colnames(summary_instruct_positively_workshop), "rp.contact.field.parent_point_count_instruct_positively_w_")
+# summary_instruct_positively_workshop
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_instruct_positively_workshop_long <- summary_instruct_positively_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_instruct_positively_workshop_long
+
+#Average breathe parent points pp7
+summary_breathe_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(breathe_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_breathe_workshop) <- naming_conventions(colnames(summary_breathe_workshop), "rp.contact.field.parent_point_count_breathe_w_")
+# summary_breathe_workshop
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_breathe_workshop_long <- summary_breathe_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_breathe_workshop_long
+
+#Average spend_time parent points pp8
+summary_money_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(money_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_money_workshop) <- naming_conventions(colnames(summary_money_workshop), "rp.contact.field.parent_point_count_money_w_")
+# summary_money_workshop
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_money_workshop_long <- summary_money_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_money_workshop_long
+
+#Average consequence parent points pp9
+summary_consequence_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(consequence_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_consequence_workshop) <- naming_conventions(colnames(summary_consequence_workshop), "rp.contact.field.parent_point_count_consequence_w_")
+# summary_consequence_workshop
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_consequence_workshop_long <- summary_consequence_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_consequence_workshop_long
+
+#Average safe parent points pp10
+summary_safe_workshop <- plhdata_org_clean %>%
+  group_by(Org) %>%
+  summarise(across(safe_workshop_vars, mean, na.rm = TRUE))
+colnames(summary_safe_workshop) <- naming_conventions(colnames(summary_safe_workshop), "rp.contact.field.parent_point_count_safe_w_")
+# summary_safe_workshop
+
+# Make the table longer so that it is in a format for use in ggplot
+summary_safe_workshop_long <- summary_safe_workshop %>%
+  pivot_longer(cols = !Org) %>%
+  mutate(name = fct_relevel(name, week_order))   # set the order of variables
+summary_safe_workshop_long
+
 
 
 # HABITS by workshop week ------------------------------------------------------------------------------------

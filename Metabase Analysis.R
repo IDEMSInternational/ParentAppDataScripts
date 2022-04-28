@@ -945,7 +945,7 @@ tables_app_opens$`Total`
 summary_mean_appopens <- plhdata_org_clean %>%
   group_by(Org) %>%
   summarise(across(data_app_opens, mean, na.rm = TRUE))
-colnames(summary_mean_appopens) <- naming_conventions(colnames(summary_mean_appopens), "rp.contact.field.app_launch_count")
+colnames(summary_mean_appopens)[2:length(summary_mean_appopens)] <- data_app_opens_neat
 summary_mean_appopens
 
 # Make the table longer so that it is in a format for use in ggplot

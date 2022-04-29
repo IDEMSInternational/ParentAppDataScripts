@@ -229,6 +229,9 @@ ui <- dashboardPage(skin = "blue",
                                                                       "Joy","Nontobeko", "ICS")
                                       ))), #closes fluidRow
                                 
+                                tabsetPanel(type = "tabs",
+                                            tabPanel("Overview",
+                                
                                 fluidRow(
                                   box(width = 12,
                                       collapsible = FALSE,
@@ -372,6 +375,12 @@ ui <- dashboardPage(skin = "blue",
                                       shiny::tableOutput("table_w_celebrate")
                                   ) #closes box
                                 ) #closes fluid row
+                                            ), # closes Overview tabPanel
+                                
+                                tabPanel("Additional Insights",
+                                         
+                                ) # closes Additional Insights
+                                ) #closes tabsetPanel for workshop
                         ), #closes tabItem
                         
                         # Third tab content layout
@@ -2135,9 +2144,17 @@ ui <- dashboardPage(skin = "blue",
                                                      ) #closes fluid row
                                             ), #closes tabPanel Push Notifications
                                             
+                                            tabPanel("Home Practice",
+                                                     
+                                            ), #closes tabPanel Home practice
+                                            
+                                            tabPanel("Quick Start Buttons",
+                                                     
+                                            ), #closes tabPanel Quick Start Buttons
+                                            
                                             tabPanel("Time Spent",
                                                   
-                                            ) #closes tabPanel Time spend
+                                            ) #closes tabPanel Time spent
                                 ) #closes tabset panel for In-week engagement
                       ), # closes fourth tabItem
                         
@@ -2620,7 +2637,7 @@ server <- function(input, output) {
     summary_table_baseline$`User gender` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_parent_gender  <- reactive({
-    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_gender", replace = "rp.contact.field.", plot_type = "boxplot")
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_gender", replace = "rp.contact.field.", plot_type = "histogram")
   }) 
   output$table_parent_gender <- shiny::renderTable({(table_parent_gender())}, striped = TRUE)
   output$plot_parent_gender <- renderPlotly({plot_parent_gender()})
@@ -3803,11 +3820,18 @@ selected_data_xe <- reactive({
     plhdata_checkgroup <- plhdata_org_clean %>% filter(Org %in% c((input$OrgLB)))
     return(plhdata_checkgroup)})
   
-  #average clicks on parent library (mean per ws week)
-  # table_library_mean <- reactive({summary_table_library$` parent centre ` %>% filter(Org %in% c((input$OrgLB))) })
-  # plot_library_mean  <- reactive({summary_plot(plhdata_org_clean, "rp.contact.field.click_hs_parent_centre_count", replace = "rp.contact.field.click_hs_")})
-  # output$table_library_mean <- shiny::renderTable({(table_library_mean())}, striped = TRUE)
-  # output$plot_library_mean <- renderPlotly({plot_library_mean()})
+  #average clicks on parent library (mean per org)
+  table_library_mean <- reactive({summary_library_mean %>% filter(Org %in% c((input$OrgLB))) })
+  plot_library_mean  <- reactive({summary_library_mean_long <- pivot_longer(summary_library_mean, cols = !Org, names_to = "Library", values_to = "Clicks")
+  ggplot(summary_library_mean_long, aes(x = Library , y = Clicks, fill = Org)) + 
+    geom_bar(stat = "identity", position = "dodge") +
+    # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
+    viridis::scale_fill_viridis(discrete = TRUE) 
+    
+  })
+  output$table_library_mean <- shiny::renderTable({(table_library_mean())}, striped = TRUE)
+  output$plot_library_mean <- renderPlotly({plot_library_mean()})
   
   #total clicks on parent library from homescreen
   table_library_totals <- reactive({summary_table_library$` parent centre ` %>% filter(Org %in% c((input$OrgLB))) })

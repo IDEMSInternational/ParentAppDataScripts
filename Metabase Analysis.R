@@ -1,3 +1,8 @@
+##################################
+##################################
+####### User Data Analysis #######
+##################################
+##################################
 
 ### extract data ----------------------------------------------------------------------
 # to get user data
@@ -1009,3 +1014,51 @@ plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")
 plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_gender")
 plhdata_org_clean %>% filter(Org == "Amathuba") %>% select('app_user_id', "rp.contact.field.user_gender")
 mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
+
+##################################
+##################################
+### Notification Data Analysis ###
+##################################
+##################################
+
+# download notification data
+# TODO: add fuzzy join to get_nf_data function
+nf_data <- get_nf_data()
+
+# what variables do we want in the nf data - org, sex, - add a few in.
+data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
+                          "rp.contact.field.user_age", "rp.contact.field.household_adults",
+                          "rp.contact.field.household_teens", "rp.contact.field.household_babies",
+                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
+plhdata_org_clean_select <- plhdata_org_clean %>%
+  dplyr::select(c(app_user_id, data_baseline_survey))
+
+# link nf data to user data by app_user_id
+# use inner_join: remove from nf anyone not in plhdata_org
+nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
+
+# Only 8 rows. This is because we have filtered out a lot of the plhdata_org_clean users
+# since their org is NA.
+# e.g.:
+plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.field.organisation_code)
+# we're throwing away a lot of data over this missing organisation. I think we need to reconsider
+# how to handle these?
+# Additionally surely TZ has only one organisation?
+
+nf_data_join %>%
+  group_by(app_user_id) %>% 
+  summarise(number_received = max(app_user_record_id),
+            number_responded = sum(!is.na(action_id)),
+            percentage_responded = number_responded/number_received*100)
+
+
+# If we were to use all of the nf_data (except the "temp_" rows)
+nf_data_summary <- nf_data %>%
+  filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
+  group_by(app_user_id) %>% 
+  summarise(number_received = max(app_user_record_id),
+            number_responded = sum(!is.na(action_id)),
+            percentage_responded = number_responded/number_received*100)
+
+nf_data_summary %>%
+  dplyr::summarise(dplyr::across(2:4, mean))

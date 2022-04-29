@@ -1039,7 +1039,7 @@ mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
 nf_data <- get_nf_data()
 
 # what variables do we want in the nf data - org, sex, - add a few in.
-data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
+data_baseline_survey <- c("Org", "rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
                           "rp.contact.field.user_age", "rp.contact.field.household_adults",
                           "rp.contact.field.household_teens", "rp.contact.field.household_babies",
                           "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
@@ -1059,7 +1059,7 @@ plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.
 # Additionally surely TZ has only one organisation?
 
 nf_data_join %>%
-  group_by(app_user_id) %>% 
+  group_by(app_user_id, Org) %>% 
   summarise(number_received = max(app_user_record_id),
             number_responded = sum(!is.na(action_id)),
             percentage_responded = number_responded/number_received*100)

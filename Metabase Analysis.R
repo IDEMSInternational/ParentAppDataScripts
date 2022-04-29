@@ -811,17 +811,17 @@ names(summary_table_survey_past_week) <- survey_vars
 
 # then to access a table:
 summary_table_survey_past_week$Attention
-summary_table_survey_past_week$Praise
-summary_table_survey_past_week$Stress
-summary_table_survey_past_week$Shouting
-summary_table_survey_past_week$`Money worries`
-summary_table_survey_past_week$Summary
-summary_table_survey_past_week$Hitting
-summary_table_survey_past_week$`Teen activity`
-summary_table_survey_past_week$`Lockdown?`
-summary_table_survey_past_week$`Knowledge of teen activity in non-lockdown week`
-summary_table_survey_past_week$`Sexual safety talk`
-summary_table_survey_past_week$`Teen COVID safe`
+# summary_table_survey_past_week$Praise
+# summary_table_survey_past_week$Stress
+# summary_table_survey_past_week$Shouting
+# summary_table_survey_past_week$`Money worries`
+# summary_table_survey_past_week$Summary
+# summary_table_survey_past_week$Hitting
+# summary_table_survey_past_week$`Teen activity`
+# summary_table_survey_past_week$`Lockdown?`
+# summary_table_survey_past_week$`Knowledge of teen activity in non-lockdown week`
+# summary_table_survey_past_week$`Sexual safety talk`
+# summary_table_survey_past_week$`Teen COVID safe`
 
 #TODO iff "7" to 7.1? - TODO - what do they mean by this?
 
@@ -850,6 +850,19 @@ names(summary_table_library) <- data_library_neat
 # summary_table_library$`Technical support `
 # summary_table_library$`Covid `
 # summary_table_library$`Bereavement `
+
+#mean library clicks (button type per organisation)
+#mean library clicks per workshop week is not stored to my knowledge
+
+summary_library_mean <- plhdata_org_clean %>%
+  group_by(Org)  %>%
+  summarise(across(data_library, mean, na.rm = TRUE))
+
+colnames(summary_library_mean) <- naming_conventions(colnames(summary_library_mean), "rp.contact.field.click_", "_count")
+summary_library_mean
+
+
+
 
 #Test 2 Priority 22 (how to interpret data?)
 #Number of in-app message clicks per workshop week.Per quick start button, per workshop week 
@@ -1021,7 +1034,7 @@ mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
 ##################################
 ##################################
 
-# download notification data
+# download push notification data
 # TODO: add fuzzy join to get_nf_data function
 nf_data <- get_nf_data()
 

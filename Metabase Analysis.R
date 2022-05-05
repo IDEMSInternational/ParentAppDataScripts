@@ -1058,11 +1058,18 @@ plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.
 # how to handle these?
 # Additionally surely TZ has only one organisation?
 
-nf_data_join %>%
-  group_by(app_user_id, Org) %>% 
+pn_summary_count <- nf_data_join %>%
+  group_by(app_user_id, Org, rp.contact.field._app_language) %>% 
   summarise(number_received = max(app_user_record_id),
             number_responded = sum(!is.na(action_id)),
             percentage_responded = number_responded/number_received*100)
+pn_summary_count
+
+# pn_summary_means <-
+pn_summary_count %>%
+  dplyr::summarise(dplyr::across(2:4, mean))
+
+
 
 
 # If we were to use all of the nf_data (except the "temp_" rows)

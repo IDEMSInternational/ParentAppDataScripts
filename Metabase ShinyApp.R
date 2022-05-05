@@ -249,7 +249,8 @@ ui <- dashboardPage(skin = "blue",
                                       collapsible = FALSE,
                                       solidHeader = TRUE,
                                       title = "Workshop 1: Welcome and Self-Care",
-                                      status = "info",  
+                                      status = "info",
+                                      h5("As individual: percentage out of 9 steppers; <br> As group: not an option for first workshop"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_self_care", height = "240"),
                                       shiny::tableOutput("table_w_self_care")
@@ -260,6 +261,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 2: One-on-One Time",
                                       status = "info",  
+                                      h5("As individual: percentage out of 7 steppers; <br> As group: percentage out of 9 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_1on1", height = "240"),
                                       shiny::tableOutput("table_w_1on1")
@@ -272,6 +274,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 3: Praise",
                                       status = "info",  
+                                      h5("As individual: percentage out of 9 steppers <br> As group: percentage out of 11 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_praise", height = "240"),
                                       shiny::tableOutput("table_w_praise")
@@ -282,6 +285,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 4: Positive Instructions",
                                       status = "info",  
+                                      h5("As individual: percentage out of 11 steppers <br> As group: percentage out of 13 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_instruct", height = "240"),
                                       shiny::tableOutput("table_w_instruct")
@@ -293,7 +297,8 @@ ui <- dashboardPage(skin = "blue",
                                       collapsible = FALSE,
                                       solidHeader = TRUE,
                                       title = "Workshop 5: Managing Stress",
-                                      status = "info",  
+                                      status = "info",
+                                      h5("As individual: percentage out of 10 steppers <br> As group: percentage out of 11 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_stress", height = "240"),
                                       shiny::tableOutput("table_w_stress")
@@ -304,6 +309,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 6: Family Budgets",
                                       status = "info",  
+                                      h5("As individual: percentage out of 18 steppers <br> As group: percentage out of 18 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_money", height = "240"),
                                       shiny::tableOutput("table_w_money")
@@ -316,6 +322,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 7: Rules",
                                       status = "info",  
+                                      h5("As individual: percentage out of 10 steppers <br> As group: npercentage out of 11 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_rules", height = "240"),
                                       shiny::tableOutput("table_w_rules")
@@ -326,6 +333,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 8: Calm Consequences",
                                       status = "info",  
+                                      h5("As individual: percentage out of 12 steppers <br> As group: npercentage out of 14 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_consequence", height = "240"),
                                       shiny::tableOutput("table_w_consequence")
@@ -338,6 +346,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 9: Problem Solving",
                                       status = "info",  
+                                      h5("As individual: percentage out of 10 steppers <br> As group: npercentage out of 12 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_solve", height = "240"),
                                       shiny::tableOutput("table_w_solve")
@@ -348,6 +357,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 10: Teen Safety",
                                       status = "info",  
+                                      h5("As individual: percentage out of 11 steppers <br> As group: npercentage out of 12 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_safe", height = "240"),
                                       shiny::tableOutput("table_w_safe")
@@ -360,6 +370,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 11: Dealing with Crisis",
                                       status = "info",  
+                                      h5("As individual: percentage out of 11 steppers <br> As group: npercentage out of 12 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_crisis", height = "240"),
                                       shiny::tableOutput("table_w_crisis")
@@ -370,6 +381,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 12: Celebration and Next Steps",
                                       status = "info",  
+                                      h5("As individual: percentage out of 6 steppers <br> As group: npercentage out of 9 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_celebrate", height = "240"),
                                       shiny::tableOutput("table_w_celebrate")
@@ -2123,11 +2135,11 @@ ui <- dashboardPage(skin = "blue",
                                                        box(width = 12,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Cumulative push notification clicks",
+                                                           title = "Mean push notification clicks",
                                                            status = "success",  
                                                            #background = "orange",
-                                                           plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
-                                                           shiny::tableOutput("table_pushn_totals")
+                                                           plotlyOutput(outputId = "plot_pushn_mean", height = "240"),
+                                                           shiny::tableOutput("table_pushn_mean")
                                                        ) #closes box
                                                        ), #closes fluidrow
                                                      
@@ -2135,11 +2147,11 @@ ui <- dashboardPage(skin = "blue",
                                                        box(width = 12,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Mean pushnotifiation clicks per workshop week",
+                                                           title = "Cumulative pushnotifiation clicks",
                                                            status = "success",  
                                                            #background = "orange",
-                                                           plotlyOutput(outputId = "plot_pushn_mean_week", height = "240"),
-                                                           shiny::tableOutput("table_pushn_mean_week")
+                                                           plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
+                                                           shiny::tableOutput("table_pushn_totals")
                                                        )#closes box
                                                      ) #closes fluid row
                                             ), #closes tabPanel Push Notifications
@@ -3650,13 +3662,15 @@ output$table_pp_safe_w_celebrate <- shiny::renderTable({(table_pp_safe_w_celebra
 output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
 
   
-  #FOURTH Tab In-week Engagement
+#FOURTH Tab In-week Engagement
 
 selected_data_xe <- reactive({
   plhdata_checkgroup <- plhdata_org_clean %>% filter(Org %in% c((input$OrgXE)))
   return(plhdata_checkgroup)
 })
   
+#App Opens tab 4.1
+
   table_appopen_totals <- reactive({
     tables_app_opens$`Total` %>% filter(Org %in% c((input$OrgXE)))}) 
   plot_appopen_totals <- reactive({summary_plot(data = selected_data_xe(), columns_to_summarise = "rp.contact.field.app_launch_count", replace = "rp.contact.field.")}) 
@@ -3676,21 +3690,22 @@ selected_data_xe <- reactive({
   output$table_appopen_mean_week <- shiny::renderTable({(table_appopen_mean_week())}, striped = TRUE)
   output$plot_appopen_mean_week <- renderPlotly({plot_appopen_mean_week()})
   
-  table_pushn_totals <- reactive({
+# Push notifications tab 4.2
+  
+  table_pushn_mean <- reactive({
   }) 
+  plot_pushn_mean <- reactive({
+  }) 
+  output$table_pushn_mean <- shiny::renderTable({(table_pushn_mean())}, striped = TRUE)
+  output$plot_pushn_mean <- renderPlotly({plot_pushn_mean()})
+  
+  table_pushn_totals <- reactive({pn_summary_count %>% filter(Org %in% c((input$OrgXE)))}) 
   plot_pushn_totals <- reactive({
   }) 
   output$table_pushn_totals <- shiny::renderTable({(table_pushn_totals())}, striped = TRUE)
   output$plot_pushn_totals <- renderPlotly({plot_pushn_totals()})
   
-  table_pushn_mean_week <- reactive({
-  }) 
-  plot_pushn_mean_week <- reactive({
-  }) 
-  output$table_pushn_mean_week <- shiny::renderTable({(table_pushn_mean_week())}, striped = TRUE)
-  output$plot_pushn_mean_week <- renderPlotly({plot_pushn_mean_week()})
-  
-  
+
   #FIFTH Tab Surveys
   
   selected_data_sv1 <- reactive({

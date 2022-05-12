@@ -112,7 +112,7 @@ plhdata_org_clean <- plhdata_org_clean %>%
 # Write clean data back -------------------------------------------------------
 
 # Analysis - tables - separate for different groups.
-summary_table(columns_to_summarise = app_version, display_table = FALSE)
+# summary_table(columns_to_summarise = app_version, display_table = FALSE)
 
 
 ## Data Analysis ## --------------------------------------------------------
@@ -791,11 +791,33 @@ summary_mean_completion_level <- plhdata_org_clean %>%
 
 colnames(summary_mean_completion_level) <- naming_conventions(colnames(summary_mean_completion_level), "rp.contact.field.w_", "_completion_level")
 
-#Issue: "rules" workshop data was missing - needed to be added in list creation for "data_completion_level"
 summary_mean_completion_level
 
 
+# Percentage of users who completed a workshop out of those who started it
+# nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level == 100)) / nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_started == "true"))
+# nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level == 100)) / nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level > 0))
 
+for (i in 1:length(summary_table_completion_level)){
+  if (!"100" %in% names(summary_table_completion_level[[i]])){
+    summary_table_completion_level[[i]]$`100` <- 0
+  }
+}
+
+relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
+                               mutate(started = Total - `0` - `NA`,
+                                      perc_completed = `100`/started*100) %>%
+                               select(c(Org, started, perc_completed)))
+table_perc_completed <- plyr::ldply(relative_perc_completed) %>%
+  pivot_wider(id_cols = Org, names_from = .id, values_from = perc_completed)
+  
+table_perc_completed 
+
+table_ws_started <- plyr::ldply(relative_perc_completed) %>%
+  pivot_wider(id_cols = Org, names_from = .id, values_from = started)
+
+table_ws_started
+ 
 # Survey - past week  ----------------------------------------------------------------------------
 data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
                            "rp.contact.field.survey_welcome_a_3_final",  "rp.contact.field.survey_welcome_a_4_final",
@@ -860,7 +882,6 @@ summary_library_mean <- plhdata_org_clean %>%
 
 colnames(summary_library_mean) <- naming_conventions(colnames(summary_library_mean), "rp.contact.field.click_", "_count")
 summary_library_mean
-
 
 
 

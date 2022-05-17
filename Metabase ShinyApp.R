@@ -2586,9 +2586,18 @@ ui <- dashboardPage(skin = "blue",
 # 4. Define Server -----------------------------------------------------------------------------
 server <- function(input, output) {
   
-  # df_enrolled <- summary_PT(df1,  enrolled,  enrolled, "Yes")
-  # df_enrolled <- df_enrolled %>% mutate(group =  enrolled, count = enrolled_n) %>% dplyr::select(c(group, count))
+  autoRefresh <- reactiveTimer(6 * 60 * 60 * 1000)
   
+  observe({
+    autoRefresh()
+    source(here("Metabase Analysis.R"))
+    #updated_data <- update_data()
+    #df <- updated_data[[1]]
+    #df_consent <- updated_data[[2]]
+    #all_flows <- updated_data[[3]]
+    #parenting_survey <- updated_data[[4]]
+    #pp_data_frame <- updated_data[[5]]
+  })
   
   #SUMMARY STATS HEADER displays (same for all tabs)
   

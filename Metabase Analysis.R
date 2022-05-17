@@ -7,7 +7,6 @@
 ### extract data ----------------------------------------------------------------------
 # to get user data
 plhdata_org <- get_user_data(merge_check = FALSE) # select 1 if you want to merge in changes (yes)
-
 # to get notification data
 nf_data <- get_nf_data()
 
@@ -253,16 +252,18 @@ breathe_workshop_vars <- c( "rp.contact.field.parent_point_count_breathe_w_self_
 money_workshop_vars <- c( "rp.contact.field.parent_point_count_money_w_self_care", "rp.contact.field.parent_point_count_money_w_1on1",
                          "rp.contact.field.parent_point_count_money_w_praise", "rp.contact.field.parent_point_count_money_w_instruct",
                          "rp.contact.field.parent_point_count_money_w_stress", "rp.contact.field.parent_point_count_money_w_money",
-                         "rp.contact.field.parent_point_count_money_w_rules", "rp.contact.field.parent_point_count_money_w_consequence",
+                         "rp.contact.field.parent_point_count_money_w_rules", #"rp.contact.field.parent_point_count_money_w_consequence",
                          "rp.contact.field.parent_point_count_money_w_solve", "rp.contact.field.parent_point_count_money_w_safe",
-                         "rp.contact.field.parent_point_count_money_w_crisis","rp.contact.field.parent_point_count_money_w_celebrate")
+                         #"rp.contact.field.parent_point_count_money_w_crisis",
+                         "rp.contact.field.parent_point_count_money_w_celebrate")
 # consequence points in each week
 consequence_workshop_vars <- c( "rp.contact.field.parent_point_count_consequence_w_self_care", "rp.contact.field.parent_point_count_consequence_w_1on1",
                          "rp.contact.field.parent_point_count_consequence_w_praise", "rp.contact.field.parent_point_count_consequence_w_instruct",
                          "rp.contact.field.parent_point_count_consequence_w_stress", "rp.contact.field.parent_point_count_consequence_w_money",
-                         "rp.contact.field.parent_point_count_consequence_w_rules", "rp.contact.field.parent_point_count_consequence_w_consequence",
+                         #"rp.contact.field.parent_point_count_consequence_w_rules", "rp.contact.field.parent_point_count_consequence_w_crisis",
+                         "rp.contact.field.parent_point_count_consequence_w_consequence",
                          "rp.contact.field.parent_point_count_consequence_w_solve", "rp.contact.field.parent_point_count_consequence_w_safe",
-                         "rp.contact.field.parent_point_count_consequence_w_crisis","rp.contact.field.parent_point_count_consequence_w_celebrate")
+                         "rp.contact.field.parent_point_count_consequence_w_celebrate")
 # safe points in each week
 safe_workshop_vars <- c( "rp.contact.field.parent_point_count_safe_w_self_care", "rp.contact.field.parent_point_count_safe_w_1on1",
                          "rp.contact.field.parent_point_count_safe_w_praise", "rp.contact.field.parent_point_count_safe_w_instruct",
@@ -469,13 +470,14 @@ data_habit_parent_points_w_money <- c("rp.contact.field.parent_point_count_relax
 data_habit_parent_points_w_rules <- c("rp.contact.field.parent_point_count_relax_w_rules", "rp.contact.field.parent_point_count_treat_yourself_w_rules",
                                       "rp.contact.field.parent_point_count_praise_yourself_w_rules", "rp.contact.field.parent_point_count_spend_time_w_rules",
                                       "rp.contact.field.parent_point_count_praise_teen_w_rules", "rp.contact.field.parent_point_count_breathe_w_rules",
-                                      "rp.contact.field.parent_point_count_money_w_rules", "rp.contact.field.parent_point_count_consequence_w_rules",
+                                      "rp.contact.field.parent_point_count_money_w_rules", #"rp.contact.field.parent_point_count_consequence_w_rules",
                                       "rp.contact.field.parent_point_count_safe_w_rules", "rp.contact.field.parent_point_count_instruct_positively_w_rules")
 
 data_habit_parent_points_w_consequence <- c("rp.contact.field.parent_point_count_relax_w_consequence", "rp.contact.field.parent_point_count_treat_yourself_w_consequence",
                                             "rp.contact.field.parent_point_count_praise_yourself_w_consequence", "rp.contact.field.parent_point_count_spend_time_w_consequence",
                                             "rp.contact.field.parent_point_count_praise_teen_w_consequence", "rp.contact.field.parent_point_count_breathe_w_consequence",
-                                            "rp.contact.field.parent_point_count_money_w_consequence", "rp.contact.field.parent_point_count_consequence_w_consequence",
+                                            #"rp.contact.field.parent_point_count_money_w_consequence",
+                                            "rp.contact.field.parent_point_count_consequence_w_consequence",
                                             "rp.contact.field.parent_point_count_safe_w_consequence", "rp.contact.field.parent_point_count_instruct_positively_w_consequence")
 
 data_habit_parent_points_w_solve <- c("rp.contact.field.parent_point_count_relax_w_solve", "rp.contact.field.parent_point_count_treat_yourself_w_solve",
@@ -493,7 +495,7 @@ data_habit_parent_points_w_safe <- c("rp.contact.field.parent_point_count_relax_
 data_habit_parent_points_w_crisis <- c("rp.contact.field.parent_point_count_relax_w_crisis", "rp.contact.field.parent_point_count_treat_yourself_w_crisis",
                                        "rp.contact.field.parent_point_count_praise_yourself_w_crisis", "rp.contact.field.parent_point_count_spend_time_w_crisis",
                                        "rp.contact.field.parent_point_count_praise_teen_w_crisis", "rp.contact.field.parent_point_count_breathe_w_crisis",
-                                       "rp.contact.field.parent_point_count_money_w_crisis", "rp.contact.field.parent_point_count_consequence_w_crisis",
+                                       #"rp.contact.field.parent_point_count_money_w_crisis", "rp.contact.field.parent_point_count_consequence_w_crisis",
                                        "rp.contact.field.parent_point_count_safe_w_crisis", "rp.contact.field.parent_point_count_instruct_positively_w_crisis")
 
 data_habit_parent_points_w_celebrate <- c("rp.contact.field.parent_point_count_relax_w_celebrate", "rp.contact.field.parent_point_count_treat_yourself_w_celebrate",
@@ -888,9 +890,9 @@ plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.clic
 # summary_table(columns_to_summarise = hsqsclickedws2)
 
 #Test 1
-plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
-plhdata_org_clean$hsqsclickedcountws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
-plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
+#plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
+#plhdata_org_clean$hsqsclickedcountws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
+#plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
 # summary_table(columns_to_summarise = rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care, replace = "rp.contact.field.click_hs_")
 # user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
 
@@ -1027,49 +1029,65 @@ names(gender_table) <- levels(plhdata_org_clean$Org)
 
 # download push notification data
 # TODO: add fuzzy join to get_nf_data function
-nf_data <- get_nf_data()
-
-# what variables do we want in the nf data - org, sex, - add a few in.
-data_baseline_survey <- c("Org", "rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
-                          "rp.contact.field.user_age", "rp.contact.field.household_adults",
-                          "rp.contact.field.household_teens", "rp.contact.field.household_babies",
-                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
-plhdata_org_clean_select <- plhdata_org_clean %>%
-  dplyr::select(c(app_user_id, data_baseline_survey))
-
-# link nf data to user data by app_user_id
-# use inner_join: remove from nf anyone not in plhdata_org
-nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
-
-# Only 8 rows. This is because we have filtered out a lot of the plhdata_org_clean users
-# since their org is NA.
-# e.g.:
-plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.field.organisation_code)
-# we're throwing away a lot of data over this missing organisation. I think we need to reconsider
-# how to handle these?
-# Additionally surely TZ has only one organisation?
-
-pn_summary_count <- nf_data_join %>%
-  group_by(app_user_id, Org, rp.contact.field._app_language) %>% 
-  summarise(number_received = max(app_user_record_id),
-            number_responded = sum(!is.na(action_id)),
-            percentage_responded = number_responded/number_received*100)
-pn_summary_count
-
-# pn_summary_means <-
-pn_summary_count %>%
-  dplyr::summarise(dplyr::across(2:4, mean))
-
-
-
-
-# If we were to use all of the nf_data (except the "temp_" rows)
-nf_data_summary <- nf_data %>%
-  filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
-  group_by(app_user_id) %>% 
-  summarise(number_received = max(app_user_record_id),
-            number_responded = sum(!is.na(action_id)),
-            percentage_responded = number_responded/number_received*100)
-
-nf_data_summary %>%
-  dplyr::summarise(dplyr::across(2:4, mean))
+# nf_data <- get_nf_data()
+# 
+# # what variables do we want in the nf data - org, sex, - add a few in.
+# data_baseline_survey <-
+#   c(
+#     "Org",
+#     "rp.contact.field.survey_welcome_completed",
+#     "rp.contact.field.user_gender",
+#     "rp.contact.field.user_age",
+#     "rp.contact.field.household_adults",
+#     "rp.contact.field.household_teens",
+#     "rp.contact.field.household_babies",
+#     "rp.contact.field.household_children",
+#     "rp.contact.field._app_language",
+#     "app_version",
+#     "rp.contact.field.do_workshops_together"
+#   )
+# plhdata_org_clean_select <- plhdata_org_clean %>%
+#   dplyr::select(c(app_user_id, data_baseline_survey))
+# 
+# # link nf data to user data by app_user_id
+# # use inner_join: remove from nf anyone not in plhdata_org
+# nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
+# 
+# # Only 8 rows. This is because we have filtered out a lot of the plhdata_org_clean users
+# # since their org is NA.
+# # e.g.:
+# #plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.field.organisation_code)
+# # we're throwing away a lot of data over this missing organisation. I think we need to reconsider
+# # how to handle these?
+# # Additionally surely TZ has only one organisation?
+# 
+# pn_summary_count <- nf_data_join %>%
+#   group_by(app_user_id, Org, rp.contact.field._app_language) %>%
+#   summarise(
+#     number_received = max(app_user_record_id),
+#     number_responded = sum(!is.na(action_id)),
+#     percentage_responded = number_responded / number_received *
+#       100
+#   )
+# #pn_summary_count
+# 
+# # pn_summary_means <-
+# #pn_summary_count %>%
+# #  dplyr::summarise(dplyr::across(2:4, mean))
+# 
+# 
+# 
+# 
+# # If we were to use all of the nf_data (except the "temp_" rows)
+# nf_data_summary <- nf_data %>%
+#   filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
+#   group_by(app_user_id) %>%
+#   summarise(
+#     number_received = max(app_user_record_id),
+#     number_responded = sum(!is.na(action_id)),
+#     percentage_responded = number_responded / number_received *
+#       100
+#   )
+# 
+# #nf_data_summary %>%
+# #  dplyr::summarise(dplyr::across(2:4, mean))

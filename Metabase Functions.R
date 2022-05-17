@@ -96,8 +96,7 @@ get_user_data <- function(site = plh_con, date_from, date_to = NULL, format_date
 }
 
 # Write back to metabase - TODO: make into function?
-dbWriteTable(parent_app_con, "Cleaned PLH data", select(plhdata_org_clean,!(contact_fields)), overwrite=TRUE)
-
+#dbWriteTable(parent_app_con, "Cleaned PLH data", select(plhdata_org_clean,!(contact_fields)), overwrite=TRUE)
 
 naming_conventions <- function(x, replace, replace_after) {
   if (!missing(replace)){

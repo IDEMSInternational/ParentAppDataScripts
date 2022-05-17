@@ -229,6 +229,9 @@ ui <- dashboardPage(skin = "blue",
                                                                       "Joy","Nontobeko", "ICS")
                                       ))), #closes fluidRow
                                 
+                                tabsetPanel(type = "tabs",
+                                            tabPanel("Overview",
+                                
                                 fluidRow(
                                   box(width = 12,
                                       collapsible = FALSE,
@@ -246,7 +249,8 @@ ui <- dashboardPage(skin = "blue",
                                       collapsible = FALSE,
                                       solidHeader = TRUE,
                                       title = "Workshop 1: Welcome and Self-Care",
-                                      status = "info",  
+                                      status = "info",
+                                      h5("As individual: percentage out of 9 steppers; <br> As group: not an option for first workshop"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_self_care", height = "240"),
                                       shiny::tableOutput("table_w_self_care")
@@ -257,6 +261,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 2: One-on-One Time",
                                       status = "info",  
+                                      h5("As individual: percentage out of 7 steppers; <br> As group: percentage out of 9 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_1on1", height = "240"),
                                       shiny::tableOutput("table_w_1on1")
@@ -269,6 +274,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 3: Praise",
                                       status = "info",  
+                                      h5("As individual: percentage out of 9 steppers <br> As group: percentage out of 11 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_praise", height = "240"),
                                       shiny::tableOutput("table_w_praise")
@@ -279,6 +285,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 4: Positive Instructions",
                                       status = "info",  
+                                      h5("As individual: percentage out of 11 steppers <br> As group: percentage out of 13 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_instruct", height = "240"),
                                       shiny::tableOutput("table_w_instruct")
@@ -290,7 +297,8 @@ ui <- dashboardPage(skin = "blue",
                                       collapsible = FALSE,
                                       solidHeader = TRUE,
                                       title = "Workshop 5: Managing Stress",
-                                      status = "info",  
+                                      status = "info",
+                                      h5("As individual: percentage out of 10 steppers <br> As group: percentage out of 11 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_stress", height = "240"),
                                       shiny::tableOutput("table_w_stress")
@@ -301,6 +309,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 6: Family Budgets",
                                       status = "info",  
+                                      h5("As individual: percentage out of 18 steppers <br> As group: percentage out of 18 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_money", height = "240"),
                                       shiny::tableOutput("table_w_money")
@@ -313,6 +322,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 7: Rules",
                                       status = "info",  
+                                      h5("As individual: percentage out of 10 steppers <br> As group: npercentage out of 11 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_rules", height = "240"),
                                       shiny::tableOutput("table_w_rules")
@@ -323,6 +333,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 8: Calm Consequences",
                                       status = "info",  
+                                      h5("As individual: percentage out of 12 steppers <br> As group: npercentage out of 14 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_consequence", height = "240"),
                                       shiny::tableOutput("table_w_consequence")
@@ -335,6 +346,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 9: Problem Solving",
                                       status = "info",  
+                                      h5("As individual: percentage out of 10 steppers <br> As group: npercentage out of 12 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_solve", height = "240"),
                                       shiny::tableOutput("table_w_solve")
@@ -345,6 +357,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 10: Teen Safety",
                                       status = "info",  
+                                      h5("As individual: percentage out of 11 steppers <br> As group: npercentage out of 12 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_safe", height = "240"),
                                       shiny::tableOutput("table_w_safe")
@@ -357,6 +370,7 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 11: Dealing with Crisis",
                                       status = "info",  
+                                      h5("As individual: percentage out of 11 steppers <br> As group: npercentage out of 12 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_crisis", height = "240"),
                                       shiny::tableOutput("table_w_crisis")
@@ -367,11 +381,42 @@ ui <- dashboardPage(skin = "blue",
                                       solidHeader = TRUE,
                                       title = "Workshop 12: Celebration and Next Steps",
                                       status = "info",  
+                                      h5("As individual: percentage out of 6 steppers <br> As group: npercentage out of 9 steppers"),
                                       #background = "orange",
                                       plotlyOutput(outputId = "plot_w_celebrate", height = "240"),
                                       shiny::tableOutput("table_w_celebrate")
                                   ) #closes box
                                 ) #closes fluid row
+                                            ), # closes Overview tabPanel
+                                
+                                tabPanel("Additional Insights",
+                                         
+                                         fluidRow(
+                                           box(width = 12,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Number of users who have started a workshop",
+                                               status = "info",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_ws_started", height = "240"),
+                                               shiny::tableOutput("table_ws_started")
+                                           )#closes box
+                                         ), #closes fluid row
+                                         
+                                         fluidRow(
+                                           box(width = 12,
+                                               collapsible = FALSE,
+                                               solidHeader = TRUE,
+                                               title = "Percentage of starters who completed a workshop",
+                                               status = "info",  
+                                               #background = "orange",
+                                               plotlyOutput(outputId = "plot_ws_rel_completed", height = "240"),
+                                               shiny::tableOutput("table_ws_rel_completed")
+                                           )#closes box
+                                         ) #closes fluid row
+                                         
+                                ) # closes Additional Insights
+                                ) #closes tabsetPanel for workshop
                         ), #closes tabItem
                         
                         # Third tab content layout
@@ -2114,11 +2159,11 @@ ui <- dashboardPage(skin = "blue",
                                                        box(width = 12,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Cumulative push notification clicks",
+                                                           title = "Mean push notification clicks",
                                                            status = "success",  
                                                            #background = "orange",
-                                                           plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
-                                                           shiny::tableOutput("table_pushn_totals")
+                                                           plotlyOutput(outputId = "plot_pushn_mean", height = "240"),
+                                                           shiny::tableOutput("table_pushn_mean")
                                                        ) #closes box
                                                        ), #closes fluidrow
                                                      
@@ -2126,18 +2171,26 @@ ui <- dashboardPage(skin = "blue",
                                                        box(width = 12,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Mean pushnotifiation clicks per workshop week",
+                                                           title = "Cumulative pushnotifiation clicks",
                                                            status = "success",  
                                                            #background = "orange",
-                                                           plotlyOutput(outputId = "plot_pushn_mean_week", height = "240"),
-                                                           shiny::tableOutput("table_pushn_mean_week")
+                                                           plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
+                                                           shiny::tableOutput("table_pushn_totals")
                                                        )#closes box
                                                      ) #closes fluid row
                                             ), #closes tabPanel Push Notifications
                                             
+                                            tabPanel("Home Practice",
+                                                     
+                                            ), #closes tabPanel Home practice
+                                            
+                                            tabPanel("Quick Start Buttons",
+                                                     
+                                            ), #closes tabPanel Quick Start Buttons
+                                            
                                             tabPanel("Time Spent",
                                                   
-                                            ) #closes tabPanel Time spend
+                                            ) #closes tabPanel Time spent
                                 ) #closes tabset panel for In-week engagement
                       ), # closes fourth tabItem
                         
@@ -2620,7 +2673,7 @@ server <- function(input, output) {
     summary_table_baseline$`User gender` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_parent_gender  <- reactive({
-    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_gender", replace = "rp.contact.field.", plot_type = "boxplot")
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_gender", replace = "rp.contact.field.", plot_type = "histogram")
   }) 
   output$table_parent_gender <- shiny::renderTable({(table_parent_gender())}, striped = TRUE)
   output$plot_parent_gender <- renderPlotly({plot_parent_gender()})
@@ -2811,6 +2864,16 @@ server <- function(input, output) {
   output$table_w_celebrate <- shiny::renderTable({(table_w_celebrate())}, striped = TRUE)
   output$plot_w_celebrate <- renderPlotly({plot_w_celebrate()})
   
+  #Workshop engagement sub tab: additional insights
+  table_ws_started <- reactive({table_ws_started %>% filter(Org %in% c((input$OrgWS))) })
+  plot_ws_started <- reactive({}) 
+  output$table_ws_started <- shiny::renderTable({(table_ws_started())}, striped = TRUE)
+  output$plot_ws_started <- renderPlotly({plot_ws_started()})
+  
+  table_ws_rel_completed <- reactive({table_perc_completed %>% filter(Org %in% c((input$OrgWS))) })
+  plot_ws_rel_completed <- reactive({}) 
+  output$table_ws_rel_completed <- shiny::renderTable({(table_ws_rel_completed())}, striped = TRUE)
+  output$plot_ws_rel_completed <- renderPlotly({plot_ws_rel_completed()})
   
   #THIRD Tab Parent Points
   # applying org filter in parent point tab
@@ -2983,32 +3046,30 @@ server <- function(input, output) {
   output$table_pp_relax_w_rules <- shiny::renderTable({(table_pp_relax_w_rules())}, striped = TRUE)
   output$plot_pp_relax_w_rules <- renderPlotly({plot_pp_relax_w_rules()})
   
-  table_pp_relax_w_consequence <- reactive({})
+  table_pp_relax_w_consequence <- reactive({summary_table_habits_consequence$`Relax` %>% filter(Org %in% c((input$OrgPP)))})
   plot_pp_relax_w_consequence <- reactive({})
   output$table_pp_relax_w_consequence <- shiny::renderTable({(table_pp_relax_w_consequence())}, striped = TRUE)
   output$plot_pp_relax_w_consequence <- renderPlotly({plot_pp_relax_w_consequence()})
   
-  table_pp_relax_w_solve <- reactive({})
+  table_pp_relax_w_solve <- reactive({summary_table_habits_solve$`Relax` %>% filter(Org %in% c((input$OrgPP)))})
   plot_pp_relax_w_solve <- reactive({})
   output$table_pp_relax_w_solve <- shiny::renderTable({(table_pp_relax_w_solve())}, striped = TRUE)
   output$plot_pp_relax_w_solve <- renderPlotly({plot_pp_relax_w_solve()})
   
-  table_pp_relax_w_safe <- reactive({})
+  table_pp_relax_w_safe <- reactive({summary_table_habits_safe$`Relax` %>% filter(Org %in% c((input$OrgPP)))})
   plot_pp_relax_w_safe <- reactive({})
   output$table_pp_relax_w_safe <- shiny::renderTable({(table_pp_relax_w_safe())}, striped = TRUE)
   output$plot_pp_relax_w_safe <- renderPlotly({plot_pp_relax_w_safe()})
   
-  table_pp_relax_w_crisis <- reactive({})
+  table_pp_relax_w_crisis <- reactive({summary_table_habits_crisis$`Relax` %>% filter(Org %in% c((input$OrgPP)))})
   plot_pp_relax_w_crisis <- reactive({})
   output$table_pp_relax_w_crisis <- shiny::renderTable({(table_pp_relax_w_crisis())}, striped = TRUE)
   output$table_pp_relax_w_crisis <- renderPlotly({table_pp_relax_w_crisis()})
   
-  table_pp_relax_w_celebrate <- reactive({})
+  table_pp_relax_w_celebrate <- reactive({summary_table_habits_celebrate$`Relax` %>% filter(Org %in% c((input$OrgPP)))})
   plot_pp_relax_w_celebrate <- reactive({})
   output$table_pp_relax_w_celebrate <- shiny::renderTable({(table_pp_relax_w_celebrate())}, striped = TRUE)
   output$table_pp_relax_w_celebrate <- renderPlotly({table_pp_relax_w_celebrate()})
-  
-  
   
   #Parent Point sub tab Treat Yourself points pp2
  
@@ -3058,27 +3119,27 @@ plot_pp_treat_yourself_w_rules <- reactive({})
 output$table_pp_treat_yourself_w_rules <- shiny::renderTable({(table_pp_treat_yourself_w_rules())}, striped = TRUE)
 output$plot_pp_treat_yourself_w_rules <- renderPlotly({plot_pp_treat_yourself_w_rules()})
 
-table_pp_treat_yourself_w_consequence <- reactive({})
+table_pp_treat_yourself_w_consequence <- reactive({summary_table_habits_consequence$`Treat yourself` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_treat_yourself_w_consequence <- reactive({})
 output$table_pp_treat_yourself_w_consequence <- shiny::renderTable({(table_pp_treat_yourself_w_consequence())}, striped = TRUE)
 output$plot_pp_treat_yourself_w_consequence <- renderPlotly({plot_pp_treat_yourself_w_consequence()})
 
-table_pp_treat_yourself_w_solve <- reactive({})
+table_pp_treat_yourself_w_solve <- reactive({summary_table_habits_solve$`Treat yourself` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_treat_yourself_w_solve <- reactive({})
 output$table_pp_treat_yourself_w_solve <- shiny::renderTable({(table_pp_treat_yourself_w_solve())}, striped = TRUE)
 output$plot_pp_treat_yourself_w_solve <- renderPlotly({plot_pp_treat_yourself_w_solve()})
 
-table_pp_treat_yourself_w_safe <- reactive({})
+table_pp_treat_yourself_w_safe <- reactive({summary_table_habits_safe$`Treat yourself` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_treat_yourself_w_safe <- reactive({})
 output$table_pp_treat_yourself_w_safe <- shiny::renderTable({(table_pp_treat_yourself_w_safe())}, striped = TRUE)
 output$plot_pp_treat_yourself_w_safe <- renderPlotly({plot_pp_treat_yourself_w_safe()})
 
-table_pp_treat_yourself_w_crisis <- reactive({})
+table_pp_treat_yourself_w_crisis <- reactive({summary_table_habits_crisis$`Treat yourself` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_treat_yourself_w_crisis <- reactive({})
 output$table_pp_treat_yourself_w_crisis <- shiny::renderTable({(table_pp_treat_yourself_w_crisis())}, striped = TRUE)
 output$table_pp_treat_yourself_w_crisis <- renderPlotly({table_pp_treat_yourself_w_crisis()})
 
-table_pp_treat_yourself_w_celebrate <- reactive({})
+table_pp_treat_yourself_w_celebrate <- reactive({summary_table_habits_celebrate$`Treat yourself` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_treat_yourself_w_celebrate <- reactive({})
 output$table_pp_treat_yourself_w_celebrate <- shiny::renderTable({(table_pp_treat_yourself_w_celebrate())}, striped = TRUE)
 output$plot_pp_treat_yourself_w_celebrate <- renderPlotly({plot_pp_treat_yourself_w_celebrate()})
@@ -3128,26 +3189,30 @@ plot_pp_praise_yourself_w_rules <- reactive({})
 output$table_pp_praise_yourself_w_rules <- shiny::renderTable({(table_pp_praise_yourself_w_rules())}, striped = TRUE)
 output$plot_pp_praise_yourself_w_rules <- renderPlotly({plot_pp_praise_yourself_w_rules()})
 
-table_pp_praise_yourself_w_consequence <- reactive({})
+table_pp_praise_yourself_w_consequence <- reactive({summary_table_habits_consequence$`Praise yourself` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_praise_yourself_w_consequence <- reactive({})
 output$table_pp_praise_yourself_w_consequence <- shiny::renderTable({(table_pp_praise_yourself_w_consequence())}, striped = TRUE)
 output$plot_pp_praise_yourself_w_consequence <- renderPlotly({plot_pp_praise_yourself_w_consequence()})
 
-table_pp_praise_yourself_w_solve <- reactive({})
+table_pp_praise_yourself_w_solve <- reactive({summary_table_habits_solve$`Praise yourself` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_praise_yourself_w_solve <- reactive({})
 output$table_pp_praise_yourself_w_solve <- shiny::renderTable({(table_pp_praise_yourself_w_solve())}, striped = TRUE)
 output$plot_pp_praise_yourself_w_solve <- renderPlotly({plot_pp_praise_yourself_w_solve()})
 
-table_pp_praise_yourself_w_safe <- reactive({})
+table_pp_praise_yourself_w_safe <- reactive({summary_table_habits_safe$`Praise yourself` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_praise_yourself_w_safe <- reactive({})
 output$table_pp_praise_yourself_w_safe <- shiny::renderTable({(table_pp_praise_yourself_w_safe())}, striped = TRUE)
 output$plot_pp_praise_yourself_w_safe <- renderPlotly({plot_pp_praise_yourself_w_safe()})
 
-table_pp_praise_yourself_w_crisis <- reactive({})
+table_pp_praise_yourself_w_crisis <- reactive({summary_table_habits_crisis$`Praise yourself` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_praise_yourself_w_crisis <- reactive({})
 output$table_pp_praise_yourself_w_crisis <- shiny::renderTable({(table_pp_praise_yourself_w_crisis())}, striped = TRUE)
 output$table_pp_praise_yourself_w_crisis <- renderPlotly({table_pp_praise_yourself_w_crisis()})
 
+table_pp_praise_yourself_w_celebrate <- reactive({summary_table_habits_celebrate$`Praise yourself` %>% filter(Org %in% c((input$OrgPP)))})
+plot_pp_praise_yourself_w_celebrate <- reactive({})
+output$table_pp_praise_yourself_w_celebrate <- shiny::renderTable({(table_pp_praise_yourself_w_celebrate())}, striped = TRUE)
+output$table_pp_praise_yourself_w_celebrate <- renderPlotly({table_pp_praise_yourself_w_celebrate()})
 
 # Parent Point sub tab Spend Time points pp4
 table_pp_spend_time_ws_totals <- reactive({ summary_spend_time_workshop %>% filter(Org %in% c(input$OrgPP))})
@@ -3193,27 +3258,27 @@ plot_pp_spend_time_w_rules <- reactive({})
 output$table_pp_spend_time_w_rules <- shiny::renderTable({(table_pp_spend_time_w_rules())}, striped = TRUE)
 output$plot_pp_spend_time_w_rules <- renderPlotly({plot_pp_spend_time_w_rules()})
 
-table_pp_spend_time_w_consequence <- reactive({})
+table_pp_spend_time_w_consequence <- reactive({summary_table_habits_consequence$`Spend time` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_spend_time_w_consequence <- reactive({})
 output$table_pp_spend_time_w_consequence <- shiny::renderTable({(table_pp_spend_time_w_consequence())}, striped = TRUE)
 output$plot_pp_spend_time_w_consequence <- renderPlotly({plot_pp_spend_time_w_consequence()})
 
-table_pp_spend_time_w_solve <- reactive({})
+table_pp_spend_time_w_solve <- reactive({summary_table_habits_solve$`Spend time` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_spend_time_w_solve <- reactive({})
 output$table_pp_spend_time_w_solve <- shiny::renderTable({(table_pp_spend_time_w_solve())}, striped = TRUE)
 output$plot_pp_spend_time_w_solve <- renderPlotly({plot_pp_spend_time_w_solve()})
 
-table_pp_spend_time_w_safe <- reactive({})
+table_pp_spend_time_w_safe <- reactive({summary_table_habits_safe$`Spend time` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_spend_time_w_safe <- reactive({})
 output$table_pp_spend_time_w_safe <- shiny::renderTable({(table_pp_spend_time_w_safe())}, striped = TRUE)
 output$plot_pp_spend_time_w_safe <- renderPlotly({plot_pp_spend_time_w_safe()})
 
-table_pp_spend_time_w_crisis <- reactive({})
+table_pp_spend_time_w_crisis <- reactive({summary_table_habits_crisis$`Spend time` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_spend_time_w_crisis <- reactive({})
 output$table_pp_spend_time_w_crisis <- shiny::renderTable({(table_pp_spend_time_w_crisis())}, striped = TRUE)
 output$table_pp_spend_time_w_crisis <- renderPlotly({table_pp_spend_time_w_crisis()})
 
-table_pp_spend_time_w_celebrate <- reactive({})
+table_pp_spend_time_w_celebrate <- reactive({summary_table_habits_celebrate$`Spend time` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_spend_time_w_celebrate <- reactive({})
 output$table_pp_spend_time_w_celebrate <- shiny::renderTable({(table_pp_spend_time_w_celebrate())}, striped = TRUE)
 output$table_pp_spend_time_w_celebrate <- renderPlotly({table_pp_spend_time_w_celebrate()})
@@ -3262,27 +3327,27 @@ plot_pp_praise_teen_w_rules <- reactive({})
 output$table_pp_praise_teen_w_rules <- shiny::renderTable({(table_pp_praise_teen_w_rules())}, striped = TRUE)
 output$plot_pp_praise_teen_w_rules <- renderPlotly({plot_pp_praise_teen_w_rules()})
 
-table_pp_praise_teen_w_consequence <- reactive({})
+table_pp_praise_teen_w_consequence <- reactive({summary_table_habits_consequence$`Praise teen` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_praise_teen_w_consequence <- reactive({})
 output$table_pp_praise_teen_w_consequence <- shiny::renderTable({(table_pp_praise_teen_w_consequence())}, striped = TRUE)
 output$plot_pp_praise_teen_w_consequence <- renderPlotly({plot_pp_praise_teen_w_consequence()})
 
-table_pp_praise_teen_w_solve <- reactive({})
+table_pp_praise_teen_w_solve <- reactive({summary_table_habits_solve$`Praise teen` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_praise_teen_w_solve <- reactive({})
 output$table_pp_praise_teen_w_solve <- shiny::renderTable({(table_pp_praise_teen_w_solve())}, striped = TRUE)
 output$plot_pp_praise_teen_w_solve <- renderPlotly({plot_pp_praise_teen_w_solve()})
 
-table_pp_praise_teen_w_safe <- reactive({})
+table_pp_praise_teen_w_safe <- reactive({summary_table_habits_safe$`Praise teen` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_praise_teen_w_safe <- reactive({})
 output$table_pp_praise_teen_w_safe <- shiny::renderTable({(table_pp_praise_teen_w_safe())}, striped = TRUE)
 output$plot_pp_praise_teen_w_safe <- renderPlotly({plot_pp_praise_teen_w_safe()})
 
-table_pp_praise_teen_w_crisis <- reactive({})
+table_pp_praise_teen_w_crisis <- reactive({summary_table_habits_crisis$`Praise teen` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_praise_teen_w_crisis <- reactive({})
 output$table_pp_praise_teen_w_crisis <- shiny::renderTable({(table_pp_praise_teen_w_crisis())}, striped = TRUE)
 output$table_pp_praise_teen_w_crisis <- renderPlotly({table_pp_praise_teen_w_crisis()})
 
-able_pp_praise_teen_w_celebrate <- reactive({})
+able_pp_praise_teen_w_celebrate <- reactive({summary_table_habits_celebrate$`Praise teen` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_praise_teen_w_celebrate <- reactive({})
 output$table_pp_praise_teen_w_celebrate <- shiny::renderTable({(table_pp_praise_teen_w_celebrate())}, striped = TRUE)
 output$table_pp_praise_teen_w_celebrate <- renderPlotly({table_pp_praise_teen_w_celebrate()})
@@ -3331,27 +3396,27 @@ plot_pp_instruct_positively_w_rules <- reactive({})
 output$table_pp_instruct_positively_w_rules <- shiny::renderTable({(table_pp_instruct_positively_w_rules())}, striped = TRUE)
 output$plot_pp_instruct_positively_w_rules <- renderPlotly({plot_pp_instruct_positively_w_rules()})
 
-table_pp_instruct_positively_w_consequence <- reactive({})
+table_pp_instruct_positively_w_consequence <- reactive({summary_table_habits_consequence$`Instruct positively` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_instruct_positively_w_consequence <- reactive({})
 output$table_pp_instruct_positively_w_consequence <- shiny::renderTable({(table_pp_instruct_positively_w_consequence())}, striped = TRUE)
 output$plot_pp_instruct_positively_w_consequence <- renderPlotly({plot_pp_instruct_positively_w_consequence()})
 
-table_pp_instruct_positively_w_solve <- reactive({})
+table_pp_instruct_positively_w_solve <- reactive({summary_table_habits_solve$`Instruct positively` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_instruct_positively_w_solve <- reactive({})
 output$table_pp_instruct_positively_w_solve <- shiny::renderTable({(table_pp_instruct_positively_w_solve())}, striped = TRUE)
 output$plot_pp_instruct_positively_w_solve <- renderPlotly({plot_pp_instruct_positively_w_solve()})
 
-table_pp_instruct_positively_w_safe <- reactive({})
+table_pp_instruct_positively_w_safe <- reactive({summary_table_habits_safe$`Instruct positively` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_instruct_positively_w_safe <- reactive({})
 output$table_pp_instruct_positively_w_safe <- shiny::renderTable({(table_pp_instruct_positively_w_safe())}, striped = TRUE)
 output$plot_pp_instruct_positively_w_safe <- renderPlotly({plot_pp_instruct_positively_w_safe()})
 
-table_pp_instruct_positively_w_crisis <- reactive({})
+table_pp_instruct_positively_w_crisis <- reactive({summary_table_habits_crisis$`Instruct positively` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_instruct_positively_w_crisis <- reactive({})
 output$table_pp_instruct_positively_w_crisis <- shiny::renderTable({(table_pp_instruct_positively_w_crisis())}, striped = TRUE)
 output$table_pp_instruct_positively_w_crisis <- renderPlotly({table_pp_instruct_positively_w_crisis()})
 
-table_pp_instruct_positively_w_celebrate <- reactive({})
+table_pp_instruct_positively_w_celebrate <- reactive({summary_table_habits_celebrate$`Instruct positively` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_instruct_positively_w_celebrate <- reactive({})
 output$table_pp_instruct_positively_w_celebrate <- shiny::renderTable({(table_pp_instruct_positively_w_celebrate())}, striped = TRUE)
 output$table_pp_instruct_positively_w_celebrate <- renderPlotly({table_pp_instruct_positively_w_celebrate()})
@@ -3400,27 +3465,27 @@ plot_pp_breathe_w_rules <- reactive({})
 output$table_pp_breathe_w_rules <- shiny::renderTable({(table_pp_breathe_w_rules())}, striped = TRUE)
 output$plot_pp_breathe_w_rules <- renderPlotly({plot_pp_breathe_w_rules()})
 
-table_pp_breathe_w_consequence <- reactive({})
+table_pp_breathe_w_consequence <- reactive({summary_table_habits_consequence$`Breathe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_breathe_w_consequence <- reactive({})
 output$table_pp_breathe_w_consequence <- shiny::renderTable({(table_pp_breathe_w_consequence())}, striped = TRUE)
 output$plot_pp_breathe_w_consequence <- renderPlotly({plot_pp_breathe_w_consequence()})
 
-table_pp_breathe_w_solve <- reactive({})
+table_pp_breathe_w_solve <- reactive({summary_table_habits_solve$`Breathe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_breathe_w_solve <- reactive({})
 output$table_pp_breathe_w_solve <- shiny::renderTable({(table_pp_breathe_w_solve())}, striped = TRUE)
 output$plot_pp_breathe_w_solve <- renderPlotly({plot_pp_breathe_w_solve()})
 
-table_pp_breathe_w_safe <- reactive({})
+table_pp_breathe_w_safe <- reactive({summary_table_habits_safe$`Breathe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_breathe_w_safe <- reactive({})
 output$table_pp_breathe_w_safe <- shiny::renderTable({(table_pp_breathe_w_safe())}, striped = TRUE)
 output$plot_pp_breathe_w_safe <- renderPlotly({plot_pp_breathe_w_safe()})
 
-table_pp_breathe_w_crisis <- reactive({})
+table_pp_breathe_w_crisis <- reactive({summary_table_habits_crisis$`Breathe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_breathe_w_crisis <- reactive({})
 output$table_pp_breathe_w_crisis <- shiny::renderTable({(table_pp_breathe_w_crisis())}, striped = TRUE)
 output$table_pp_breathe_w_crisis <- renderPlotly({table_pp_breathe_w_crisis()})
 
-table_pp_breathe_w_celebrate <- reactive({})
+table_pp_breathe_w_celebrate <- reactive({summary_table_habits_celebrate$`Breathe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_breathe_w_celebrate <- reactive({})
 output$table_pp_breathe_w_celebrate <- shiny::renderTable({(table_pp_breathe_w_celebrate())}, striped = TRUE)
 output$table_pp_breathe_w_celebrate <- renderPlotly({table_pp_breathe_w_celebrate()})
@@ -3469,27 +3534,27 @@ plot_pp_money_w_rules <- reactive({})
 output$table_pp_money_w_rules <- shiny::renderTable({(table_pp_money_w_rules())}, striped = TRUE)
 output$plot_pp_money_w_rules <- renderPlotly({plot_pp_money_w_rules()})
 
-table_pp_money_w_consequence <- reactive({})
+table_pp_money_w_consequence <- reactive({summary_table_habits_consequence$`Money` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_money_w_consequence <- reactive({})
 output$table_pp_money_w_consequence <- shiny::renderTable({(table_pp_money_w_consequence())}, striped = TRUE)
 output$plot_pp_money_w_consequence <- renderPlotly({plot_pp_money_w_consequence()})
 
-table_pp_money_w_solve <- reactive({})
+table_pp_money_w_solve <- reactive({summary_table_habits_solve$`Money` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_money_w_solve <- reactive({})
 output$table_pp_money_w_solve <- shiny::renderTable({(table_pp_money_w_solve())}, striped = TRUE)
 output$plot_pp_money_w_solve <- renderPlotly({plot_pp_money_w_solve()})
 
-table_pp_money_w_safe <- reactive({})
+table_pp_money_w_safe <- reactive({summary_table_habits_safe$`Money` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_money_w_safe <- reactive({})
 output$table_pp_money_w_safe <- shiny::renderTable({(table_pp_money_w_safe())}, striped = TRUE)
 output$plot_pp_money_w_safe <- renderPlotly({plot_pp_money_w_safe()})
 
-table_pp_money_w_crisis <- reactive({})
+table_pp_money_w_crisis <- reactive({summary_table_habits_crisis$`Money` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_money_w_crisis <- reactive({})
 output$table_pp_money_w_crisis <- shiny::renderTable({(table_pp_money_w_crisis())}, striped = TRUE)
 output$table_pp_money_w_crisis <- renderPlotly({table_pp_money_w_crisis()})
 
-table_pp_money_w_celebrate <- reactive({})
+table_pp_money_w_celebrate <- reactive({summary_table_habits_celebrate$`Money` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_money_w_celebrate <- reactive({})
 output$table_pp_money_w_celebrate <- shiny::renderTable({(table_pp_money_w_celebrate())}, striped = TRUE)
 output$table_pp_money_w_celebrate <- renderPlotly({table_pp_money_w_celebrate()})
@@ -3538,27 +3603,27 @@ plot_pp_consequence_w_rules <- reactive({})
 output$table_pp_consequence_w_rules <- shiny::renderTable({(table_pp_consequence_w_rules())}, striped = TRUE)
 output$plot_pp_consequence_w_rules <- renderPlotly({plot_pp_consequence_w_rules()})
 
-table_pp_consequence_w_consequence <- reactive({})
+table_pp_consequence_w_consequence <- reactive({summary_table_habits_consequence$`Consequence` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_consequence_w_consequence <- reactive({})
 output$table_pp_consequence_w_consequence <- shiny::renderTable({(table_pp_consequence_w_consequence())}, striped = TRUE)
 output$plot_pp_consequence_w_consequence <- renderPlotly({plot_pp_consequence_w_consequence()})
 
-table_pp_consequence_w_solve <- reactive({})
+table_pp_consequence_w_solve <- reactive({summary_table_habits_solve$`Consequence` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_consequence_w_solve <- reactive({})
 output$table_pp_consequence_w_solve <- shiny::renderTable({(table_pp_consequence_w_solve())}, striped = TRUE)
 output$plot_pp_money_w_solve <- renderPlotly({plot_pp_consequence_w_solve()})
 
-table_pp_consequence_w_safe <- reactive({})
+table_pp_consequence_w_safe <- reactive({summary_table_habits_safe$`Consequence` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_consequence_w_safe <- reactive({})
 output$table_pp_consequence_w_safe <- shiny::renderTable({(table_pp_consequence_w_safe())}, striped = TRUE)
 output$plot_pp_consequence_w_safe <- renderPlotly({plot_pp_consequence_w_safe()})
 
-table_pp_consequence_w_crisis <- reactive({})
+table_pp_consequence_w_crisis <- reactive({summary_table_habits_crisis$`Consequence` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_consequence_w_crisis <- reactive({})
 output$table_pp_consequence_w_crisis <- shiny::renderTable({(table_pp_consequence_w_crisis())}, striped = TRUE)
 output$table_pp_consequence_w_crisis <- renderPlotly({table_pp_consequence_w_crisis()})
 
-table_pp_consequence_w_celebrate <- reactive({})
+table_pp_consequence_w_celebrate <- reactive({summary_table_habits_celebrate$`Consequence` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_consequence_w_celebrate <- reactive({})
 output$table_pp_consequence_w_celebrate <- shiny::renderTable({(table_pp_consequence_w_celebrate())}, striped = TRUE)
 output$table_pp_consequence_w_celebrate <- renderPlotly({table_pp_consequence_w_celebrate()})
@@ -3607,39 +3672,41 @@ plot_pp_safe_w_rules <- reactive({})
 output$table_pp_safe_w_rules <- shiny::renderTable({(table_pp_safe_w_rules())}, striped = TRUE)
 output$plot_pp_safe_w_rules <- renderPlotly({plot_pp_safe_w_rules()})
 
-table_pp_safe_w_consequence <- reactive({})
+table_pp_safe_w_consequence <- reactive({summary_table_habits_consequence$`Safe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_safe_w_consequence <- reactive({})
 output$table_pp_safe_w_consequence <- shiny::renderTable({(table_pp_safe_w_consequence())}, striped = TRUE)
 output$plot_pp_safe_w_consequence <- renderPlotly({plot_pp_safe_w_consequence()})
 
-table_pp_safe_w_solve <- reactive({})
+table_pp_safe_w_solve <- reactive({summary_table_habits_solve$`Safe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_safe_w_solve <- reactive({})
 output$table_pp_safe_w_solve <- shiny::renderTable({(table_pp_safe_w_solve())}, striped = TRUE)
 output$plot_pp_money_w_solve <- renderPlotly({plot_pp_safe_w_solve()})
 
-table_pp_safe_w_safe <- reactive({})
+table_pp_safe_w_safe <- reactive({summary_table_habits_safe$`Safe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_safe_w_safe <- reactive({})
 output$table_pp_safe_w_safe <- shiny::renderTable({(table_pp_safe_w_safe())}, striped = TRUE)
 output$plot_pp_safe_w_safe <- renderPlotly({plot_pp_safe_w_safe()})
 
-table_pp_safe_w_crisis <- reactive({})
+table_pp_safe_w_crisis <- reactive({summary_table_habits_crisis$`Safe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_safe_w_crisis <- reactive({})
 output$table_pp_safe_w_crisis <- shiny::renderTable({(table_pp_safe_w_crisis())}, striped = TRUE)
 output$table_pp_safe_w_crisis <- renderPlotly({table_pp_safe_w_crisis()})
 
-table_pp_safe_w_celebrate <- reactive({})
+table_pp_safe_w_celebrate <- reactive({summary_table_habits_celebrate$`Safe` %>% filter(Org %in% c((input$OrgPP)))})
 plot_pp_safe_w_celebrate <- reactive({})
 output$table_pp_safe_w_celebrate <- shiny::renderTable({(table_pp_safe_w_celebrate())}, striped = TRUE)
 output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
 
   
-  #FOURTH Tab In-week Engagement
+#FOURTH Tab In-week Engagement
 
 selected_data_xe <- reactive({
   plhdata_checkgroup <- plhdata_org_clean %>% filter(Org %in% c((input$OrgXE)))
   return(plhdata_checkgroup)
 })
   
+#App Opens tab 4.1
+
   table_appopen_totals <- reactive({
     tables_app_opens$`Total` %>% filter(Org %in% c((input$OrgXE)))}) 
   plot_appopen_totals <- reactive({summary_plot(data = selected_data_xe(), columns_to_summarise = "rp.contact.field.app_launch_count", replace = "rp.contact.field.")}) 
@@ -3659,21 +3726,22 @@ selected_data_xe <- reactive({
   output$table_appopen_mean_week <- shiny::renderTable({(table_appopen_mean_week())}, striped = TRUE)
   output$plot_appopen_mean_week <- renderPlotly({plot_appopen_mean_week()})
   
-  table_pushn_totals <- reactive({
+# Push notifications tab 4.2
+  
+  table_pushn_mean <- reactive({
   }) 
+  plot_pushn_mean <- reactive({
+  }) 
+  output$table_pushn_mean <- shiny::renderTable({(table_pushn_mean())}, striped = TRUE)
+  output$plot_pushn_mean <- renderPlotly({plot_pushn_mean()})
+  
+  table_pushn_totals <- reactive({pn_summary_count %>% filter(Org %in% c((input$OrgXE)))}) 
   plot_pushn_totals <- reactive({
   }) 
   output$table_pushn_totals <- shiny::renderTable({(table_pushn_totals())}, striped = TRUE)
   output$plot_pushn_totals <- renderPlotly({plot_pushn_totals()})
   
-  table_pushn_mean_week <- reactive({
-  }) 
-  plot_pushn_mean_week <- reactive({
-  }) 
-  output$table_pushn_mean_week <- shiny::renderTable({(table_pushn_mean_week())}, striped = TRUE)
-  output$plot_pushn_mean_week <- renderPlotly({plot_pushn_mean_week()})
-  
-  
+
   #FIFTH Tab Surveys
   
   selected_data_sv1 <- reactive({
@@ -3803,11 +3871,18 @@ selected_data_xe <- reactive({
     plhdata_checkgroup <- plhdata_org_clean %>% filter(Org %in% c((input$OrgLB)))
     return(plhdata_checkgroup)})
   
-  #average clicks on parent library (mean per ws week)
-  # table_library_mean <- reactive({summary_table_library$` parent centre ` %>% filter(Org %in% c((input$OrgLB))) })
-  # plot_library_mean  <- reactive({summary_plot(plhdata_org_clean, "rp.contact.field.click_hs_parent_centre_count", replace = "rp.contact.field.click_hs_")})
-  # output$table_library_mean <- shiny::renderTable({(table_library_mean())}, striped = TRUE)
-  # output$plot_library_mean <- renderPlotly({plot_library_mean()})
+  #average clicks on parent library (mean per org)
+  table_library_mean <- reactive({summary_library_mean %>% filter(Org %in% c((input$OrgLB))) })
+  plot_library_mean  <- reactive({summary_library_mean_long <- pivot_longer(summary_library_mean, cols = !Org, names_to = "Library", values_to = "Clicks")
+  ggplot(summary_library_mean_long, aes(x = Library , y = Clicks, fill = Org)) + 
+    geom_bar(stat = "identity", position = "dodge") +
+    # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
+    viridis::scale_fill_viridis(discrete = TRUE) 
+    
+  })
+  output$table_library_mean <- shiny::renderTable({(table_library_mean())}, striped = TRUE)
+  output$plot_library_mean <- renderPlotly({plot_library_mean()})
   
   #total clicks on parent library from homescreen
   table_library_totals <- reactive({summary_table_library$` parent centre ` %>% filter(Org %in% c((input$OrgLB))) })

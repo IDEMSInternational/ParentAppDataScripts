@@ -1,3 +1,8 @@
+##################################
+##################################
+####### User Data Analysis #######
+##################################
+##################################
 
 ### extract data ----------------------------------------------------------------------
 # to get user data
@@ -107,7 +112,7 @@ plhdata_org_clean <- plhdata_org_clean %>%
 # Write clean data back -------------------------------------------------------
 
 # Analysis - tables - separate for different groups.
-summary_table(columns_to_summarise = app_version, display_table = FALSE)
+# summary_table(columns_to_summarise = app_version, display_table = FALSE)
 
 
 ## Data Analysis ## --------------------------------------------------------
@@ -786,11 +791,33 @@ summary_mean_completion_level <- plhdata_org_clean %>%
 
 colnames(summary_mean_completion_level) <- naming_conventions(colnames(summary_mean_completion_level), "rp.contact.field.w_", "_completion_level")
 
-#Issue: "rules" workshop data was missing - needed to be added in list creation for "data_completion_level"
 summary_mean_completion_level
 
 
+# Percentage of users who completed a workshop out of those who started it
+# nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level == 100)) / nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_started == "true"))
+# nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level == 100)) / nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level > 0))
 
+for (i in 1:length(summary_table_completion_level)){
+  if (!"100" %in% names(summary_table_completion_level[[i]])){
+    summary_table_completion_level[[i]]$`100` <- 0
+  }
+}
+
+relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
+                               mutate(started = Total - `0` - `NA`,
+                                      perc_completed = `100`/started*100) %>%
+                               select(c(Org, started, perc_completed)))
+table_perc_completed <- plyr::ldply(relative_perc_completed) %>%
+  pivot_wider(id_cols = Org, names_from = .id, values_from = perc_completed)
+  
+table_perc_completed 
+
+table_ws_started <- plyr::ldply(relative_perc_completed) %>%
+  pivot_wider(id_cols = Org, names_from = .id, values_from = started)
+
+table_ws_started
+ 
 # Survey - past week  ----------------------------------------------------------------------------
 data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
                            "rp.contact.field.survey_welcome_a_3_final",  "rp.contact.field.survey_welcome_a_4_final",
@@ -806,17 +833,17 @@ names(summary_table_survey_past_week) <- survey_vars
 
 # then to access a table:
 summary_table_survey_past_week$Attention
-summary_table_survey_past_week$Praise
-summary_table_survey_past_week$Stress
-summary_table_survey_past_week$Shouting
-summary_table_survey_past_week$`Money worries`
-summary_table_survey_past_week$Summary
-summary_table_survey_past_week$Hitting
-summary_table_survey_past_week$`Teen activity`
-summary_table_survey_past_week$`Lockdown?`
-summary_table_survey_past_week$`Knowledge of teen activity in non-lockdown week`
-summary_table_survey_past_week$`Sexual safety talk`
-summary_table_survey_past_week$`Teen COVID safe`
+# summary_table_survey_past_week$Praise
+# summary_table_survey_past_week$Stress
+# summary_table_survey_past_week$Shouting
+# summary_table_survey_past_week$`Money worries`
+# summary_table_survey_past_week$Summary
+# summary_table_survey_past_week$Hitting
+# summary_table_survey_past_week$`Teen activity`
+# summary_table_survey_past_week$`Lockdown?`
+# summary_table_survey_past_week$`Knowledge of teen activity in non-lockdown week`
+# summary_table_survey_past_week$`Sexual safety talk`
+# summary_table_survey_past_week$`Teen COVID safe`
 
 #TODO iff "7" to 7.1? - TODO - what do they mean by this?
 
@@ -845,6 +872,18 @@ names(summary_table_library) <- data_library_neat
 # summary_table_library$`Technical support `
 # summary_table_library$`Covid `
 # summary_table_library$`Bereavement `
+
+#mean library clicks (button type per organisation)
+#mean library clicks per workshop week is not stored to my knowledge
+
+summary_library_mean <- plhdata_org_clean %>%
+  group_by(Org)  %>%
+  summarise(across(data_library, mean, na.rm = TRUE))
+
+colnames(summary_library_mean) <- naming_conventions(colnames(summary_library_mean), "rp.contact.field.click_", "_count")
+summary_library_mean
+
+
 
 #Test 2 Priority 22 (how to interpret data?)
 #Number of in-app message clicks per workshop week.Per quick start button, per workshop week 
@@ -1009,3 +1048,58 @@ plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")
 plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_gender")
 plhdata_org_clean %>% filter(Org == "Amathuba") %>% select('app_user_id', "rp.contact.field.user_gender")
 mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
+
+##################################
+##################################
+### Notification Data Analysis ###
+##################################
+##################################
+
+# download push notification data
+# TODO: add fuzzy join to get_nf_data function
+nf_data <- get_nf_data()
+
+# what variables do we want in the nf data - org, sex, - add a few in.
+data_baseline_survey <- c("Org", "rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
+                          "rp.contact.field.user_age", "rp.contact.field.household_adults",
+                          "rp.contact.field.household_teens", "rp.contact.field.household_babies",
+                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
+plhdata_org_clean_select <- plhdata_org_clean %>%
+  dplyr::select(c(app_user_id, data_baseline_survey))
+
+# link nf data to user data by app_user_id
+# use inner_join: remove from nf anyone not in plhdata_org
+nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
+
+# Only 8 rows. This is because we have filtered out a lot of the plhdata_org_clean users
+# since their org is NA.
+# e.g.:
+plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.field.organisation_code)
+# we're throwing away a lot of data over this missing organisation. I think we need to reconsider
+# how to handle these?
+# Additionally surely TZ has only one organisation?
+
+pn_summary_count <- nf_data_join %>%
+  group_by(app_user_id, Org, rp.contact.field._app_language) %>% 
+  summarise(number_received = max(app_user_record_id),
+            number_responded = sum(!is.na(action_id)),
+            percentage_responded = number_responded/number_received*100)
+pn_summary_count
+
+# pn_summary_means <-
+pn_summary_count %>%
+  dplyr::summarise(dplyr::across(2:4, mean))
+
+
+
+
+# If we were to use all of the nf_data (except the "temp_" rows)
+nf_data_summary <- nf_data %>%
+  filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
+  group_by(app_user_id) %>% 
+  summarise(number_received = max(app_user_record_id),
+            number_responded = sum(!is.na(action_id)),
+            percentage_responded = number_responded/number_received*100)
+
+nf_data_summary %>%
+  dplyr::summarise(dplyr::across(2:4, mean))

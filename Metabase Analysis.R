@@ -7,7 +7,6 @@
 ### extract data ----------------------------------------------------------------------
 # to get user data
 plhdata_org <- get_user_data(merge_check = FALSE) # select 1 if you want to merge in changes (yes)
-
 # to get notification data
 nf_data <- get_nf_data()
 
@@ -83,19 +82,6 @@ plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(p
 plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.numeric(plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care)
 
 plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
-plhdata_org_clean$rp.contact.field.w_self_care_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
-plhdata_org_clean$rp.contact.field.w_1on1_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_completion_level)
-plhdata_org_clean$rp.contact.field.w_praise_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_praise_completion_level)
-plhdata_org_clean$rp.contact.field.w_instruct_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_instruct_completion_level)
-plhdata_org_clean$rp.contact.field.w_stress_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_stress_completion_level)
-plhdata_org_clean$rp.contact.field.w_money_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_money_completion_level)
-plhdata_org_clean$rp.contact.field.w_rules_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_rules_completion_level)
-plhdata_org_clean$rp.contact.field.w_consequence_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_consequence_completion_level)
-plhdata_org_clean$rp.contact.field.w_solve_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_solve_completion_level)
-plhdata_org_clean$rp.contact.field.w_safe_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_safe_completion_level)
-plhdata_org_clean$rp.contact.field.w_crisis_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_crisis_completion_level)
-plhdata_org_clean$rp.contact.field.w_celebrate_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.w_celebrate_completion_level)
-
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(across(ends_with("_completion_level"), ~as.numeric(.)))
 plhdata_org_clean <- plhdata_org_clean %>%
@@ -119,42 +105,42 @@ plhdata_org_clean <- plhdata_org_clean %>%
 
 # Summary tables of started/completed things
 # Show the summary of Self care workshop started(1st Workshop)                            
-summary_table(columns_to_summarise = rp.contact.field.w_self_care_started)
+# summary_table(columns_to_summarise = rp.contact.field.w_self_care_started)
 
 #plhdata_org_clean%>%dplyr::filter(Nontobeko,Joy,Amathuba,Dlalanathi)%>%summary_table(columns_to_summarise = rp.contact.field.w_self_care_started)
 
 # Show the summary of Self care workshop completion(1st Workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_self_care_completed)
+#summary_table(columns_to_summarise = rp.contact.field.w_self_care_completed)
 
 # Show the summary of One-on-One Time started(2nd Workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_1on1_started)
+#summary_table(columns_to_summarise = rp.contact.field.w_1on1_started)
 
 # Show the summary of  One-on-One Time completion(2nd Workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_1on1_completed)
+#summary_table(columns_to_summarise = rp.contact.field.w_1on1_completed)
 
 # Show the summary of Praise started(3rd workshop) 
-summary_table(columns_to_summarise = rp.contact.field.w_praise_started)
+#summary_table(columns_to_summarise = rp.contact.field.w_praise_started)
 
 # Show the summary of Praise(3rd Workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_praise_completed)
+#summary_table(columns_to_summarise = rp.contact.field.w_praise_completed)
 
 ## Show the summary of Positive Instructions(4th workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_instruct_started)
+#summary_table(columns_to_summarise = rp.contact.field.w_instruct_started)
 
 # Show the summary of Positive Instructions(4th workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_instruct_completed)
+#summary_table(columns_to_summarise = rp.contact.field.w_instruct_completed)
 
 # Show the summary of Managing Stress(5th workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_stress_started)
+#summary_table(columns_to_summarise = rp.contact.field.w_stress_started)
 
 # Show the summary of Managing Stress(5th workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_stress_completed)
+#summary_table(columns_to_summarise = rp.contact.field.w_stress_completed)
 
 # Show the summary of Family Budgets(6th workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_money_started)
+#summary_table(columns_to_summarise = rp.contact.field.w_money_started)
 
 # Show the summary of Family Budgets(6th workshop)
-summary_table(columns_to_summarise = rp.contact.field.w_money_completed)
+#summary_table(columns_to_summarise = rp.contact.field.w_money_completed)
 
 #survey ------------------------------------------------------------------------------------
 data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
@@ -169,11 +155,11 @@ summary_table_baseline <- plhdata_org_clean %>%
   map(.x = data_baseline_survey, .f = ~replace_na(.x, "unknown"))  %>%
   map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE, summaries = "frequencies"))
 names(summary_table_baseline) <- baseline_names_neat
-summary_table_baseline$`Household babies`
-summary_table_baseline$` app language`
-summary_table_baseline$`App version`
-summary_table_baseline$`Do workshops together`
-summary_table_baseline$`Household adults`
+# summary_table_baseline$`Household babies`
+# summary_table_baseline$` app language`
+# summary_table_baseline$`App version`
+# summary_table_baseline$`Do workshops together`
+# summary_table_baseline$`Household adults`
 
 #summary_table_baseline$`User gender`  %>% filter(Org %in% c(("Dlalanathi"))) %>%
 #  pivot_wider(names_from = `User gender`, values_from = N)
@@ -181,31 +167,30 @@ summary_table_baseline$`Household adults`
 summary_plot_baseline <- plhdata_org_clean %>%
   map(.x = data_baseline_survey, .f = ~summary_plot(columns_to_summarise = .x))
 names(summary_plot_baseline) <- baseline_names_neat
-summary_plot_baseline$`Survey welcome completed`
-
+# summary_plot_baseline$`Survey welcome completed`
 
 ###Completion status of baseline survey
 # Show the summary of baseline survey completion(Organisaton-wise)
 
-summary_table(plhdata_org_clean %>% filter(Org == "Nontobeko"),
-              factor = NULL,
-              columns_to_summarise = rp.contact.field.survey_welcome_completed)
+# summary_table(plhdata_org_clean %>% filter(Org == "Nontobeko"),
+#               factor = NULL,
+#               columns_to_summarise = rp.contact.field.survey_welcome_completed)
 
 # Show the summary of user ids on baseline survey completion (Organisaton-wise)
-user_id_print("rp.contact.field.survey_welcome_completed")
+# user_id_print("rp.contact.field.survey_welcome_completed")
 
 
 #Time spent on the workshops -----------------------------------------------------------------------
 # TODO: sort NAs in these:
 #Self care workshop
-summary_table(columns_to_summarise = rp.contact.field.w_self_care_diff_started_completed)
+# summary_table(columns_to_summarise = rp.contact.field.w_self_care_diff_started_completed)
 
 #One on one time workshop
-summary_table(columns_to_summarise = rp.contact.field.w_1on1_diff_started_completed)
+# summary_table(columns_to_summarise = rp.contact.field.w_1on1_diff_started_completed)
 
 # app language --------------------------------------------------
-summary_table(columns_to_summarise = rp.contact.field._app_language, replace = "rp.contact.field.")
-user_id_print("rp.contact.field._app_language")
+# summary_table(columns_to_summarise = rp.contact.field._app_language, replace = "rp.contact.field.")
+# user_id_print("rp.contact.field._app_language")
 # TODO: factor levels? that should be done in cleaning step.
 
 #Define workshop week order
@@ -267,16 +252,18 @@ breathe_workshop_vars <- c( "rp.contact.field.parent_point_count_breathe_w_self_
 money_workshop_vars <- c( "rp.contact.field.parent_point_count_money_w_self_care", "rp.contact.field.parent_point_count_money_w_1on1",
                          "rp.contact.field.parent_point_count_money_w_praise", "rp.contact.field.parent_point_count_money_w_instruct",
                          "rp.contact.field.parent_point_count_money_w_stress", "rp.contact.field.parent_point_count_money_w_money",
-                         "rp.contact.field.parent_point_count_money_w_rules", "rp.contact.field.parent_point_count_money_w_consequence",
+                         "rp.contact.field.parent_point_count_money_w_rules", #"rp.contact.field.parent_point_count_money_w_consequence",
                          "rp.contact.field.parent_point_count_money_w_solve", "rp.contact.field.parent_point_count_money_w_safe",
-                         "rp.contact.field.parent_point_count_money_w_crisis","rp.contact.field.parent_point_count_money_w_celebrate")
+                         #"rp.contact.field.parent_point_count_money_w_crisis",
+                         "rp.contact.field.parent_point_count_money_w_celebrate")
 # consequence points in each week
 consequence_workshop_vars <- c( "rp.contact.field.parent_point_count_consequence_w_self_care", "rp.contact.field.parent_point_count_consequence_w_1on1",
                          "rp.contact.field.parent_point_count_consequence_w_praise", "rp.contact.field.parent_point_count_consequence_w_instruct",
                          "rp.contact.field.parent_point_count_consequence_w_stress", "rp.contact.field.parent_point_count_consequence_w_money",
-                         "rp.contact.field.parent_point_count_consequence_w_rules", "rp.contact.field.parent_point_count_consequence_w_consequence",
+                         #"rp.contact.field.parent_point_count_consequence_w_rules", "rp.contact.field.parent_point_count_consequence_w_crisis",
+                         "rp.contact.field.parent_point_count_consequence_w_consequence",
                          "rp.contact.field.parent_point_count_consequence_w_solve", "rp.contact.field.parent_point_count_consequence_w_safe",
-                         "rp.contact.field.parent_point_count_consequence_w_crisis","rp.contact.field.parent_point_count_consequence_w_celebrate")
+                         "rp.contact.field.parent_point_count_consequence_w_celebrate")
 # safe points in each week
 safe_workshop_vars <- c( "rp.contact.field.parent_point_count_safe_w_self_care", "rp.contact.field.parent_point_count_safe_w_1on1",
                          "rp.contact.field.parent_point_count_safe_w_praise", "rp.contact.field.parent_point_count_safe_w_instruct",
@@ -304,13 +291,13 @@ summary_relax_workshop <- plhdata_org_clean %>%
   group_by(Org) %>%
   summarise(across(relax_workshop_vars, mean, na.rm = TRUE))
 colnames(summary_relax_workshop) <- naming_conventions(colnames(summary_relax_workshop), "rp.contact.field.parent_point_count_relax_w_")
-summary_relax_workshop
+# summary_relax_workshop
 
 # Make the table longer so that it is in a format for use in ggplot
 summary_relax_workshop_long <- summary_relax_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_relax_workshop_long
+# summary_relax_workshop_long
 
 # Run the plot (#Code moved to RSHiny file in order to be able to filter by Org)
 # ggplot(summary_relax_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
@@ -322,13 +309,13 @@ summary_treat_yourself_workshop <- plhdata_org_clean %>%
   group_by(Org) %>%
   summarise(across(treat_yourself_workshop_vars, mean, na.rm = TRUE))
 colnames(summary_treat_yourself_workshop) <- naming_conventions(colnames(summary_treat_yourself_workshop), "rp.contact.field.parent_point_count_treat_yourself_w_")
-summary_treat_yourself_workshop
+# summary_treat_yourself_workshop
 
 # Make the table longer so that it is in a format for use in ggplot
 summary_treat_yourself_workshop_long <- summary_treat_yourself_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_treat_yourself_workshop_long
+# summary_treat_yourself_workshop_long
 
 # Run the plot (#Code moved to RSHiny file in order to be able to filter by Org)
 # ggplot(summary_treat_yourself_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
@@ -346,7 +333,7 @@ colnames(summary_praise_yourself_workshop) <- naming_conventions(colnames(summar
 summary_praise_yourself_workshop_long <- summary_praise_yourself_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_praise_yourself_workshop_long
+# summary_praise_yourself_workshop_long
 
 #Average spend_time parent points pp4
 summary_spend_time_workshop <- plhdata_org_clean %>%
@@ -359,7 +346,7 @@ colnames(summary_spend_time_workshop) <- naming_conventions(colnames(summary_spe
 summary_spend_time_workshop_long <- summary_spend_time_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_spend_time_workshop_long
+# summary_spend_time_workshop_long
 
 #Average praise_teen parent points pp5
 summary_praise_teen_workshop <- plhdata_org_clean %>%
@@ -372,7 +359,7 @@ colnames(summary_praise_teen_workshop) <- naming_conventions(colnames(summary_pr
 summary_praise_teen_workshop_long <- summary_praise_teen_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_praise_teen_workshop_long
+# summary_praise_teen_workshop_long
 
 #Average instruct_positively parent points pp6
 summary_instruct_positively_workshop <- plhdata_org_clean %>%
@@ -385,7 +372,7 @@ colnames(summary_instruct_positively_workshop) <- naming_conventions(colnames(su
 summary_instruct_positively_workshop_long <- summary_instruct_positively_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_instruct_positively_workshop_long
+# summary_instruct_positively_workshop_long
 
 #Average breathe parent points pp7
 summary_breathe_workshop <- plhdata_org_clean %>%
@@ -398,7 +385,7 @@ colnames(summary_breathe_workshop) <- naming_conventions(colnames(summary_breath
 summary_breathe_workshop_long <- summary_breathe_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_breathe_workshop_long
+# summary_breathe_workshop_long
 
 #Average spend_time parent points pp8
 summary_money_workshop <- plhdata_org_clean %>%
@@ -411,7 +398,7 @@ colnames(summary_money_workshop) <- naming_conventions(colnames(summary_money_wo
 summary_money_workshop_long <- summary_money_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_money_workshop_long
+# summary_money_workshop_long
 
 #Average consequence parent points pp9
 summary_consequence_workshop <- plhdata_org_clean %>%
@@ -424,7 +411,7 @@ colnames(summary_consequence_workshop) <- naming_conventions(colnames(summary_co
 summary_consequence_workshop_long <- summary_consequence_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_consequence_workshop_long
+# summary_consequence_workshop_long
 
 #Average safe parent points pp10
 summary_safe_workshop <- plhdata_org_clean %>%
@@ -437,9 +424,7 @@ colnames(summary_safe_workshop) <- naming_conventions(colnames(summary_safe_work
 summary_safe_workshop_long <- summary_safe_workshop %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, week_order))   # set the order of variables
-summary_safe_workshop_long
-
-
+# summary_safe_workshop_long
 
 # HABITS by workshop week ------------------------------------------------------------------------------------
 data_habit_parent_points_all <- c("rp.contact.field.parent_point_count_relax", "rp.contact.field.parent_point_count_treat_yourself",
@@ -485,13 +470,14 @@ data_habit_parent_points_w_money <- c("rp.contact.field.parent_point_count_relax
 data_habit_parent_points_w_rules <- c("rp.contact.field.parent_point_count_relax_w_rules", "rp.contact.field.parent_point_count_treat_yourself_w_rules",
                                       "rp.contact.field.parent_point_count_praise_yourself_w_rules", "rp.contact.field.parent_point_count_spend_time_w_rules",
                                       "rp.contact.field.parent_point_count_praise_teen_w_rules", "rp.contact.field.parent_point_count_breathe_w_rules",
-                                      "rp.contact.field.parent_point_count_money_w_rules", "rp.contact.field.parent_point_count_consequence_w_rules",
+                                      "rp.contact.field.parent_point_count_money_w_rules", #"rp.contact.field.parent_point_count_consequence_w_rules",
                                       "rp.contact.field.parent_point_count_safe_w_rules", "rp.contact.field.parent_point_count_instruct_positively_w_rules")
 
 data_habit_parent_points_w_consequence <- c("rp.contact.field.parent_point_count_relax_w_consequence", "rp.contact.field.parent_point_count_treat_yourself_w_consequence",
                                             "rp.contact.field.parent_point_count_praise_yourself_w_consequence", "rp.contact.field.parent_point_count_spend_time_w_consequence",
                                             "rp.contact.field.parent_point_count_praise_teen_w_consequence", "rp.contact.field.parent_point_count_breathe_w_consequence",
-                                            "rp.contact.field.parent_point_count_money_w_consequence", "rp.contact.field.parent_point_count_consequence_w_consequence",
+                                            #"rp.contact.field.parent_point_count_money_w_consequence",
+                                            "rp.contact.field.parent_point_count_consequence_w_consequence",
                                             "rp.contact.field.parent_point_count_safe_w_consequence", "rp.contact.field.parent_point_count_instruct_positively_w_consequence")
 
 data_habit_parent_points_w_solve <- c("rp.contact.field.parent_point_count_relax_w_solve", "rp.contact.field.parent_point_count_treat_yourself_w_solve",
@@ -509,7 +495,7 @@ data_habit_parent_points_w_safe <- c("rp.contact.field.parent_point_count_relax_
 data_habit_parent_points_w_crisis <- c("rp.contact.field.parent_point_count_relax_w_crisis", "rp.contact.field.parent_point_count_treat_yourself_w_crisis",
                                        "rp.contact.field.parent_point_count_praise_yourself_w_crisis", "rp.contact.field.parent_point_count_spend_time_w_crisis",
                                        "rp.contact.field.parent_point_count_praise_teen_w_crisis", "rp.contact.field.parent_point_count_breathe_w_crisis",
-                                       "rp.contact.field.parent_point_count_money_w_crisis", "rp.contact.field.parent_point_count_consequence_w_crisis",
+                                       #"rp.contact.field.parent_point_count_money_w_crisis", "rp.contact.field.parent_point_count_consequence_w_crisis",
                                        "rp.contact.field.parent_point_count_safe_w_crisis", "rp.contact.field.parent_point_count_instruct_positively_w_crisis")
 
 data_habit_parent_points_w_celebrate <- c("rp.contact.field.parent_point_count_relax_w_celebrate", "rp.contact.field.parent_point_count_treat_yourself_w_celebrate",
@@ -552,13 +538,12 @@ names(summary_table_habits_all) <- data_habit_parent_points_all_neat
 summary_plot_habits_all <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_all, .f = ~summary_plot(columns_to_summarise = .x, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot"))
 names(summary_plot_habits_all) <- data_habit_parent_points_all_neat
-summary_plot_habits_all$Relax
-
+# summary_plot_habits_all$Relax
 
 summary_table_habits_self_care <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_self_care, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_self_care) <- data_habit_parent_points_w_self_care_neat
-summary_table_habits_self_care$`Relax`
+# summary_table_habits_self_care$`Relax`
 # summary_table_habits_self_care$`Treat yourself`
 # summary_table_habits_self_care$`Praise yourself`
 # summary_table_habits_self_care$`Spend time`
@@ -572,14 +557,12 @@ summary_table_habits_self_care$`Relax`
 summary_plot_habits_self_care <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_self_care, .f = ~summary_plot(columns_to_summarise = .x, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot"))
 names(summary_plot_habits_self_care) <- data_habit_parent_points_w_self_care_neat
-
-summary_plot_habits_self_care$Relax
-
+# summary_plot_habits_self_care$Relax
 
 summary_table_habits_1on1 <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_1on1, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_1on1) <- data_habit_parent_points_w_1on1_neat
-summary_table_habits_1on1$`Relax`
+# summary_table_habits_1on1$`Relax`
 # summary_table_habits_1on1$`Treat yourself`
 # summary_table_habits_1on1$`Praise yourself`
 # summary_table_habits_1on1$`Spend time`
@@ -593,7 +576,7 @@ summary_table_habits_1on1$`Relax`
 summary_table_habits_praise <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_praise, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_praise) <- data_habit_parent_points_w_praise_neat
-summary_table_habits_praise$`Relax`
+# summary_table_habits_praise$`Relax`
 # summary_table_habits_praise$`Treat yourself`
 # summary_table_habits_praise$`Praise yourself`
 # summary_table_habits_praise$`Spend time`
@@ -607,7 +590,7 @@ summary_table_habits_praise$`Relax`
 summary_table_habits_instruct <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_instruct, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_instruct) <- data_habit_parent_points_w_instruct_neat
-summary_table_habits_instruct$`Relax`
+# summary_table_habits_instruct$`Relax`
 # summary_table_habits_instruct$`Treat yourself`
 # summary_table_habits_instruct$`Praise yourself`
 # summary_table_habits_instruct$`Spend time`
@@ -621,7 +604,7 @@ summary_table_habits_instruct$`Relax`
 summary_table_habits_stress <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_stress, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_stress) <- data_habit_parent_points_w_stress_neat
-summary_table_habits_stress$`Relax`
+# summary_table_habits_stress$`Relax`
 # summary_table_habits_stress$`Treat yourself`
 # summary_table_habits_stress$`Praise yourself`
 # summary_table_habits_stress$`Spend time`
@@ -655,7 +638,7 @@ names(summary_table_habits_money) <- data_habit_parent_points_w_money_neat
 summary_table_habits_rules <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_rules, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_rules) <- data_habit_parent_points_w_rules_neat
-summary_table_habits_rules$`Relax`
+# summary_table_habits_rules$`Relax`
 # summary_table_habits_rules$`Treat yourself`
 # summary_table_habits_rules$`Praise yourself`
 # summary_table_habits_rules$`Spend time`
@@ -670,7 +653,7 @@ summary_table_habits_rules$`Relax`
 summary_table_habits_consequence <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_consequence, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_consequence) <- data_habit_parent_points_w_consequence_neat
-summary_table_habits_consequence$`Relax`
+# summary_table_habits_consequence$`Relax`
 # summary_table_habits_consequence$`Treat yourself`
 # summary_table_habits_consequence$`Praise yourself`
 # summary_table_habits_consequence$`Spend time`
@@ -684,7 +667,7 @@ summary_table_habits_consequence$`Relax`
 summary_table_habits_solve <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_solve, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_solve) <- data_habit_parent_points_w_solve_neat
-summary_table_habits_solve$`Relax`
+# summary_table_habits_solve$`Relax`
 # summary_table_habits_solve$`Treat yourself`
 # summary_table_habits_solve$`Praise yourself`
 # summary_table_habits_solve$`Spend time`
@@ -698,7 +681,7 @@ summary_table_habits_solve$`Relax`
 summary_table_habits_safe <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_safe, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_safe) <- data_habit_parent_points_w_safe_neat
-summary_table_habits_safe$`Relax`
+# summary_table_habits_safe$`Relax`
 # summary_table_habits_safe$`Treat yourself`
 # summary_table_habits_safe$`Praise yourself`
 # summary_table_habits_safe$`Spend time`
@@ -713,7 +696,7 @@ summary_table_habits_safe$`Relax`
 summary_table_habits_crisis <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_crisis, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_crisis) <- data_habit_parent_points_w_crisis_neat
-summary_table_habits_crisis$`Relax`
+# summary_table_habits_crisis$`Relax`
 # summary_table_habits_crisis$`Treat yourself`
 # summary_table_habits_crisis$`Praise yourself`
 # summary_table_habits_crisis$`Spend time`
@@ -728,7 +711,7 @@ summary_table_habits_crisis$`Relax`
 summary_table_habits_celebrate <- plhdata_org_clean %>%
   map(.x = data_habit_parent_points_w_celebrate, .f = ~summary_table(columns_to_summarise = .x, wider_table = TRUE, include_margins = TRUE))
 names(summary_table_habits_celebrate) <- data_habit_parent_points_w_celebrate_neat
-summary_table_habits_celebrate$`Relax`
+# summary_table_habits_celebrate$`Relax`
 # summary_table_habits_celebrate$`Treat yourself`
 # summary_table_habits_celebrate$`Praise yourself`
 # summary_table_habits_celebrate$`Spend time`
@@ -740,14 +723,11 @@ summary_table_habits_celebrate$`Relax`
 # summary_table_habits_celebrate$`Safe`
 
 #mean average number of parent points given per org
-
 summary_mean_habits <- plhdata_org_clean %>%
   group_by(Org)  %>%
   summarise(across(data_habit_parent_points_all, mean, na.rm = TRUE))
-
 colnames(summary_mean_habits) <- naming_conventions(colnames(summary_mean_habits), "rp.contact.field.parent_point_count_")
-
-summary_mean_habits
+# summary_mean_habits
 
 # Completion Level ----------------------------------------------------------------------------
 data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
@@ -765,34 +745,31 @@ summary_plot_completion_level <- plhdata_org_clean %>%
 names(summary_plot_completion_level) <- completion_vars
 
 # then to access a table:
-summary_table_completion_level$`Baseline Survey`
-summary_table_completion_level$`Self Care`
-summary_table_completion_level$`One-on-one Time`
-summary_table_completion_level$Praise
-summary_table_completion_level$`Positive Instructions`
-summary_table_completion_level$`Managing Stress`
-summary_table_completion_level$`Family Budgets`
-summary_table_completion_level$Rules
-summary_table_completion_level$`Calm Consequences`
-summary_table_completion_level$`Problem Solving`
-summary_table_completion_level$`Teen Safety`
-summary_table_completion_level$`Dealing with Crisis`
-summary_table_completion_level$`Celebration & Next Steps`
+# summary_table_completion_level$`Baseline Survey`
+# summary_table_completion_level$`Self Care`
+# summary_table_completion_level$`One-on-one Time`
+# summary_table_completion_level$Praise
+# summary_table_completion_level$`Positive Instructions`
+# summary_table_completion_level$`Managing Stress`
+# summary_table_completion_level$`Family Budgets`
+# summary_table_completion_level$Rules
+# summary_table_completion_level$`Calm Consequences`
+# summary_table_completion_level$`Problem Solving`
+# summary_table_completion_level$`Teen Safety`
+# summary_table_completion_level$`Dealing with Crisis`
+# summary_table_completion_level$`Celebration & Next Steps`
 # etc.
 
 
 # or to get all tables:
-summary_table_completion_level
+# summary_table_completion_level
 
 #mean average completion level per org
 summary_mean_completion_level <- plhdata_org_clean %>%
   group_by(Org)  %>%
   summarise(across(data_completion_level, mean, na.rm = TRUE))
-
 colnames(summary_mean_completion_level) <- naming_conventions(colnames(summary_mean_completion_level), "rp.contact.field.w_", "_completion_level")
-
-summary_mean_completion_level
-
+# summary_mean_completion_level
 
 # Percentage of users who completed a workshop out of those who started it
 # nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level == 100)) / nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_started == "true"))
@@ -811,13 +788,9 @@ relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
 table_perc_completed <- plyr::ldply(relative_perc_completed) %>%
   pivot_wider(id_cols = Org, names_from = .id, values_from = perc_completed)
   
-table_perc_completed 
-
 table_ws_started <- plyr::ldply(relative_perc_completed) %>%
   pivot_wider(id_cols = Org, names_from = .id, values_from = started)
 
-table_ws_started
- 
 # Survey - past week  ----------------------------------------------------------------------------
 data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
                            "rp.contact.field.survey_welcome_a_3_final",  "rp.contact.field.survey_welcome_a_4_final",
@@ -832,7 +805,7 @@ summary_table_survey_past_week <- plhdata_org_clean %>%
 names(summary_table_survey_past_week) <- survey_vars
 
 # then to access a table:
-summary_table_survey_past_week$Attention
+# summary_table_survey_past_week$Attention
 # summary_table_survey_past_week$Praise
 # summary_table_survey_past_week$Stress
 # summary_table_survey_past_week$Shouting
@@ -879,9 +852,8 @@ names(summary_table_library) <- data_library_neat
 summary_library_mean <- plhdata_org_clean %>%
   group_by(Org)  %>%
   summarise(across(data_library, mean, na.rm = TRUE))
-
 colnames(summary_library_mean) <- naming_conventions(colnames(summary_library_mean), "rp.contact.field.click_", "_count")
-summary_library_mean
+# summary_library_mean
 
 
 
@@ -906,7 +878,7 @@ data_weekly_workshops_neat <- c("Self care", "In app reminders", "One-on-one tim
 summary_tableweekly_workshops <- plhdata_org_clean %>%
   map(.x = data_weekly_workshops, .f = ~summary_table(columns_to_summarise = .x))
 names(summary_tableweekly_workshops) <- data_weekly_workshops_neat
-summary_tableweekly_workshops$Stress
+# summary_tableweekly_workshops$Stress
 
 
 #In-app reminders(Number of in-app message clicks per workshop week),Per quick start button, per workshop week  -------------------------
@@ -914,31 +886,31 @@ summary_tableweekly_workshops$Stress
 plhdata_org_clean$hsqsclickedws1<-is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
 plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
 
-summary_table(columns_to_summarise = hsqsclickedws1)
-summary_table(columns_to_summarise = hsqsclickedws2)
+# summary_table(columns_to_summarise = hsqsclickedws1)
+# summary_table(columns_to_summarise = hsqsclickedws2)
 
 #Test 1
-plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
-plhdata_org_clean$hsqsclickedcountws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
-plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
-summary_table(columns_to_summarise = rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care, replace = "rp.contact.field.click_hs_")
-user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
+#plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
+#plhdata_org_clean$hsqsclickedcountws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
+#plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
+# summary_table(columns_to_summarise = rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care, replace = "rp.contact.field.click_hs_")
+# user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
 
-summary_table(columns_to_summarise = hsqsclickedws1)
-summary_table(columns_to_summarise = hsqsclickedcountws1)
-summary_table(columns_to_summarise = hsqsclickedws2)
+# summary_table(columns_to_summarise = hsqsclickedws1)
+# summary_table(columns_to_summarise = hsqsclickedcountws1)
+# summary_table(columns_to_summarise = hsqsclickedws2)
 
 #Priority 23 
 #In-app reminders
 #Total number of in-app message clicks.By User
 #Weekly workshops
-summary_table(columns_to_summarise = rp.contact.field.click_hs_weekly_workshops_quick_start_count, replace = "rp.contact.field.click_hs_")
-
-#Parent center
-summary_table(columns_to_summarise = rp.contact.field.click_hs_parent_centre_quick_start_count, replace = "rp.contact.field.click_hs_")
-
-#Parent points
-summary_table(columns_to_summarise = rp.contact.field.click_hs_parent_points_quick_start_count, replace = "rp.contact.field.click_hs_")
+# summary_table(columns_to_summarise = rp.contact.field.click_hs_weekly_workshops_quick_start_count, replace = "rp.contact.field.click_hs_")
+# 
+# #Parent center
+# summary_table(columns_to_summarise = rp.contact.field.click_hs_parent_centre_quick_start_count, replace = "rp.contact.field.click_hs_")
+# 
+# #Parent points
+# summary_table(columns_to_summarise = rp.contact.field.click_hs_parent_points_quick_start_count, replace = "rp.contact.field.click_hs_")
 
 
 #Priority 19
@@ -947,7 +919,7 @@ summary_table(columns_to_summarise = rp.contact.field.click_hs_parent_points_qui
 #app_open_summary <- plhdata_org_clean %>%
 #  group_by(Org) %>%
 #  summarise(sum(rp.contact.field.app_launch_count))
-user_id_print("rp.contact.field.app_launch_count")
+# user_id_print("rp.contact.field.app_launch_count")
 
 ##Priority 20
 #App-opens
@@ -966,7 +938,7 @@ data_app_opens_neat <- c("Total", "Welcome and Self care(1)", "One-on-one time(2
 tables_app_opens <- plhdata_org_clean %>%
   map(.x = data_app_opens, .f = ~summary_table(columns_to_summarise = .x))
 names(tables_app_opens) <- data_app_opens_neat
-tables_app_opens$`Total`
+# tables_app_opens$`Total`
 # tables_app_opens$`Welcome and Self care`
 # tables_app_opens$`One-on-one time`
 # tables_app_opens$`Praise`
@@ -985,19 +957,19 @@ summary_mean_appopens <- plhdata_org_clean %>%
   group_by(Org) %>%
   summarise(across(data_app_opens, mean, na.rm = TRUE))
 colnames(summary_mean_appopens)[2:length(summary_mean_appopens)] <- data_app_opens_neat
-summary_mean_appopens
+# summary_mean_appopens
 
 # Make the table longer so that it is in a format for use in ggplot
 summary_mean_appopens_long <- summary_mean_appopens %>%
   pivot_longer(cols = !Org) %>%
   mutate(name = fct_relevel(name, data_app_opens_neat))   # set the order of variables
-summary_mean_appopens_long
+# summary_mean_appopens_long
 
 ##Priority 21
 #App-opens
 #Maximum time between app-opens - for each user.Time in full days 
 plhdata_org_clean$rp.contact.field.max_days_between_app_launches <- as.numeric(plhdata_org_clean$rp.contact.field.max_days_between_app_launches)
-summary_table(columns_to_summarise = rp.contact.field.max_days_between_app_launches, replace = "rp.contact.field.")
+# summary_table(columns_to_summarise = rp.contact.field.max_days_between_app_launches, replace = "rp.contact.field.")
 
 #Priority 36 --------------------------------------------------------------------------------
 #Emotional Check-in
@@ -1010,24 +982,24 @@ data_emotional_check_in_neat <- c("Self care", "One-on-one time", "Praise", "Pos
 tables_emotional_check_in <- plhdata_org_clean %>%
   map(.x = data_emotional_check_in, .f = ~summary_table(columns_to_summarise = .x))
 names(tables_emotional_check_in) <- data_emotional_check_in_neat
-tables_emotional_check_in$`Self care`
+# tables_emotional_check_in$`Self care`
 
 # Completion rate of introductory session(Workshop 1:Selfcare) ------------------------------------------------
-plhdata_org_clean %>%
-  split(.$Org) %>%
-  map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.w_self_care_completed, replace = "rp.contact.field.survey"))
+# plhdata_org_clean %>%
+#   split(.$Org) %>%
+#   map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.w_self_care_completed, replace = "rp.contact.field.survey"))
 #plhdata_org_clean %>% group_by(Org) %>% select('app_user_id', "rp.contact.field.w_self_care_completed")
 #plhdata_org_clean %>% group_by(Org) %>% select('app_user_id', "rp.contact.field.w_self_care_started")
 #plhdata_org_clean %>% group_by(Org) %>% select('app_user_id', "rp.contact.field.w_1on1_started")
 
 # Completion status of baseline survey ------------------------------------------------
-plhdata_org_clean %>%
-  split(.$Org) %>%
-  map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.survey_welcome_complppplheted, replace = "rp.contact.field.survey"))
+# plhdata_org_clean %>%
+#   split(.$Org) %>%
+#   map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.survey_welcome_complppplheted, replace = "rp.contact.field.survey"))
 
 summary_table_survey_completion <- plhdata_org_clean %>%
   summary_table(columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", display = FALSE, include_margins = TRUE)
-summary_table_survey_completion
+# summary_table_survey_completion
 
 # Descriptive Statistics ------------------------------------------------------------------------------------------
 # Gender of App Users
@@ -1035,19 +1007,19 @@ gender_table <- plhdata_org_clean %>%
   split(.$Org) %>%
   map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.user_gender))
 names(gender_table) <- levels(plhdata_org_clean$Org)
-gender_table$Nontobeko
-gender_table$Amathuba
-gender_table
+# gender_table$Nontobeko
+# gender_table$Amathuba
+# gender_table
 
 # Age of App Users
-summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean")
+# summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean")
 
 
 #Trials-----------------
-plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")
-plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_gender")
-plhdata_org_clean %>% filter(Org == "Amathuba") %>% select('app_user_id', "rp.contact.field.user_gender")
-mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
+# plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")
+# plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_gender")
+# plhdata_org_clean %>% filter(Org == "Amathuba") %>% select('app_user_id', "rp.contact.field.user_gender")
+# mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
 
 ##################################
 ##################################
@@ -1057,49 +1029,65 @@ mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
 
 # download push notification data
 # TODO: add fuzzy join to get_nf_data function
-nf_data <- get_nf_data()
-
-# what variables do we want in the nf data - org, sex, - add a few in.
-data_baseline_survey <- c("Org", "rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
-                          "rp.contact.field.user_age", "rp.contact.field.household_adults",
-                          "rp.contact.field.household_teens", "rp.contact.field.household_babies",
-                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
-plhdata_org_clean_select <- plhdata_org_clean %>%
-  dplyr::select(c(app_user_id, data_baseline_survey))
-
-# link nf data to user data by app_user_id
-# use inner_join: remove from nf anyone not in plhdata_org
-nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
-
-# Only 8 rows. This is because we have filtered out a lot of the plhdata_org_clean users
-# since their org is NA.
-# e.g.:
-plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.field.organisation_code)
-# we're throwing away a lot of data over this missing organisation. I think we need to reconsider
-# how to handle these?
-# Additionally surely TZ has only one organisation?
-
-pn_summary_count <- nf_data_join %>%
-  group_by(app_user_id, Org, rp.contact.field._app_language) %>% 
-  summarise(number_received = max(app_user_record_id),
-            number_responded = sum(!is.na(action_id)),
-            percentage_responded = number_responded/number_received*100)
-pn_summary_count
-
-# pn_summary_means <-
-pn_summary_count %>%
-  dplyr::summarise(dplyr::across(2:4, mean))
-
-
-
-
-# If we were to use all of the nf_data (except the "temp_" rows)
-nf_data_summary <- nf_data %>%
-  filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
-  group_by(app_user_id) %>% 
-  summarise(number_received = max(app_user_record_id),
-            number_responded = sum(!is.na(action_id)),
-            percentage_responded = number_responded/number_received*100)
-
-nf_data_summary %>%
-  dplyr::summarise(dplyr::across(2:4, mean))
+# nf_data <- get_nf_data()
+# 
+# # what variables do we want in the nf data - org, sex, - add a few in.
+# data_baseline_survey <-
+#   c(
+#     "Org",
+#     "rp.contact.field.survey_welcome_completed",
+#     "rp.contact.field.user_gender",
+#     "rp.contact.field.user_age",
+#     "rp.contact.field.household_adults",
+#     "rp.contact.field.household_teens",
+#     "rp.contact.field.household_babies",
+#     "rp.contact.field.household_children",
+#     "rp.contact.field._app_language",
+#     "app_version",
+#     "rp.contact.field.do_workshops_together"
+#   )
+# plhdata_org_clean_select <- plhdata_org_clean %>%
+#   dplyr::select(c(app_user_id, data_baseline_survey))
+# 
+# # link nf data to user data by app_user_id
+# # use inner_join: remove from nf anyone not in plhdata_org
+# nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
+# 
+# # Only 8 rows. This is because we have filtered out a lot of the plhdata_org_clean users
+# # since their org is NA.
+# # e.g.:
+# #plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.field.organisation_code)
+# # we're throwing away a lot of data over this missing organisation. I think we need to reconsider
+# # how to handle these?
+# # Additionally surely TZ has only one organisation?
+# 
+# pn_summary_count <- nf_data_join %>%
+#   group_by(app_user_id, Org, rp.contact.field._app_language) %>%
+#   summarise(
+#     number_received = max(app_user_record_id),
+#     number_responded = sum(!is.na(action_id)),
+#     percentage_responded = number_responded / number_received *
+#       100
+#   )
+# #pn_summary_count
+# 
+# # pn_summary_means <-
+# #pn_summary_count %>%
+# #  dplyr::summarise(dplyr::across(2:4, mean))
+# 
+# 
+# 
+# 
+# # If we were to use all of the nf_data (except the "temp_" rows)
+# nf_data_summary <- nf_data %>%
+#   filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
+#   group_by(app_user_id) %>%
+#   summarise(
+#     number_received = max(app_user_record_id),
+#     number_responded = sum(!is.na(action_id)),
+#     percentage_responded = number_responded / number_received *
+#       100
+#   )
+# 
+# #nf_data_summary %>%
+# #  dplyr::summarise(dplyr::across(2:4, mean))

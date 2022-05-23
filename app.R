@@ -1,0 +1,12 @@
+library(shiny)
+library(shinythemes)
+library(shinyjs)
+library(plotly)
+library(shinydashboard)
+library(httr)
+library(jsonlite)
+library(here)          
+
+source(here("Metabase Functions.R"))
+source(here("Metabase ShinyApp.R"))
+shinyApp(ui, server)

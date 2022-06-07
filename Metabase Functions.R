@@ -139,7 +139,7 @@ get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, 
 
 # same function used in parent text
 summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise, summaries = c("frequencies", "mean"),
-                                together = FALSE, include_margins = FALSE){
+                                include_country_margins, country_factor, together = FALSE, include_margins = FALSE){
   
   summaries <- match.arg(summaries)
   if (summaries == "frequencies"){
@@ -159,13 +159,29 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
       corner_margin <- data %>%
         summarise(n = n())
       
-      summary_output <- bind_rows(summary_output, cts_margin, ftr_margin, corner_margin, .id = "id")
+      if (include_country_margins){
+        summary_output_country <- data %>%
+          group_by(across(c({{ columns_to_summarise }}, {{ country_factor }})), .drop = FALSE) %>%
+          summarise(n = n())
+        corner_margin_country <- data %>%
+          group_by(across(c({{ country_factor }})), .drop = FALSE) %>%
+          summarise(n = n())
+        names(summary_output_country)[length(summary_output_country)-1] <- names(summary_output)[length(summary_output)-1]
+        names(corner_margin_country)[length(corner_margin_country)-1] <- names(summary_output)[length(summary_output)-1]
+        #summary_output_country <- dplyr::rename(summary_output_country, Org = {{ country_factor }}) #"{{ factors }}" := {{ country_factor }})
+        #corner_margin_country <- dplyr::rename(corner_margin_country, Org = {{ country_factor }}) #"{{ factors }}" := {{ country_factor }})
+      } else {
+        summary_output_country <- NULL
+        corner_margin_country <- NULL
+      }
       
+      summary_output <- bind_rows(summary_output, cts_margin, ftr_margin, corner_margin, summary_output_country, corner_margin_country, .id = "id")
+
       summary_output <- summary_output %>%
         ungroup() %>%
         mutate(across({{ factors }}, as.character)) %>%
         mutate(across({{ factors }}, ~ifelse(id %in% c(2, 4), "Total", .x))) %>%
-        mutate(across({{ columns_to_summarise }}, ~ifelse(id %in% c(3, 4), "Total", .x)))
+        mutate(across({{ columns_to_summarise }}, ~ifelse(id %in% c(3, 4, 6), "Total", .x)))
       
       summary_output <- summary_output %>%
         mutate(across({{ factors }}, ~fct_relevel(.x, "Total", after = Inf))) %>%
@@ -199,7 +215,8 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
 }
 
 summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise, summaries = c("frequencies", "mean"),
-                          replace = "rp.contact.field.", include_margins = FALSE, wider_table = TRUE,
+                          replace = "rp.contact.field.", include_margins = FALSE, include_country_margins = TRUE, 
+                          country_factor = "country", wider_table = TRUE,
                           display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,
                           together = TRUE){
   
@@ -209,6 +226,8 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
                                       factors = c({{ factors }}),
                                       columns_to_summarise = c({{ columns_to_summarise }}),
                                       include_margins = include_margins,
+                                      include_country_margins = include_country_margins,
+                                      country_factor = country_factor,
                                       summaries = summaries,
                                       together = together)
   

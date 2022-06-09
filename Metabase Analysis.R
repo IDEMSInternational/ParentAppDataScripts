@@ -66,6 +66,12 @@ plhdata_org_clean <- plhdata_org %>%
 plhdata_org_clean <- plhdata_org_clean %>%
   dplyr::filter(!is.na(app_version))
 
+# add in country variable
+plhdata_org_clean <- plhdata_org_clean %>%
+  mutate(country = ifelse(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"), "South Africa",
+                          ifelse(Org %in% c("ICS"), "Tanzania",
+                                 "Other")))
+
 # Look at the numbers per organisation from clear data 
 sjmisc::frq(x=plhdata_org_clean$Org, out="txt")
 
@@ -150,10 +156,12 @@ data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.conta
 baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.contact.field.")
 
 #TO DO: replace "NA" with "unknown" for nicer display in Shiny
-
 summary_table_baseline <- plhdata_org_clean %>%
   map(.x = data_baseline_survey, .f = ~replace_na(.x, "unknown"))  %>%
-  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE, summaries = "frequencies"))
+  map(.x = data_baseline_survey, .f = ~summary_table(columns_to_summarise = .x,
+                                                     display = FALSE,
+                                                     include_margins = TRUE,
+                                                     summaries = "frequencies"))
 names(summary_table_baseline) <- baseline_names_neat
 # summary_table_baseline$`Household babies`
 # summary_table_baseline$` app language`
@@ -1029,65 +1037,62 @@ names(gender_table) <- levels(plhdata_org_clean$Org)
 
 # download push notification data
 # TODO: add fuzzy join to get_nf_data function
-# nf_data <- get_nf_data()
+ nf_data <- get_nf_data()
 # 
 # # what variables do we want in the nf data - org, sex, - add a few in.
-# data_baseline_survey <-
-#   c(
-#     "Org",
-#     "rp.contact.field.survey_welcome_completed",
-#     "rp.contact.field.user_gender",
-#     "rp.contact.field.user_age",
-#     "rp.contact.field.household_adults",
-#     "rp.contact.field.household_teens",
-#     "rp.contact.field.household_babies",
-#     "rp.contact.field.household_children",
-#     "rp.contact.field._app_language",
-#     "app_version",
-#     "rp.contact.field.do_workshops_together"
-#   )
-# plhdata_org_clean_select <- plhdata_org_clean %>%
-#   dplyr::select(c(app_user_id, data_baseline_survey))
-# 
-# # link nf data to user data by app_user_id
-# # use inner_join: remove from nf anyone not in plhdata_org
-# nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
-# 
-# # Only 8 rows. This is because we have filtered out a lot of the plhdata_org_clean users
-# # since their org is NA.
-# # e.g.:
-# #plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.field.organisation_code)
-# # we're throwing away a lot of data over this missing organisation. I think we need to reconsider
-# # how to handle these?
-# # Additionally surely TZ has only one organisation?
-# 
-# pn_summary_count <- nf_data_join %>%
-#   group_by(app_user_id, Org, rp.contact.field._app_language) %>%
-#   summarise(
-#     number_received = max(app_user_record_id),
-#     number_responded = sum(!is.na(action_id)),
-#     percentage_responded = number_responded / number_received *
-#       100
-#   )
-# #pn_summary_count
-# 
-# # pn_summary_means <-
-# #pn_summary_count %>%
-# #  dplyr::summarise(dplyr::across(2:4, mean))
-# 
-# 
-# 
-# 
-# # If we were to use all of the nf_data (except the "temp_" rows)
-# nf_data_summary <- nf_data %>%
-#   filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
-#   group_by(app_user_id) %>%
-#   summarise(
-#     number_received = max(app_user_record_id),
-#     number_responded = sum(!is.na(action_id)),
-#     percentage_responded = number_responded / number_received *
-#       100
-#   )
-# 
-# #nf_data_summary %>%
-# #  dplyr::summarise(dplyr::across(2:4, mean))
+ data_baseline_survey <-
+   c(
+     "Org",
+     "rp.contact.field.survey_welcome_completed",
+     "rp.contact.field.user_gender",
+     "rp.contact.field.user_age",
+     "rp.contact.field.household_adults",
+     "rp.contact.field.household_teens",
+     "rp.contact.field.household_babies",
+     "rp.contact.field.household_children",
+     "rp.contact.field._app_language",
+     "app_version",
+     "rp.contact.field.do_workshops_together"
+   )
+ plhdata_org_clean_select <- plhdata_org_clean %>%
+   dplyr::select(c(app_user_id, data_baseline_survey))
+ 
+ # link nf data to user data by app_user_id
+ # use inner_join: remove from nf anyone not in plhdata_org
+ nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
+ 
+ # Only 8 rows. This is because we have filtered out a lot of the plhdata_org_clean users
+ # since their org is NA.
+ # e.g.:
+ #plhdata_org %>% filter(app_user_id == "73d882bf9283163d") %>% select(rp.contact.field.organisation_code)
+ # we're throwing away a lot of data over this missing organisation. I think we need to reconsider
+ # how to handle these?
+ # Additionally surely TZ has only one organisation?
+ 
+ pn_summary_count <- nf_data_join %>%
+   group_by(app_user_id, Org, rp.contact.field._app_language) %>%
+   summarise(
+     number_received = max(app_user_record_id),
+     number_responded = sum(!is.na(action_id)),
+     percentage_responded = number_responded / number_received *
+       100
+   )
+ #pn_summary_count
+ 
+ # pn_summary_means <-
+ #pn_summary_count %>%
+ #  dplyr::summarise(dplyr::across(2:4, mean))
+ 
+ # If we were to use all of the nf_data (except the "temp_" rows)
+ nf_data_summary <- nf_data %>%
+   filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
+   group_by(app_user_id) %>%
+   summarise(
+     number_received = max(app_user_record_id),
+     number_responded = sum(!is.na(action_id)),
+     percentage_responded = number_responded / number_received *
+       100
+   )
+ 
+ #nf_data_summary %>%
+ #  dplyr::summarise(dplyr::across(2:4, mean))

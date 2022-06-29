@@ -11,11 +11,6 @@ library(jsonlite)
 
 # 1. Calling the data ---------------------------------------------------------------------
 # not needed - data is just called plhdata_org_clean
-data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
-                          "rp.contact.field.user_age", "rp.contact.field.household_adults",
-                          "rp.contact.field.household_teens", "rp.contact.field.household_babies",
-                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
-baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.contact.field.")
 
 # 2. Data Cleaning -------------------------------------------------------------------------
 # not needed - data is clean
@@ -2654,10 +2649,10 @@ server <- function(input, output) {
   
   #Workshop format plot and table
   table_ws_format <- reactive({
-    summary_table_baseline$`Do workshops together` %>% filter(Org %in% c((input$OrgDem)))
+    summary_table_baseline$`Workshop path` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_ws_format  <- reactive({
-    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.do_workshops_together", replace = "rp.contact.field.")
+    summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.workshop_path", replace = "rp.contact.field.")
   }) 
   output$table_ws_format <- shiny::renderTable({(table_ws_format())}, striped = TRUE)
   output$plot_ws_format <- renderPlotly({plot_ws_format()})

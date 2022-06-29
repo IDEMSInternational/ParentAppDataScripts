@@ -149,10 +149,16 @@ plhdata_org_clean <- plhdata_org_clean %>%
 #summary_table(columns_to_summarise = rp.contact.field.w_money_completed)
 
 #survey ------------------------------------------------------------------------------------
+# workshop_together variable
+#plhdata_org_clean <- plhdata_org_clean %>%
+#  mutate(rp.contact.field.workshop_path = ifelse(is.na(rp.contact.field.workshop_path),
+#                                                         rp.contact.field.do_workshops_together,
+#                                                 rp.contact.field.workshop_path))
+  
 data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
                           "rp.contact.field.user_age", "rp.contact.field.household_adults",
                           "rp.contact.field.household_teens", "rp.contact.field.household_babies",
-                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
+                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.workshop_path")
 baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.contact.field.")
 
 #TO DO: replace "NA" with "unknown" for nicer display in Shiny
@@ -800,17 +806,21 @@ table_ws_started <- plyr::ldply(relative_perc_completed) %>%
   pivot_wider(id_cols = Org, names_from = .id, values_from = started)
 
 # Survey - past week  ----------------------------------------------------------------------------
-data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
-                           "rp.contact.field.survey_welcome_a_3_final",  "rp.contact.field.survey_welcome_a_4_final",
-                           "rp.contact.field.survey_welcome_a_5_part_1_final",  "rp.contact.field.survey_welcome_a_5_part_2_final",
-                           "rp.contact.field.survey_welcome_a_6_final",  "rp.contact.field.survey_welcome_a_7_part_1_final",
-                           "rp.contact.field.survey_welcome_a_7_part_2_final",  "rp.contact.field.survey_welcome_a_7_part_3_final",
-                           "rp.contact.field.survey_welcome_a_8_final", "rp.contact.field.survey_welcome_a_9_final")
-survey_vars <- c("Attention", "Praise", "Stress", "Shouting", "Money worries", "Summary", "Hitting", "Teen activity", "Lockdown?", "Knowledge of teen activity in non-lockdown week",
-                 "Sexual safety talk", "Teen COVID safe")
-summary_table_survey_past_week <- plhdata_org_clean %>%
-  map(.x = data_survey_past_week, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
-names(summary_table_survey_past_week) <- survey_vars
+r_variables_names <- readxl::read_excel("r_variables_names.xlsx")
+data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey_past_week")
+summary_table_survey_past_week <- tabulate_with_metadata(location_ID = "survey_past_week")
+
+#data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
+#                           "rp.contact.field.survey_welcome_a_3_final",  "rp.contact.field.survey_welcome_a_4_final",
+#                           "rp.contact.field.survey_welcome_a_5_part_1_final",  "rp.contact.field.survey_welcome_a_5_part_2_final",
+#                           "rp.contact.field.survey_welcome_a_6_final",  "rp.contact.field.survey_welcome_a_7_part_1_final",
+#                           "rp.contact.field.survey_welcome_a_7_part_2_final",  "rp.contact.field.survey_welcome_a_7_part_3_final",
+#                           "rp.contact.field.survey_welcome_a_8_final", "rp.contact.field.survey_welcome_a_9_final")
+#survey_vars <- c("Attention", "Praise", "Stress", "Shouting", "Money worries", "Summary", "Hitting", "Teen activity", "Lockdown?", "Knowledge of teen activity in non-lockdown week",
+#                 "Sexual safety talk", "Teen COVID safe")
+#summary_table_survey_past_week <- plhdata_org_clean %>%
+#  map(.x = data_survey_past_week, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
+#names(summary_table_survey_past_week) <- survey_vars
 
 # then to access a table:
 # summary_table_survey_past_week$Attention
@@ -827,7 +837,6 @@ names(summary_table_survey_past_week) <- survey_vars
 # summary_table_survey_past_week$`Teen COVID safe`
 
 #TODO iff "7" to 7.1? - TODO - what do they mean by this?
-
 
 # parent library ------------------------------------------------------------------
 data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.field.click_pc_help_count",
@@ -1052,7 +1061,7 @@ names(gender_table) <- levels(plhdata_org_clean$Org)
      "rp.contact.field.household_children",
      "rp.contact.field._app_language",
      "app_version",
-     "rp.contact.field.do_workshops_together"
+     "rp.contact.field.workshop_path"
    )
  plhdata_org_clean_select <- plhdata_org_clean %>%
    dplyr::select(c(app_user_id, data_baseline_survey))

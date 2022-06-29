@@ -191,7 +191,7 @@ ui <- dashboardPage(skin = "blue",
                                 ) #closes fluid row
                         ),#closes first tabItem
                         
-                        # Second tab content layout
+                        # Second tab workshop engagement content layout
                         tabItem(tabName = "workshops",
                                 fluidRow(
                                   column(12, align = "centre",
@@ -2154,34 +2154,150 @@ ui <- dashboardPage(skin = "blue",
                                             ), #closes tabPanel App Opens
                                             
                                             tabPanel("Push Notifications",
-                                                     
+                                                      fluidRow(
+                                              box(width = 12,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Push notifiation clicks overview",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
+                                                  shiny::tableOutput("table_pushn_totals")
+                                              )#closes box
+                                            ), #closes fluid row
+                                            
                                                      fluidRow(
                                                        box(width = 12,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Mean push notification clicks",
+                                                           title = "Mean push notification clicks", #currently not populated - could be a breakdown by notification type
                                                            status = "success",  
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_pushn_mean", height = "240"),
                                                            shiny::tableOutput("table_pushn_mean")
                                                        ) #closes box
-                                                       ), #closes fluidrow
-                                                     
-                                                     fluidRow(
-                                                       box(width = 12,
-                                                           collapsible = FALSE,
-                                                           solidHeader = TRUE,
-                                                           title = "Cumulative pushnotifiation clicks",
-                                                           status = "success",  
-                                                           #background = "orange",
-                                                           plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
-                                                           shiny::tableOutput("table_pushn_totals")
-                                                       )#closes box
-                                                     ) #closes fluid row
+                                                       ) #closes fluidrow
                                             ), #closes tabPanel Push Notifications
                                             
-                                            tabPanel("Home Practice",
-                                                     
+                                            tabPanel("Home Practice",fluidRow(
+                                              box(width = 12,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Number of users starting each home practice",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_homep_start", height = "240"),
+                                                  shiny::tableOutput("table_homep_start")
+                                              ) #closes box
+                                            ), #closes fluidrow
+                                            
+                                            fluidRow(
+                                              box(width = 12,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Number of users starting each home practice review",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
+                                                  shiny::tableOutput("table_pushn_totals")
+                                              )#closes box
+                                            ), #closes fluid row  
+                                            
+                                            fluidRow(
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Completion HP 2: Praise",
+                                                  status = "success",
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_hp_praise", height = "240"),
+                                                  shiny::tableOutput("table_hp_praise")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Challenge HP 2: Praise",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_chall_praise", height = "240"),
+                                                  shiny::tableOutput("table_chall_praise")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Mood HP 2: Praise",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_mood_praise", height = "240"),
+                                                  shiny::tableOutput("table_mood_praise")
+                                              ) #closes box
+                                            ), #closes fluid row
+                                            
+                                            fluidRow(
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Completion HP 2: Praise",
+                                                  status = "success",
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_hp_praise", height = "240"),
+                                                  shiny::tableOutput("table_hp_praise")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Challenge HP 2: Praise",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_chall_praise", height = "240"),
+                                                  shiny::tableOutput("table_chall_praise")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Mood HP 2: Praise",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_mood_praise", height = "240"),
+                                                  shiny::tableOutput("table_mood_praise")
+                                              ) #closes box
+                                            ), #closes fluid row
+                                            
+                                            fluidRow(
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Completion HP 2: Praise",
+                                                  status = "success",
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_hp_praise", height = "240"),
+                                                  shiny::tableOutput("table_hp_praise")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Challenge HP 2: Praise",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_chall_praise", height = "240"),
+                                                  shiny::tableOutput("table_chall_praise")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Mood HP 2: Praise",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_mood_praise", height = "240"),
+                                                  shiny::tableOutput("table_mood_praise")
+                                              ) #closes box
+                                            ) #closes fluid row
                                             ), #closes tabPanel Home practice
                                             
                                             tabPanel("Quick Start Buttons",

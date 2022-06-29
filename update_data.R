@@ -1,6 +1,7 @@
 # Script to update data ---------------------------------------
 setwd("C:/Users/lclem/OneDrive/Documents/GitHub/ParentAppDataScripts")
-
+hours <- 24
+days <- 1
 update_data <- function(old_data_file = "plhdata_org_clean_dat.RDS"){
   old_data <- readRDS(old_data_file)
   var_names <- names(old_data)
@@ -13,7 +14,7 @@ update_data <- function(old_data_file = "plhdata_org_clean_dat.RDS"){
   plhdata_org <- get_user_data(merge_check = FALSE) # select 1 if you want to merge in changes (yes)
   
   plhdata_org <- plhdata_org %>%
-    filter(as.POSIXlt(plhdata_org$rp.contact.field._server_sync_latest, format = "%Y-%m-%dT%H:%M:%S", tz = "GMT") >= (Sys.time() - 60*60*24))
+    filter(as.POSIXlt(plhdata_org$rp.contact.field._server_sync_latest, format = "%Y-%m-%dT%H:%M:%S", tz = "GMT") >= (Sys.time() - 60*60*hours*days))
   plhdata_org <- plhdata_org %>%
     filter(as.POSIXlt(plhdata_org$rp.contact.field._server_sync_latest, format = "%Y-%m-%dT%H:%M:%S", tz = "GMT") <= (Sys.time()))
   
@@ -83,7 +84,7 @@ update_data <- function(old_data_file = "plhdata_org_clean_dat.RDS"){
   }
 }
 
-update_data()
+new_dat <- update_data("plhdata_org_clean.RDS")
 
 # Data frame for first time --------------------------------------------------------------------------
 # creating for first time

@@ -2149,34 +2149,411 @@ ui <- dashboardPage(skin = "blue",
                                             ), #closes tabPanel App Opens
                                             
                                             tabPanel("Push Notifications",
+                                            
+                                            fluidRow(
+                                              box(width = 12,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Push notifiation clicks overview",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
+                                                  shiny::tableOutput("table_pushn_totals")
+                                              )#closes box
+                                            # ), #closes fluidrow
+                                            #          
+                                            #          fluidRow(
+                                            #            box(width = 12,
+                                            #                collapsible = FALSE,
+                                            #                solidHeader = TRUE,
+                                            #                title = "Push notification types sent",
+                                            #                status = "success",  
+                                            #                #background = "orange",
+                                            #                plotlyOutput(outputId = "plot_pushn_mean", height = "240"), #needs to be renames
+                                            #                shiny::tableOutput("table_pushn_mean")
+                                            #            ) #closes box
+                                                     ) #closes fluid row
+                                            ), #closes tabPanel Push Notifications
+                                            
+                                            tabPanel("Home Practice",
+                                                     # fluidRow(
+                                                     #   box(width = 12,
+                                                     #       collapsible = FALSE,
+                                                     #       solidHeader = TRUE,
+                                                     #       title = "Number of users starting each home practice (currently not collected)",
+                                                     #       status = "success",  
+                                                     #       #background = "orange",
+                                                     #       plotlyOutput(outputId = "plot_homep_start", height = "240"),
+                                                     #       shiny::tableOutput("table_homep_start")
+                                                     #   ) #closes box
+                                                     # ), #closes fluidrow
                                                      
                                                      fluidRow(
                                                        box(width = 12,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Mean push notification clicks",
-                                                           status = "success",  
-                                                           #background = "orange",
-                                                           plotlyOutput(outputId = "plot_pushn_mean", height = "240"),
-                                                           shiny::tableOutput("table_pushn_mean")
-                                                       ) #closes box
-                                                       ), #closes fluidrow
-                                                     
-                                                     fluidRow(
-                                                       box(width = 12,
-                                                           collapsible = FALSE,
-                                                           solidHeader = TRUE,
-                                                           title = "Cumulative pushnotifiation clicks",
+                                                           title = "Number of users starting each home practice review",
                                                            status = "success",  
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
                                                            shiny::tableOutput("table_pushn_totals")
                                                        )#closes box
-                                                     ) #closes fluid row
-                                            ), #closes tabPanel Push Notifications
-                                            
-                                            tabPanel("Home Practice",
+                                                     ), #closes fluid row  
                                                      
+                                                     fluidRow(
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 2: One-on-One Time - completion",
+                                                           status = "success",
+                                                           h5("Question for this column phrased as 'Did you have a chance to do this?'"),
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_hpdone_1on1", height = "240"),
+                                                           shiny::tableOutput("table_hpdone_1on1")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 2: One-on-One Time - how it went",
+                                                           h5("Question for this column only asked if completion question answered with 'Yes'; phrased as 'How did it go?'"),
+                                                           status = "success",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_mood_1on1", height = "240"),
+                                                           shiny::tableOutput("table_mood_1on1")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 2: One-on-One Time - challenges selected",
+                                                           status = "success",  
+                                                           h5("Question for this column phrased as 'What challenge did you have?' and asked irespective of previous answers."),
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_chall_1on1", height = "240"),
+                                                           shiny::tableOutput("table_chall_1on1")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 3: Praise - completion",
+                                                           status = "success",
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_hpdone_praise", height = "240"),
+                                                           shiny::tableOutput("table_hpdone_praise")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "No 'review' for week 3 home practice",
+                                                           status = "success",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_mood_praise", height = "240"),
+                                                           shiny::tableOutput("table_mood_praise")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "No challenges for week 3 home practice",
+                                                           status = "success",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_chall_praise", height = "240"),
+                                                           shiny::tableOutput("table_chall_praise")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 4: Positive Instructions - completion",
+                                                           status = "success",
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_hpdone_instruct", height = "240"),
+                                                           shiny::tableOutput("table_hpdone_instruct")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 4: Positive Instructions - how it went",
+                                                           status = "success",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_mood_instruct", height = "240"),
+                                                           shiny::tableOutput("table_mood_instruct")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 4: Positive Instructions - challenges selected",
+                                                           status = "success",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_chall_instruct", height = "240"),
+                                                           shiny::tableOutput("table_chall_instruct")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                                                                        
+                                                     fluidRow(
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 5: Managing Stress (breathe) - completion",
+                                                           status = "success",
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_hpdone_stress_br", height = "240"),
+                                                           shiny::tableOutput("table_hpdone_stress_br")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 5: Managing Stress (breathe) - how it went",
+                                                           status = "success",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_mood_stress_br", height = "240"),
+                                                           shiny::tableOutput("table_mood_stress_br")
+                                                       ), #closes box
+                                                       
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 5: Managing Stress (breathe) - challenges selected",
+                                                           status = "success",  
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_chall_stress_br", height = "240"),
+                                                           shiny::tableOutput("table_chall_stress_br")
+                                                       ) #closes box
+                                                     ), #closes fluid row
+                                                     
+                                                     fluidRow(
+                                                       box(width = 4,
+                                                           collapsible = FALSE,
+                                                           solidHeader = TRUE,
+                                                           title = "Home Pratice Week 5: Managing Stress (talk) - completion",
+                                                           status = "success",
+                                                           #background = "orange",
+                                                           plotlyOutput(outputId = "plot_hpdone_stress_tk", height = "240"),
+                                                           shiny::tableOutput("table_hpdone_stress_tk")
+                                                       ), #closes box
+                                                       
+                                                     box(width = 4,
+                                                         collapsible = FALSE,
+                                                         solidHeader = TRUE,
+                                                         title = "Home Pratice Week 5: Managing Stress (talk) - how it went",
+                                                         status = "success",  
+                                                         #background = "orange",
+                                                         plotlyOutput(outputId = "plot_mood_stress_tk", height = "240"),
+                                                         shiny::tableOutput("table_mood_stress_tk")
+                                                     ), #closes box
+                                                     
+                                                     box(width = 4,
+                                                         collapsible = FALSE,
+                                                         solidHeader = TRUE,
+                                                         title = "Home Pratice Week 5: Managing Stress (talk) - challenges selected",
+                                                         status = "success",  
+                                                         #background = "orange",
+                                                         plotlyOutput(outputId = "plot_chall_stress_tk", height = "240"),
+                                                         shiny::tableOutput("table_chall_stress_tk")
+                                                     ) #closes box
+                                            ), #closes fluid row
+                                            
+                                            fluidRow(
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 6: Budgets - completion",
+                                                  status = "success",
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_hpdone_money", height = "240"),
+                                                  shiny::tableOutput("table_hpdone_money")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 6: Budgets - how it went",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_mood_money", height = "240"),
+                                                  shiny::tableOutput("table_mood_money")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 6: Budgets - challenges selected",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_chall_money", height = "240"),
+                                                  shiny::tableOutput("table_chall_money")
+                                              ) #closes box
+                                            ), #closes fluid row
+                                            
+                                            fluidRow(
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 7: Rules - completion",
+                                                  status = "success",
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_hpdone_rules", height = "240"),
+                                                  shiny::tableOutput("table_hpdone_rules")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 7: Rules - how it went",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_mood_rules", height = "240"),
+                                                  shiny::tableOutput("table_mood_rules")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 7: Rules - challenges selected",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_chall_rules", height = "240"),
+                                                  shiny::tableOutput("table_chall_rules")
+                                              ) #closes box
+                                            ), #closes fluid row
+                                            
+                                            fluidRow(
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 8: Calm Consequences - completion",
+                                                  status = "success",
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_hpdone_consequence", height = "240"),
+                                                  shiny::tableOutput("table_hpdone_consequence")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 8: Calm Consequences - how it went",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_mood_consequence", height = "240"),
+                                                  shiny::tableOutput("table_mood_consequence")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 8: Calm Consequences - challenges selected",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_chall_consequence", height = "240"),
+                                                  shiny::tableOutput("table_chall_consequence")
+                                              ) #closes box
+                                            ), #closes fluid row
+                                            
+                                            fluidRow(
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 9: Problem Solving - completion",
+                                                  status = "success",
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_hpdone_solve", height = "240"),
+                                                  shiny::tableOutput("table_hpdone_solve")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 9: Problem Solving - how it went",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_mood_solve", height = "240"),
+                                                  shiny::tableOutput("table_mood_solve")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 9: Problem Solving - challenges selected",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_chall_solve", height = "240"),
+                                                  shiny::tableOutput("table_chall_solve")
+                                              ) #closes box
+                                            ), #closes fluid row
+                                            
+                                            fluidRow(
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 10: Teen Safety - completion",
+                                                  status = "success",
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_hpdone_safe", height = "240"),
+                                                  shiny::tableOutput("table_hpdone_safe")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 10: Teen Safety - how it went",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_mood_safe", height = "240"),
+                                                  shiny::tableOutput("table_mood_safe")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 10: Teen Safety - challenges selected",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_chall_safe", height = "240"),
+                                                  shiny::tableOutput("table_chall_safe")
+                                              ) #closes box
+                                            ), #closes fluid row
+                                            
+                                            fluidRow(
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 11: Dealing with Crisis - completion",
+                                                  status = "success",
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_hpdone_crisis", height = "240"),
+                                                  shiny::tableOutput("table_hpdone_crisis")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 11: Dealing with Crisis - how it went",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_mood_crisis", height = "240"),
+                                                  shiny::tableOutput("table_mood_crisis")
+                                              ), #closes box
+                                              
+                                              box(width = 4,
+                                                  collapsible = FALSE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Pratice Week 11: Dealing with Crisis - challenges selected",
+                                                  status = "success",  
+                                                  #background = "orange",
+                                                  plotlyOutput(outputId = "plot_chall_crisis", height = "240"),
+                                                  shiny::tableOutput("table_chall_crisis")
+                                              ) #closes box
+                                            ) #closes fluid row         
                                             ), #closes tabPanel Home practice
                                             
                                             tabPanel("Quick Start Buttons",
@@ -3702,19 +4079,208 @@ selected_data_xe <- reactive({
   
 # Push notifications tab 4.2
   
-  table_pushn_mean <- reactive({
-  }) 
-  plot_pushn_mean <- reactive({
-  }) 
-  output$table_pushn_mean <- shiny::renderTable({(table_pushn_mean())}, striped = TRUE)
-  output$plot_pushn_mean <- renderPlotly({plot_pushn_mean()})
-  
   table_pushn_totals <- reactive({pn_summary_count %>% filter(Org %in% c((input$OrgXE)))}) 
   plot_pushn_totals <- reactive({
   }) 
   output$table_pushn_totals <- shiny::renderTable({(table_pushn_totals())}, striped = TRUE)
   output$plot_pushn_totals <- renderPlotly({plot_pushn_totals()})
   
+  # table_pushn_mean <- reactive({
+  # })
+  # plot_pushn_mean <- reactive({
+  # })
+  # output$table_pushn_mean <- shiny::renderTable({(table_pushn_mean())}, striped = TRUE)
+  # output$plot_pushn_mean <- renderPlotly({plot_pushn_mean()})
+  
+
+  # Home Practice tab 4.3
+  #NB no home practice for worshops 1 and 12 (welcome and celebration)
+  #HP 2 One on One
+  table_hpdone_1on1 <- reactive({})
+  plot_hpdone_1on1 <- reactive({})
+  output$table_hpdone_1on1 <- shiny::renderTable({(table_hpdone_1on1())}, striped = TRUE)
+  output$plot_hpdone_1on1 <- renderPlotly({plot_hpdone_1on1()})
+  
+  table_mood_1on1 <- reactive({})
+  plot_mood_1on1 <- reactive({})
+  output$table_mood_1on1 <- shiny::renderTable({(table_mood_1on1())}, striped = TRUE)
+  output$plot_mood_1on1 <- renderPlotly({plot_mood_1on1()})
+  
+  table_chall_1on1 <- reactive({})
+  plot_chall_1on1 <- reactive({})
+  output$table_chall_1on1 <- shiny::renderTable({(table_chall_1on1())}, striped = TRUE,
+       caption = "1 = I don’t have enough time; <br> 2 = My teen does not want to spend time with me; <br> 3 = My teen only wants to watch TV or play on his/her phone; <br> 4 = My teen wants to do things that are not safe or that cost money; <br> 5 = My teen wants to do things that I cannot physically do; <br> 6 = My teen chose a competitive activity. I won and s/he got angry.; <br> 7 = I struggled to end the one-on-one time; <br> 8 = All my children want one-on-one time with me at the same time")
+  output$plot_chall_1on1 <- renderPlotly({plot_chall_1on1()})
+  
+  #HP 3 Praise
+  table_hpdone_praise <- reactive({})
+  plot_hpdone_praise <- reactive({})
+  output$table_hpdone_praise <- shiny::renderTable({(table_hpdone_praise())}, striped = TRUE)
+  output$plot_hpdone_praise <- renderPlotly({plot_hpdone_praise()})
+  
+  table_mood_praise <- reactive({})
+  plot_mood_praise <- reactive({})
+  output$table_mood_praise <- shiny::renderTable({(table_mood_praise())}, striped = TRUE)
+  output$plot_mood_praise <- renderPlotly({plot_mood_praise()})
+  
+  table_chall_praise <- reactive({})
+  plot_chall_praise <- reactive({})
+  output$table_chall_praise <- shiny::renderTable({(table_chall_praise())}, striped = TRUE)
+       # caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = "
+  output$plot_chall_praise <- renderPlotly({plot_chall_praise()})
+  
+  #HP 4 Pos Instr
+  table_hpdone_instruct <- reactive({})
+  plot_hpdone_instruct <- reactive({})
+  output$table_hpdone_instruct <- shiny::renderTable({(table_hpdone_instruct())}, striped = TRUE)
+  output$plot_hpdone_instruct <- renderPlotly({plot_hpdone_instruct()})
+  
+  table_mood_instruct <- reactive({})
+  plot_mood_instruct <- reactive({})
+  output$table_mood_instruct <- shiny::renderTable({(table_mood_instruct())}, striped = TRUE)
+  output$plot_mood_instruct <- renderPlotly({plot_mood_instruct()})
+  
+  table_chall_instruct <- reactive({})
+  plot_chall_instruct <- reactive({})
+  output$table_chall_instruct <- shiny::renderTable({(table_chall_instruct())}, striped = TRUE,
+        caption = "1 = My teenager did not want to follow the instruction; <br> 2 = I did not find time to spend one-on-one time with my teen; <br> 3 = I gave a negative instead of a positive instruction; <br> 4 = I shouted at my teen when they behaved negatively, instead of giving them a positive instruction for what they should do")
+  output$plot_chall_instruct <- renderPlotly({plot_chall_instruct()})
+  
+  #HP 5.1 Stress - Breathe
+  table_hpdone_stress_br <- reactive({})
+  plot_hpdone_stress_br <- reactive({})
+  output$table_hpdone_stress_br <- shiny::renderTable({(table_hpdone_stress_br())}, striped = TRUE)
+  output$plot_hpdone_stress_br <- renderPlotly({plot_hpdone_stress_br()})
+  
+  table_mood_stress_br <- reactive({})
+  plot_mood_stress_br <- reactive({})
+  output$table_mood_stress_br <- shiny::renderTable({(table_mood_stress_br())}, striped = TRUE)
+  output$plot_mood_stress_br <- renderPlotly({plot_mood_stress_br()})
+  
+  table_chall_stress_br <- reactive({})
+  plot_chall_stress_br <- reactive({})
+  output$table_chall_stress_br <- shiny::renderTable({(table_chall_stress_br())}, striped = TRUE,
+        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+  output$plot_chall_stress_br <- renderPlotly({plot_chall_stress_br()})
+  
+  #HP 5.2 Stress - Talk
+  table_hpdone_stress_tk <- reactive({})
+  plot_hpdone_stress_tk <- reactive({})
+  output$table_hpdone_stress_tk <- shiny::renderTable({(table_hpdone_stress_tk())}, striped = TRUE)
+  output$plot_hpdone_stress_tk <- renderPlotly({plot_hpdone_stress_tk()})
+  
+  table_mood_stress_tk <- reactive({})
+  plot_mood_stress_tk <- reactive({})
+  output$table_mood_stress_tk <- shiny::renderTable({(table_mood_stress_tk())}, striped = TRUE)
+  output$plot_mood_stress_tk <- renderPlotly({plot_mood_stress_tk()})
+  
+  table_chall_stress_tk <- reactive({})
+  plot_chall_stress_tk <- reactive({})
+  output$table_chall_stress_tk <- shiny::renderTable({(table_chall_stress_tk())}, striped = TRUE,
+        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+  output$plot_chall_stress_tk <- renderPlotly({plot_chall_stress_tk()})
+  
+  #HP 6 Fam Budg
+  table_hpdone_money <- reactive({})
+  plot_hpdone_money <- reactive({})
+  output$table_hpdone_money <- shiny::renderTable({(table_hpdone_money())}, striped = TRUE)
+  output$plot_hpdone_money <- renderPlotly({plot_hpdone_money()})
+  
+  table_mood_money <- reactive({})
+  plot_mood_money <- reactive({})
+  output$table_mood_money <- shiny::renderTable({(table_mood_money())}, striped = TRUE)
+  output$plot_mood_money <- renderPlotly({plot_mood_money()})
+  
+  table_chall_money <- reactive({})
+  plot_chall_money <- reactive({})
+  output$table_chall_money <- shiny::renderTable({(table_chall_money())}, striped = TRUE,
+        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+  output$plot_chall_money <- renderPlotly({plot_chall_money()})
+  
+  #HP 7 Rules
+  table_hpdone_rule <- reactive({})
+  plot_hpdone_rule <- reactive({})
+  output$table_hpdone_rule <- shiny::renderTable({(table_hpdone_rule())}, striped = TRUE)
+  output$plot_hpdone_rule <- renderPlotly({plot_hpdone_rule()})
+  
+  table_mood_rule <- reactive({})
+  plot_mood_rule <- reactive({})
+  output$table_mood_rule <- shiny::renderTable({(table_mood_rule())}, striped = TRUE)
+  output$plot_mood_rule <- renderPlotly({plot_mood_rule()})
+  
+  table_chall_rule <- reactive({})
+  plot_chall_rule <- reactive({})
+  output$table_chall_rule <- shiny::renderTable({(table_chall_rule())}, striped = TRUE,
+        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+  output$plot_chall_rule <- renderPlotly({plot_chall_rule()})
+  
+  #HP 8 Calm Cons
+  table_hpdone_consequence <- reactive({})
+  plot_hpdone_consequence <- reactive({})
+  output$table_hpdone_consequence <- shiny::renderTable({(table_hpdone_consequence())}, striped = TRUE)
+  output$plot_hpdone_consequence <- renderPlotly({plot_hpdone_consequence()})
+  
+  table_mood_consequence <- reactive({})
+  plot_mood_consequence <- reactive({})
+  output$table_mood_consequence <- shiny::renderTable({(table_mood_consequence())}, striped = TRUE)
+  output$plot_mood_consequence <- renderPlotly({plot_mood_consequence()})
+  
+  table_chall_consequence <- reactive({})
+  plot_chall_consequence <- reactive({})
+  output$table_chall_consequence <- shiny::renderTable({(table_chall_consequence())}, striped = TRUE,
+        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+  output$plot_chall_consequence <- renderPlotly({plot_chall_consequence()})
+  
+  #HP 9 Pr Solve
+  table_hpdone_solve <- reactive({})
+  plot_hpdone_solve <- reactive({})
+  output$table_hpdone_solve <- shiny::renderTable({(table_hpdone_solve())}, striped = TRUE)
+  output$plot_hpdone_solve <- renderPlotly({plot_hpdone_solve()})
+  
+  table_mood_solve <- reactive({})
+  plot_mood_solve <- reactive({})
+  output$table_mood_solve <- shiny::renderTable({(table_mood_solve())}, striped = TRUE)
+  output$plot_mood_solve <- renderPlotly({plot_mood_solve()})
+  
+  table_chall_solve <- reactive({})
+  plot_chall_solve <- reactive({})
+  output$table_chall_solve <- shiny::renderTable({(table_chall_solve())}, striped = TRUE,
+        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+  output$plot_chall_solve <- renderPlotly({plot_chall_solve()})
+  
+  #HP 10 Teen Safe
+  table_hpdone_safe <- reactive({})
+  plot_hpdone_safe <- reactive({})
+  output$table_hpdone_safe <- shiny::renderTable({(table_hpdone_safe())}, striped = TRUE)
+  output$plot_hpdone_safe <- renderPlotly({plot_hpdone_safe()})
+  
+  table_mood_safe <- reactive({})
+  plot_mood_safe <- reactive({})
+  output$table_mood_safe <- shiny::renderTable({(table_mood_safe())}, striped = TRUE)
+  output$plot_mood_safe <- renderPlotly({plot_mood_safe()})
+  
+  table_chall_safe <- reactive({})
+  plot_chall_safe <- reactive({})
+  output$table_chall_safe <- shiny::renderTable({(table_chall_safe())}, striped = TRUE,
+        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+  output$plot_chall_safe <- renderPlotly({plot_chall_safe()})
+  
+  #HP 11 D w Crisis
+  table_hpdone_crisis <- reactive({})
+  plot_hpdone_crisis <- reactive({})
+  output$table_hpdone_crisis <- shiny::renderTable({(table_hpdone_crisis())}, striped = TRUE)
+  output$plot_hpdone_crisis <- renderPlotly({plot_hpdone_crisis()})
+  
+  table_mood_crisis <- reactive({})
+  plot_mood_crisis <- reactive({})
+  output$table_mood_crisis <- shiny::renderTable({(table_mood_crisis())}, striped = TRUE)
+  output$plot_mood_crisis <- renderPlotly({plot_mood_crisis()})
+  
+  table_chall_crisis <- reactive({})
+  plot_chall_crisis <- reactive({})
+  output$table_chall_crisis <- shiny::renderTable({(table_chall_crisis())}, striped = TRUE,
+        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+  output$plot_chall_crisis <- renderPlotly({plot_chall_crisis()})
 
   #FIFTH Tab Surveys
   

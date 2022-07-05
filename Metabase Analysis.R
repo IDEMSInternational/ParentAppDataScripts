@@ -844,10 +844,53 @@ summary_table_survey_past_week <- tabulate_with_metadata(location_ID = "survey_p
 # rp.contact.field.w_1on1_hp_mood
 # rp-contact-field.w_1on1_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_1on1_hp_challenge
 # 
-# rp.contact.field.w_1on1_hp_done
-# rp.contact.field.w_1on1_hp_mood
-# rp-contact-field.w_1on1_hp_challenge_list #does't include latest challenge rp.contact.field.w_1on1_hp_challenge
+# rp.contact.field.w_praise_hp_done
+# rp.contact.field.w_praise_hp_mood
+# rp-contact-field.w_praise_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_praise_hp_challenge
 
+# rp.contact.field.w_instruct_hp_done
+# rp.contact.field.w_instruct_hp_mood
+# rp-contact-field.w_instruct_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_instruct_hp_challenge
+
+#stress
+# rp.contact.field.w_breathe_hp_done
+# rp.contact.field.w_breathe_hp_mood
+# rp-contact-field.w_breathe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_breathe_hp_challenge
+# rp.contact.field.w_talk_hp_done
+# rp.contact.field.w_talk_hp_mood
+# rp-contact-field.w_talk_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_talk_hp_challenge
+
+# rp.contact.field.w_money_hp_done
+# rp.contact.field.w_money_hp_mood
+# rp-contact-field.w_money_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_money_hp_challenge
+
+# rp.contact.field.w_rules_hp_done
+# rp.contact.field.w_rules_hp_mood
+# rp-contact-field.w_rules_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_rules_hp_challenge
+
+# rp.contact.field.w_consequence_hp_done
+# rp.contact.field.w_consequence_hp_mood
+# rp-contact-field.w_consequence_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_consequence_hp_challenge
+
+# rp.contact.field.w_solve_hp_done
+# rp.contact.field.w_solve_hp_mood
+# rp-contact-field.w_solve_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_solve_hp_challenge
+
+# rp.contact.field.w_safe_hp_done
+# rp.contact.field.w_safe_hp_mood
+# rp-contact-field.w_safe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_safe_hp_challenge
+
+# rp.contact.field.w_crisis_hp_done
+# rp.contact.field.w_crisis_hp_mood
+# rp-contact-field.w_crisis_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_crisis_hp_challenge
+
+# home practice labels
+# hp_vars <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress - Breathe", "Stress - Talk", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
+
+# home practice review - first screen reached (number of users per home practice)
+# hp_rev_totals <-
+
+# summary_table(columns_to_summarise = rp.contact.field.w_crisis_hp_done)
 
 
 # parent library ------------------------------------------------------------------

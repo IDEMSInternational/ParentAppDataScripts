@@ -2195,8 +2195,8 @@ ui <- dashboardPage(skin = "blue",
                                                            title = "Number of users starting each home practice review",
                                                            status = "success",  
                                                            #background = "orange",
-                                                           plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
-                                                           shiny::tableOutput("table_pushn_totals")
+                                                           plotlyOutput(outputId = "plot_hp_rev_totals", height = "240"),
+                                                           shiny::tableOutput("table_hp_rev_totals")
                                                        )#closes box
                                                      ), #closes fluid row  
                                                      
@@ -4095,6 +4095,13 @@ selected_data_xe <- reactive({
 
   # Home Practice tab 4.3
   #NB no home practice for worshops 1 and 12 (welcome and celebration)
+  
+  # HP review started per week
+  table_hp_rev_totals <- reactive({})
+  plot_hp_rev_totals <- reactive({})
+  output$table_hp_rev_totals <- shiny::renderTable({(table_hp_rev_totals())}, striped = TRUE)
+  output$plot_hp_rev_totals <- renderPlotly({plot_hp_rev_totals()})
+  
   #HP 2 One on One
   table_hpdone_1on1 <- reactive({})
   plot_hpdone_1on1 <- reactive({})

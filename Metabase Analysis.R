@@ -840,52 +840,75 @@ summary_table_survey_past_week <- tabulate_with_metadata(location_ID = "survey_p
 
 # Home Practice ------------------------------------------------------------------
 
-# rp.contact.field.w_1on1_hp_done
-# rp.contact.field.w_1on1_hp_mood
+data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.field.w_praise_hp_review_started",
+                     "rp.contact.field.w_instruct_hp_review_started",  "rp.contact.field.w_stress_hp_review_started",
+                     "rp.contact.field.w_money_hp_review_started",  "rp.contact.field.w_rules_hp_review_started",
+                     "rp.contact.field.w_consequence_hp_review_started",  "rp.contact.field.w_solve_hp_review_started",  "rp.contact.field.w_safe_hp_review_started",
+                     "rp.contact.field.w_crisis_hp_review_started")
+
+data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_breathe_hp_done",
+                  "rp.contact.field.w_money_hp_done", "rp.contact.field.w_talk_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
+                  "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
+
+data_hp_mood <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_breathe_hp_done",
+                  "rp.contact.field.w_money_hp_done", "rp.contact.field.w_talk_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
+                  "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done") #added dummy for praise ws
+
+# home practice labels
+hp_vars <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress - Breathe", "Stress - Talk", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
+
+
+# data_hp_challenge <- c(") #add dummy for praise ws
+
+data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
+summary_table_hp_started <- plhdata_org_clean %>%
+  map(.x = data_hp_started, .f = ~summary_table(columns_to_summarise = .x, include_margins = TRUE))
+names(summary_table_hp_started) <- data_hp_started_neat
+
+table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
+if (!"true" %in% colnames(table_hp_started_long)) { table_hp_started_long$true <- 0 }
+table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_from = .id, values_from = c(true))
+
+
 # rp-contact-field.w_1on1_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_1on1_hp_challenge
-# 
-# rp.contact.field.w_praise_hp_done
+
 # rp.contact.field.w_praise_hp_mood
 # rp-contact-field.w_praise_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_praise_hp_challenge
 
-# rp.contact.field.w_instruct_hp_done
 # rp.contact.field.w_instruct_hp_mood
 # rp-contact-field.w_instruct_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_instruct_hp_challenge
 
 #stress
-# rp.contact.field.w_breathe_hp_done
+# 
 # rp.contact.field.w_breathe_hp_mood
 # rp-contact-field.w_breathe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_breathe_hp_challenge
-# rp.contact.field.w_talk_hp_done
+# 
 # rp.contact.field.w_talk_hp_mood
 # rp-contact-field.w_talk_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_talk_hp_challenge
 
-# rp.contact.field.w_money_hp_done
+# 
 # rp.contact.field.w_money_hp_mood
 # rp-contact-field.w_money_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_money_hp_challenge
 
-# rp.contact.field.w_rules_hp_done
 # rp.contact.field.w_rules_hp_mood
 # rp-contact-field.w_rules_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_rules_hp_challenge
 
-# rp.contact.field.w_consequence_hp_done
+# 
 # rp.contact.field.w_consequence_hp_mood
 # rp-contact-field.w_consequence_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_consequence_hp_challenge
 
-# rp.contact.field.w_solve_hp_done
+# 
 # rp.contact.field.w_solve_hp_mood
 # rp-contact-field.w_solve_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_solve_hp_challenge
 
-# rp.contact.field.w_safe_hp_done
+# 
 # rp.contact.field.w_safe_hp_mood
 # rp-contact-field.w_safe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_safe_hp_challenge
 
-# rp.contact.field.w_crisis_hp_done
+# 
 # rp.contact.field.w_crisis_hp_mood
 # rp-contact-field.w_crisis_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_crisis_hp_challenge
 
-# home practice labels
-# hp_vars <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress - Breathe", "Stress - Talk", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
 
 # home practice review - first screen reached (number of users per home practice)
 # hp_rev_totals <-

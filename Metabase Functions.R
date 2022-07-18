@@ -287,3 +287,31 @@ summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_
   
   return(return_plot)	
 }
+
+tabulate_with_metadata <- function(data = plhdata_org_clean, metadata = r_variables_names, location_ID = "survey_past_week"){
+  data_to_tabulate <- metadata %>% filter(location_ID == {{ location_ID }})
+  
+  summary_table <- data %>%
+    # take the data, and select the relevant variables
+    dplyr::select(c(Org, country, app_user_id, data_to_tabulate$metabase_ID)) %>%
+    # rearrange the data frame
+    pivot_longer(cols = -c(Org, country, app_user_id), names_to = "metabase_ID") %>%
+    # join with our metadata on the variables
+    full_join(., data_to_tabulate) %>%
+    group_by(Org, country, app_user_id, display_name) %>%
+    mutate(value = as.numeric(value)) %>%
+    filter(complete.cases(value)) %>%
+    # take the most recent value that is not NA
+    summarise(value = last(value)) %>%
+    # to the format for the summary_table function
+    pivot_wider(id_cols = c(Org, country, app_user_id),
+                names_from = display_name) %>%
+    ungroup()
+  
+  summary_table <- summary_table %>%
+    map(.x = unique(data_to_tabulate$display_name),
+        .f = ~summary_table(data = summary_table, columns_to_summarise = .x, display = FALSE, include_margins = TRUE),
+        id = .x)
+  names(summary_table) <- unique(data_to_tabulate$display_name)
+  return(summary_table)
+}

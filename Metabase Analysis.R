@@ -28,6 +28,12 @@ plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,
 
 # look and Recode Factor organisation_full to just the main levels
 #sjmisc::frq(x=plhdata_org$organisation_full, out="txt")
+
+plhdata_org <- plhdata_org %>%
+  mutate(organisation_full = ifelse(app_deployment_name %in% c("plh_tz", "PLH TZ"),
+                                    "Tanzania",
+                                    as.character(organisation_full))) #COMMENT OUT TO REMOVE TANZANIA (non-ICS?)
+
 plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
                                  replace=c(`Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
                                            `Miss.idems Margherita` = "Other", `Miss.IDEMS Ohad` = "Other", `Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other",  `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other",
@@ -69,7 +75,7 @@ plhdata_org_clean <- plhdata_org_clean %>%
 # add in country variable
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(country = ifelse(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"), "South Africa",
-                          ifelse(Org %in% c("ICS"), "Tanzania",
+                          ifelse(Org %in% c("Tanzania"), "Tanzania", #CHNAGE first TANZANIA back to "ICS" to remove non-ICS folks
                                  "Other")))
 
 # Look at the numbers per organisation from clear data 
@@ -149,10 +155,16 @@ plhdata_org_clean <- plhdata_org_clean %>%
 #summary_table(columns_to_summarise = rp.contact.field.w_money_completed)
 
 #survey ------------------------------------------------------------------------------------
+# workshop_together variable
+#plhdata_org_clean <- plhdata_org_clean %>%
+#  mutate(rp.contact.field.workshop_path = ifelse(is.na(rp.contact.field.workshop_path),
+#                                                         rp.contact.field.do_workshops_together,
+#                                                 rp.contact.field.workshop_path))
+  
 data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
                           "rp.contact.field.user_age", "rp.contact.field.household_adults",
                           "rp.contact.field.household_teens", "rp.contact.field.household_babies",
-                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.do_workshops_together")
+                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.workshop_path")
 baseline_names_neat <- naming_conventions(data_baseline_survey, replace = "rp.contact.field.")
 
 #TO DO: replace "NA" with "unknown" for nicer display in Shiny
@@ -279,7 +291,6 @@ safe_workshop_vars <- c( "rp.contact.field.parent_point_count_safe_w_self_care",
                          "rp.contact.field.parent_point_count_safe_w_rules", "rp.contact.field.parent_point_count_safe_w_consequence",
                          "rp.contact.field.parent_point_count_safe_w_solve", "rp.contact.field.parent_point_count_safe_w_safe",
                          "rp.contact.field.parent_point_count_safe_w_crisis","rp.contact.field.parent_point_count_safe_w_celebrate")
-
 
 data_all_weeks_pp_relax_neat <- naming_conventions(relax_workshop_vars, replace = "rp.contact.field.parent_point_count_relax_w_")
 data_all_weeks_pp_treat_yourself_neat <- naming_conventions(treat_yourself_workshop_vars, replace = "rp.contact.field.parent_point_count_treat_yourself_w_")
@@ -800,17 +811,21 @@ table_ws_started <- plyr::ldply(relative_perc_completed) %>%
   pivot_wider(id_cols = Org, names_from = .id, values_from = started)
 
 # Survey - past week  ----------------------------------------------------------------------------
-data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
-                           "rp.contact.field.survey_welcome_a_3_final",  "rp.contact.field.survey_welcome_a_4_final",
-                           "rp.contact.field.survey_welcome_a_5_part_1_final",  "rp.contact.field.survey_welcome_a_5_part_2_final",
-                           "rp.contact.field.survey_welcome_a_6_final",  "rp.contact.field.survey_welcome_a_7_part_1_final",
-                           "rp.contact.field.survey_welcome_a_7_part_2_final",  "rp.contact.field.survey_welcome_a_7_part_3_final",
-                           "rp.contact.field.survey_welcome_a_8_final", "rp.contact.field.survey_welcome_a_9_final")
-survey_vars <- c("Attention", "Praise", "Stress", "Shouting", "Money worries", "Summary", "Hitting", "Teen activity", "Lockdown?", "Knowledge of teen activity in non-lockdown week",
-                 "Sexual safety talk", "Teen COVID safe")
-summary_table_survey_past_week <- plhdata_org_clean %>%
-  map(.x = data_survey_past_week, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
-names(summary_table_survey_past_week) <- survey_vars
+r_variables_names <- readxl::read_excel("r_variables_names.xlsx")
+data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey_past_week")
+summary_table_survey_past_week <- tabulate_with_metadata(location_ID = "survey_past_week")
+
+#data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
+#                           "rp.contact.field.survey_welcome_a_3_final",  "rp.contact.field.survey_welcome_a_4_final",
+#                           "rp.contact.field.survey_welcome_a_5_part_1_final",  "rp.contact.field.survey_welcome_a_5_part_2_final",
+#                           "rp.contact.field.survey_welcome_a_6_final",  "rp.contact.field.survey_welcome_a_7_part_1_final",
+#                           "rp.contact.field.survey_welcome_a_7_part_2_final",  "rp.contact.field.survey_welcome_a_7_part_3_final",
+#                           "rp.contact.field.survey_welcome_a_8_final", "rp.contact.field.survey_welcome_a_9_final")
+#survey_vars <- c("Attention", "Praise", "Stress", "Shouting", "Money worries", "Summary", "Hitting", "Teen activity", "Lockdown?", "Knowledge of teen activity in non-lockdown week",
+#                 "Sexual safety talk", "Teen COVID safe")
+#summary_table_survey_past_week <- plhdata_org_clean %>%
+#  map(.x = data_survey_past_week, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
+#names(summary_table_survey_past_week) <- survey_vars
 
 # then to access a table:
 # summary_table_survey_past_week$Attention
@@ -827,6 +842,71 @@ names(summary_table_survey_past_week) <- survey_vars
 # summary_table_survey_past_week$`Teen COVID safe`
 
 #TODO iff "7" to 7.1? - TODO - what do they mean by this?
+
+# Home Practice ------------------------------------------------------------------
+
+# home practice labels
+hp_vars <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress - Breathe", "Stress - Talk", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
+
+#Combine home practice challenges (append hp_challenge to hp_challenge_list and remove null and duplicates)
+
+# rp-contact-field.w_1on1_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_1on1_hp_challenge
+# rp-contact-field.w_praise_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_praise_hp_challenge
+# rp-contact-field.w_instruct_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_instruct_hp_challenge
+
+#stress (this ws week has two home practices)
+# rp.contact.field.w_breathe_hp_mood
+# rp-contact-field.w_breathe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_breathe_hp_challenge
+
+# rp-contact-field.w_talk_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_talk_hp_challenge
+# rp-contact-field.w_money_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_money_hp_challenge
+# rp-contact-field.w_rules_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_rules_hp_challenge
+# rp-contact-field.w_consequence_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_consequence_hp_challenge
+# rp-contact-field.w_solve_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_solve_hp_challenge
+# rp-contact-field.w_safe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_safe_hp_challenge
+# rp-contact-field.w_crisis_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_crisis_hp_challenge
+
+data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.field.w_praise_hp_review_started",
+                     "rp.contact.field.w_instruct_hp_review_started",  "rp.contact.field.w_stress_hp_review_started",
+                     "rp.contact.field.w_money_hp_review_started",  "rp.contact.field.w_rules_hp_review_started",
+                     "rp.contact.field.w_consequence_hp_review_started",  "rp.contact.field.w_solve_hp_review_started",  "rp.contact.field.w_safe_hp_review_started",
+                     "rp.contact.field.w_crisis_hp_review_started")
+
+data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_breathe_hp_done",
+                  "rp.contact.field.w_money_hp_done", "rp.contact.field.w_talk_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
+                  "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
+
+data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_praise_hp_mood", "rp.contact.field.w_instruct_hp_mood", "rp.contact.field.w_breathe_hp_mood",
+                  "rp.contact.field.w_money_hp_mood", "rp.contact.field.w_talk_hp_mood", "rp.contact.field.w_rules_hp_mood", "rp.contact.field.w_consequence_hp_mood",
+                  "rp.contact.field.w_solve_hp_mood", "rp.contact.field.w_safe_hp_mood", "rp.contact.field.w_crisis_hp_mood") #added dummy for praise ws
+
+#data_hp_challenge <- c("TBC - depends on label of new combined and cleaned challenge list") #add dummy for praise ws
+
+# home practice review - first screen reached (number of users per home practice), i.e. only "true" not "false" or NA
+data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
+summary_table_hp_started <- plhdata_org_clean %>%
+  map(.x = data_hp_started, .f = ~summary_table(columns_to_summarise = .x, include_margins = TRUE))
+names(summary_table_hp_started) <- data_hp_started_neat
+
+table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
+if (!"true" %in% colnames(table_hp_started_long)) { table_hp_started_long$true <- 0 }
+table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_from = .id, values_from = c(true))
+#how to call in Rshiny: summary_table_hp_started$`1on1 hp` etc
+
+# home practice review - user claims they had a chance to do the hp
+data_hp_done_neat <- naming_conventions(data_hp_done, replace = "rp.contact.field.w_", replace_after = "_done")
+summary_table_hp_done <- plhdata_org_clean %>%
+  map(.x = data_hp_done, .f = ~summary_table(columns_to_summarise = .x, include_margins = TRUE))
+names(summary_table_hp_done) <- data_hp_done_neat
+# summary_table_hp_done$
+
+# home practice review - user notes how HP went
+data_hp_mood_neat <- naming_conventions(data_hp_mood, replace = "rp.contact.field.w_", replace_after = "_mood")
+summary_table_hp_mood <- plhdata_org_clean %>%
+  map(.x = data_hp_mood, .f = ~summary_table(columns_to_summarise = .x, include_margins = TRUE))
+names(summary_table_hp_mood) <- data_hp_mood_neat
+
+# home practice review - challenges selected for each workshop
 
 
 # parent library ------------------------------------------------------------------
@@ -1052,7 +1132,7 @@ names(gender_table) <- levels(plhdata_org_clean$Org)
      "rp.contact.field.household_children",
      "rp.contact.field._app_language",
      "app_version",
-     "rp.contact.field.do_workshops_together"
+     "rp.contact.field.workshop_path"
    )
  plhdata_org_clean_select <- plhdata_org_clean %>%
    dplyr::select(c(app_user_id, data_baseline_survey))

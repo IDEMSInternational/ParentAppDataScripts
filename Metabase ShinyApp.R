@@ -72,9 +72,11 @@ ui <- dashboardPage(skin = "blue",
                                                          choices = c("SA: Amathuba" = "Amathuba",
                                                                      "SA: Dlalanathi" = "Dlalanathi",
                                                                      "SA: Joy" = "Joy",
-                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
+                                                                     "SA: Nontobeko" = "Nontobeko",
+                                                                     "TZ: ICS" ="Tanzania",
+                                                                     "SA: South Africa" = "South Africa"),
                                                          selected = c("Amathuba","Dlalanathi",
-                                                                      "Joy","Nontobeko", "ICS")
+                                                                      "Joy","Nontobeko", "Tanzania", "South Africa")
                                       ))), #closes fluidRow
                                 
                                 fluidRow(
@@ -219,9 +221,9 @@ ui <- dashboardPage(skin = "blue",
                                                          choices = c("SA: Amathuba" = "Amathuba",
                                                                      "SA: Dlalanathi" = "Dlalanathi",
                                                                      "SA: Joy" = "Joy",
-                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
+                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
                                                          selected = c("Amathuba","Dlalanathi",
-                                                                      "Joy","Nontobeko", "ICS")
+                                                                      "Joy","Nontobeko", "Tanzania")
                                       ))), #closes fluidRow
                                 
                                 tabsetPanel(type = "tabs",
@@ -448,9 +450,9 @@ ui <- dashboardPage(skin = "blue",
                                                          choices = c("SA: Amathuba" = "Amathuba",
                                                                      "SA: Dlalanathi" = "Dlalanathi",
                                                                      "SA: Joy" = "Joy",
-                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
+                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
                                                          selected = c("Amathuba","Dlalanathi",
-                                                                      "Joy","Nontobeko", "ICS")
+                                                                      "Joy","Nontobeko", "Tanzania")
                                       )),
                                   box(width = 4,
                                       checkboxGroupInput(inputId = "PpPP",
@@ -2097,9 +2099,9 @@ ui <- dashboardPage(skin = "blue",
                                                          choices = c("SA: Amathuba" = "Amathuba",
                                                                      "SA: Dlalanathi" = "Dlalanathi",
                                                                      "SA: Joy" = "Joy",
-                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
+                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
                                                          selected = c("Amathuba","Dlalanathi",
-                                                                      "Joy","Nontobeko", "ICS")
+                                                                      "Joy","Nontobeko", "Tanzania")
                                       )),
                                   box(width = 4,
                                       checkboxGroupInput(inputId = "WsXE",
@@ -2603,9 +2605,9 @@ ui <- dashboardPage(skin = "blue",
                                                                               choices = c("SA: Amathuba" = "Amathuba",
                                                                                           "SA: Dlalanathi" = "Dlalanathi",
                                                                                           "SA: Joy" = "Joy",
-                                                                                          "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
+                                                                                          "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
                                                                               selected = c("Amathuba","Dlalanathi",
-                                                                                           "Joy","Nontobeko", "ICS")
+                                                                                           "Joy","Nontobeko", "Tanzania")
                                                            ))), #closes fluidRow
                                                      
                                                      fluidRow(
@@ -2784,9 +2786,9 @@ ui <- dashboardPage(skin = "blue",
                                                                               choices = c("SA: Amathuba" = "Amathuba",
                                                                                           "SA: Dlalanathi" = "Dlalanathi",
                                                                                           "SA: Joy" = "Joy",
-                                                                                          "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
+                                                                                          "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
                                                                               selected = c("Amathuba","Dlalanathi",
-                                                                                           "Joy","Nontobeko", "ICS")
+                                                                                           "Joy","Nontobeko", "Tanzania")
                                                            ))), #closes fluidRow
                                                      
                                                      fluidRow(
@@ -2836,9 +2838,9 @@ ui <- dashboardPage(skin = "blue",
                                                          choices = c("SA: Amathuba" = "Amathuba",
                                                                      "SA: Dlalanathi" = "Dlalanathi",
                                                                      "SA: Joy" = "Joy",
-                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="ICS"),
+                                                                     "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
                                                          selected = c("Amathuba","Dlalanathi",
-                                                                      "Joy","Nontobeko", "ICS")
+                                                                      "Joy","Nontobeko", "Tanzania")
                                       ))), #closes fluidRow
                                 
                                 fluidRow(
@@ -3029,6 +3031,8 @@ server <- function(input, output) {
     summary_table_baseline$`Workshop path` %>% filter(Org %in% c((input$OrgDem)))
   }) 
   plot_ws_format  <- reactive({
+    # plhdata_org_clean$rp.contact.field.workshop_path is automatically combined from plhdata_org_clean$rp.contact.field.workshop_path and .do_workshops_together
+    # we add in a "default" field from rp.contact.field.workshop_path_user_choice
     summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.workshop_path", replace = "rp.contact.field.")
   }) 
   output$table_ws_format <- shiny::renderTable({(table_ws_format())}, striped = TRUE)

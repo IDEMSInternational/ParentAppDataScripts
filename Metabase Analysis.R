@@ -26,17 +26,13 @@ plhdata_org$rp.contact.field.organisation_code<-as_factor(replace_na(plhdata_org
 plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,
                                                     plhdata_org$rp.contact.field.organisation_code), drop=TRUE)
 
-# look and Recode Factor organisation_full to just the main levels
-#sjmisc::frq(x=plhdata_org$organisation_full, out="txt")
-
 plhdata_org <- plhdata_org %>%
   mutate(organisation_full = ifelse(app_deployment_name %in% c("plh_tz", "PLH TZ"),
                                     "Tanzania",
                                     as.character(organisation_full))) #COMMENT OUT TO REMOVE TANZANIA (non-ICS?)
 
 plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
-                                 replace=c(`Tanzania` = "Tanzania",
-                                           `Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
+                                 replace=c(`Tanzania` = "Tanzania",`Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
                                            `Miss.idems Margherita` = "Other", `Miss.IDEMS Ohad` = "Other", `Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other",  `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other",
                                            `Miss.other` ="Other", `Miss.zlto` ="Other", `Miss.hpccc` ="Other", `Miss.seven_passes` ="Other", `Miss.Hillcrest facilitator` ="Other", `Miss.Hillcrest Facilitator ` ="Other", `Miss.a00af0c3b3887330` ="Other",
                                            `Nontobeko.Miss` = "Nontobeko", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko",  `Nontobeko.nontobekoM` = "Nontobeko",
@@ -76,7 +72,7 @@ plhdata_org_clean <- plhdata_org_clean %>%
 # add in country variable
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(country = ifelse(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"), "South Africa",
-                          ifelse(Org %in% c("Tanzania"), "Tanzania", #CHNAGE first TANZANIA back to "ICS" to remove non-ICS folks
+                          ifelse(Org %in% c("ICS"), "Tanzania",
                                  "Other")))
 
 # Look at the numbers per organisation from clear data 

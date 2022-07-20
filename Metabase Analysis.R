@@ -157,6 +157,20 @@ plhdata_org_clean <- plhdata_org_clean %>%
 #  mutate(rp.contact.field.workshop_path = ifelse(is.na(rp.contact.field.workshop_path),
 #                                                         rp.contact.field.do_workshops_together,
 #                                                 rp.contact.field.workshop_path))
+
+# workshop_path edits ----------
+plhdata_org_clean <- plhdata_org_clean %>%
+  mutate(rp.contact.field.workshop_path = ifelse(is.na(rp.contact.field.workshop_path_user_choice),
+                                                 rp.contact.field.workshop_path,
+                                                 ifelse(rp.contact.field.workshop_path_user_choice == "false",
+                                                        "default",
+                                                        rp.contact.field.workshop_path)))
+# checks
+#plhdata_org_clean %>%
+#  dplyr::select(c(rp.contact.field.workshop_path, rp.contact.field.do_workshops_together, rp.contact.field.workshop_path_user_choice, rp.contact.field.workshop_path1)) %>%
+#  View()
+#plhdata_org_clean %>% group_by(rp.contact.field.workshop_path, rp.contact.field.do_workshops_together) %>% summarise(n()) %>% View()
+
   
 data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
                           "rp.contact.field.user_age", "rp.contact.field.household_adults",

@@ -98,6 +98,17 @@ get_user_data <- function(site = plh_con, date_from, date_to = NULL, format_date
 # Write back to metabase - TODO: make into function?
 #dbWriteTable(parent_app_con, "Cleaned PLH data", select(plhdata_org_clean,!(contact_fields)), overwrite=TRUE)
 
+# if a variable is missing from the data, add it in to have NA all donw
+add_na_variable <- function(data = plhdata_org_clean, variable){
+  for (names in variable) {
+    if (!names %in% colnames(data)) {
+      data[, names] <- NA
+    }
+  }
+  return(data)
+}
+
+
 naming_conventions <- function(x, replace, replace_after) {
   if (!missing(replace)){
     x <- gsub(paste("^.*?", replace, ".*", sep = ""), "", x)

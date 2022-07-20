@@ -172,7 +172,7 @@ summary_table_baseline <- plhdata_org_clean %>%
                                                      include_margins = TRUE,
                                                      summaries = "frequencies"))
 names(summary_table_baseline) <- baseline_names_neat
-# summary_table_baseline$`Household babies`
+summary_table_baseline$`Household babies`
 # summary_table_baseline$` app language`
 # summary_table_baseline$`App version`
 # summary_table_baseline$`Do workshops together`
@@ -869,13 +869,17 @@ data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.f
                      "rp.contact.field.w_consequence_hp_review_started",  "rp.contact.field.w_solve_hp_review_started",  "rp.contact.field.w_safe_hp_review_started",
                      "rp.contact.field.w_crisis_hp_review_started")
 
-data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_breathe_hp_done",
+data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", #"rp.contact.field.w_breathe_hp_done",
                   "rp.contact.field.w_money_hp_done", "rp.contact.field.w_talk_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
                   "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
 
 data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_praise_hp_mood", "rp.contact.field.w_instruct_hp_mood", "rp.contact.field.w_breathe_hp_mood",
                   "rp.contact.field.w_money_hp_mood", "rp.contact.field.w_talk_hp_mood", "rp.contact.field.w_rules_hp_mood", "rp.contact.field.w_consequence_hp_mood",
                   "rp.contact.field.w_solve_hp_mood", "rp.contact.field.w_safe_hp_mood", "rp.contact.field.w_crisis_hp_mood") #added dummy for praise ws
+
+plhdata_org_clean <- add_na_variable(variable = data_hp_started)
+plhdata_org_clean <- add_na_variable(variable = data_hp_done)
+plhdata_org_clean <- add_na_variable(variable = data_hp_mood)
 
 #data_hp_challenge <- c("TBC - depends on label of new combined and cleaned challenge list") #add dummy for praise ws
 

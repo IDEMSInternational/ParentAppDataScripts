@@ -103,11 +103,11 @@ add_na_variable <- function(data = plhdata_org_clean, variable){
   for (names in variable) {
     if (!names %in% colnames(data)) {
       data[, names] <- NA
+      warning(paste(names, "does not exist. Adding NAs"))
     }
   }
   return(data)
 }
-
 
 naming_conventions <- function(x, replace, replace_after) {
   if (!missing(replace)){
@@ -121,6 +121,7 @@ naming_conventions <- function(x, replace, replace_after) {
   x
 }
 
+# TODO: set up this function corerctly. 
 user_id_print <- function(data = plhdata_org, field, group_by = plhdata_org_clean$Org) {
   plhdata_org_list <- plhdata_org %>%
     select(c('app_user_id', rp.contact.field.parent_point_count_relax, Org)) %>%
@@ -130,8 +131,7 @@ user_id_print <- function(data = plhdata_org, field, group_by = plhdata_org_clea
 
 # not sure if you want this sort of function or not, and if so, what it should do. Will come back to.
 get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, show_invalid = FALSE){
-  
-  data_filter <- data <- filter(across({{ factor_variable }}) == factor_level)
+  data_filter <- data %>% dplyr::filter(across({{ factor_variable }}) == factor_level)
   
   # Show any app user ids that are invalid and do not come from the app.
   if (show_invalid){
@@ -150,7 +150,7 @@ get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, 
 
 # same function used in parent text
 summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise, summaries = c("frequencies", "mean"),
-                                include_country_margins, country_factor, together = FALSE, include_margins = FALSE){
+                                include_country_margins, country_factor, together = FALSE, include_margins = FALSE, na.rm = TRUE){
   
   summaries <- match.arg(summaries)
   if (summaries == "frequencies"){
@@ -203,11 +203,11 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
     summary_output <- data %>%
       group_by(across({{ factors }}), .drop = FALSE) %>%
       #mutate(across({{ columns_to_summarise }}, ~as.numeric(.))) %>%
-      summarise(across({{ columns_to_summarise }}, ~mean(.x, na.rm = TRUE)))
+      summarise(across({{ columns_to_summarise }}, ~mean(.x, na.rm = na.rm)))
     
     if (include_margins){
       corner_margin <- data %>%
-        summarise(across(c({{ columns_to_summarise }}), ~mean(.x, na.rm  = TRUE)))
+        summarise(across(c({{ columns_to_summarise }}), ~mean(.x, na.rm  = na.rm)))
       
       summary_output <- bind_rows(summary_output, corner_margin, .id = "id")
       
@@ -226,8 +226,8 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
 }
 
 summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise, summaries = c("frequencies", "mean"),
-                          replace = "rp.contact.field.", include_margins = FALSE, include_country_margins = TRUE, 
-                          country_factor = "country", wider_table = TRUE,
+                          replace = "rp.contact.field.", replace_after = NULL, include_margins = FALSE, include_country_margins = TRUE, 
+                          country_factor = "country", wider_table = TRUE, na.rm = TRUE,
                           display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,
                           together = TRUE){
   
@@ -240,12 +240,13 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
                                       include_country_margins = include_country_margins,
                                       country_factor = country_factor,
                                       summaries = summaries,
-                                      together = together)
+                                      together = together,
+                                      na.rm = na.rm)
   
-  return_table_names <- naming_conventions(colnames(return_table), replace = replace)
+  return_table_names <- naming_conventions(colnames(return_table), replace = replace, replace_after = replace_after)
   if (summaries == "mean"){
     if (naming_convention){
-      colnames(return_table) <- naming_conventions(colnames(return_table), replace = replace)
+      colnames(return_table) <- naming_conventions(colnames(return_table), replace = replace, replace_after = replace_after)
     }
   }
   if (display_table){
@@ -281,9 +282,10 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
 }
 
 summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_convention = TRUE, replace = "rp.contact.field.",
+                         replace_after = NULL,
                          plot_type = c("histogram", "boxplot")) {	
   plot_type <- match.arg(plot_type)
-  x_axis_label = naming_conventions(colnames(data%>%select(.data[[columns_to_summarise]])), replace = replace)	
+  x_axis_label = naming_conventions(colnames(data%>%select(.data[[columns_to_summarise]])), replace = replace, replace_after = replace_after)	
   
   return_plot <- ggplot(data) +	
     viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +	
@@ -326,3 +328,34 @@ tabulate_with_metadata <- function(data = plhdata_org_clean, metadata = r_variab
   names(summary_table) <- unique(data_to_tabulate$display_name)
   return(summary_table)
 }
+
+
+multiple_table_output <- function(data = plhdata_org_clean, variables_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE){
+  
+  # run: add_na_variable here with warning 
+  data <- add_na_variable(data = data, variable = variables_to_summarise)
+  
+  variable_display_names <- naming_conventions(variables_to_summarise, replace = replace, replace_after = replace_after)
+  summary_table_values <- data %>%
+    map(.x = variables_to_summarise, .f = ~replace_na(.x, "unknown"))  %>%
+    map(.x = variables_to_summarise, .f = ~summary_table(columns_to_summarise = .x,
+                                                         display = FALSE,
+                                                         include_margins = TRUE,
+                                                         summaries = summaries,
+                                                         na.rm = na.rm))
+  
+  names(summary_table_values) <- variable_display_names
+  return(summary_table_values)
+}
+
+multiple_plot_output <- function(data = plhdata_org_clean, variables_to_summarise, replace = "rp.contact.field.",
+                                 replace_after = NULL, plot_type = c("histogram", "boxplot")){
+  variable_display_names <- naming_conventions(variables_to_summarise, replace = replace, replace_after = replace_after)
+  summary_plot_values <- plhdata_org_clean %>%
+    map(.x = variables_to_summarise, .f = ~summary_plot(columns_to_summarise = .x, plot_type = plot_type, replace = replace, replace_after = replace_after))
+  
+  names(summary_plot_values) <- variable_display_names
+  return(summary_plot_values)
+}
+
+

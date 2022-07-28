@@ -330,15 +330,15 @@ tabulate_with_metadata <- function(data = plhdata_org_clean, metadata = r_variab
 }
 
 
-multiple_table_output <- function(data = plhdata_org_clean, variables_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE){
+multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE){
   
   # run: add_na_variable here with warning 
-  data <- add_na_variable(data = data, variable = variables_to_summarise)
+  data <- add_na_variable(data = data, variable = columns_to_summarise)
   
-  variable_display_names <- naming_conventions(variables_to_summarise, replace = replace, replace_after = replace_after)
+  variable_display_names <- naming_conventions(columns_to_summarise, replace = replace, replace_after = replace_after)
   summary_table_values <- data %>%
-    map(.x = variables_to_summarise, .f = ~replace_na(.x, "unknown"))  %>%
-    map(.x = variables_to_summarise, .f = ~summary_table(columns_to_summarise = .x,
+    map(.x = columns_to_summarise, .f = ~replace_na(.x, "unknown"))  %>%
+    map(.x = columns_to_summarise, .f = ~summary_table(columns_to_summarise = .x,
                                                          display = FALSE,
                                                          include_margins = TRUE,
                                                          summaries = summaries,
@@ -348,11 +348,11 @@ multiple_table_output <- function(data = plhdata_org_clean, variables_to_summari
   return(summary_table_values)
 }
 
-multiple_plot_output <- function(data = plhdata_org_clean, variables_to_summarise, replace = "rp.contact.field.",
+multiple_plot_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.",
                                  replace_after = NULL, plot_type = c("histogram", "boxplot")){
-  variable_display_names <- naming_conventions(variables_to_summarise, replace = replace, replace_after = replace_after)
+  variable_display_names <- naming_conventions(columns_to_summarise, replace = replace, replace_after = replace_after)
   summary_plot_values <- plhdata_org_clean %>%
-    map(.x = variables_to_summarise, .f = ~summary_plot(columns_to_summarise = .x, plot_type = plot_type, replace = replace, replace_after = replace_after))
+    map(.x = columns_to_summarise, .f = ~summary_plot(columns_to_summarise = .x, plot_type = plot_type, replace = replace, replace_after = replace_after))
   
   names(summary_plot_values) <- variable_display_names
   return(summary_plot_values)

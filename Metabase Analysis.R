@@ -175,7 +175,7 @@ data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.conta
                           "rp.contact.field.user_age", "rp.contact.field.household_adults",
                           "rp.contact.field.household_teens", "rp.contact.field.household_babies",
                           "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.workshop_path")
-summary_table_baseline <- multiple_table_output(variables_to_summarise = data_baseline_survey, replace = "rp.contact.field.")
+summary_table_baseline <- multiple_table_output(columns_to_summarise = data_baseline_survey, replace = "rp.contact.field.")
 
 summary_table_baseline$`Household babies`
 # summary_table_baseline$` app language`
@@ -186,7 +186,7 @@ summary_table_baseline$`Household babies`
 #summary_table_baseline$`User gender`  %>% filter(Org %in% c(("Dlalanathi"))) %>%
 #  pivot_wider(names_from = `User gender`, values_from = N)
 
-summary_plot_baseline <- multiple_plot_output(variables_to_summarise = data_baseline_survey, replace = "rp.contact.field.")
+summary_plot_baseline <- multiple_plot_output(columns_to_summarise = data_baseline_survey, replace = "rp.contact.field.")
 # summary_plot_baseline$`Survey welcome completed`
 
 ###Completion status of baseline survey
@@ -306,7 +306,7 @@ data_all_weeks_pp_safe_neat <- naming_conventions(safe_workshop_vars, replace = 
 #parent points in each week sorted by parent point (not necessary to code as we already have the number of PPs in each ws week below)
 
 #Average relax parent points pp1
-#summary_relax_workshop <- multiple_table_output(variables_to_summarise = relax_workshop_vars, replace = "rp.contact.field.parent_point_count_relax_w_")
+#summary_relax_workshop <- multiple_table_output(columns_to_summarise = relax_workshop_vars, replace = "rp.contact.field.parent_point_count_relax_w_")
 
 summary_relax_workshop <- plhdata_org_clean %>%
   group_by(Org) %>%
@@ -525,7 +525,7 @@ data_habit_parent_points_w_celebrate <- c("rp.contact.field.parent_point_count_r
                                           "rp.contact.field.parent_point_count_money_w_celebrate", "rp.contact.field.parent_point_count_consequence_w_celebrate",
                                           "rp.contact.field.parent_point_count_safe_w_celebrate", "rp.contact.field.parent_point_count_instruct_positively_w_celebrate")
 
-summary_table_habits_all <- multiple_table_output(variables_to_summarise = data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_")
+summary_table_habits_all <- multiple_table_output(columns_to_summarise = data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_")
 # summary_table_habits_all$`Relax`
 # summary_table_habits_all$`Treat yourself`
 # summary_table_habits_all$`Praise yourself`
@@ -537,35 +537,35 @@ summary_table_habits_all <- multiple_table_output(variables_to_summarise = data_
 # summary_table_habits_all$`Consequence`
 # summary_table_habits_all$`Safe`
 
-summary_plot_habits_all <- multiple_plot_output(variables_to_summarise = data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")
+summary_plot_habits_all <- multiple_plot_output(columns_to_summarise = data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")
 #summary_plot_habits_all$Relax
 
-summary_table_habits_self_care <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_self_care, replace = "rp.contact.field.parent_point_count_", replace_after = "_w_self_care")
+summary_table_habits_self_care <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_self_care, replace = "rp.contact.field.parent_point_count_", replace_after = "_w_self_care")
 summary_table_habits_self_care$`Relax`
-summary_plot_habits_self_care <- multiple_plot_output(variables_to_summarise = data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")
+summary_plot_habits_self_care <- multiple_plot_output(columns_to_summarise = data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")
 
-summary_table_habits_1on1 <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_1on1, replace = "rp.contact.field.parent_point_count_", replace_after = "w_1on1")
-summary_plot_habits_1on1 <- multiple_plot_output(variables_to_summarise = data_habit_parent_points_w_1on1, replace = "rp.contact.field.parent_point_count_", replace_after = "w_1on1", plot_type = "boxplot")
+summary_table_habits_1on1 <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_1on1, replace = "rp.contact.field.parent_point_count_", replace_after = "w_1on1")
+summary_plot_habits_1on1 <- multiple_plot_output(columns_to_summarise = data_habit_parent_points_w_1on1, replace = "rp.contact.field.parent_point_count_", replace_after = "w_1on1", plot_type = "boxplot")
 
-summary_table_habits_praise <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_praise,
+summary_table_habits_praise <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_praise,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_praise")
-summary_table_habits_instruct <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_instruct,
+summary_table_habits_instruct <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_instruct,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_instruct")
-summary_table_habits_stress <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_stress,
+summary_table_habits_stress <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_stress,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_stress")
-summary_table_habits_money <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_money,
+summary_table_habits_money <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_money,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_money")
-summary_table_habits_rules <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_rules,
+summary_table_habits_rules <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_rules,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_rules")
-summary_table_habits_consequence <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_consequence,
+summary_table_habits_consequence <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_consequence,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_consequence")
-summary_table_habits_solve <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_solve,
+summary_table_habits_solve <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_solve,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_solve")
-summary_table_habits_safe <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_safe,
+summary_table_habits_safe <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_safe,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_safe")
-summary_table_habits_crisis <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_crisis,
+summary_table_habits_crisis <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_crisis,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_crisis")
-summary_table_habits_celebrate <- multiple_table_output(variables_to_summarise = data_habit_parent_points_w_celebrate,
+summary_table_habits_celebrate <- multiple_table_output(columns_to_summarise = data_habit_parent_points_w_celebrate,
                                                      replace = "rp.contact.field.parent_point_count_", replace_after = "w_celebrate")
 
 #Error as rp.contact.field.parent_point_count_praise_teen_w_celebrate does not exist
@@ -594,10 +594,10 @@ data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.
                            "rp.contact.field.w_consequence_completion_level",  "rp.contact.field.w_solve_completion_level",  "rp.contact.field.w_safe_completion_level",
                            "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
 completion_vars <- c("Self Care", "One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
-summary_table_completion_level <- multiple_table_output(variables_to_summarise = data_completion_level,
+summary_table_completion_level <- multiple_table_output(columns_to_summarise = data_completion_level,
                                                         replace = "rp.contact.field.w_", replace_after = "_completion_level")
 names(summary_table_completion_level) <- completion_vars
-summary_plot_completion_level <- multiple_plot_output(variables_to_summarise = data_completion_level,
+summary_plot_completion_level <- multiple_plot_output(columns_to_summarise = data_completion_level,
                                                         replace = "rp.contact.field.w_", replace_after = "_completion_level")
 names(summary_plot_completion_level) <- completion_vars
 summary_plot_completion_level$`One-on-one Time`
@@ -738,7 +738,7 @@ data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.f
                 "rp.contact.field.click_pc_evidence_base_count", "rp.contact.field.click_pc_technical_support_count",
                 "rp.contact.field.click_pc_message_archive_count","rp.contact.field.click_pc_bereavement_count")
 
-summary_table_library <- multiple_table_output(variables_to_summarise = data_library, replace = "rp.contact.field.click_pc_", replace_after = "count")
+summary_table_library <- multiple_table_output(columns_to_summarise = data_library, replace = "rp.contact.field.click_pc_", replace_after = "count")
 data_library_neat <- naming_conventions(names(summary_table_library), replace = "Rp.contact.field.click hs")
 names(summary_table_library) <- data_library_neat
 
@@ -770,7 +770,7 @@ data_weekly_workshops_neat <- c("Self care", "In app reminders", "One-on-one tim
                                 "Family Budgets", "Rules", "Calm consequence", "Problem solving", "Teen safety", "Dealing with crisis",
                                 "Celebration and Next Steps", "Parent center - Self care", "Parent center - One-on-one time", "Parent points - Self care", "Parent points - One-on-one time")
 
-summary_tableweekly_workshops <- multiple_table_output(variables_to_summarise = data_weekly_workshops)
+summary_tableweekly_workshops <- multiple_table_output(columns_to_summarise = data_weekly_workshops)
 names(summary_tableweekly_workshops) <- data_weekly_workshops_neat
 # summary_tableweekly_workshops$Stress
 
@@ -829,7 +829,7 @@ data_app_opens_neat <- c("Total", "Welcome and Self care(1)", "One-on-one time(2
                          "Managing Stress(5)", "Family Budget(6)","Rules(7)", "Calm Consequences(8)",  
                          "Problem Solving(9)", "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
 
-tables_app_opens <- multiple_table_output(variables_to_summarise = data_app_opens)
+tables_app_opens <- multiple_table_output(columns_to_summarise = data_app_opens)
 names(tables_app_opens) <- data_app_opens_neat
 
 #Average app opens per ws week
@@ -859,7 +859,7 @@ data_emotional_check_in <- c("rp.contact.field.w_self_care_welcome_individual_a_
                              "rp.contact.field.w_stress_welcome_individual_a_final", "rp.contact.field.w_money_welcome_individual_a_final", 
                              "rp.contact.field.w_rules_welcome_individual_a_final")
 data_emotional_check_in_neat <- c("Self care", "One-on-one time", "Praise", "Positive instructions", "Managing stress", "Family budgets", "Rules")
-tables_emotional_check_in <- multiple_table_output(variables_to_summarise = data_emotional_check_in)
+tables_emotional_check_in <- multiple_table_output(columns_to_summarise = data_emotional_check_in)
 names(tables_emotional_check_in) <- data_emotional_check_in_neat
 # tables_emotional_check_in$`Self care`
 

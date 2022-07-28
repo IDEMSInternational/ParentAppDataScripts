@@ -6,7 +6,7 @@
 
 ### extract data ----------------------------------------------------------------------
 # to get user data
-plhdata_org <- get_user_data(merge_check = FALSE) # select 1 if you want to merge in changes (yes)
+plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
 # to get notification data
 nf_data <- get_nf_data()
 
@@ -908,7 +908,7 @@ names(gender_table) <- levels(plhdata_org_clean$Org)
 
 # download push notification data
 # TODO: add fuzzy join to get_nf_data function
- nf_data <- get_nf_data()
+ nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC.Tracker)
 # 
 # # what variables do we want in the nf data - org, sex, - add a few in.
  data_baseline_survey <-

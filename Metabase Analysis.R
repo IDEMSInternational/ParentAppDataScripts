@@ -716,16 +716,17 @@ plhdata_org_clean <- add_na_variable(variable = data_hp_done)
 plhdata_org_clean <- add_na_variable(variable = data_hp_mood)
 
 #Combine home practice challenges (append hp_challenge to hp_challenge_list and remove null and duplicates) NB no challenge for praise workshop week
-challenge_freq(var = "rp.contact.field.w_1on1_hp_challenge_list", append_var = "rp.contact.field.w_1on1_hp_challenge")
-challenge_freq(var = "rp.contact.field.w_instruct_hp_challenge_list", append_var = "rp.contact.field.w_instruct_hp_challenge")
-challenge_freq(var = "rp.contact.field.w_stress_hp_challenge_list", append_var = "rp.contact.field.w_breathe_hp_challenge")
-challenge_freq(var = "rp.contact.field.w_talk_hp_challenge_list", append_var = "rp.contact.field.w_talk_hp_challenge")
-challenge_freq(var = "rp.contact.field.w_money_hp_challenge_list", append_var = "rp.contact.field.w_money_hp_challenge")
-challenge_freq(var = "rp.contact.field.w_rules_hp_challenge_list", append_var = "rp.contact.field.w_rules_hp_challenge")
-challenge_freq(var = "rp.contact.field.w_consequence_hp_challenge_list", append_var = "rp.contact.field.w_consequence_hp_challenge")
-challenge_freq(var = "rp.contact.field.w_solve_hp_challenge_list", append_var = "rp.contact.field.w_solve_hp_challenge")
-challenge_freq(var = "rp.contact.field.w_safe_hp_challenge_list", append_var = "rp.contact.field.w_safe_hp_challenge")
-challenge_freq(var = "rp.contact.field.w_crisis_hp_challenge_list", append_var = "rp.contact.field.w_crisis_hp_challenge")
+summary_table_hp_chall <- NULL
+summary_table_hp_chall$hp_list_challenges_1on1 <- challenge_freq(var = "rp.contact.field.w_1on1_hp_challenge_list", append_var = "rp.contact.field.w_1on1_hp_challenge")
+summary_table_hp_chall$hp_list_challenges_instruct <- challenge_freq(var = "rp.contact.field.w_instruct_hp_challenge_list", append_var = "rp.contact.field.w_instruct_hp_challenge")
+summary_table_hp_chall$hp_list_challenges_stress <- challenge_freq(var = "rp.contact.field.w_stress_hp_challenge_list", append_var = "rp.contact.field.w_breathe_hp_challenge")
+#summary_table_hp_chall$ <- challenge_freq(var = "rp.contact.field.w_talk_hp_challenge_list", append_var = "rp.contact.field.w_talk_hp_challenge")
+summary_table_hp_chall$hp_list_challenges_money <- challenge_freq(var = "rp.contact.field.w_money_hp_challenge_list", append_var = "rp.contact.field.w_money_hp_challenge")
+summary_table_hp_chall$hp_list_challenges_rules <- challenge_freq(var = "rp.contact.field.w_rules_hp_challenge_list", append_var = "rp.contact.field.w_rules_hp_challenge")
+summary_table_hp_chall$hp_list_challenges_consequence <- challenge_freq(var = "rp.contact.field.w_consequence_hp_challenge_list", append_var = "rp.contact.field.w_consequence_hp_challenge")
+summary_table_hp_chall$hp_list_challenges_solve <- challenge_freq(var = "rp.contact.field.w_solve_hp_challenge_list", append_var = "rp.contact.field.w_solve_hp_challenge")
+summary_table_hp_chall$hp_list_challenges_safe <- challenge_freq(var = "rp.contact.field.w_safe_hp_challenge_list", append_var = "rp.contact.field.w_safe_hp_challenge")
+summary_table_hp_chall$hp_list_challenges_crisis <- challenge_freq(var = "rp.contact.field.w_crisis_hp_challenge_list", append_var = "rp.contact.field.w_crisis_hp_challenge")
 
 
 # NB No challenge for week 3 home practice (praise)
@@ -751,7 +752,7 @@ summary_table_hp_mood <- multiple_table_output(plhdata_org_clean, data_hp_mood, 
 #summary_table_hp_mood$`1on1 hp`
 
 # home practice review - challenges selected for each workshop
-summary_table_hp_chall <- multiple_table_output(plhdata_org_clean, data_hp_chall, replace = "hp_list_")
+#summary_table_hp_chall <- multiple_table_output(plhdata_org_clean, data_hp_chall, replace = "hp_list_")
 # summary_table_hp_chall$___
 
 # parent library ------------------------------------------------------------------

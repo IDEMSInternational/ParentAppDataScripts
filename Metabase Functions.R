@@ -782,17 +782,28 @@ version_variables_rename <- function(data = plhdata_org_clean, old_name, new_nam
   return(data)
 }
 
-challenge_freq <- function(data = plhdata_org_clean, var, append_var){
+challenge_freq <- function(data = plhdata_org_clean, group_by = "Org", var, append_var){
   data <- add_na_variable(data = data, variable = var)
   data <- add_na_variable(data = data, variable = append_var)
   plh_list <- stringr::str_split(data[[var]], pattern = ", ")
   plh_append <- data[[append_var]]
+  plh_Org <- data[[group_by]]
   for (i in 1:length(plh_list)){
-    plh_list[[i]] <- c(plh_list[[i]], plh_append[i])
-  }
+    plh_list1 <- c(plh_list[[i]], plh_append[i])
+    plh_list2 <- as.character(plh_Org[i])
+    df <- data.frame(plh_list1, Org = plh_list2)
+    plh_list[[i]] <- df
+    }
   plh_list <- purrr::map(.x = plh_list,
                          .f = ~ unique(.x))
-  plh_list <- plyr::ldply(plh_list, cbind)
-  plh_list <- plh_list %>% group_by(`1`) %>% summarise(n())
+  
+  plh_list <- plyr::ldply(plh_list)
+  plh_list <- plh_list %>% group_by(plh_list1, Org) %>% summarise(n())
   return(plh_list)
 }
+
+
+
+
+
+

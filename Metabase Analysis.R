@@ -23,17 +23,13 @@ plhdata_org$rp.contact.field.organisation_code <- as_factor(replace_na(plhdata_o
 plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,
                                                     plhdata_org$rp.contact.field.organisation_code), drop=TRUE)
 
-# Lily: copy into organisation_full the values in organisation_code for all plh_tz deployment users only if organisation_code = organisation_1 OR ICS
-
-
-#labels all users in Tanzania as "tanzania" users - not needed anymore, was to have data before TZ rollout
 plhdata_org <- plhdata_org %>%
-  mutate(organisation_full = ifelse(app_deployment_name %in% c("plh_tz", "PLH TZ"),
-                                    "Tanzania",
-                                    as.character(organisation_full))) #COMMENT OUT TO REMOVE TANZANIA (non-ICS?)
+  mutate(organisation_full = ifelse((rp.contact.field.organisation_code == "organisation_1") & (app_deployment_name %in% c("plh_tz", "PLH TZ")),
+                                    "ICS",
+                                    as.character(organisation_full)))
 
 plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
-                                 replace=c(`Tanzania` = "Tanzania",`Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
+                                 replace=c(`ICS` = "ICS",`Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
                                            `Miss.idems Margherita` = "Other", `Miss.IDEMS Ohad` = "Other", `Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other",  `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other",
                                            `Miss.other` ="Other", `Miss.zlto` ="Other", `Miss.hpccc` ="Other", `Miss.seven_passes` ="Other", `Miss.Hillcrest facilitator` ="Other", `Miss.Hillcrest Facilitator ` ="Other", `Miss.a00af0c3b3887330` ="Other",
                                            `Nontobeko.Miss` = "Nontobeko", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko",  `Nontobeko.nontobekoM` = "Nontobeko",
@@ -43,7 +39,6 @@ plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full,
                                            `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", 
                                            `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba", `Miss.dlalanathi`="Dlalanathi",
                                            `Miss.organisation_1` = "Other", `Miss.organisation_2` = "Other",`Miss.organisation_6` = "Other"))
-
 
 # so do the Miss. to Other first: [no longer commented out 14 March '22 by Margherita]
 # plhdata_org <- plhdata_org %>%
@@ -79,6 +74,35 @@ plhdata_org_clean <- plhdata_org_clean %>%
 
 # Look at the numbers per organisation from clear data 
 sjmisc::frq(x=plhdata_org_clean$Org, out="txt")
+
+# Sorting Name Changes --------------------------------------------------
+old_names <- c("a_1_final", "a_2_final", "a_3_final", "a_4_final", "a_5_part_1_final", "a_5_part_2_final", "a_6_final", "a_7_part_1_final")
+new_names <- c("ppf", "ppp", "ps", "cme", "fs", "fi", "cmp", "cs")
+df_names <- data.frame(old_names, new_names)
+for (v in c("v0.16.2", "v0.16.3", "v0.16.4")){
+  for (i in 1:nrow(df_names)){
+    old_name = df_names[i,1]
+    new_name = df_names[i,2]
+    plhdata_org_clean <- plhdata_org_clean %>%
+      map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
+             .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x))
+    # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
+  }
+}
+# todo: following not working
+#plhdata_org_clean <- plhdata_org_clean %>%
+#  map2_df(.x = c("a_1_final", "a_2_final", "a_3_final"),
+#          .y = c("ppf", "ppp", "ps"),
+#          .f = ~version_variables_rename(old_name = .x, new_name = .y))
+
+##plhdata_org_clean$rp.contact.field.survey_welcome_a_1_final[281:290]
+##plhdata_org_clean$rp.contact.field.survey_welcome_ppf_v0.16.2[281:290]
+#
+#plhdata_org_clean$rp.contact.field.survey_welcome_a_2_final[281:290]
+#plhdata_org_clean$rp.contact.field.survey_welcome_ppp_v0.16.2[281:290]##
+#
+#plhdata_org_clean$rp.contact.field.survey_welcome_a_3_final[281:290]
+#plhdata_org_clean$rp.contact.field.survey_welcome_ps_v0.16.2[281:290]
 
 # More cleaning
 # TODO: Add here any to make numeric. check with Esmee about w_self_care_diff_started_completed stored
@@ -692,17 +716,17 @@ plhdata_org_clean <- add_na_variable(variable = data_hp_done)
 plhdata_org_clean <- add_na_variable(variable = data_hp_mood)
 
 #Combine home practice challenges (append hp_challenge to hp_challenge_list and remove null and duplicates) NB no challenge for praise workshop week
+challenge_freq(var = "rp.contact.field.w_1on1_hp_challenge_list", append_var = "rp.contact.field.w_1on1_hp_challenge")
+challenge_freq(var = "rp.contact.field.w_instruct_hp_challenge_list", append_var = "rp.contact.field.w_instruct_hp_challenge")
+challenge_freq(var = "rp.contact.field.w_stress_hp_challenge_list", append_var = "rp.contact.field.w_breathe_hp_challenge")
+challenge_freq(var = "rp.contact.field.w_talk_hp_challenge_list", append_var = "rp.contact.field.w_talk_hp_challenge")
+challenge_freq(var = "rp.contact.field.w_money_hp_challenge_list", append_var = "rp.contact.field.w_money_hp_challenge")
+challenge_freq(var = "rp.contact.field.w_rules_hp_challenge_list", append_var = "rp.contact.field.w_rules_hp_challenge")
+challenge_freq(var = "rp.contact.field.w_consequence_hp_challenge_list", append_var = "rp.contact.field.w_consequence_hp_challenge")
+challenge_freq(var = "rp.contact.field.w_solve_hp_challenge_list", append_var = "rp.contact.field.w_solve_hp_challenge")
+challenge_freq(var = "rp.contact.field.w_safe_hp_challenge_list", append_var = "rp.contact.field.w_safe_hp_challenge")
+challenge_freq(var = "rp.contact.field.w_crisis_hp_challenge_list", append_var = "rp.contact.field.w_crisis_hp_challenge")
 
-# rp.contact.field.w_1on1_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_1on1_hp_challenge
-# rp.contact.field.w_instruct_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_instruct_hp_challenge
-# rp.contact.field.w_stress_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_breathe_hp_challenge
-# rp.contact.field.w_talk_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_talk_hp_challenge
-# rp.contact.field.w_money_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_money_hp_challenge
-# rp.contact.field.w_rules_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_rules_hp_challenge
-# rp.contact.field.w_consequence_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_consequence_hp_challenge
-# rp.contact.field.w_solve_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_solve_hp_challenge
-# rp.contact.field.w_safe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_safe_hp_challenge
-# rp.contact.field.w_crisis_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_crisis_hp_challenge
 
 # NB No challenge for week 3 home practice (praise)
 data_hp_chall <- c("hp_list_challenges_1on1", "hp_list_challenges_instruct", "hp_list_challenges_stress", "hp_list_challenges_money", "hp_list_challenges_rules",
@@ -727,7 +751,7 @@ summary_table_hp_mood <- multiple_table_output(plhdata_org_clean, data_hp_mood, 
 #summary_table_hp_mood$`1on1 hp`
 
 # home practice review - challenges selected for each workshop
-summary_table_hp_chall <- multiple_table_output(plhdata_org_clean, data_hp_chall, replace = "hp_")
+summary_table_hp_chall <- multiple_table_output(plhdata_org_clean, data_hp_chall, replace = "hp_list_")
 # summary_table_hp_chall$___
 
 # parent library ------------------------------------------------------------------

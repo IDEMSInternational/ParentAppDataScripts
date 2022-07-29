@@ -357,5 +357,3 @@ multiple_plot_output <- function(data = plhdata_org_clean, columns_to_summarise,
   names(summary_plot_values) <- variable_display_names
   return(summary_plot_values)
 }
-
-

@@ -16,16 +16,17 @@ nf_data <- get_nf_data()
 # replace missing values in Organisation and rp.contact.field.organisation_code by Miss so that it is a factor level
 plhdata_org$Organisation <- forcats::as_factor(tidyr::replace_na(plhdata_org$Organisation, "Miss"))
 
-# Question: What about "null"?
-plhdata_org$rp.contact.field.organisation_code <- forcats::as_factor(tidyr::replace_na(plhdata_org$rp.contact.field.organisation_code, "Miss"))
-
-# look and Recode Factor organisation_full to just the main levels
-plhdata_org$rp.contact.field.organisation_code<-as_factor(replace_na(plhdata_org$rp.contact.field.organisation_code, "Miss"))
+# look and Recode Factor organisation_full to just the main levels # Question: What about "null"?
+plhdata_org$rp.contact.field.organisation_code <- as_factor(replace_na(plhdata_org$rp.contact.field.organisation_code, "Miss"))
 
 # Combine Factors Organisation and rp.contact.field.organisation_code 
 plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,
                                                     plhdata_org$rp.contact.field.organisation_code), drop=TRUE)
 
+# Lily: copy into organisation_full the values in organisation_code for all plh_tz deployment users only if organisation_code = organisation_1 OR ICS
+
+
+#labels all users in Tanzania as "tanzania" users - not needed anymore, was to have data before TZ rollout
 plhdata_org <- plhdata_org %>%
   mutate(organisation_full = ifelse(app_deployment_name %in% c("plh_tz", "PLH TZ"),
                                     "Tanzania",
@@ -42,6 +43,7 @@ plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full,
                                            `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", 
                                            `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba", `Miss.dlalanathi`="Dlalanathi",
                                            `Miss.organisation_1` = "Other", `Miss.organisation_2` = "Other",`Miss.organisation_6` = "Other"))
+
 
 # so do the Miss. to Other first: [no longer commented out 14 March '22 by Margherita]
 # plhdata_org <- plhdata_org %>%
@@ -660,28 +662,14 @@ summary_table_survey_past_week <- tabulate_with_metadata(location_ID = "survey_p
 
 #TODO iff "7" to 7.1? - TODO - what do they mean by this?
 
-# Home Practice ------------------------------------------------------------------
+## Home Practice ------------------------------------------------------------------
 
-# home practice labels
-hp_vars <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress - Breathe", "Stress - Talk", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
+# home practice labels, NB two home practices for stress workshop (breathe and talk), but separate fields only exist for done and mood, not for started, challenges or completed
+# completed field not included in analysis as it's a bit redundant (HP is completed when started, done, mood, and challenge are completed)
 
-#Combine home practice challenges (append hp_challenge to hp_challenge_list and remove null and duplicates)
-
-# rp-contact-field.w_1on1_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_1on1_hp_challenge
-# rp-contact-field.w_praise_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_praise_hp_challenge
-# rp-contact-field.w_instruct_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_instruct_hp_challenge
-
-#stress (this ws week has two home practices)
-# rp.contact.field.w_breathe_hp_mood
-# rp-contact-field.w_breathe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_breathe_hp_challenge
-
-# rp-contact-field.w_talk_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_talk_hp_challenge
-# rp-contact-field.w_money_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_money_hp_challenge
-# rp-contact-field.w_rules_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_rules_hp_challenge
-# rp-contact-field.w_consequence_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_consequence_hp_challenge
-# rp-contact-field.w_solve_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_solve_hp_challenge
-# rp-contact-field.w_safe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_safe_hp_challenge
-# rp-contact-field.w_crisis_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_crisis_hp_challenge
+## create neat labels for HP variables - not used because replace and replace.after are sufficent to create labels and removes need for dummy when one workshop doesn't have the value
+# hp_vars_done_mood <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress - Breathe", "Stress - Talk", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
+# hp_vars_started_chall <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
 
 data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.field.w_praise_hp_review_started",
                      "rp.contact.field.w_instruct_hp_review_started",  "rp.contact.field.w_stress_hp_review_started",
@@ -689,24 +677,40 @@ data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.f
                      "rp.contact.field.w_consequence_hp_review_started",  "rp.contact.field.w_solve_hp_review_started",  "rp.contact.field.w_safe_hp_review_started",
                      "rp.contact.field.w_crisis_hp_review_started")
 
-data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", #"rp.contact.field.w_breathe_hp_done",
-                  "rp.contact.field.w_money_hp_done", "rp.contact.field.w_talk_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
+data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_stress_hp_breathe_done", "rp.contact.field.w_stress_hp_talk_done",
+                  "rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
                   "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
 
-data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_praise_hp_mood", "rp.contact.field.w_instruct_hp_mood", "rp.contact.field.w_breathe_hp_mood",
-                  "rp.contact.field.w_money_hp_mood", "rp.contact.field.w_talk_hp_mood", "rp.contact.field.w_rules_hp_mood", "rp.contact.field.w_consequence_hp_mood",
-                  "rp.contact.field.w_solve_hp_mood", "rp.contact.field.w_safe_hp_mood", "rp.contact.field.w_crisis_hp_mood") #added dummy for praise ws
+# NB No mood 'review' for week 3 home practice (praise)
+data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_instruct_hp_mood", "rp.contact.field.w_stress_hp_breathe_mood", "rp.contact.field.w_stress_hp_talk_mood",
+                  "rp.contact.field.w_money_hp_mood", "rp.contact.field.w_rules_hp_mood", "rp.contact.field.w_consequence_hp_mood",
+                  "rp.contact.field.w_solve_hp_mood", "rp.contact.field.w_safe_hp_mood", "rp.contact.field.w_crisis_hp_mood") 
 
+#Add na for missing values
 plhdata_org_clean <- add_na_variable(variable = data_hp_started)
 plhdata_org_clean <- add_na_variable(variable = data_hp_done)
 plhdata_org_clean <- add_na_variable(variable = data_hp_mood)
 
-#data_hp_challenge <- c("TBC - depends on label of new combined and cleaned challenge list") #add dummy for praise ws
+#Combine home practice challenges (append hp_challenge to hp_challenge_list and remove null and duplicates) NB no challenge for praise workshop week
 
-# home practice review - first screen reached (number of users per home practice), i.e. only "true" not "false" or NA
-data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
-summary_table_hp_started <- plhdata_org_clean %>%
-  map(.x = data_hp_started, .f = ~summary_table(columns_to_summarise = .x, include_margins = TRUE))
+# rp.contact.field.w_1on1_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_1on1_hp_challenge
+# rp.contact.field.w_instruct_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_instruct_hp_challenge
+# rp.contact.field.w_stress_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_breathe_hp_challenge
+# rp.contact.field.w_talk_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_talk_hp_challenge
+# rp.contact.field.w_money_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_money_hp_challenge
+# rp.contact.field.w_rules_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_rules_hp_challenge
+# rp.contact.field.w_consequence_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_consequence_hp_challenge
+# rp.contact.field.w_solve_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_solve_hp_challenge
+# rp.contact.field.w_safe_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_safe_hp_challenge
+# rp.contact.field.w_crisis_hp_challenge_list #doesn't include latest challenge rp.contact.field.w_crisis_hp_challenge
+
+# NB No challenge for week 3 home practice (praise)
+data_hp_chall <- c("hp_list_challenges_1on1", "hp_list_challenges_instruct", "hp_list_challenges_stress", "hp_list_challenges_money", "hp_list_challenges_rules",
+                   "hp_list_challenges_consequence", "hp_list_challenges_solve", "hp_list_challenges_safe", "hp_list_challenges_crisis")
+
+
+# overview table for home practice review started: number of users per home practice who reached first screen, i.e. only "true" not "false" or NA
+summary_table_hp_started <- multiple_table_output(plhdata_org_clean, data_hp_started) 
 names(summary_table_hp_started) <- data_hp_started_neat
 
 table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
@@ -715,20 +719,16 @@ table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_f
 #how to call in Rshiny: summary_table_hp_started$`1on1 hp` etc
 
 # home practice review - user claims they had a chance to do the hp
-data_hp_done_neat <- naming_conventions(data_hp_done, replace = "rp.contact.field.w_", replace_after = "_done")
-summary_table_hp_done <- plhdata_org_clean %>%
-  map(.x = data_hp_done, .f = ~summary_table(columns_to_summarise = .x, include_margins = TRUE))
-names(summary_table_hp_done) <- data_hp_done_neat
-# summary_table_hp_done$
+summary_table_hp_done <- multiple_table_output(plhdata_org_clean, data_hp_done, replace = "rp.contact.field.w_", replace_after = "_done")
+#summary_table_hp_done$`1on1 hp`
 
 # home practice review - user notes how HP went
-data_hp_mood_neat <- naming_conventions(data_hp_mood, replace = "rp.contact.field.w_", replace_after = "_mood")
-summary_table_hp_mood <- plhdata_org_clean %>%
-  map(.x = data_hp_mood, .f = ~summary_table(columns_to_summarise = .x, include_margins = TRUE))
-names(summary_table_hp_mood) <- data_hp_mood_neat
+summary_table_hp_mood <- multiple_table_output(plhdata_org_clean, data_hp_mood, replace = "rp.contact.field.w_", replace_after = "_mood")
+#summary_table_hp_mood$`1on1 hp`
 
 # home practice review - challenges selected for each workshop
-
+summary_table_hp_chall <- multiple_table_output(plhdata_org_clean, data_hp_chall, replace = "hp_")
+# summary_table_hp_chall$___
 
 # parent library ------------------------------------------------------------------
 data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.field.click_pc_help_count",

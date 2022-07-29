@@ -35,7 +35,8 @@ ui <- dashboardPage(skin = "blue",
                         shinydashboard::valueBoxOutput("myvaluebox2", width=2),
                         shinydashboard::valueBoxOutput("myvaluebox3", width=2),
                         shinydashboard::valueBoxOutput("myvaluebox4", width=2),
-                        shinydashboard::valueBoxOutput("myvaluebox5", width=2)
+                        shinydashboard::valueBoxOutput("myvaluebox5", width=2),
+                        shinydashboard::valueBoxOutput("myvaluebox6", width=2)
                       ), #closes fluidRow
                       
                       tabItems(
@@ -2325,7 +2326,7 @@ ui <- dashboardPage(skin = "blue",
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 5: Managing Stress (breathe) - challenges selected",
+                                                           title = "Home Pratice Week 5: Managing Stress (breathe & talk) - challenges selected",
                                                            status = "success",  
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_chall_stress_br", height = "240"),
@@ -2352,16 +2353,16 @@ ui <- dashboardPage(skin = "blue",
                                                          #background = "orange",
                                                          plotlyOutput(outputId = "plot_mood_stress_tk", height = "240"),
                                                          shiny::tableOutput("table_mood_stress_tk")
-                                                     ), #closes box
-                                                     
-                                                     box(width = 4,
-                                                         collapsible = FALSE,
-                                                         solidHeader = TRUE,
-                                                         title = "Home Pratice Week 5: Managing Stress (talk) - challenges selected",
-                                                         status = "success",  
-                                                         #background = "orange",
-                                                         plotlyOutput(outputId = "plot_chall_stress_tk", height = "240"),
-                                                         shiny::tableOutput("table_chall_stress_tk")
+                                                     # ), #closes box
+                                                     # 
+                                                     # box(width = 4,
+                                                     #     collapsible = FALSE,
+                                                     #     solidHeader = TRUE,
+                                                     #     title = "Home Pratice Week 5: Managing Stress (talk) - challenges selected",
+                                                     #     status = "success",  
+                                                     #     #background = "orange",
+                                                     #     plotlyOutput(outputId = "plot_chall_stress_tk", height = "240"),
+                                                     #     shiny::tableOutput("table_chall_stress_tk")
                                                      ) #closes box
                                             ), #closes fluid row
                                             
@@ -2993,6 +2994,10 @@ server <- function(input, output) {
                               color = "navy")})
   output$myvaluebox5 <- shinydashboard::renderValueBox({
     shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Nontobeko")), subtitle = "Nontobeko", icon = icon("user"),
+                              color = "navy")})
+  
+  output$myvaluebox6 <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "ICS")), subtitle = "ICS", icon = icon("user"),
                               color = "navy")})
   
   #FIRST tab DEMOGRAPHICS
@@ -4121,19 +4126,19 @@ selected_data_xe <- reactive({
   output$table_mood_1on1 <- shiny::renderTable({(table_mood_1on1())}, striped = TRUE)
   output$plot_mood_1on1 <- renderPlotly({plot_mood_1on1()})
   
-  table_chall_1on1 <- reactive({ })
+  table_chall_1on1 <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
   plot_chall_1on1 <- reactive({})
   output$table_chall_1on1 <- shiny::renderTable({(table_chall_1on1())}, striped = TRUE,
        caption = "1 = I don’t have enough time; <br> 2 = My teen does not want to spend time with me; <br> 3 = My teen only wants to watch TV or play on his/her phone; <br> 4 = My teen wants to do things that are not safe or that cost money; <br> 5 = My teen wants to do things that I cannot physically do; <br> 6 = My teen chose a competitive activity. I won and s/he got angry.; <br> 7 = I struggled to end the one-on-one time; <br> 8 = All my children want one-on-one time with me at the same time")
   output$plot_chall_1on1 <- renderPlotly({plot_chall_1on1()})
   
-  #HP 3 Praise
+  #HP 3 Praise (no review/ mood and no challenges)
   table_hpdone_praise <- reactive({summary_table_hp_done$`Praise hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_praise <- reactive({})
   output$table_hpdone_praise <- shiny::renderTable({(table_hpdone_praise())}, striped = TRUE)
   output$plot_hpdone_praise <- renderPlotly({plot_hpdone_praise()})
   
-  table_mood_praise <- reactive({summary_table_hp_mood$`Praise hp` %>% filter(Org %in% c((input$OrgXE)))})
+  table_mood_praise <- reactive({})
   plot_mood_praise <- reactive({})
   output$table_mood_praise <- shiny::renderTable({(table_mood_praise())}, striped = TRUE)
   output$plot_mood_praise <- renderPlotly({plot_mood_praise()})
@@ -4141,7 +4146,7 @@ selected_data_xe <- reactive({
   table_chall_praise <- reactive({})
   plot_chall_praise <- reactive({})
   output$table_chall_praise <- shiny::renderTable({(table_chall_praise())}, striped = TRUE)
-       # caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = "
+       # caption
   output$plot_chall_praise <- renderPlotly({plot_chall_praise()})
   
   #HP 4 Pos Instr
@@ -4155,7 +4160,7 @@ selected_data_xe <- reactive({
   output$table_mood_instruct <- shiny::renderTable({(table_mood_instruct())}, striped = TRUE)
   output$plot_mood_instruct <- renderPlotly({plot_mood_instruct()})
   
-  table_chall_instruct <- reactive({})
+  table_chall_instruct <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
   plot_chall_instruct <- reactive({})
   output$table_chall_instruct <- shiny::renderTable({(table_chall_instruct())}, striped = TRUE,
         caption = "1 = My teenager did not want to follow the instruction; <br> 2 = I did not find time to spend one-on-one time with my teen; <br> 3 = I gave a negative instead of a positive instruction; <br> 4 = I shouted at my teen when they behaved negatively, instead of giving them a positive instruction for what they should do")
@@ -4172,10 +4177,10 @@ selected_data_xe <- reactive({
   output$table_mood_stress_br <- shiny::renderTable({(table_mood_stress_br())}, striped = TRUE)
   output$plot_mood_stress_br <- renderPlotly({plot_mood_stress_br()})
   
-  table_chall_stress_br <- reactive({})
+  table_chall_stress_br <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
   plot_chall_stress_br <- reactive({})
   output$table_chall_stress_br <- shiny::renderTable({(table_chall_stress_br())}, striped = TRUE,
-        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+        caption = "1 = I was afraid my teen would think I was weak; <br> 2 = I felt uncomfortable about naming specific difficult feelings; <br> 3 = My teen felt uncomfortable when I shared my feelings; <br> 4 = When I shared my feelings, my teen asked many questions, which made me uncomfortable; <br> 5 = I was too stressed or angry to try sharing my feelings – I prefer to be alone when I feel like that")
   output$plot_chall_stress_br <- renderPlotly({plot_chall_stress_br()})
   
   #HP 5.2 Stress - Talk
@@ -4189,11 +4194,11 @@ selected_data_xe <- reactive({
   output$table_mood_stress_tk <- shiny::renderTable({(table_mood_stress_tk())}, striped = TRUE)
   output$plot_mood_stress_tk <- renderPlotly({plot_mood_stress_tk()})
   
-  table_chall_stress_tk <- reactive({})
-  plot_chall_stress_tk <- reactive({})
-  output$table_chall_stress_tk <- shiny::renderTable({(table_chall_stress_tk())}, striped = TRUE,
-        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
-  output$plot_chall_stress_tk <- renderPlotly({plot_chall_stress_tk()})
+  # table_chall_stress_tk <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
+  # plot_chall_stress_tk <- reactive({})
+  # output$table_chall_stress_tk <- shiny::renderTable({(table_chall_stress_tk())}, striped = TRUE)
+  #       #caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+  # output$plot_chall_stress_tk <- renderPlotly({plot_chall_stress_tk()})
   
   #HP 6 Fam Budg
   table_hpdone_money <- reactive({summary_table_hp_done$`Money hp` %>% filter(Org %in% c((input$OrgXE)))})
@@ -4206,10 +4211,10 @@ selected_data_xe <- reactive({
   output$table_mood_money <- shiny::renderTable({(table_mood_money())}, striped = TRUE)
   output$plot_mood_money <- renderPlotly({plot_mood_money()})
   
-  table_chall_money <- reactive({})
+  table_chall_money <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
   plot_chall_money <- reactive({})
   output$table_chall_money <- shiny::renderTable({(table_chall_money())}, striped = TRUE,
-        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+        caption = "1 = I did not want to tell my family how much I earn; <br> 2 = When budgeting, we could not agree on what should fall under needs and what should fall under wants; <br> 3 = I did not understand what to do; <br> 4 = My teen did not want to do the budgeting with me")
   output$plot_chall_money <- renderPlotly({plot_chall_money()})
   
   #HP 7 Rules
@@ -4223,10 +4228,10 @@ selected_data_xe <- reactive({
   output$table_mood_rule <- shiny::renderTable({(table_mood_rule())}, striped = TRUE)
   output$plot_mood_rule <- renderPlotly({plot_mood_rule()})
   
-  table_chall_rule <- reactive({})
+  table_chall_rule <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
   plot_chall_rule <- reactive({})
   output$table_chall_rule <- shiny::renderTable({(table_chall_rule())}, striped = TRUE,
-        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+        caption = "1 = My teen and I could not agree on a rule; <br> 2 = My teen felt it was unfair that they have to follow the rule while I don’t have to follow it; <br> 3 = I felt uncomfortable, because I feel that I should be the one establishing the rule, not my teen; <br> 4 = My partner felt uncomfortable, because they feel that they should be the one establishing the rule, not the teen; <br> 5 = When we tried to set a rule, we got into an argument; <br> 6 = We were not able to stick to the rule")
   output$plot_chall_rule <- renderPlotly({plot_chall_rule()})
   
   #HP 8 Calm Cons
@@ -4240,10 +4245,10 @@ selected_data_xe <- reactive({
   output$table_mood_consequence <- shiny::renderTable({(table_mood_consequence())}, striped = TRUE)
   output$plot_mood_consequence <- renderPlotly({plot_mood_consequence()})
   
-  table_chall_consequence <- reactive({})
+  table_chall_consequence <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
   plot_chall_consequence <- reactive({})
   output$table_chall_consequence <- shiny::renderTable({(table_chall_consequence())}, striped = TRUE,
-        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+          caption = "1 = I got very angry when my teen broke the rule; <br> 2 = My teen got very angry with me after I gave the consequence; <br> 3 = I introduced the consequence without first discussing it with my teen; <br> 4 = I forgot to follow through with the consequence; <br> 5 = Even with the consequence, my teen still does not follow the rule; <br> 6 = We only created a negative consequence, not a positive consequence; <br> 7 = My teen suggested being hit as a negative consequence")
   output$plot_chall_consequence <- renderPlotly({plot_chall_consequence()})
   
   #HP 9 Pr Solve
@@ -4257,10 +4262,10 @@ selected_data_xe <- reactive({
   output$table_mood_solve <- shiny::renderTable({(table_mood_solve())}, striped = TRUE)
   output$plot_mood_solve <- renderPlotly({plot_mood_solve()})
   
-  table_chall_solve <- reactive({})
+  table_chall_solve <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
   plot_chall_solve <- reactive({})
   output$table_chall_solve <- shiny::renderTable({(table_chall_solve())}, striped = TRUE,
-        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+        caption = "1 = I forgot the steps of problem solving; <br> 2 = I started with the solutions right away; <br> 3 = We could not agree on a solution to try out and we got into an argument; <br> 4 = I got angry when the problem came up and I forgot to use the problem-solving steps; <br> 5 = My teen got angry and did not want to talk about the problem")
   output$plot_chall_solve <- renderPlotly({plot_chall_solve()})
   
   #HP 10 Teen Safe
@@ -4274,10 +4279,10 @@ selected_data_xe <- reactive({
   output$table_mood_safe <- shiny::renderTable({(table_mood_safe())}, striped = TRUE)
   output$plot_mood_safe <- renderPlotly({plot_mood_safe()})
   
-  table_chall_safe <- reactive({})
+  table_chall_safe <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
   plot_chall_safe <- reactive({})
   output$table_chall_safe <- shiny::renderTable({(table_chall_safe())}, striped = TRUE,
-        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+        caption = "1 = My teen and I disagreed on which areas and online activities were unsafe; <br> 2 = My teen identified the house of someone I trust as unsafe. I was shocked and did not know what to do; <br> 3 = My teen insisted that the bar (or another place I don’t feel is safe) is safe for them to visit. I don’t know how to convince my teen; <br> 4 = As an adult, I feel responsible to protect - but when I told my teen what is safe and what is not, my teen got angry; <br> 5 = It was hard to identify support resources available in my community, because I don’t know my community so well / there are few services available; <br> 6 = I don’t know much about technology, so I don’t know how to talk about it with my teen")
   output$plot_chall_safe <- renderPlotly({plot_chall_safe()})
   
   #HP 11 D w Crisis
@@ -4291,10 +4296,10 @@ selected_data_xe <- reactive({
   output$table_mood_crisis <- shiny::renderTable({(table_mood_crisis())}, striped = TRUE)
   output$plot_mood_crisis <- renderPlotly({plot_mood_crisis()})
   
-  table_chall_crisis <- reactive({})
+  table_chall_crisis <- reactive({summary_table_hp_chall$`Challenges 1on1` %>% filter(Org %in% c((input$OrgXE)))})
   plot_chall_crisis <- reactive({})
   output$table_chall_crisis <- shiny::renderTable({(table_chall_crisis())}, striped = TRUE,
-        caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+        caption = "1 = My teen told me that something serious happened to them and I did not know how to handle it; <br> 2 = The conversation made me very uncomfortable because I was reminded of a negative experience I had; <br> 3 = One of us did not feel comfortable")
   output$plot_chall_crisis <- renderPlotly({plot_chall_crisis()})
 
   #FIFTH Tab Surveys

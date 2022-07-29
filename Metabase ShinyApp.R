@@ -2194,7 +2194,7 @@ ui <- dashboardPage(skin = "blue",
                                                        box(width = 12,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Number of users starting each home practice review",
+                                                           title = "Number of users starting each home practice review (value is true rather than false or missing)",
                                                            status = "success",  
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_hp_rev_totals", height = "240"),
@@ -2206,7 +2206,7 @@ ui <- dashboardPage(skin = "blue",
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 2: One-on-One Time - completion",
+                                                           title = "Home Pratice Week 2: One-on-One Time - completion", #NB this is the reported completion of HP itself, not ther Review of the HP (stored under variable rp-contact-field.w_stress_hp_review_completed)
                                                            status = "success",
                                                            h5("Question for this column phrased as 'Did you have a chance to do this?'"),
                                                            #background = "orange",
@@ -4105,35 +4105,35 @@ selected_data_xe <- reactive({
   #NB no home practice for worshops 1 and 12 (welcome and celebration)
   
   # HP review started per week
-  table_hp_rev_totals <- reactive({})
+  table_hp_rev_totals <- reactive({table_hp_started %>% filter(Org %in% c((input$OrgXE)))})
   plot_hp_rev_totals <- reactive({})
   output$table_hp_rev_totals <- shiny::renderTable({(table_hp_rev_totals())}, striped = TRUE)
   output$plot_hp_rev_totals <- renderPlotly({plot_hp_rev_totals()})
   
-  #HP 2 One on One
-  table_hpdone_1on1 <- reactive({})
+  #HP 2 One on One (NB no HP for WS 1)
+  table_hpdone_1on1 <- reactive({summary_table_hp_done$`1on1 hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_1on1 <- reactive({})
   output$table_hpdone_1on1 <- shiny::renderTable({(table_hpdone_1on1())}, striped = TRUE)
   output$plot_hpdone_1on1 <- renderPlotly({plot_hpdone_1on1()})
   
-  table_mood_1on1 <- reactive({})
+  table_mood_1on1 <- reactive({summary_table_hp_mood$`1on1 hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_1on1 <- reactive({})
   output$table_mood_1on1 <- shiny::renderTable({(table_mood_1on1())}, striped = TRUE)
   output$plot_mood_1on1 <- renderPlotly({plot_mood_1on1()})
   
-  table_chall_1on1 <- reactive({})
+  table_chall_1on1 <- reactive({ })
   plot_chall_1on1 <- reactive({})
   output$table_chall_1on1 <- shiny::renderTable({(table_chall_1on1())}, striped = TRUE,
        caption = "1 = I don’t have enough time; <br> 2 = My teen does not want to spend time with me; <br> 3 = My teen only wants to watch TV or play on his/her phone; <br> 4 = My teen wants to do things that are not safe or that cost money; <br> 5 = My teen wants to do things that I cannot physically do; <br> 6 = My teen chose a competitive activity. I won and s/he got angry.; <br> 7 = I struggled to end the one-on-one time; <br> 8 = All my children want one-on-one time with me at the same time")
   output$plot_chall_1on1 <- renderPlotly({plot_chall_1on1()})
   
   #HP 3 Praise
-  table_hpdone_praise <- reactive({})
+  table_hpdone_praise <- reactive({summary_table_hp_done$`Praise hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_praise <- reactive({})
   output$table_hpdone_praise <- shiny::renderTable({(table_hpdone_praise())}, striped = TRUE)
   output$plot_hpdone_praise <- renderPlotly({plot_hpdone_praise()})
   
-  table_mood_praise <- reactive({})
+  table_mood_praise <- reactive({summary_table_hp_mood$`Praise hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_praise <- reactive({})
   output$table_mood_praise <- shiny::renderTable({(table_mood_praise())}, striped = TRUE)
   output$plot_mood_praise <- renderPlotly({plot_mood_praise()})
@@ -4145,12 +4145,12 @@ selected_data_xe <- reactive({
   output$plot_chall_praise <- renderPlotly({plot_chall_praise()})
   
   #HP 4 Pos Instr
-  table_hpdone_instruct <- reactive({})
+  table_hpdone_instruct <- reactive({summary_table_hp_done$`Instruct hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_instruct <- reactive({})
   output$table_hpdone_instruct <- shiny::renderTable({(table_hpdone_instruct())}, striped = TRUE)
   output$plot_hpdone_instruct <- renderPlotly({plot_hpdone_instruct()})
   
-  table_mood_instruct <- reactive({})
+  table_mood_instruct <- reactive({summary_table_hp_mood$`Instruct hp`  %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_instruct <- reactive({})
   output$table_mood_instruct <- shiny::renderTable({(table_mood_instruct())}, striped = TRUE)
   output$plot_mood_instruct <- renderPlotly({plot_mood_instruct()})
@@ -4162,12 +4162,12 @@ selected_data_xe <- reactive({
   output$plot_chall_instruct <- renderPlotly({plot_chall_instruct()})
   
   #HP 5.1 Stress - Breathe
-  table_hpdone_stress_br <- reactive({})
+  table_hpdone_stress_br <- reactive({summary_table_hp_done$`Stress hp breathe` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_stress_br <- reactive({})
   output$table_hpdone_stress_br <- shiny::renderTable({(table_hpdone_stress_br())}, striped = TRUE)
   output$plot_hpdone_stress_br <- renderPlotly({plot_hpdone_stress_br()})
   
-  table_mood_stress_br <- reactive({})
+  table_mood_stress_br <- reactive({summary_table_hp_mood$`Stress hp breathe` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_stress_br <- reactive({})
   output$table_mood_stress_br <- shiny::renderTable({(table_mood_stress_br())}, striped = TRUE)
   output$plot_mood_stress_br <- renderPlotly({plot_mood_stress_br()})
@@ -4179,12 +4179,12 @@ selected_data_xe <- reactive({
   output$plot_chall_stress_br <- renderPlotly({plot_chall_stress_br()})
   
   #HP 5.2 Stress - Talk
-  table_hpdone_stress_tk <- reactive({})
+  table_hpdone_stress_tk <- reactive({summary_table_hp_done$`Stress hp talk` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_stress_tk <- reactive({})
   output$table_hpdone_stress_tk <- shiny::renderTable({(table_hpdone_stress_tk())}, striped = TRUE)
   output$plot_hpdone_stress_tk <- renderPlotly({plot_hpdone_stress_tk()})
   
-  table_mood_stress_tk <- reactive({})
+  table_mood_stress_tk <- reactive({summary_table_hp_mood$`Stress hp talk` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_stress_tk <- reactive({})
   output$table_mood_stress_tk <- shiny::renderTable({(table_mood_stress_tk())}, striped = TRUE)
   output$plot_mood_stress_tk <- renderPlotly({plot_mood_stress_tk()})
@@ -4196,12 +4196,12 @@ selected_data_xe <- reactive({
   output$plot_chall_stress_tk <- renderPlotly({plot_chall_stress_tk()})
   
   #HP 6 Fam Budg
-  table_hpdone_money <- reactive({})
+  table_hpdone_money <- reactive({summary_table_hp_done$`Money hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_money <- reactive({})
   output$table_hpdone_money <- shiny::renderTable({(table_hpdone_money())}, striped = TRUE)
   output$plot_hpdone_money <- renderPlotly({plot_hpdone_money()})
   
-  table_mood_money <- reactive({})
+  table_mood_money <- reactive({summary_table_hp_mood$`Money hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_money <- reactive({})
   output$table_mood_money <- shiny::renderTable({(table_mood_money())}, striped = TRUE)
   output$plot_mood_money <- renderPlotly({plot_mood_money()})
@@ -4213,12 +4213,12 @@ selected_data_xe <- reactive({
   output$plot_chall_money <- renderPlotly({plot_chall_money()})
   
   #HP 7 Rules
-  table_hpdone_rule <- reactive({})
+  table_hpdone_rule <- reactive({summary_table_hp_done$`Rules hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_rule <- reactive({})
   output$table_hpdone_rule <- shiny::renderTable({(table_hpdone_rule())}, striped = TRUE)
   output$plot_hpdone_rule <- renderPlotly({plot_hpdone_rule()})
   
-  table_mood_rule <- reactive({})
+  table_mood_rule <- reactive({summary_table_hp_mood$`Rules hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_rule <- reactive({})
   output$table_mood_rule <- shiny::renderTable({(table_mood_rule())}, striped = TRUE)
   output$plot_mood_rule <- renderPlotly({plot_mood_rule()})
@@ -4230,12 +4230,12 @@ selected_data_xe <- reactive({
   output$plot_chall_rule <- renderPlotly({plot_chall_rule()})
   
   #HP 8 Calm Cons
-  table_hpdone_consequence <- reactive({})
+  table_hpdone_consequence <- reactive({summary_table_hp_done$`Consequence hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_consequence <- reactive({})
   output$table_hpdone_consequence <- shiny::renderTable({(table_hpdone_consequence())}, striped = TRUE)
   output$plot_hpdone_consequence <- renderPlotly({plot_hpdone_consequence()})
   
-  table_mood_consequence <- reactive({})
+  table_mood_consequence <- reactive({summary_table_hp_mood$`Consequence hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_consequence <- reactive({})
   output$table_mood_consequence <- shiny::renderTable({(table_mood_consequence())}, striped = TRUE)
   output$plot_mood_consequence <- renderPlotly({plot_mood_consequence()})
@@ -4247,12 +4247,12 @@ selected_data_xe <- reactive({
   output$plot_chall_consequence <- renderPlotly({plot_chall_consequence()})
   
   #HP 9 Pr Solve
-  table_hpdone_solve <- reactive({})
+  table_hpdone_solve <- reactive({summary_table_hp_done$`Solve hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_solve <- reactive({})
   output$table_hpdone_solve <- shiny::renderTable({(table_hpdone_solve())}, striped = TRUE)
   output$plot_hpdone_solve <- renderPlotly({plot_hpdone_solve()})
   
-  table_mood_solve <- reactive({})
+  table_mood_solve <- reactive({summary_table_hp_mood$`Solve hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_solve <- reactive({})
   output$table_mood_solve <- shiny::renderTable({(table_mood_solve())}, striped = TRUE)
   output$plot_mood_solve <- renderPlotly({plot_mood_solve()})
@@ -4264,12 +4264,12 @@ selected_data_xe <- reactive({
   output$plot_chall_solve <- renderPlotly({plot_chall_solve()})
   
   #HP 10 Teen Safe
-  table_hpdone_safe <- reactive({})
+  table_hpdone_safe <- reactive({summary_table_hp_done$`Safe hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_safe <- reactive({})
   output$table_hpdone_safe <- shiny::renderTable({(table_hpdone_safe())}, striped = TRUE)
   output$plot_hpdone_safe <- renderPlotly({plot_hpdone_safe()})
   
-  table_mood_safe <- reactive({})
+  table_mood_safe <- reactive({summary_table_hp_mood$`Safe hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_safe <- reactive({})
   output$table_mood_safe <- shiny::renderTable({(table_mood_safe())}, striped = TRUE)
   output$plot_mood_safe <- renderPlotly({plot_mood_safe()})
@@ -4281,12 +4281,12 @@ selected_data_xe <- reactive({
   output$plot_chall_safe <- renderPlotly({plot_chall_safe()})
   
   #HP 11 D w Crisis
-  table_hpdone_crisis <- reactive({})
+  table_hpdone_crisis <- reactive({ssummary_table_hp_done$`Crisis hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_hpdone_crisis <- reactive({})
   output$table_hpdone_crisis <- shiny::renderTable({(table_hpdone_crisis())}, striped = TRUE)
   output$plot_hpdone_crisis <- renderPlotly({plot_hpdone_crisis()})
   
-  table_mood_crisis <- reactive({})
+  table_mood_crisis <- reactive({summary_table_hp_mood$`Crisis hp` %>% filter(Org %in% c((input$OrgXE)))})
   plot_mood_crisis <- reactive({})
   output$table_mood_crisis <- shiny::renderTable({(table_mood_crisis())}, striped = TRUE)
   output$plot_mood_crisis <- renderPlotly({plot_mood_crisis()})

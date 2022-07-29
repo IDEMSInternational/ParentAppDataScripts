@@ -933,7 +933,7 @@ names(gender_table) <- levels(plhdata_org_clean$Org)
 
 # download push notification data
 # TODO: add fuzzy join to get_nf_data function
- nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC.Tracker)
+ nf_data <- get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
 # 
 # # what variables do we want in the nf data - org, sex, - add a few in.
  data_baseline_survey <-

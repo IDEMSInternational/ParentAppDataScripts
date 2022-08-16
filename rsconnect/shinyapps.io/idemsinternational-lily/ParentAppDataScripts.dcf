@@ -1,0 +1,13 @@
+name: ParentAppDataScripts
+title: ParentAppDataScripts
+username:
+account: idemsinternational-lily
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6318160
+bundleId: 6205539
+url: https://idemsinternational-lily.shinyapps.io/ParentAppDataScripts/
+when: 1660635543.84971
+lastSyncTime: 1660635543.84971
+asMultiple: FALSE
+asStatic: FALSE

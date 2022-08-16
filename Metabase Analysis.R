@@ -40,16 +40,17 @@ plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = va
 # TO CHECK:
 #plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
 # Note: "2c5bfeb1c97cffdf" "oe5824bd19aa8c4" are in "Miss.Miss"
-plhdata_org_ics_fuzzy <- plhdata_org_ics_fuzzy %>%
-  mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4"),
-                                    "ICS",
-                                    as.character(organisation_full)))
 
 valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
 plhdata_org <- plhdata_org %>% 
   mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
                       ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE))) %>%
   filter(valid_ics)
+#plhdata_org1 %>% filter(organisation_full == "ICS") %>% dplyr::select(c(app_user_id, valid_ics))
+plhdata_org <- plhdata_org %>%
+  mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4"),
+                                    "ICS",
+                                    as.character(organisation_full)))
 
 plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
                                  replace=c(`ICS` = "ICS",`Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",

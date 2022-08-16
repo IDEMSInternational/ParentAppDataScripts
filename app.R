@@ -12,4 +12,4 @@ source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))
 shinyApp(ui, server)
 
-#rsconnect::configureApp("ParentAppDataScripts", size="xlarge")
+rsconnect::configureApp("ParentAppDataScripts", size="xlarge")

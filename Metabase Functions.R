@@ -10,7 +10,7 @@ source(here("config/Personal Setup.R"))
 
 #Get data from excel
 UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
-
+UIC_Tracker_Tanzania <- rio::import(file = here("data/UIC Tracker Tanzania.xlsx"))
 # Reading in Data ------------------------------------------
 
 #Get the List of PLH Tables and data from server

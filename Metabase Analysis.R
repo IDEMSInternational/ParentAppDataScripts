@@ -11,7 +11,6 @@ plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = 
 nf_data <- get_nf_data()
 
 ## Data Cleaning - User Data ## --------------------------------------------------------
-
 ## Tidy up "Organisation" Variable:
 # replace missing values in Organisation and rp.contact.field.organisation_code by Miss so that it is a factor level
 plhdata_org$Organisation <- forcats::as_factor(tidyr::replace_na(plhdata_org$Organisation, "Miss"))
@@ -27,6 +26,27 @@ plhdata_org <- plhdata_org %>%
   mutate(organisation_full = ifelse((rp.contact.field.organisation_code == "organisation_1") & (app_deployment_name %in% c("plh_tz", "PLH TZ")),
                                     "ICS",
                                     as.character(organisation_full)))
+
+# filter out ICS users from before August
+#plhdata_org <- plhdata_org %>%
+#  mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
+#                    ifelse(as.Date(createdAt) > as.Date("2022-08-01"), TRUE, FALSE))) %>%
+#  filter(valid_ics)
+# filter out users without an intel phone?
+
+# for now, filter out users not in the excel data
+valid_ids <- UIC_Tracker_Tanzania %>% dplyr::select(YourParentAppCode)
+
+plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
+# TO CHECK:
+# plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
+# Note: "2c5bfeb1c97cffdf" "oe5824bd19aa8c4" are in "Miss.Miss"
+
+valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
+plhdata_org <- plhdata_org %>% 
+  mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
+                      ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE))) %>%
+  filter(valid_ics)
 
 plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
                                  replace=c(`ICS` = "ICS",`Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
@@ -709,11 +729,6 @@ data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_
 data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_instruct_hp_mood", "rp.contact.field.w_stress_hp_breathe_mood", "rp.contact.field.w_stress_hp_talk_mood",
                   "rp.contact.field.w_money_hp_mood", "rp.contact.field.w_rules_hp_mood", "rp.contact.field.w_consequence_hp_mood",
                   "rp.contact.field.w_solve_hp_mood", "rp.contact.field.w_safe_hp_mood", "rp.contact.field.w_crisis_hp_mood") 
-
-#Add na for missing values
-plhdata_org_clean <- add_na_variable(variable = data_hp_started)
-plhdata_org_clean <- add_na_variable(variable = data_hp_done)
-plhdata_org_clean <- add_na_variable(variable = data_hp_mood)
 
 #Combine home practice challenges (append hp_challenge to hp_challenge_list and remove null and duplicates) NB no challenge for praise workshop week
 summary_table_hp_chall <- NULL

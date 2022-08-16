@@ -729,6 +729,10 @@ data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_instruc
                   "rp.contact.field.w_money_hp_mood", "rp.contact.field.w_rules_hp_mood", "rp.contact.field.w_consequence_hp_mood",
                   "rp.contact.field.w_solve_hp_mood", "rp.contact.field.w_safe_hp_mood", "rp.contact.field.w_crisis_hp_mood") 
 
+plhdata_org_clean <- add_na_variable(variable = data_hp_started)
+plhdata_org_clean <- add_na_variable(variable = data_hp_done)
+plhdata_org_clean <- add_na_variable(variable = data_hp_mood)
+
 #Combine home practice challenges (append hp_challenge to hp_challenge_list and remove null and duplicates) NB no challenge for praise workshop week
 summary_table_hp_chall <- NULL
 summary_table_hp_chall$hp_list_challenges_1on1 <- challenge_freq(var = "rp.contact.field.w_1on1_hp_challenge_list", append_var = "rp.contact.field.w_1on1_hp_challenge")

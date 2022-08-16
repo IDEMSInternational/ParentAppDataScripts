@@ -36,7 +36,6 @@ plhdata_org <- plhdata_org %>%
 
 # for now, filter out users not in the excel data
 valid_ids <- UIC_Tracker_Tanzania %>% dplyr::select(YourParentAppCode)
-
 plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 # TO CHECK:
 # plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)

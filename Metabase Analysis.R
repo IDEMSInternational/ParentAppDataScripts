@@ -38,8 +38,12 @@ plhdata_org <- plhdata_org %>%
 valid_ids <- UIC_Tracker_Tanzania %>% dplyr::select(YourParentAppCode)
 plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 # TO CHECK:
-# plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
+#plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
 # Note: "2c5bfeb1c97cffdf" "oe5824bd19aa8c4" are in "Miss.Miss"
+plhdata_org_ics_fuzzy <- plhdata_org_ics_fuzzy %>%
+  mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4"),
+                                    "ICS",
+                                    as.character(organisation_full)))
 
 valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
 plhdata_org <- plhdata_org %>% 
@@ -754,6 +758,7 @@ data_hp_chall <- c("hp_list_challenges_1on1", "hp_list_challenges_instruct", "hp
 
 
 # overview table for home practice review started: number of users per home practice who reached first screen, i.e. only "true" not "false" or NA
+data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
 summary_table_hp_started <- multiple_table_output(plhdata_org_clean, data_hp_started) 
 names(summary_table_hp_started) <- data_hp_started_neat
 

@@ -7,9 +7,8 @@ library(httr)
 library(jsonlite)
 library(here)     
 library(tidyverse)
-
+options(dplyr.summarise.inform = FALSE)
+country <- "South Africa"
 source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))
-shinyApp(ui, server)
-
-rsconnect::configureApp("ParentAppDataScripts", size="xlarge")
+parentapp_shiny(country = country)

@@ -315,18 +315,20 @@ tabulate_with_metadata <- function(data = plhdata_org_clean, metadata = r_variab
     mutate(value = as.numeric(value)) %>%
     filter(complete.cases(value)) %>%
     # take the most recent value that is not NA
-    summarise(value = last(value)) %>%
+    summarise(value = last(value))
+  
+  summary_table_wider <- summary_table %>%
     # to the format for the summary_table function
     pivot_wider(id_cols = c(Org, country, app_user_id),
                 names_from = display_name) %>%
     ungroup()
   
-  summary_table <- summary_table %>%
-    map(.x = unique(data_to_tabulate$display_name),
-        .f = ~summary_table(data = summary_table, columns_to_summarise = .x, display = FALSE, include_margins = TRUE),
+  summary_table_wider <- summary_table_wider %>%
+    map(.x = unique(summary_table$display_name),
+        .f = ~summary_table(data = summary_table_wider, columns_to_summarise = .x, display = FALSE, include_margins = TRUE),
         id = .x)
-  names(summary_table) <- unique(data_to_tabulate$display_name)
-  return(summary_table)
+  names(summary_table_wider) <- unique(summary_table$display_name)
+  return(summary_table_wider)
 }
 
 
@@ -351,7 +353,7 @@ multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise
 multiple_plot_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.",
                                  replace_after = NULL, plot_type = c("histogram", "boxplot")){
   variable_display_names <- naming_conventions(columns_to_summarise, replace = replace, replace_after = replace_after)
-  summary_plot_values <- plhdata_org_clean %>%
+  summary_plot_values <- data %>%
     map(.x = columns_to_summarise, .f = ~summary_plot(columns_to_summarise = .x, plot_type = plot_type, replace = replace, replace_after = replace_after))
   
   names(summary_plot_values) <- variable_display_names
@@ -714,35 +716,6 @@ summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_
   return(return_plot)	
 }
 
-tabulate_with_metadata <- function(data = plhdata_org_clean, metadata = r_variables_names, location_ID = "survey_past_week"){
-  data_to_tabulate <- metadata %>% filter(location_ID == {{ location_ID }})
-  
-  summary_table <- data %>%
-    # take the data, and select the relevant variables
-    dplyr::select(c(Org, country, app_user_id, data_to_tabulate$metabase_ID)) %>%
-    # rearrange the data frame
-    pivot_longer(cols = -c(Org, country, app_user_id), names_to = "metabase_ID") %>%
-    # join with our metadata on the variables
-    full_join(., data_to_tabulate) %>%
-    group_by(Org, country, app_user_id, display_name) %>%
-    mutate(value = as.numeric(value)) %>%
-    filter(complete.cases(value)) %>%
-    # take the most recent value that is not NA
-    summarise(value = last(value)) %>%
-    # to the format for the summary_table function
-    pivot_wider(id_cols = c(Org, country, app_user_id),
-                names_from = display_name) %>%
-    ungroup()
-  
-  summary_table <- summary_table %>%
-    map(.x = unique(data_to_tabulate$display_name),
-        .f = ~summary_table(data = summary_table, columns_to_summarise = .x, display = FALSE, include_margins = TRUE),
-        id = .x)
-  names(summary_table) <- unique(data_to_tabulate$display_name)
-  return(summary_table)
-}
-
-
 multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE){
   # run: add_na_variable here with warning 
   data <- add_na_variable(data = data, variable = columns_to_summarise)
@@ -750,7 +723,8 @@ multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise
   variable_display_names <- naming_conventions(columns_to_summarise, replace = replace, replace_after = replace_after)
   summary_table_values <- data %>%
     map(.x = columns_to_summarise, .f = ~replace_na(.x, "unknown"))  %>%
-    map(.x = columns_to_summarise, .f = ~summary_table(columns_to_summarise = .x,
+    map(.x = columns_to_summarise, .f = ~summary_table(data = data,
+                                                       columns_to_summarise = .x,
                                                        display = FALSE,
                                                        include_margins = TRUE,
                                                        summaries = summaries,
@@ -763,8 +737,8 @@ multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise
 multiple_plot_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.",
                                  replace_after = NULL, plot_type = c("histogram", "boxplot")){
   variable_display_names <- naming_conventions(columns_to_summarise, replace = replace, replace_after = replace_after)
-  summary_plot_values <- plhdata_org_clean %>%
-    map(.x = columns_to_summarise, .f = ~summary_plot(columns_to_summarise = .x, plot_type = plot_type, replace = replace, replace_after = replace_after))
+  summary_plot_values <- data %>%
+    map(data = data, .x = columns_to_summarise, .f = ~summary_plot(columns_to_summarise = .x, plot_type = plot_type, replace = replace, replace_after = replace_after))
   
   names(summary_plot_values) <- variable_display_names
   return(summary_plot_values)
@@ -802,7 +776,71 @@ challenge_freq <- function(data = plhdata_org_clean, group_by = "Org", var, appe
   return(plh_list)
 }
 
+checkbox_input <- function(inputId, country = country){
+  if (country == "South Africa") {
+    return(box(width = 6,
+               checkboxGroupInput(inputId = paste0("Org", inputId),
+                                  label = "Organisations to show:",
+                                  choices = c("Amathuba" = "Amathuba",
+                                              "Dlalanathi" = "Dlalanathi",
+                                              "Joy" = "Joy",
+                                              "Nontobeko" = "Nontobeko"),
+                                  selected = c("Amathuba","Dlalanathi",
+                                               "Joy","Nontobeko")
+               )))
+  } else if (country == "all") {
+    return(box(width = 4,
+               checkboxGroupInput(inputId = paste0("Ctry", inputId),
+                                  label = "Countries to select:",
+                                  choices = c("South Africa" = "plh_za",
+                                              "Tanzania" = "plh_tz"),
+                                  selected = c("plh_za","plh_tz"))),
+           box(width = 6,
+               checkboxGroupInput(inputId = paste0("Org", inputId),
+                                  label = "Organisations to show:",
+                                  choices = c("SA: Amathuba" = "Amathuba",
+                                              "SA: Dlalanathi" = "Dlalanathi",
+                                              "SA: Joy" = "Joy",
+                                              "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
+                                  selected = c("Amathuba","Dlalanathi",
+                                               "Joy","Nontobeko", "Tanzania")
+               )))
+  } else {
+  }
+}
 
+reactive_table <- function(data = plhdata_org_clean, country, inputId = "input$OrgDem"){
+  # need to do input$ here, but then need reactive here so it knows where to find input$
+  observe({
+    if (country == "Tanzania"){
+      plhdata_checkgroup <- data
+    } else {
+      plhdata_checkgroup <- data %>% filter(Org %in% c(input$OrgDem))
+    }
+    return(plhdata_checkgroup) 
+  })
+}
+
+top_boxes <- function(country){
+  if (country == "all"){
+    fluidRow(
+      shinydashboard::valueBoxOutput("myvaluebox1", width=2), 
+      shinydashboard::valueBoxOutput("myvaluebox2", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox3", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox4", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox5", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox6", width=2)
+    )
+  } else if (country == "South Africa"){
+    fluidRow(
+      shinydashboard::valueBoxOutput("myvaluebox1", width=2), 
+      shinydashboard::valueBoxOutput("myvaluebox2", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox3", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox4", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox5", width=2),
+    )
+  }
+}
 
 
 

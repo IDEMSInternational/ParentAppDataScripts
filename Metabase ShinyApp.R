@@ -1,13 +1,3 @@
-# install.packages(c("shiny", "shinythemes", "shinyjs", "plotly", "shinydashboard", "httr", "jsonlite", "tidyverse"))
-
-library(shiny)
-library(shinythemes)
-library(shinyjs)
-library(plotly)
-library(shinydashboard)
-library(httr)
-library(jsonlite)
-#library(here)          
 
 # 1. Calling the data ---------------------------------------------------------------------
 # not needed - data is just called plhdata_org_clean

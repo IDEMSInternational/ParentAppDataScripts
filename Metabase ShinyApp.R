@@ -2129,7 +2129,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 2: One-on-One Time - completion", #NB this is the reported completion of HP itself, not ther Review of the HP (stored under variable rp-contact-field.w_stress_hp_review_completed)
+                                                           title = "Home Practice Week 2: One-on-One Time - completion", #NB this is the reported completion of HP itself, not ther Review of the HP (stored under variable rp-contact-field.w_stress_hp_review_completed)
                                                            status = "success",
                                                            h5("Question for this column phrased as 'Did you have a chance to do this?'"),
                                                            #background = "orange",
@@ -2140,7 +2140,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 2: One-on-One Time - how it went",
+                                                           title = "Home Practice Week 2: One-on-One Time - how it went",
                                                            h5("Question for this column only asked if completion question answered with 'Yes'; phrased as 'How did it go?'"),
                                                            status = "success",  
                                                            #background = "orange",
@@ -2151,7 +2151,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 2: One-on-One Time - challenges selected",
+                                                           title = "Home Practice Week 2: One-on-One Time - challenges selected",
                                                            status = "success",  
                                                            h5("Question for this column phrased as 'What challenge did you have?' and asked irespective of previous answers."),
                                                            #background = "orange",
@@ -2164,7 +2164,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 3: Praise - completion",
+                                                           title = "Home Practice Week 3: Praise - completion",
                                                            status = "success",
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_hpdone_praise", height = "240"),
@@ -2196,7 +2196,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 4: Positive Instructions - completion",
+                                                           title = "Home Practice Week 4: Positive Instructions - completion",
                                                            status = "success",
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_hpdone_instruct", height = "240"),
@@ -2206,7 +2206,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 4: Positive Instructions - how it went",
+                                                           title = "Home Practice Week 4: Positive Instructions - how it went",
                                                            status = "success",  
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_mood_instruct", height = "240"),
@@ -2216,7 +2216,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 4: Positive Instructions - challenges selected",
+                                                           title = "Home Practice Week 4: Positive Instructions - challenges selected",
                                                            status = "success",  
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_chall_instruct", height = "240"),
@@ -2228,7 +2228,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 5: Managing Stress (breathe) - completion",
+                                                           title = "Home Practice Week 5: Managing Stress (breathe) - completion",
                                                            status = "success",
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_hpdone_stress_br", height = "240"),
@@ -2238,7 +2238,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 5: Managing Stress (breathe) - how it went",
+                                                           title = "Home Practice Week 5: Managing Stress (breathe) - how it went",
                                                            status = "success",  
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_mood_stress_br", height = "240"),
@@ -2248,7 +2248,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 5: Managing Stress (breathe & talk) - challenges selected",
+                                                           title = "Home Practice Week 5: Managing Stress (breathe & talk) - challenges selected",
                                                            status = "success",  
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_chall_stress_br", height = "240"),
@@ -2260,7 +2260,7 @@ parentapp_shiny <- function(country){
                                                        box(width = 4,
                                                            collapsible = FALSE,
                                                            solidHeader = TRUE,
-                                                           title = "Home Pratice Week 5: Managing Stress (talk) - completion",
+                                                           title = "Home Practice Week 5: Managing Stress (talk) - completion",
                                                            status = "success",
                                                            #background = "orange",
                                                            plotlyOutput(outputId = "plot_hpdone_stress_tk", height = "240"),
@@ -2270,7 +2270,7 @@ parentapp_shiny <- function(country){
                                                      box(width = 4,
                                                          collapsible = FALSE,
                                                          solidHeader = TRUE,
-                                                         title = "Home Pratice Week 5: Managing Stress (talk) - how it went",
+                                                         title = "Home Practice Week 5: Managing Stress (talk) - how it went",
                                                          status = "success",  
                                                          #background = "orange",
                                                          plotlyOutput(outputId = "plot_mood_stress_tk", height = "240"),
@@ -2280,7 +2280,7 @@ parentapp_shiny <- function(country){
                                                      # box(width = 4,
                                                      #     collapsible = FALSE,
                                                      #     solidHeader = TRUE,
-                                                     #     title = "Home Pratice Week 5: Managing Stress (talk) - challenges selected",
+                                                     #     title = "Home Practice Week 5: Managing Stress (talk) - challenges selected",
                                                      #     status = "success",  
                                                      #     #background = "orange",
                                                      #     plotlyOutput(outputId = "plot_chall_stress_tk", height = "240"),
@@ -2292,7 +2292,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 6: Budgets - completion",
+                                                  title = "Home Practice Week 6: Budgets - completion",
                                                   status = "success",
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_hpdone_money", height = "240"),
@@ -2302,7 +2302,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 6: Budgets - how it went",
+                                                  title = "Home Practice Week 6: Budgets - how it went",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_mood_money", height = "240"),
@@ -2312,7 +2312,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 6: Budgets - challenges selected",
+                                                  title = "Home Practice Week 6: Budgets - challenges selected",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_chall_money", height = "240"),
@@ -2324,7 +2324,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 7: Rules - completion",
+                                                  title = "Home Practice Week 7: Rules - completion",
                                                   status = "success",
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_hpdone_rules", height = "240"),
@@ -2334,7 +2334,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 7: Rules - how it went",
+                                                  title = "Home Practice Week 7: Rules - how it went",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_mood_rules", height = "240"),
@@ -2344,7 +2344,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 7: Rules - challenges selected",
+                                                  title = "Home Practice Week 7: Rules - challenges selected",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_chall_rules", height = "240"),
@@ -2356,7 +2356,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 8: Calm Consequences - completion",
+                                                  title = "Home Practice Week 8: Calm Consequences - completion",
                                                   status = "success",
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_hpdone_consequence", height = "240"),
@@ -2366,7 +2366,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 8: Calm Consequences - how it went",
+                                                  title = "Home Practice Week 8: Calm Consequences - how it went",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_mood_consequence", height = "240"),
@@ -2376,7 +2376,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 8: Calm Consequences - challenges selected",
+                                                  title = "Home Practice Week 8: Calm Consequences - challenges selected",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_chall_consequence", height = "240"),
@@ -2388,7 +2388,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 9: Problem Solving - completion",
+                                                  title = "Home Practice Week 9: Problem Solving - completion",
                                                   status = "success",
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_hpdone_solve", height = "240"),
@@ -2398,7 +2398,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 9: Problem Solving - how it went",
+                                                  title = "Home Practice Week 9: Problem Solving - how it went",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_mood_solve", height = "240"),
@@ -2408,7 +2408,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 9: Problem Solving - challenges selected",
+                                                  title = "Home Practice Week 9: Problem Solving - challenges selected",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_chall_solve", height = "240"),
@@ -2420,7 +2420,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 10: Teen Safety - completion",
+                                                  title = "Home Practice Week 10: Teen Safety - completion",
                                                   status = "success",
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_hpdone_safe", height = "240"),
@@ -2430,7 +2430,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 10: Teen Safety - how it went",
+                                                  title = "Home Practice Week 10: Teen Safety - how it went",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_mood_safe", height = "240"),
@@ -2440,7 +2440,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 10: Teen Safety - challenges selected",
+                                                  title = "Home Practice Week 10: Teen Safety - challenges selected",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_chall_safe", height = "240"),
@@ -2452,7 +2452,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 11: Dealing with Crisis - completion",
+                                                  title = "Home Practice Week 11: Dealing with Crisis - completion",
                                                   status = "success",
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_hpdone_crisis", height = "240"),
@@ -2462,7 +2462,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 11: Dealing with Crisis - how it went",
+                                                  title = "Home Practice Week 11: Dealing with Crisis - how it went",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_mood_crisis", height = "240"),
@@ -2472,7 +2472,7 @@ parentapp_shiny <- function(country){
                                               box(width = 4,
                                                   collapsible = FALSE,
                                                   solidHeader = TRUE,
-                                                  title = "Home Pratice Week 11: Dealing with Crisis - challenges selected",
+                                                  title = "Home Practice Week 11: Dealing with Crisis - challenges selected",
                                                   status = "success",  
                                                   #background = "orange",
                                                   plotlyOutput(outputId = "plot_chall_crisis", height = "240"),
@@ -2889,17 +2889,14 @@ server <- function(input, output) {
     return(plhdata_checkgroup)
   })
   
+  summary_table_baseline_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_baseline_survey,
+                          replace = "rp.contact.field.")
+  })
   summary_table_baseline <- reactive({
-    summary_baseline_data <- multiple_table_output(data = plhdata_org_clean,
-                                                   columns_to_summarise = data_baseline_survey,
-                                                   replace = "rp.contact.field.")
-    if (country == "Tanzania"){
-      summary_baseline_data <- summary_baseline_data
-    } else {
-      summary_baseline_data <- summary_baseline_data %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgDem))))
-    }
-    return(summary_baseline_data)
+    summary_table_baseline_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
   })
    
   table_app_launch <- reactive({}) 
@@ -2936,7 +2933,7 @@ server <- function(input, output) {
   
   #App version
   table_app_version <- reactive({
-    summary_table_baseline()$` App version`
+    summary_table_baseline()$`App version`
   }) 
   plot_app_version  <- reactive({
     plhdata_org_clean_1 <- selected_data_dem()
@@ -2961,8 +2958,10 @@ server <- function(input, output) {
   
   #Parent age plot and table
   table_parent_age <- reactive({
-    plhdata_org_clean %>%
-      summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean") %>% filter(Org %in% c((input$OrgDem)))}) 
+    table_parent_age <- selected_data_dem() %>% summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean")
+    table_parent_age <- table_parent_age %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))
+    return(table_parent_age)
+    }) 
   ##previously, but with new contact field summarise(`mean age`=(mean(rp.contact.field.user_gender, na.rm = TRUE)))
   plot_parent_age <- reactive({
     summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_age", replace = "rp.contact.field.", plot_type = "histogram")
@@ -3042,18 +3041,16 @@ server <- function(input, output) {
     return(plhdata_checkgroup)
   })
   
+  summary_table_completion_level_build <- reactive({
+    completion_vars <- multiple_table_output(data = plhdata_org_clean,
+                                             columns_to_summarise = data_completion_level,
+                                             replace = "rp.contact.field.w_",
+                                             replace_after = "_completion_level")
+    return(completion_vars)
+  })
   summary_table_completion_level <- reactive({
-    summary_table_completion_level <- multiple_table_output(data = selected_data_WS(),
-                                                            columns_to_summarise = data_completion_level,
-                                                            replace = "rp.contact.field.w_", replace_after = "_completion_level")
-    names(summary_table_completion_level) <- completion_vars
-    if (country == "Tanzania"){
-      summary_table_completion_level <- summary_table_completion_level
-    } else {
-      summary_table_completion_level <- summary_table_completion_level %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgWS))))
-    }
-    return(summary_table_completion_level)
+    summary_table_completion_level_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_WS()$Org)))
   })
   
   #Table of averages
@@ -3066,10 +3063,9 @@ server <- function(input, output) {
                                                    replace = "rp.contact.field.w_",
                                                    replace_after = "_completion_level",
                                                    summaries = "mean")
-    if (country != "Tanzania"){
       summary_mean_completion_level <- summary_mean_completion_level %>%
-        dplyr::filter(Org %in% c((input$OrgPP)))
-    }
+        dplyr::filter(Org %in% unique(selected_data_WS()$Org))
+        #dplyr::filter(Org %in% unique(selected_data_WS()$Org))
     return(summary_mean_completion_level)
     }) 
   
@@ -3087,7 +3083,7 @@ server <- function(input, output) {
   
   #Workshop tables with filter by Org
   table_w_self_care <- reactive({
-    summary_table_completion_level()$`Self Care`
+    summary_table_completion_level()$`Self care`
     })
   plot_w_self_care <- reactive({ summary_plot(selected_data_WS(), "rp.contact.field.w_self_care_completion_level", replace = "rp.contact.field.w_") }) 
   output$table_w_self_care <- shiny::renderTable({(table_w_self_care())}, striped = TRUE)
@@ -3095,7 +3091,7 @@ server <- function(input, output) {
   
   #2
   table_w_1on1 <- reactive({
-    summary_table_completion_level()$`One-on-one Time`
+    summary_table_completion_level()$`1on1`
     })
   plot_w_1on1<- reactive({
     summary_plot(selected_data_WS(), "rp.contact.field.w_1on1_completion_level", replace = "rp.contact.field.w_")
@@ -3113,7 +3109,7 @@ server <- function(input, output) {
   output$plot_w_praise <- renderPlotly({plot_w_praise()})
   #4
   table_w_instruct <- reactive({
-    summary_table_completion_level()$`Positive Instructions`
+    summary_table_completion_level()$`Instruct`
     })
   plot_w_instruct<- reactive({
     summary_plot(selected_data_WS(), "rp.contact.field.w_instruct_completion_level", replace = "rp.contact.field.w_")
@@ -3122,7 +3118,7 @@ server <- function(input, output) {
   output$plot_w_instruct <- renderPlotly({plot_w_instruct()})
   #5
   table_w_stress <- reactive({
-    summary_table_completion_level()$`Managing Stress`
+    summary_table_completion_level()$`Stress`
     })
   plot_w_stress<- reactive({
     summary_plot(selected_data_WS(), "rp.contact.field.w_stress_completion_level", replace = "rp.contact.field.w_")
@@ -3131,7 +3127,7 @@ server <- function(input, output) {
   output$plot_w_stress <- renderPlotly({plot_w_stress()})
   #6
   table_w_money <- reactive({
-    summary_table_completion_level()$`Family Budgets`
+    summary_table_completion_level()$`Money`
     })
   plot_w_money<- reactive({
     summary_plot(selected_data_WS(), "rp.contact.field.w_money_completion_level", replace = "rp.contact.field.w_")
@@ -3149,7 +3145,7 @@ server <- function(input, output) {
   output$plot_w_rules <- renderPlotly({plot_w_rules()})
   #8
   table_w_consequence <- reactive({
-    summary_table_completion_level()$`Calm Consequences`
+    summary_table_completion_level()$`Consequence`
     })
   plot_w_consequence <- reactive({
     summary_plot(selected_data_WS(), "rp.contact.field.w_consequence_completion_level", replace = "rp.contact.field.w_")
@@ -3158,7 +3154,7 @@ server <- function(input, output) {
   output$plot_w_consequence <- renderPlotly({plot_w_consequence()})
   #9
   table_w_solve <- reactive({
-    summary_table_completion_level()$`Problem Solving`
+    summary_table_completion_level()$`Solve`
     })
   plot_w_solve<- reactive({
     summary_plot(selected_data_WS(), "rp.contact.field.w_solve_completion_level", replace = "rp.contact.field.w_")
@@ -3167,7 +3163,7 @@ server <- function(input, output) {
   output$plot_w_solve <- renderPlotly({plot_w_solve()})
   #10
   table_w_safe <- reactive({
-    summary_table_completion_level()$`Teen Safety`
+    summary_table_completion_level()$`Safe`
     })
   plot_w_safe<- reactive({
     summary_plot(selected_data_WS(), "rp.contact.field.w_safe_completion_level", replace = "rp.contact.field.w_")
@@ -3176,7 +3172,7 @@ server <- function(input, output) {
   output$plot_w_safe <- renderPlotly({plot_w_safe()})
   #11
   table_w_crisis <- reactive({
-    summary_table_completion_level()$`Dealing with Crisis`
+    summary_table_completion_level()$`Crisis`
     })
   plot_w_crisis<- reactive({
     summary_plot(selected_data_WS(), "rp.contact.field.w_crisis_completion_level", replace = "rp.contact.field.w_")
@@ -3185,7 +3181,7 @@ server <- function(input, output) {
   output$plot_w_crisis <- renderPlotly({plot_w_crisis()})
   #12
   table_w_celebrate <- reactive({
-    summary_table_completion_level()$`Celebration & Next Steps`
+    summary_table_completion_level()$`Celebrate`
     })
   plot_w_celebrate<- reactive({
     summary_plot(selected_data_WS(), "rp.contact.field.w_celebrate_completion_level", replace = "rp.contact.field.w_")
@@ -3237,17 +3233,21 @@ server <- function(input, output) {
     return(plhdata_checkgroup)
   })
   
+  values <- reactiveValues(total = 0)
+  
+  observeEvent(input$OrgPP, {
+    values$total <- values$total + 1
+  })
+  
+  summary_table_habits_all_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_all,
+                          replace = "rp.contact.field.parent_point_count_")
+  })
+  
   summary_table_habits_all <- reactive({
-    summary_table_habits_all <- multiple_table_output(data = selected_data_PP(),
-                                                      columns_to_summarise = data_habit_parent_points_all,
-                                                      replace = "rp.contact.field.parent_point_count_")
-    if (country == "Tanzania"){
-      summary_table_habits_all <- summary_table_habits_all
-    } else {
-      summary_table_habits_all <- summary_table_habits_all %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_all)
+    summary_table_habits_all_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
   })
   
   #Table of averages
@@ -3256,12 +3256,8 @@ server <- function(input, output) {
                                          columns_to_summarise = data_habit_parent_points_all,
                                          replace = "rp.contact.field.parent_point_count_",
                                          summaries = "mean")
-    if (country == "Tanzania"){
-      summary_mean_habits <- summary_mean_habits
-    } else {
       summary_mean_habits <- summary_mean_habits %>%
-        dplyr::filter(Org %in% c((input$OrgPP)))
-    }
+        dplyr::filter(Org %in% unique(selected_data_PP()$Org))
     return(summary_mean_habits)
   }) 
   plot_pp_totals  <- reactive({
@@ -3355,12 +3351,10 @@ server <- function(input, output) {
     #summary_relax_workshop <- multiple_table_output(columns_to_summarise = relax_workshop_vars, replace = "rp.contact.field.parent_point_count_relax_w_")
     summary_relax_workshop <- selected_data_PP() %>%
       group_by(Org) %>%
-      summarise(across(relax_workshop_vars, mean, na.rm = TRUE))
+      summarise(across(all_of(relax_workshop_vars), mean, na.rm = TRUE))
     colnames(summary_relax_workshop) <- naming_conventions(colnames(summary_relax_workshop), "rp.contact.field.parent_point_count_relax_w_")
-    if (country == "Tanzania"){
-      summary_mean_completion_level <- summary_mean_completion_level
-    } else {
-      summary_mean_completion_level <- summary_mean_completion_level %>%
+    if (country != "Tanzania"){
+      summary_relax_workshop <- summary_relax_workshop %>%
         dplyr::filter(Org %in% c((input$OrgPP)))
     }
     return(summary_relax_workshop)
@@ -3377,166 +3371,136 @@ server <- function(input, output) {
   })
   output$plot_pp_relax_ws_totals <- renderPlotly({plot_pp_relax_ws_totals()})
   
+  summary_table_habits_self_care_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_self_care,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "_w_self_care")
+  })
   summary_table_habits_self_care <- reactive({
-    summary_table_habits_self_care <- multiple_table_output(data = selected_data_PP(),
-                                                            columns_to_summarise = data_habit_parent_points_w_self_care,
-                                                            replace = "rp.contact.field.")
-    if (country == "Tanzania"){
-      summary_table_habits_self_care <- summary_table_habits_self_care
-    } else {
-      summary_table_habits_self_care <- summary_table_habits_self_care %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_self_care)
+    summary_table_habits_self_care_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
   })
   
+  summary_table_habits_1on1_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_1on1,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_1on1")
+  })
   summary_table_habits_1on1 <- reactive({
-    summary_table_habits_1on1 <- multiple_table_output(data = selected_data_PP(),
-                                                            columns_to_summarise = data_habit_parent_points_w_1on1,
-                                                       replace = "rp.contact.field.parent_point_count_",
-                                                       replace_after = "w_1on1")
-    
-    if (country == "Tanzania"){
-      summary_table_habits_1on1 <- summary_table_habits_1on1
-    } else {
-      summary_table_habits_1on1 <- summary_table_habits_1on1 %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_1on1)
+    summary_table_habits_1on1_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
   })
   
+  summary_table_habits_praise_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_praise,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_praise")
+  })
   summary_table_habits_praise <- reactive({
-    summary_table_habits_praise <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_praise,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_praise")
-    if (country == "Tanzania"){
-      summary_table_habits_praise <- summary_table_habits_praise
-    } else {
-      summary_table_habits_praise <- summary_table_habits_praise %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_praise)
+    summary_table_habits_praise_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
   })
   
+  summary_table_habits_instruct_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_instruct,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_instruct")
+  })
   summary_table_habits_instruct <- reactive({
-    summary_table_habits_instruct <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_instruct,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_instruct")
-    if (country == "Tanzania"){
-      summary_table_habits_instruct <- summary_table_habits_instruct
-    } else {
-      summary_table_habits_instruct <- summary_table_habits_instruct %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_instruct)
+    summary_table_habits_instruct_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
+  })
+  
+  summary_table_habits_stress_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_stress,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_stress")
   })
   summary_table_habits_stress <- reactive({
-    summary_table_habits_stress <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_stress,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_stress")
-    if (country == "Tanzania"){
-      summary_table_habits_stress <- summary_table_habits_stress
-    } else {
-      summary_table_habits_stress <- summary_table_habits_stress %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_stress)
-  })
-  summary_table_habits_money <- reactive({
-    summary_table_habits_money <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_money,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_money")
-    if (country == "Tanzania"){
-      summary_table_habits_money <- summary_table_habits_money
-    } else {
-      summary_table_habits_money <- summary_table_habits_money %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_money)
-  })
-  summary_table_habits_rules <- reactive({
-    summary_table_habits_rules <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_rules,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_rules")
-    if (country == "Tanzania"){
-      summary_table_habits_rules <- summary_table_habits_rules
-    } else {
-      summary_table_habits_rules <- summary_table_habits_rules %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_rules)
-  })
-  summary_table_habits_consequence <- reactive({
-    summary_table_habits_consequence <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_consequence,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_consequence")
-    if (country == "Tanzania"){
-      summary_table_habits_consequence <- summary_table_habits_consequence
-    } else {
-      summary_table_habits_consequence <- summary_table_habits_consequence %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_consequence)
-  })
-  summary_table_habits_solve <- reactive({
-    summary_table_habits_solve <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_solve,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_solve")
-    if (country == "Tanzania"){
-      summary_table_habits_solve <- summary_table_habits_solve
-    } else {
-      summary_table_habits_solve <- summary_table_habits_solve %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_solve)
-  })
-  summary_table_habits_safe <- reactive({
-    summary_table_habits_safe <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_safe,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_safe")
-    if (country == "Tanzania"){
-      summary_table_habits_safe <- summary_table_habits_safe
-    } else {
-      summary_table_habits_safe <- summary_table_habits_safe %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_safe)
+    summary_table_habits_stress_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
   })
   
+  summary_table_habits_money_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_money,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_money")
+  })
+  summary_table_habits_money <- reactive({
+    summary_table_habits_money_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
+  })
+  
+  summary_table_habits_rules_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_rules,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_rules")
+  })
+  summary_table_habits_rules <- reactive({
+    summary_table_habits_rules_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
+  })
+  
+  summary_table_habits_consequence_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_consequence,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_consequence")
+  })
+  summary_table_habits_consequence <- reactive({
+    summary_table_habits_consequence_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
+  })
+  
+  summary_table_habits_solve_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_solve,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_solve")
+  })
+  summary_table_habits_solve <- reactive({
+    summary_table_habits_solve_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
+  })
+  
+  summary_table_habits_safe_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_safe,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_safe")
+  })
+  summary_table_habits_safe <- reactive({
+    summary_table_habits_safe_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
+  })
+  
+  summary_table_habits_crisis_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_crisis,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_crisis")
+  })
   summary_table_habits_crisis <- reactive({
-    summary_table_habits_crisis <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_crisis,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_crisis")
-    if (country == "Tanzania"){
-      summary_table_habits_crisis <- summary_table_habits_crisis
-    } else {
-      summary_table_habits_crisis <- summary_table_habits_crisis %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_crisis)
+    summary_table_habits_crisis_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
   })
 
+  summary_table_habits_celebrate_build <- reactive({
+    multiple_table_output(data = plhdata_org_clean,
+                          columns_to_summarise = data_habit_parent_points_w_celebrate,
+                          replace = "rp.contact.field.parent_point_count_",
+                          replace_after = "w_celebrate")
+  })
   summary_table_habits_celebrate <- reactive({
-    summary_table_habits_celebrate <- multiple_table_output(data = selected_data_PP(),
-                                                         columns_to_summarise = data_habit_parent_points_w_celebrate,
-                                                         replace = "rp.contact.field.parent_point_count_",
-                                                         replace_after = "w_celebrate")
-    if (country == "Tanzania"){
-      summary_table_habits_celebrate <- summary_table_habits_celebrate
-    } else {
-      summary_table_habits_celebrate <- summary_table_habits_celebrate %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgPP))))
-    }
-    return(summary_table_habits_celebrate)
+    summary_table_habits_celebrate_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_PP()$Org)))
   })
 
   table_pp_relax_w_self_care <- reactive({
@@ -3592,14 +3556,18 @@ server <- function(input, output) {
   output$plot_pp_relax_w_safe <- renderPlotly({plot_pp_relax_w_safe()})
   
   table_pp_relax_w_crisis <- reactive({summary_table_habits_crisis()$`Relax`})
-  plot_pp_relax_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+  plot_pp_relax_w_crisis <- reactive({
+    summary_plot(data = plhdata_org_clean,
+                 columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_crisis",
+                 replace = "rp.contact.field.parent_point_count_",
+                 plot_type = "boxplot")})
   output$table_pp_relax_w_crisis <- shiny::renderTable({(table_pp_relax_w_crisis())}, striped = TRUE)
-  output$table_pp_relax_w_crisis <- renderPlotly({table_pp_relax_w_crisis()})
+  output$plot_pp_relax_w_crisis <- renderPlotly({plot_pp_relax_w_crisis()})
   
   table_pp_relax_w_celebrate <- reactive({summary_table_habits_celebrate()$`Relax`})
   plot_pp_relax_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
   output$table_pp_relax_w_celebrate <- shiny::renderTable({(table_pp_relax_w_celebrate())}, striped = TRUE)
-  output$table_pp_relax_w_celebrate <- renderPlotly({table_pp_relax_w_celebrate()})
+  output$plot_pp_relax_w_celebrate <- renderPlotly({plot_pp_relax_w_celebrate()})
   
   #Parent Point sub tab Treat Yourself points pp2
    table_pp_treat_yourself_ws_totals <- reactive({
@@ -3679,7 +3647,7 @@ output$plot_pp_treat_yourself_w_safe <- renderPlotly({plot_pp_treat_yourself_w_s
 table_pp_treat_yourself_w_crisis <- reactive({summary_table_habits_crisis()$`Treat yourself`})
 plot_pp_treat_yourself_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_treat_yourself_w_crisis <- shiny::renderTable({(table_pp_treat_yourself_w_crisis())}, striped = TRUE)
-output$table_pp_treat_yourself_w_crisis <- renderPlotly({table_pp_treat_yourself_w_crisis()})
+output$plot_pp_treat_yourself_w_crisis <- renderPlotly({plot_pp_treat_yourself_w_crisis()})
 
 table_pp_treat_yourself_w_celebrate <- reactive({summary_table_habits_celebrate()$`Treat yourself`})
 plot_pp_treat_yourself_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
@@ -3764,12 +3732,12 @@ output$plot_pp_praise_yourself_w_safe <- renderPlotly({plot_pp_praise_yourself_w
 table_pp_praise_yourself_w_crisis <- reactive({summary_table_habits_crisis()$`Praise yourself`})
 plot_pp_praise_yourself_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_praise_yourself_w_crisis <- shiny::renderTable({(table_pp_praise_yourself_w_crisis())}, striped = TRUE)
-output$table_pp_praise_yourself_w_crisis <- renderPlotly({table_pp_praise_yourself_w_crisis()})
+output$plot_pp_praise_yourself_w_crisis <- renderPlotly({plot_pp_praise_yourself_w_crisis()})
 
 table_pp_praise_yourself_w_celebrate <- reactive({summary_table_habits_celebrate()$`Praise yourself`})
 plot_pp_praise_yourself_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_praise_yourself_w_celebrate <- shiny::renderTable({(table_pp_praise_yourself_w_celebrate())}, striped = TRUE)
-output$table_pp_praise_yourself_w_celebrate <- renderPlotly({table_pp_praise_yourself_w_celebrate()})
+output$plot_pp_praise_yourself_w_celebrate <- renderPlotly({plot_pp_praise_yourself_w_celebrate()})
 
 # Parent Point sub tab Spend Time points pp4
 table_pp_spend_time_ws_totals <- reactive({
@@ -3848,12 +3816,12 @@ output$plot_pp_spend_time_w_safe <- renderPlotly({plot_pp_spend_time_w_safe()})
 table_pp_spend_time_w_crisis <- reactive({summary_table_habits_crisis()$`Spend time`})
 plot_pp_spend_time_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_spend_time_w_crisis <- shiny::renderTable({(table_pp_spend_time_w_crisis())}, striped = TRUE)
-output$table_pp_spend_time_w_crisis <- renderPlotly({table_pp_spend_time_w_crisis()})
+output$plot_pp_spend_time_w_crisis <- renderPlotly({plot_pp_spend_time_w_crisis()})
 
 table_pp_spend_time_w_celebrate <- reactive({summary_table_habits_celebrate()$`Spend time`})
 plot_pp_spend_time_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_spend_time_w_celebrate <- shiny::renderTable({(table_pp_spend_time_w_celebrate())}, striped = TRUE)
-output$table_pp_spend_time_w_celebrate <- renderPlotly({table_pp_spend_time_w_celebrate()})
+output$plot_pp_spend_time_w_celebrate <- renderPlotly({plot_pp_spend_time_w_celebrate()})
 
 # Parent Point sub tab Praise Teen points pp5
 table_pp_praise_teen_ws_totals <- reactive({
@@ -3933,12 +3901,12 @@ output$plot_pp_praise_teen_w_safe <- renderPlotly({plot_pp_praise_teen_w_safe()}
 table_pp_praise_teen_w_crisis <- reactive({summary_table_habits_crisis()$`Praise teen`})
 plot_pp_praise_teen_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_praise_teen_w_crisis <- shiny::renderTable({(table_pp_praise_teen_w_crisis())}, striped = TRUE)
-output$table_pp_praise_teen_w_crisis <- renderPlotly({table_pp_praise_teen_w_crisis()})
+output$plot_pp_praise_teen_w_crisis <- renderPlotly({plot_pp_praise_teen_w_crisis()})
 
 able_pp_praise_teen_w_celebrate <- reactive({summary_table_habits_celebrate()$`Praise teen`})
 plot_pp_praise_teen_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_praise_teen_w_celebrate <- shiny::renderTable({(table_pp_praise_teen_w_celebrate())}, striped = TRUE)
-output$table_pp_praise_teen_w_celebrate <- renderPlotly({table_pp_praise_teen_w_celebrate()})
+output$plot_pp_praise_teen_w_celebrate <- renderPlotly({plot_pp_praise_teen_w_celebrate()})
 
 # Parent Point sub tab Instruct Positively points pp6
 table_pp_instruct_positively_ws_totals <- reactive({
@@ -4017,12 +3985,12 @@ output$plot_pp_instruct_positively_w_safe <- renderPlotly({plot_pp_instruct_posi
 table_pp_instruct_positively_w_crisis <- reactive({summary_table_habits_crisis()$`Instruct positively`})
 plot_pp_instruct_positively_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_instruct_positively_w_crisis <- shiny::renderTable({(table_pp_instruct_positively_w_crisis())}, striped = TRUE)
-output$table_pp_instruct_positively_w_crisis <- renderPlotly({table_pp_instruct_positively_w_crisis()})
+output$plot_pp_instruct_positively_w_crisis <- renderPlotly({plot_pp_instruct_positively_w_crisis()})
 
 table_pp_instruct_positively_w_celebrate <- reactive({summary_table_habits_celebrate()$`Instruct positively`})
 plot_pp_instruct_positively_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_instruct_positively_w_celebrate <- shiny::renderTable({(table_pp_instruct_positively_w_celebrate())}, striped = TRUE)
-output$table_pp_instruct_positively_w_celebrate <- renderPlotly({table_pp_instruct_positively_w_celebrate()})
+output$plot_pp_instruct_positively_w_celebrate <- renderPlotly({plot_pp_instruct_positively_w_celebrate()})
 
 # Parent Point sub tab Breathe points pp7
 table_pp_breathe_ws_totals <- reactive({
@@ -4101,12 +4069,12 @@ output$plot_pp_breathe_w_safe <- renderPlotly({plot_pp_breathe_w_safe()})
 table_pp_breathe_w_crisis <- reactive({summary_table_habits_crisis()$`Breathe`})
 plot_pp_breathe_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_breathe_w_crisis <- shiny::renderTable({(table_pp_breathe_w_crisis())}, striped = TRUE)
-output$table_pp_breathe_w_crisis <- renderPlotly({table_pp_breathe_w_crisis()})
+output$plot_pp_breathe_w_crisis <- renderPlotly({plot_pp_breathe_w_crisis()})
 
 table_pp_breathe_w_celebrate <- reactive({summary_table_habits_celebrate()$`Breathe`})
 plot_pp_breathe_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_breathe_w_celebrate <- shiny::renderTable({(table_pp_breathe_w_celebrate())}, striped = TRUE)
-output$table_pp_breathe_w_celebrate <- renderPlotly({table_pp_breathe_w_celebrate()})
+output$plot_pp_breathe_w_celebrate <- renderPlotly({plot_pp_breathe_w_celebrate()})
 
 # Parent Point sub tab Money points pp8
 table_pp_money_ws_totals <- reactive({
@@ -4184,12 +4152,12 @@ output$plot_pp_money_w_safe <- renderPlotly({plot_pp_money_w_safe()})
 table_pp_money_w_crisis <- reactive({summary_table_habits_crisis()$`Money`})
 plot_pp_money_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_money_w_crisis <- shiny::renderTable({(table_pp_money_w_crisis())}, striped = TRUE)
-output$table_pp_money_w_crisis <- renderPlotly({table_pp_money_w_crisis()})
+output$plot_pp_money_w_crisis <- renderPlotly({plot_pp_money_w_crisis()})
 
 table_pp_money_w_celebrate <- reactive({summary_table_habits_celebrate()$`Money`})
 plot_pp_money_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_money_w_celebrate <- shiny::renderTable({(table_pp_money_w_celebrate())}, striped = TRUE)
-output$table_pp_money_w_celebrate <- renderPlotly({table_pp_money_w_celebrate()})
+output$plot_pp_money_w_celebrate <- renderPlotly({plot_pp_money_w_celebrate()})
 
 # Parent Point sub tab Consequence points pp9
 table_pp_consequence_ws_totals <- reactive({
@@ -4266,12 +4234,12 @@ output$plot_pp_consequence_w_safe <- renderPlotly({plot_pp_consequence_w_safe()}
 table_pp_consequence_w_crisis <- reactive({summary_table_habits_crisis()$`Consequence`})
 plot_pp_consequence_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_consequence_w_crisis <- shiny::renderTable({(table_pp_consequence_w_crisis())}, striped = TRUE)
-output$table_pp_consequence_w_crisis <- renderPlotly({table_pp_consequence_w_crisis()})
+output$plot_pp_consequence_w_crisis <- renderPlotly({plot_pp_consequence_w_crisis()})
 
 table_pp_consequence_w_celebrate <- reactive({summary_table_habits_celebrate()$`Consequence`})
 plot_pp_consequence_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_consequence_w_celebrate <- shiny::renderTable({(table_pp_consequence_w_celebrate())}, striped = TRUE)
-output$table_pp_consequence_w_celebrate <- renderPlotly({table_pp_consequence_w_celebrate()})
+output$plot_pp_consequence_w_celebrate <- renderPlotly({plot_pp_consequence_w_celebrate()})
 
 # Parent Point sub tab Safe points pp10
 table_pp_safe_ws_totals <- reactive({
@@ -4348,12 +4316,12 @@ output$plot_pp_safe_w_safe <- renderPlotly({plot_pp_safe_w_safe()})
 table_pp_safe_w_crisis <- reactive({summary_table_habits_crisis()$`Safe`})
 plot_pp_safe_w_crisis <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_safe_w_crisis <- shiny::renderTable({(table_pp_safe_w_crisis())}, striped = TRUE)
-output$table_pp_safe_w_crisis <- renderPlotly({table_pp_safe_w_crisis()})
+output$plot_pp_safe_w_crisis <- renderPlotly({plot_pp_safe_w_crisis()})
 
 table_pp_safe_w_celebrate <- reactive({summary_table_habits_celebrate()$`Safe`})
 plot_pp_safe_w_celebrate <- reactive({summary_plot(data = selected_data_PP(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
 output$table_pp_safe_w_celebrate <- shiny::renderTable({(table_pp_safe_w_celebrate())}, striped = TRUE)
-output$table_pp_safe_w_celebrate <- renderPlotly({table_pp_safe_w_celebrate()})
+output$plot_pp_safe_w_celebrate <- renderPlotly({plot_pp_safe_w_celebrate()})
 
   
 #FOURTH Tab In-week Engagement ---------------------------
@@ -4367,17 +4335,15 @@ selected_data_xe <- reactive({
   }
   return(plhdata_checkgroup)
 })
-  
-tables_app_opens <- reactive({
-  tables_app_opens <- multiple_table_output(data = selected_data_xe(), columns_to_summarise = data_app_opens, replace = "rp.contact.field.")
+
+tables_app_opens_build <- reactive({
+  tables_app_opens <- multiple_table_output(data = plhdata_org_clean, columns_to_summarise = data_app_opens, replace = "rp.contact.field.")
   names(tables_app_opens) <- data_app_opens_neat
-  if (country == "Tanzania"){
-    tables_app_opens <- tables_app_opens
-  } else {
-    tables_app_opens <- tables_app_opens %>%
-      purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgXE))))
-  }
   return(tables_app_opens)
+})
+tables_app_opens <- reactive({
+  tables_app_opens_build() %>% 
+    purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_xe()$Org)))
 })
 
 #App Opens tab 4.1
@@ -4398,7 +4364,7 @@ tables_app_opens <- reactive({
       summary_mean_appopens <- summary_mean_appopens
     } else {
       summary_mean_appopens <- summary_mean_appopens %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgXE))))
+        dplyr::filter(Org %in% c((input$OrgXE)))
     }
     summary_mean_appopens
   }) 
@@ -4433,37 +4399,30 @@ tables_app_opens <- reactive({
   #NB no home practice for worshops 1 and 12 (welcome and celebration)
   
   # HP review started per week
-  table_hp_rev_totals <- reactive({
-    
-    table_hp_started 
-    })
+  table_hp_rev_totals <- reactive({table_hp_started %>% filter(Org %in% unique(selected_data_xe()$Org))})
   plot_hp_rev_totals <- reactive({})
   output$table_hp_rev_totals <- shiny::renderTable({(table_hp_rev_totals())}, striped = TRUE)
   output$plot_hp_rev_totals <- renderPlotly({plot_hp_rev_totals()})
   
   
   # home practice review - user claims they had a chance to do the hp
-  summary_table_hp_done <- reactive({
-    summary_table_hp_done <- multiple_table_output(data = selected_data_xe(), columns_to_summarise = data_hp_done, replace = "rp.contact.field.w_", replace_after = "_done")
-    if (country == "Tanzania"){
-      summary_table_hp_done <- summary_table_hp_done
-    } else {
-      summary_table_hp_done <- summary_table_hp_done %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgXE))))
-    }
+  summary_table_hp_done_build <- reactive({
+    summary_table_hp_done <- multiple_table_output(data = plhdata_org_clean, columns_to_summarise = data_hp_done, replace = "rp.contact.field.w_", replace_after = "_done")
     return(summary_table_hp_done)
+  })
+  summary_table_hp_done <- reactive({
+    summary_table_hp_done_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_xe()$Org)))
   })
   
   # home practice review - user notes how HP went
-  summary_table_hp_mood <- reactive({
-    summary_table_hp_mood <- multiple_table_output(data = selected_data_xe(), columns_to_summarise = data_hp_mood, replace = "rp.contact.field.w_", replace_after = "_mood")
-    if (country == "Tanzania"){
-      summary_table_hp_mood <- summary_table_hp_mood
-    } else {
-      summary_table_hp_mood <- summary_table_hp_mood %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgXE))))
-    }
+  summary_table_hp_mood_build <- reactive({
+    summary_table_hp_mood <- multiple_table_output(data = plhdata_org_clean, columns_to_summarise = data_hp_mood, replace = "rp.contact.field.w_", replace_after = "_mood")
     return(summary_table_hp_mood)
+  })
+  summary_table_hp_mood <- reactive({
+    summary_table_hp_mood_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_xe()$Org)))
   })
 
   #HP 2 One on One (NB no HP for WS 1)
@@ -4664,25 +4623,28 @@ tables_app_opens <- reactive({
     return(plhdata_checkgroup)
   })
   
+  summary_table_survey_past_week_build <- reactive({
+    tabulate_with_metadata(data = plhdata_org_clean, location_ID = "survey_past_week")
+  })
   summary_table_survey_past_week <- reactive({
-    summary_table_survey_past_week <- tabulate_with_metadata(data = selected_data_sv1(),
-                                                             location_ID = "survey_past_week")
-    if (country == "Tanzania"){
-      summary_table_survey_past_week <- summary_table_survey_past_week
-    } else {
-      summary_table_survey_past_week <- summary_table_survey_past_week %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgSV1))))
-    }
-    return(summary_table_survey_past_week)
+    summary_table_survey_past_week_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_sv1()$Org)))
   })
   
   # Baseline survey completion levels
   table_sv1_totals <- reactive({
     summary_table_survey_completion <- selected_data_sv1() %>%
       summary_table(columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", display = FALSE, include_margins = TRUE)
+    summary_table_survey_completion <- summary_table_survey_completion %>%
+        dplyr::filter(Org %in% unique(selected_data_sv1()$Org))
     summary_table_survey_completion
   })
-  plot_sv1_totals <- reactive({ summary_plot(data = selected_data_sv1(), columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", replace = "rp.contact.field.") }) 
+  plot_sv1_totals <- reactive({
+    #selected_data_sv1()$rp.contact.field.survey_welcome_and_setup_completion_level <- factor(selected_data_sv1()$rp.contact.field.survey_welcome_and_setup_completion_level)
+    summary_plot(data = selected_data_sv1(),
+                 columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level",
+                 replace = "rp.contact.field.")
+    }) 
   output$table_sv1_totals <- shiny::renderTable({(table_sv1_totals())}, striped = TRUE)
   output$plot_sv1_totals <- renderPlotly({plot_sv1_totals()})
   
@@ -4805,17 +4767,15 @@ tables_app_opens <- reactive({
     return(plhdata_checkgroup)
   })
   
-  summary_table_library <- reactive({
+  summary_table_library_build <- reactive({
     summary_table_library <- multiple_table_output(columns_to_summarise = data_library, replace = "rp.contact.field.click_pc_", replace_after = "count")
     data_library_neat <- naming_conventions(names(summary_table_library), replace = "Rp.contact.field.click hs")
     names(summary_table_library) <- data_library_neat
-    if (country == "Tanzania"){
-      summary_baseline_data <- summary_table_library
-    } else {
-      summary_table_library <- summary_table_library %>%
-        purrr::map(.f =~.x %>% dplyr::filter(Org %in% c((input$OrgLB))))
-    }
     return(summary_table_library)
+  })
+  summary_table_library <- reactive({
+    summary_table_library_build() %>% 
+      purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_lb()$Org)))
   })
   
   #average clicks on parent library (mean per org)

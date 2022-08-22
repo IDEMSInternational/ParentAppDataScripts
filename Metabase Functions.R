@@ -789,7 +789,9 @@ checkbox_input <- function(inputId, country = country){
                                                "Joy","Nontobeko")
                )))
   } else if (country == "all") {
-    return(box(width = 4,
+    return(fluidRow(
+      column(12, align = "centre",
+      box(width = 4,
                checkboxGroupInput(inputId = paste0("Ctry", inputId),
                                   label = "Countries to select:",
                                   choices = c("South Africa" = "plh_za",
@@ -804,7 +806,7 @@ checkbox_input <- function(inputId, country = country){
                                               "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
                                   selected = c("Amathuba","Dlalanathi",
                                                "Joy","Nontobeko", "Tanzania")
-               )))
+               )))))
   } else {
   }
 }

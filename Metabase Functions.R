@@ -1,8 +1,4 @@
 # run libraries
-library(tidyverse)
-library(here)
-library(yesno)
-library(gt)
 
 #' Interaction with chatbot
 #Source the personal setup for data

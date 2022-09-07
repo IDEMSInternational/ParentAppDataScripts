@@ -7,7 +7,10 @@ library(httr)
 library(jsonlite)
 library(here)     
 library(tidyverse)
-
+library(yesno)
+library(gt)
+options(dplyr.summarise.inform = FALSE)
+country <- "South Africa" # Tanzania, all
 source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))
-shinyApp(ui, server)
+parentapp_shiny(country = country)

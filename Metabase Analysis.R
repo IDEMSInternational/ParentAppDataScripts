@@ -5,7 +5,7 @@
 ##################################
 
 ### extract data ----------------------------------------------------------------------
-# to get user data
+# to get user data 
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
 # to get notification data
 nf_data <- get_nf_data()

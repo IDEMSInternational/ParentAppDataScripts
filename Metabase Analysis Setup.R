@@ -4,12 +4,12 @@
 ##################################
 ##################################
 
-country <- "South Africa"
+country <- "Tanzania"
 
 ### extract data ----------------------------------------------------------------------
 # to get user data
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
-
+#plhdata_org <- plhdata_org1
 ## Data Cleaning - User Data ## --------------------------------------------------------
 ## Tidy up "Organisation" Variable:
 # replace missing values in Organisation and rp.contact.field.organisation_code by Miss so that it is a factor level
@@ -48,9 +48,20 @@ plhdata_org <- plhdata_org %>%
   filter(valid_ics)
 #plhdata_org1 %>% filter(organisation_full == "ICS") %>% dplyr::select(c(app_user_id, valid_ics))
 plhdata_org <- plhdata_org %>%
-  mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4"),
+  mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4",
+                                                       "48621962b0612b7c", "d5faa072c966ea8d",
+                                                       "df1088af5f3d4c87", "5b2ba92c32c6a3e2",
+                                                       "f3aff268263b1d62", "a05a0fe6cd3cb52d"),
                                     "ICS",
                                     as.character(organisation_full)))
+
+# add in new row containing ICS, and app_user_id  -  08/09/22
+#fab4ne58ac03f920
+#oe5824bd19aa8c4
+plhdata_org[(nrow(plhdata_org)+1):(nrow(plhdata_org)+2),] <- NA
+plhdata_org$app_user_id[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("fab4ne58ac03f920", "oe5824bd19aa8c4")
+plhdata_org$organisation_full[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("ICS", "ICS")
+plhdata_org$app_version[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("0.0", "0.0")
 
 plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
                                  replace=c(`ICS` = "ICS",`Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
@@ -190,6 +201,8 @@ data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.
                            "rp.contact.field.w_consequence_completion_level",  "rp.contact.field.w_solve_completion_level",  "rp.contact.field.w_safe_completion_level",
                            "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
 completion_vars <- c("Self Care", "One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
+
+
 
 # TODO: add summary plot completion level in
 #summary_plot_completion_level <- multiple_plot_output(columns_to_summarise = data_completion_level,

@@ -10,7 +10,8 @@ library(tidyverse)
 library(yesno)
 library(gt)
 options(dplyr.summarise.inform = FALSE)
-country <- "South Africa" # Tanzania, all
+country <- "Tanzania" # Tanzania, all
+study <- "Pilot"
 source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))
 parentapp_shiny(country = country)

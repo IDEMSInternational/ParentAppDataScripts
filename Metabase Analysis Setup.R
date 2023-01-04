@@ -5,11 +5,11 @@
 ##################################
 
 country <- "Tanzania"
-
+study <- "Pilot"
 ### extract data ----------------------------------------------------------------------
 # to get user data
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
-#plhdata_org <- plhdata_org1
+# plhdata_org <- plhdata_org1
 ## Data Cleaning - User Data ## --------------------------------------------------------
 ## Tidy up "Organisation" Variable:
 # replace missing values in Organisation and rp.contact.field.organisation_code by Miss so that it is a factor level
@@ -35,36 +35,62 @@ plhdata_org <- plhdata_org %>%
 # filter out users without an intel phone?
 
 # for now, filter out users not in the excel data
-valid_ids <- UIC_Tracker_Tanzania %>% dplyr::select(YourParentAppCode)
-plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
-# TO CHECK:
-#plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
-# Note: "2c5bfeb1c97cffdf" "oe5824bd19aa8c4" are in "Miss.Miss"
 
+# Create Optimisation Group Data for Optimisation Study - Tanzania
+valid_ids <- UIC_Tracker_Tanzania %>%
+  filter(complete.cases(YourParentAppCode))  %>%
+  filter(Study == "Optimisation") %>%
+  select(YourParentAppCode)
+
+# user ID "75bbbdc21741f155" has an extra b in one source so it is important we still do fuzzy join
+plhdata_org_opt_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
+# get the app user IDs where we have a code from the optimisation group.
+valid_app_user_id_TZ <- (plhdata_org_opt_fuzzy %>% filter(!is.na(YourParentAppCode)))$app_user_id
+plhdata_org <- plhdata_org %>% 
+  mutate(valid_ics_1 = ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE)) %>%
+  mutate(organisation_full = ifelse(valid_ics_1, "Optimisation Study", organisation_full))
+
+# Create Pilot Group Data for Pilot Study - Tanzania
+valid_ids <- UIC_Tracker_Tanzania %>%
+    filter(complete.cases(YourParentAppCode))  %>%
+    filter(Study == "Pilot") %>%
+    select(c(YourParentAppCode, PilotSite))
+  
+plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
 plhdata_org <- plhdata_org %>% 
-  mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
-                            ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE))) %>%
-  filter(valid_ics)
-#plhdata_org1 %>% filter(organisation_full == "ICS") %>% dplyr::select(c(app_user_id, valid_ics))
+    mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
+                              ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE))) %>%
+    filter(valid_ics)
 plhdata_org <- plhdata_org %>%
-  mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4",
-                                                       "48621962b0612b7c", "d5faa072c966ea8d",
-                                                       "df1088af5f3d4c87", "5b2ba92c32c6a3e2",
-                                                       "f3aff268263b1d62", "a05a0fe6cd3cb52d"),
-                                    "ICS",
-                                    as.character(organisation_full)))
-
+    mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4",
+                                                         "48621962b0612b7c", "d5faa072c966ea8d",
+                                                         "df1088af5f3d4c87", "5b2ba92c32c6a3e2",
+                                                         "f3aff268263b1d62", "a05a0fe6cd3cb52d",
+                                                         "7f56c4c0a8a2f36f", "fab4ae58ac03f920"),
+                                      "ICS",
+                                      as.character(organisation_full)))
+  
 # add in new row containing ICS, and app_user_id  -  08/09/22
 #fab4ne58ac03f920
 #oe5824bd19aa8c4
-plhdata_org[(nrow(plhdata_org)+1):(nrow(plhdata_org)+2),] <- NA
-plhdata_org$app_user_id[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("fab4ne58ac03f920", "oe5824bd19aa8c4")
-plhdata_org$organisation_full[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("ICS", "ICS")
-plhdata_org$app_version[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("0.0", "0.0")
+#plhdata_org[(nrow(plhdata_org)+1):(nrow(plhdata_org)+2),] <- NA
+#plhdata_org$app_user_id[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("fab4ne58ac03f920", "oe5824bd19aa8c4")
+#plhdata_org$organisation_full[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("ICS", "ICS")
+#plhdata_org$app_version[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("0.0", "0.0")
 
+# get unique cases only
+#View(plhdata_org_ics_fuzzy %>% filter(app_user_id == "a60b902a430aaec2"))
+plhdata_org_ics_fuzzy <- unique(plhdata_org_ics_fuzzy %>% dplyr::select(-c("YourParentAppCode")))
+plhdata_org_pilot_site <- plhdata_org_ics_fuzzy %>% dplyr::select(c(app_user_id, PilotSite)) %>% filter(!is.na(PilotSite))
+nrow((plhdata_org_pilot_site))
+plhdata_org <- full_join(plhdata_org, plhdata_org_pilot_site, by = c("app_user_id" = "app_user_id"))
+
+# TO CHECK:
+#plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
+# Note: "2c5bfeb1c97cffdf" "oe5824bd19aa8c4" are in "Miss.Miss"
 plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
-                                 replace=c(`ICS` = "ICS",`Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
+                                 replace=c(`ICS` = "ICS", `Optimisation Study` = "Optimisation Study", `Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
                                            `Miss.idems Margherita` = "Other", `Miss.IDEMS Ohad` = "Other", `Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other",  `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other",
                                            `Miss.other` ="Other", `Miss.zlto` ="Other", `Miss.hpccc` ="Other", `Miss.seven_passes` ="Other", `Miss.Hillcrest facilitator` ="Other", `Miss.Hillcrest Facilitator ` ="Other", `Miss.a00af0c3b3887330` ="Other",
                                            `Nontobeko.Miss` = "Nontobeko", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko",  `Nontobeko.nontobekoM` = "Nontobeko",
@@ -74,19 +100,6 @@ plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full,
                                            `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", 
                                            `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba", `Miss.dlalanathi`="Dlalanathi",
                                            `Miss.organisation_1` = "Other", `Miss.organisation_2` = "Other",`Miss.organisation_6` = "Other"))
-
-# so do the Miss. to Other first: [no longer commented out 14 March '22 by Margherita]
-# plhdata_org <- plhdata_org %>%
-#  mutate(Org = ifelse(Organisation == "Miss", "Other",
-#                      ifelse(Organisation == "Dlalanathi", "Dlalanathi",
-#                             ifelse(rp.contact.field.organisation_code == "dlalanathiThandeka", "Dlalanathi",
-#                                    ifelse(Organisation == "Nontobeko", "Nontobeko",
-#                                           ifelse(Organisation == "Joy", "Joy",
-#                                                  ifelse(Organisation == "Amathuba Collective", "Amathuba",
-#                                                         ifelse(rp.contact.field.organisation_code == "Amathuba Mzi ", "Amathuba",
-#                                                                ifelse(rp.contact.field.organisation_code == "Amathuba Mzi", "Amathuba",
-#                                                                       ifelse(rp.contact.field.organisation_code == "amathuba", "Amathuba",
-#                                                                              paste(Organisation, rp.contact.field.organisation_code, sep = ".")))))))))))
 
 #####Create a subset for cleaned organisations ####
 # TODO: none are called Miss in "Org" due to how you defined it
@@ -101,14 +114,18 @@ plhdata_org_clean <- plhdata_org_clean %>%
 # add in country variable
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(country = ifelse(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"), "South Africa",
-                          ifelse(Org %in% c("ICS"), "Tanzania",
+                          ifelse(Org %in% c("ICS", "Optimisation Study"), "Tanzania",
                                  "Other")))
 
 print(country)
 if (country == "Tanzania"){
-  plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
+  if (study == "Optimisation"){
+    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "Optimisation Study")
+  } else {
+    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
+  }
 } else if (country == "South Africa"){
-  plhdata_org_clean <- plhdata_org_clean %>% filter(Org != "ICS")
+  plhdata_org_clean <- plhdata_org_clean %>% filter(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"))
 }
 
 # Sorting Name Changes --------------------------------------------------
@@ -121,10 +138,46 @@ for (v in c("v0.16.2", "v0.16.3", "v0.16.4")){
     new_name = df_names[i,2]
     plhdata_org_clean <- plhdata_org_clean %>%
       map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
-             .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x))
+             .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE))
     # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
   }
 }
+
+for (v in c("v0.16.4")){ # and other versions?
+  for (i in 1:nrow(df_names)){
+    old_name = df_names[i,1]
+    new_name = df_names[i,2]
+    plhdata_org_clean <- plhdata_org_clean %>%
+      map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
+             .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE, survey = "final"))
+    # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
+  }
+}
+
+# We first rename the _v system into the old system of a_1 etc
+# We then rename into the new naming system, where it can be directly renamed. However, some cannot.
+
+# Which cannot:
+# rp.contact.field.survey_welcome_a_3_final, rp.contact.field.survey_welcome_a_4_final, rp.contact.field.survey_welcome_a_6_final, rp.contact.field.survey_welcome_a_7_part_1_final
+# any after a7p1?
+
+# Next steps here:
+# did the question change for any of these. Need to check.
+# p7a2, a3, 8, 9 - what were those questions before? what are they now? Check and update.
+# what to do where the question changed?
+# display differently for optimisation than for pilot if optimisation has different questions? Discuss.
+
+plhdata_org_clean <- plhdata_org_clean %>%
+  mutate(rp.contact.field.survey_welcome_ppf = ifelse(!is.na(rp.contact.field.survey_welcome_ppf), rp.contact.field.survey_welcome_ppf, rp.contact.field.survey_welcome_a_1_final),
+         rp.contact.field.survey_welcome_ppp = ifelse(!is.na(rp.contact.field.survey_welcome_ppp), rp.contact.field.survey_welcome_ppp, rp.contact.field.survey_welcome_a_2_final),
+         rp.contact.field.survey_welcome_fin_s = ifelse(!is.na(rp.contact.field.survey_welcome_fin_s), rp.contact.field.survey_welcome_fin_s, rp.contact.field.survey_welcome_a_5_part_1_final),
+         rp.contact.field.survey_welcome_fin_fi = ifelse(!is.na(rp.contact.field.survey_welcome_fin_fi), rp.contact.field.survey_welcome_fin_fi, rp.contact.field.survey_welcome_a_5_part_2_final)) %>%
+  mutate(rp.contact.field.survey_final_ppf = ifelse(!is.na(rp.contact.field.survey_final_ppf), rp.contact.field.survey_final_ppf, rp.contact.field.survey_final_a_1_final),
+         rp.contact.field.survey_final_ppp = ifelse(!is.na(rp.contact.field.survey_final_ppp), rp.contact.field.survey_final_ppp, rp.contact.field.survey_final_a_2_final),
+         rp.contact.field.survey_final_fin_s = ifelse(!is.na(rp.contact.field.survey_final_fin_s), rp.contact.field.survey_final_fin_s, rp.contact.field.survey_final_a_5_part_1_final),
+         rp.contact.field.survey_final_fin_fi = ifelse(!is.na(rp.contact.field.survey_final_fin_fi), rp.contact.field.survey_final_fin_fi, rp.contact.field.survey_final_a_5_part_2_final))
+
+
 
 # todo: following not working
 #plhdata_org_clean <- plhdata_org_clean %>%
@@ -140,6 +193,76 @@ for (v in c("v0.16.2", "v0.16.3", "v0.16.4")){
 #
 #plhdata_org_clean$rp.contact.field.survey_welcome_a_3_final[281:290]
 #plhdata_org_clean$rp.contact.field.survey_welcome_ps_v0.16.2[281:290]
+
+# Tidying up for together/individual and modular/workshop skins
+if (study == "Optimisation"){
+  plhdata_org_clean_mod <- plhdata_org_clean %>% filter(rp.contact.field._app_skin == "modular")
+  data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
+                             "rp.contact.field.w_instruct_completion_level",  "rp.contact.field.w_stress_completion_level",
+                             "rp.contact.field.w_money_completion_level",  "rp.contact.field.w_rules_completion_level", #you have "safe_completion" under rules. Is this right?
+                             "rp.contact.field.w_consequence_completion_level",  "rp.contact.field.w_solve_completion_level",  "rp.contact.field.w_safe_completion_level",
+                             "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
+  # Esmee - what is the definition of completion at the moment for workshop skin?
+  # which rows.id do they have to have == true in in these to say they've completed?
+  total_completed_ind <- NULL
+  total_completed_tog <- NULL
+  j = 0
+  for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
+    # which variables to select?
+    
+    json_data <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
+    # rows.id, rows.individual, rows.together, rows.completed_field
+    json_data <- json_data %>% dplyr::select(c(rows.id, rows.individual, rows.together, rows.completed_field)) %>%
+      filter(!rows.id %in% c("home_practice", "hp_review"))
+    json_data_ind <- json_data %>% filter(rows.individual == TRUE)
+    completed_rows_ind <- paste0("rp.contact.field.", json_data_ind$rows.completed_field)
+    json_data_tog <- json_data %>% filter(rows.together == TRUE)
+    completed_rows_tog <- paste0("rp.contact.field.", json_data_tog$rows.completed_field)
+    
+    plhdata_org_clean_mod_inds <- plhdata_org_clean_mod %>%
+      filter(rp.contact.field.workshop_path != "together") %>%
+      dplyr::select(completed_rows_ind) %>%
+      dplyr::mutate(across(everything(), ~as.numeric(as.logical(.)))) 
+    plhdata_org_clean_mod_inds <- plhdata_org_clean_mod_inds %>%
+      dplyr::mutate(total_completed := rowSums(., na.rm = TRUE)/length(.) * 100)
+    
+    plhdata_org_clean_mod_tog <- plhdata_org_clean_mod %>%
+      filter(rp.contact.field.workshop_path == "together") %>%
+      dplyr::select(completed_rows_tog) %>%
+      dplyr::mutate(across(everything(), ~as.numeric(as.logical(.))))
+    plhdata_org_clean_mod_tog <- plhdata_org_clean_mod_tog %>%
+      dplyr::mutate(total_completed := rowSums(., na.rm = TRUE)/length(.) * 100)
+    j = j + 1
+    total_completed_ind[[j]] <- plhdata_org_clean_mod_inds$total_completed
+    total_completed_tog[[j]] <- plhdata_org_clean_mod_tog$total_completed
+  }
+  names(total_completed_ind) <- data_completion_level
+  names(total_completed_tog) <- data_completion_level
+  plhdata_org_clean_mod_ind <- plhdata_org_clean_mod %>% filter(rp.contact.field.workshop_path != "together")
+  plhdata_org_clean_mod_tog <- plhdata_org_clean_mod %>% filter(rp.contact.field.workshop_path == "together")
+  
+  total_completed_ind <- data.frame(app_user_id = plhdata_org_clean_mod_ind$app_user_id, total_completed_ind)
+  total_completed_tog <- data.frame(app_user_id = plhdata_org_clean_mod_tog$app_user_id, total_completed_tog)
+  modular_completion <- rbind(total_completed_ind, total_completed_tog)
+  plhdata_org_clean <- dplyr::full_join(plhdata_org_clean, modular_completion, by = "app_user_id", suffix = c("", ".mod"))
+  plhdata_org_clean <- plhdata_org_clean %>% mutate(rp.contact.field.w_self_care_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_self_care_completion_level.mod, rp.contact.field.w_self_care_completion_level),
+                                                    rp.contact.field.w_1on1_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_1on1_completion_level.mod, rp.contact.field.w_1on1_completion_level),
+                                                    rp.contact.field.w_praise_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_praise_completion_level.mod, rp.contact.field.w_praise_completion_level),
+                                                    rp.contact.field.w_instruct_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_instruct_completion_level.mod, rp.contact.field.w_instruct_completion_level),
+                                                    rp.contact.field.w_stress_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_stress_completion_level.mod, rp.contact.field.w_stress_completion_level),
+                                                    rp.contact.field.w_money_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_money_completion_level.mod, rp.contact.field.w_money_completion_level),
+                                                    rp.contact.field.w_rules_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_rules_completion_level.mod, rp.contact.field.w_rules_completion_level),
+                                                    rp.contact.field.w_consequence_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_consequence_completion_level.mod, rp.contact.field.w_consequence_completion_level),
+                                                    rp.contact.field.w_solve_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_solve_completion_level.mod, rp.contact.field.w_solve_completion_level),
+                                                    rp.contact.field.w_safe_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_safe_completion_level.mod, rp.contact.field.w_safe_completion_level),
+                                                    rp.contact.field.w_crisis_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_crisis_completion_level.mod, rp.contact.field.w_crisis_completion_level),
+                                                    rp.contact.field.w_celebrate_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_celebrate_completion_level.mod, rp.contact.field.w_celebrate_completion_level))
+}
+
+#head(plhdata_org_clean$rp.contact.field._app_skin)
+#head(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
+#head(xx$rp.contact.field.w_self_care_completion_level)
+
 
 # More cleaning
 # TODO: Add here any to make numeric. check with Esmee about w_self_care_diff_started_completed stored

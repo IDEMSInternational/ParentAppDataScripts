@@ -786,6 +786,20 @@ checkbox_input <- function(inputId, country = country){
                                   selected = c("Amathuba","Dlalanathi",
                                                "Joy","Nontobeko")
                )))
+  } else if (country == "Tanzania"){
+    if (study == "Pilot"){
+      return(box(width = 6,
+                 checkboxGroupInput(inputId = paste0("Org", inputId),
+                           label = "Site",
+                           c("Mwanza" = "Mwanza",
+                             "Mwanza 2" = "Mwanza 2",
+                             "Shinyanga" = "Shinyanga"),
+                           selected = c("Mwanza", "Mwanza 2", "Shinyanga")
+                 )))
+    } else if (study == "Optimisation") {
+      # TODO
+    } else {
+    }
   } else if (country == "all") {
     return(fluidRow(
       column(12, align = "centre",

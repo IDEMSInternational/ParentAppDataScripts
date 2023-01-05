@@ -740,11 +740,13 @@ multiple_plot_output <- function(data = plhdata_org_clean, columns_to_summarise,
   return(summary_plot_values)
 }
 
-version_variables_rename <- function(data = plhdata_org_clean, old_name, new_name, new_name_v = "v0.16.2"){
-  col_name <- paste0("rp.contact.field.survey_welcome_", old_name)
-  col_name_2 <- paste0("rp.contact.field.survey_welcome_", new_name, "_", new_name_v)
-  print(col_name)
-  print(col_name_2)
+version_variables_rename <- function(data = plhdata_org_clean, survey = "welcome", old_name, new_name, new_name_v = "v0.16.2", old_system_replacement = FALSE){
+  col_name <- paste0("rp.contact.field.survey_", survey, "_", old_name)
+  if (old_system_replacement){
+    col_name_2 <- paste0("rp.contact.field.survey_", survey, "_", new_name, "_", new_name_v)
+  } else {
+    col_name_2 <- paste0("rp.contact.field.survey_", survey, "_", new_name)
+  }
   data <- data %>%
     mutate({{ col_name }} := ifelse(!is.na(.data[[col_name_2]]),
                                     .data[[col_name_2]],

@@ -122,6 +122,7 @@ if (country == "Tanzania"){
   if (study == "Optimisation"){
     plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "Optimisation Study")
   } else {
+    plhdata_org_clean <- plhdata_org_clean %>% mutate(PilotSite = replace_na(PilotSite, "Unknown"))
     plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
   }
 } else if (country == "South Africa"){

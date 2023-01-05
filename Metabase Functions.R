@@ -328,7 +328,7 @@ tabulate_with_metadata <- function(data = plhdata_org_clean, metadata = r_variab
 }
 
 
-multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE){
+multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE, factors = "Org"){
   
   # run: add_na_variable here with warning 
   data <- add_na_variable(data = data, variable = columns_to_summarise)
@@ -340,6 +340,7 @@ multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise
                                                          display = FALSE,
                                                          include_margins = TRUE,
                                                          summaries = summaries,
+                                                         factors = factors,
                                                          na.rm = na.rm))
   
   names(summary_table_values) <- variable_display_names
@@ -712,7 +713,7 @@ summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_
   return(return_plot)	
 }
 
-multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE){
+multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE, factors = "Org"){
   # run: add_na_variable here with warning 
   data <- add_na_variable(data = data, variable = columns_to_summarise)
   
@@ -724,6 +725,7 @@ multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise
                                                        display = FALSE,
                                                        include_margins = TRUE,
                                                        summaries = summaries,
+                                                       factors = factors,
                                                        na.rm = na.rm))
   
   names(summary_table_values) <- variable_display_names
@@ -793,8 +795,9 @@ checkbox_input <- function(inputId, country = country){
                            label = "Site",
                            c("Mwanza" = "Mwanza",
                              "Mwanza 2" = "Mwanza 2",
-                             "Shinyanga" = "Shinyanga"),
-                           selected = c("Mwanza", "Mwanza 2", "Shinyanga")
+                             "Shinyanga" = "Shinyanga",
+                             "Unknown" = "Unknown"),
+                           selected = c("Mwanza", "Mwanza 2", "Shinyanga", "Unknown")
                  )))
     } else if (study == "Optimisation") {
       # TODO
@@ -856,6 +859,31 @@ top_boxes <- function(country){
   }
 }
 
-
-
+summary_table_base_build <- function(data = plhdata_org_clean,
+                                     columns_to_summarise = data_baseline_survey,
+                                     replace = "rp.contact.field.",
+                                     replace_after = NULL){
+  if (country == "Tanzania"){
+    if (study == "Pilot"){
+      return(multiple_table_output(data = data,
+                            columns_to_summarise = columns_to_summarise,
+                            replace = replace,
+                            replace_after = replace_after,
+                            factors = "PilotSite"))
+    } else if (study == "Optimisation"){
+      
+    } else {
+      return(multiple_table_output(data = data,
+                            columns_to_summarise = columns_to_summarise,
+                            replace = replace,
+                            replace_after = replace_after))
+    }
+  } else {
+    # otherwise we have the different Organisations in the code anyway so it's nice and easy. 
+    return(multiple_table_output(data = data,
+                          columns_to_summarise = columns_to_summarise,
+                          replace = replace,
+                          replace_after = replace_after))
+  }
+  }
 

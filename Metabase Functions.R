@@ -149,7 +149,13 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
                                 include_country_margins, country_factor, together = FALSE, include_margins = FALSE, na.rm = TRUE){
   
   summaries <- match.arg(summaries)
+
   if (summaries == "frequencies"){
+    if (is.numeric(data[[columns_to_summarise]])){
+      data <- data %>%
+        mutate(across({{ columns_to_summarise }}, ~round(.x))) 
+    }
+    
     summary_output <- data %>%
       group_by(across(c({{ columns_to_summarise }}, {{ factors }})), .drop = FALSE) %>%
       summarise(n = n())
@@ -776,7 +782,7 @@ challenge_freq <- function(data = plhdata_org_clean, group_by = "Org", var, appe
   return(plh_list)
 }
 
-checkbox_input <- function(inputId, country = country){
+checkbox_input <- function(inputId, country = country, study = study){
   if (country == "South Africa") {
     return(box(width = 6,
                checkboxGroupInput(inputId = paste0("Org", inputId),
@@ -800,7 +806,26 @@ checkbox_input <- function(inputId, country = country){
                            selected = c("Mwanza", "Mwanza 2", "Shinyanga", "Unknown")
                  )))
     } else if (study == "Optimisation") {
-      # TODO
+      # return(box(checkboxInput(inputId = "chk_support",
+      #                          label = "Group by support",
+      #                          value = TRUE),
+      #            uiOutput("opt_chk_support")))
+      return(fluidRow(box(width = 4,
+                          checkboxGroupInput(inputId = "opt_support",
+                                             label = "Support",
+                                             c("Self-guided" = "Self-guided",
+                                               "WhatsApp" = "WhatsApp"),
+                                             selected = c("Self-guided", "WhatsApp"))),
+                      box(width = 4, checkboxGroupInput(inputId = "opt_skin",
+                                                        label = "Skin type",
+                                                        c("Module" = "Module",
+                                                          "Workshop" = "Workshop"),
+                                                        selected = c("Module", "Workshop"))),
+                      box(width = 4, checkboxGroupInput(inputId = "opt_diglit",
+                                                        label = "Digital literacy",
+                                                        c("On" = "On",
+                                                          "Off" = "Off"),
+                                                        selected = c("On", "Off")))))
     } else {
     }
   } else if (country == "all") {
@@ -871,7 +896,11 @@ summary_table_base_build <- function(data = plhdata_org_clean,
                             replace_after = replace_after,
                             factors = "PilotSite"))
     } else if (study == "Optimisation"){
-      
+      return(multiple_table_output(data = data,
+                                   columns_to_summarise = columns_to_summarise,
+                                   replace = replace,
+                                   replace_after = replace_after,
+                                   factors = c("Support", "Skin", "Digital Literacy")))
     } else {
       return(multiple_table_output(data = data,
                             columns_to_summarise = columns_to_summarise,

@@ -152,6 +152,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
 
   if (summaries == "frequencies"){
     if (is.numeric(data[[columns_to_summarise]])){
+      print("")
       data <- data %>%
         mutate(across({{ columns_to_summarise }}, ~round(.x))) 
     }

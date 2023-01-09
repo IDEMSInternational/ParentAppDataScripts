@@ -40,7 +40,7 @@ plhdata_org <- plhdata_org %>%
 valid_ids <- UIC_Tracker_Tanzania %>%
   filter(complete.cases(YourParentAppCode))  %>%
   filter(Study == "Optimisation") %>%
-  select(YourParentAppCode)
+  select(c(YourParentAppCode, opt_cluster, experimental_condition))
 
 # user ID "75bbbdc21741f155" has an extra b in one source so it is important we still do fuzzy join
 plhdata_org_opt_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
@@ -49,6 +49,13 @@ valid_app_user_id_TZ <- (plhdata_org_opt_fuzzy %>% filter(!is.na(YourParentAppCo
 plhdata_org <- plhdata_org %>% 
   mutate(valid_ics_1 = ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE)) %>%
   mutate(organisation_full = ifelse(valid_ics_1, "Optimisation Study", organisation_full))
+
+plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>% dplyr::select(c(app_user_id, opt_cluster, experimental_condition))
+plhdata_org <- full_join(plhdata_org, plhdata_org_opt_fuzzy_opt_cluster, by = c("app_user_id" = "app_user_id"))
+plhdata_org <- plhdata_org %>%
+  mutate(Support = ifelse(experimental_condition < 5, "Self-guided", "WhatsApp"),
+         Skin = ifelse(experimental_condition %in% c(1, 2, 5, 6), "Module", "Workshop"),
+         `Digital Literacy` = ifelse(experimental_condition %in% c(1, 3, 5, 7), "On", "Off"))
 
 # Create Pilot Group Data for Pilot Study - Tanzania
 valid_ids <- UIC_Tracker_Tanzania %>%

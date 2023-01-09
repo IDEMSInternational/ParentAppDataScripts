@@ -1,4 +1,5 @@
-#library(shiny)
+# Can we run an offline version for now?
+library(shiny)
 library(shinythemes)
 library(shinyjs)
 library(plotly)

@@ -3051,8 +3051,8 @@ parentapp_shiny <- function(country, study){
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
                          dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         #dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         #dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
+                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
+                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 

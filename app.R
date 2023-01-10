@@ -17,3 +17,5 @@ study <- "Optimisation"
 source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))
 parentapp_shiny(country = country, study = study)
+
+# todo: remove filter %>% suppport %in% Support etc

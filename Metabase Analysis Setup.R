@@ -53,7 +53,8 @@ plhdata_org <- plhdata_org %>%
 plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>% dplyr::select(c(app_user_id, opt_cluster, experimental_condition))
 plhdata_org <- full_join(plhdata_org, plhdata_org_opt_fuzzy_opt_cluster, by = c("app_user_id" = "app_user_id"))
 plhdata_org <- plhdata_org %>%
-  mutate(Support = ifelse(experimental_condition < 5, "Self-guided", "WhatsApp"),
+  mutate(Cluster = opt_cluster,
+         Support = ifelse(experimental_condition < 5, "Self-guided", "WhatsApp"),
          Skin = ifelse(experimental_condition %in% c(1, 2, 5, 6), "Module", "Workshop"),
          `Digital Literacy` = ifelse(experimental_condition %in% c(1, 3, 5, 7), "On", "Off"))
 
@@ -203,6 +204,14 @@ plhdata_org_clean <- plhdata_org_clean %>%
 #plhdata_org_clean$rp.contact.field.survey_welcome_ps_v0.16.2[281:290]
 
 # Tidying up for together/individual and modular/workshop skins
+#json_data <- NULL
+#for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
+#  # which variables to select?
+#  json_data[[i]] <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
+#}
+#saveRDS(json_data, file = "data/json_data.RDS")
+json_data <- readRDS(file = "data/json_data.RDS")
+
 if (study == "Optimisation"){
   plhdata_org_clean_mod <- plhdata_org_clean %>% filter(rp.contact.field._app_skin == "modular")
   data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
@@ -218,14 +227,14 @@ if (study == "Optimisation"){
   for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
     # which variables to select?
     
-    json_data <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
+    json_data_i <- json_data[[i]]
     # rows.id, rows.individual, rows.together, rows.completed_field
-    json_data <- json_data %>% dplyr::select(c(rows.id, rows.individual, rows.together, rows.completed_field)) %>%
+    json_data_i <- json_data_i %>% dplyr::select(c(rows.id, rows.individual, rows.together, rows.completed_field)) %>%
       filter(!rows.id %in% c("home_practice", "hp_review"))
-    json_data_ind <- json_data %>% filter(rows.individual == TRUE)
-    completed_rows_ind <- paste0("rp.contact.field.", json_data_ind$rows.completed_field)
-    json_data_tog <- json_data %>% filter(rows.together == TRUE)
-    completed_rows_tog <- paste0("rp.contact.field.", json_data_tog$rows.completed_field)
+    json_data_i_ind <- json_data_i %>% filter(rows.individual == TRUE)
+    completed_rows_ind <- paste0("rp.contact.field.", json_data_i_ind$rows.completed_field)
+    json_data_i_tog <- json_data_i %>% filter(rows.together == TRUE)
+    completed_rows_tog <- paste0("rp.contact.field.", json_data_i_tog$rows.completed_field)
     
     plhdata_org_clean_mod_inds <- plhdata_org_clean_mod %>%
       filter(rp.contact.field.workshop_path != "together") %>%

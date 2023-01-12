@@ -5,7 +5,7 @@
 ##################################
 
 country <- "Tanzania"
-study <- "Optimisation"
+study <- "Pilot"
 ### extract data ----------------------------------------------------------------------
 # to get user data
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)

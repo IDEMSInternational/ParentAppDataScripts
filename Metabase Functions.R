@@ -523,3 +523,26 @@ summary_table_base_build <- function(data = plhdata_org_clean,
   }
 }
 
+
+hp_mood_plot <- function(data){
+  plot_data <- data %>%
+    dplyr::select(-Total) %>%
+    pivot_longer(cols = !opt_factors())
+  
+  if (country == "Tanzania"){
+    if (study == "Optimisation"){
+      plot_data <- plot_data %>%
+        mutate(Org = toString(opt_factors()))
+    } else {
+      plot_data <- plot_data %>% mutate(Org = PilotSite)
+    }
+  }
+  plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
+  plot + geom_bar(stat = "identity", position = "dodge") +
+    scale_x_discrete(guide = guide_axis(angle = 90),
+                     limits = c("sad", "ok", "happy", "NA"),
+                     labels = c("Sad", "Ok", "Happy", "NA")) +
+    viridis::scale_fill_viridis(discrete = TRUE) +
+    labs(x = "How did you find it?", y = "Frequency")
+}
+

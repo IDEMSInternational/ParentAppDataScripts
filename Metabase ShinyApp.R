@@ -3061,7 +3061,7 @@ parentapp_shiny <- function(country, study){
     opt_factors <- reactive({
       if (country == "Tanzania"){
         if (study == "Pilot"){
-          opt_factors <- c("PilotStudy")
+          opt_factors <- c("PilotSite")
         } else if (study == "Optimisation"){
           opt_factors <- c()
           if (!is.null(input$opt_support)){
@@ -3084,6 +3084,28 @@ parentapp_shiny <- function(country, study){
       }
         return(opt_factors)
       })
+    
+    hp_mood_plot <- function(data){
+      plot_data <- data %>%
+        dplyr::select(-Total) %>%
+        pivot_longer(cols = !opt_factors())
+      
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          plot_data <- plot_data %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          plot_data <- plot_data %>% mutate(Org = PilotSite)
+        }
+      }
+      plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90),
+                         limits = c("sad", "ok", "happy", "NA"),
+                         labels = c("Sad", "Ok", "Happy", "NA")) +
+        viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "How did you find it?", y = "Frequency")
+    }
     
     # Demographics ---------------------------------------------------
     summary_table_baseline <- reactive({
@@ -3308,20 +3330,56 @@ parentapp_shiny <- function(country, study){
                                                      columns_to_summarise = data_completion_level,
                                                      replace = "rp.contact.field.w_",
                                                      replace_after = "_completion_level",
-                                                     summaries = "mean")
-      summary_mean_completion_level <- summary_mean_completion_level %>%
-        dplyr::filter(Org %in% unique(selected_data_dem()$Org))
-      #dplyr::filter(Org %in% unique(selected_data_dem()$Org))
-      return(summary_mean_completion_level)
+                                                     summaries = "mean",
+                                                     factors = opt_factors())
+      
+      if (country == "Tanzania"){
+        if (study == "Pilot"){
+          summary_mean_completion_level %>% 
+            purrr::map(.f =~.x %>%
+                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
+                         janitor::adorn_totals("row"))
+        } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_mean_completion_level <- summary_mean_completion_level %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_mean_completion_level <- summary_mean_completion_level %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_mean_completion_level <- summary_mean_completion_level %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
+          summary_mean_completion_level %>% 
+            purrr::map(.f =~.x %>%
+                         janitor::adorn_totals("row"))
+        } else {
+          summary_mean_completion_level %>% 
+            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
+        }
+      } else {
+        summary_mean_completion_level %>% 
+          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
+        #janitor::adorn_totals("row"))
+      }
     }) 
     
     plot_ws_totals  <- reactive({
       summary_mean_completion_level_long <- pivot_longer(table_ws_totals(), cols = !opt_factors(), names_to = "Workshop", values_to = "Value")
-      if (study == "Optimisation" && country == "Tanzania"){
-        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
-          mutate(Org = toString(opt_factors()))
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% mutate(Org = opt_factors())
+        }
       } else {
-        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed()) %>% filter(Org != "Total")
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
       ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = Value, fill = Org)) + 
         geom_bar(stat = "identity", position = "dodge") +
@@ -3463,13 +3521,18 @@ parentapp_shiny <- function(country, study){
       return(table_ws_started)
     })
     plot_ws_started  <- reactive({
-      if (study == "Optimisation" && country == "Tanzania"){
-        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed())
-        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
-          mutate(Org = toString(opt_factors()))
+      summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed())
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(PilotSite != "Total") %>% mutate(Org = PilotSite)
+        }
       } else {
-        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed()) %>% filter(Org != "Total")
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
+      
       plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = started, fill = Org))
       plot + geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
@@ -3485,14 +3548,18 @@ parentapp_shiny <- function(country, study){
       return(table_perc_completed)
     })
     plot_ws_rel_completed  <- reactive({
-      if (study == "Optimisation" && country == "Tanzania"){
-        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed())
-        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
-          mutate(Org = toString(opt_factors()))
+      summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed())
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(PilotSite != "Total") %>% mutate(Org = PilotSite)
+        }
       } else {
-        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed()) %>% filter(Org != "Total")
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
-      plot <-       ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = perc_completed, fill = Org))
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = perc_completed, fill = Org))
       plot + geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
         viridis::scale_fill_viridis(discrete = TRUE)+
@@ -5128,12 +5195,16 @@ parentapp_shiny <- function(country, study){
       return(table_hp_started)
     })
     plot_hp_started  <- reactive({
-      if (study == "Optimisation" && country == "Tanzania"){
-        summary_mean_completion_level_long <- plyr::ldply(relative_hp_started())
-        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
-          mutate(Org = toString(opt_factors()))
+      summary_mean_completion_level_long <- plyr::ldply(relative_hp_started())
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(PilotSite != "Total") %>% mutate(Org = PilotSite)
+        }
       } else {
-        summary_mean_completion_level_long <- plyr::ldply(relative_hp_started()) %>% filter(Org != "Total")
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
       plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = true, fill = Org))
       plot + geom_bar(stat = "identity", position = "dodge") +
@@ -5219,11 +5290,15 @@ parentapp_shiny <- function(country, study){
     })
     plot_hp_done  <- reactive({
       summary_mean_completion_level_long <- table_perc_long()
-      if (study == "Optimisation" && country == "Tanzania"){
-        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
-          mutate(Org = toString(opt_factors()))
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(PilotSite != "Total") %>% mutate(Org = PilotSite)
+        }
       } else {
-        summary_mean_completion_level_long <- plyr::ldply(relative_hp_done()) %>% filter(Org != "Total")
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
       plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = perc_complete, fill = Org))
       plot + geom_bar(stat = "identity", position = "dodge") +
@@ -5236,9 +5311,12 @@ parentapp_shiny <- function(country, study){
     
     # home practice review - user notes how HP went
     summary_table_hp_mood <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_hp_mood,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(),
+                                                               columns_to_summarise = data_hp_mood,
                                                                replace = "rp.contact.field.w_",
                                                                replace_after = "_mood")
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
       if (country == "Tanzania"){
         if (study == "Pilot"){
           summary_table_baseline_build %>% 
@@ -5281,8 +5359,8 @@ parentapp_shiny <- function(country, study){
     output$table_hpdone_1on1 <- shiny::renderTable({(table_hpdone_1on1())}, striped = TRUE)
     output$plot_hpdone_1on1 <- renderPlotly({plot_hpdone_1on1()})
     
-    table_mood_1on1 <- reactive({summary_table_hp_mood()$`1on1 hp` })
-    plot_mood_1on1 <- reactive({})
+    table_mood_1on1 <- reactive({summary_table_hp_mood()$`1on1 hp`})
+    plot_mood_1on1 <- reactive({hp_mood_plot(summary_table_hp_mood()$`1on1 hp`)})
     output$table_mood_1on1 <- shiny::renderTable({(table_mood_1on1())}, striped = TRUE)
     output$plot_mood_1on1 <- renderPlotly({plot_mood_1on1()})
     
@@ -5300,6 +5378,8 @@ parentapp_shiny <- function(country, study){
     
     table_mood_praise <- reactive({})
     plot_mood_praise <- reactive({})
+    #plot_mood_praise <- reactive({hp_mood_plot(summary_table_hp_mood()$`praise hp`)})
+    
     output$table_mood_praise <- shiny::renderTable({(table_mood_praise())}, striped = TRUE)
     output$plot_mood_praise <- renderPlotly({plot_mood_praise()})
     
@@ -5316,7 +5396,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_instruct <- renderPlotly({plot_hpdone_instruct()})
     
     table_mood_instruct <- reactive({summary_table_hp_mood()$`Instruct hp`  })
-    plot_mood_instruct <- reactive({})
+    plot_mood_instruct <- reactive({hp_mood_plot(summary_table_hp_mood()$`Instruct hp`)})
     output$table_mood_instruct <- shiny::renderTable({(table_mood_instruct())}, striped = TRUE)
     output$plot_mood_instruct <- renderPlotly({plot_mood_instruct()})
     
@@ -5333,7 +5413,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_stress_br <- renderPlotly({plot_hpdone_stress_br()})
     
     table_mood_stress_br <- reactive({summary_table_hp_mood()$`Stress hp breathe` })
-    plot_mood_stress_br <- reactive({})
+    plot_mood_stress_br <- reactive({hp_mood_plot(summary_table_hp_mood()$`Stress hp breathe`)})
     output$table_mood_stress_br <- shiny::renderTable({(table_mood_stress_br())}, striped = TRUE)
     output$plot_mood_stress_br <- renderPlotly({plot_mood_stress_br()})
     
@@ -5351,7 +5431,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_stress_tk <- renderPlotly({plot_hpdone_stress_tk()})
     
     table_mood_stress_tk <- reactive({summary_table_hp_mood()$`Stress hp talk` })
-    plot_mood_stress_tk <- reactive({})
+    plot_mood_stress_tk <- reactive({hp_mood_plot(summary_table_hp_mood()$`Stress hp talk`)})
     output$table_mood_stress_tk <- shiny::renderTable({(table_mood_stress_tk())}, striped = TRUE)
     output$plot_mood_stress_tk <- renderPlotly({plot_mood_stress_tk()})
     
@@ -5368,9 +5448,14 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_money <- renderPlotly({plot_hpdone_money()})
     
     table_mood_money <- reactive({summary_table_hp_mood()$`Money hp` })
-    plot_mood_money <- reactive({})
+    plot_mood_money <- reactive({hp_mood_plot(summary_table_hp_mood()$`Money hp`)})
     output$table_mood_money <- shiny::renderTable({(table_mood_money())}, striped = TRUE)
     output$plot_mood_money <- renderPlotly({plot_mood_money()})
+
+    table_mood_rules <- reactive({summary_table_hp_mood()$`Rules hp` })
+    plot_mood_rules <- reactive({hp_mood_plot(summary_table_hp_mood()$`Rules hp`)})
+    output$table_mood_rules <- shiny::renderTable({(table_mood_rules())}, striped = TRUE)
+    output$plot_mood_rules <- renderPlotly({plot_mood_rules()})
     
     table_chall_money <- reactive({summary_table_hp_chall$`Challenges 1on1` })
     plot_chall_money <- reactive({})
@@ -5385,7 +5470,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_rule <- renderPlotly({plot_hpdone_rule()})
     
     table_mood_rule <- reactive({summary_table_hp_mood()$`Rules hp` })
-    plot_mood_rule <- reactive({})
+    plot_mood_rule <- reactive({hp_mood_plot(summary_table_hp_mood()$`Rules hp`)})
     output$table_mood_rule <- shiny::renderTable({(table_mood_rule())}, striped = TRUE)
     output$plot_mood_rule <- renderPlotly({plot_mood_rule()})
     
@@ -5402,7 +5487,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_consequence <- renderPlotly({plot_hpdone_consequence()})
     
     table_mood_consequence <- reactive({summary_table_hp_mood()$`Consequence hp` })
-    plot_mood_consequence <- reactive({})
+    plot_mood_consequence <- reactive({hp_mood_plot(summary_table_hp_mood()$`Consequence hp`)})
     output$table_mood_consequence <- shiny::renderTable({(table_mood_consequence())}, striped = TRUE)
     output$plot_mood_consequence <- renderPlotly({plot_mood_consequence()})
     
@@ -5419,7 +5504,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_solve <- renderPlotly({plot_hpdone_solve()})
     
     table_mood_solve <- reactive({summary_table_hp_mood()$`Solve hp` })
-    plot_mood_solve <- reactive({})
+    plot_mood_solve <- reactive({hp_mood_plot(summary_table_hp_mood()$`Solve hp`)})
     output$table_mood_solve <- shiny::renderTable({(table_mood_solve())}, striped = TRUE)
     output$plot_mood_solve <- renderPlotly({plot_mood_solve()})
     
@@ -5436,7 +5521,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_safe <- renderPlotly({plot_hpdone_safe()})
     
     table_mood_safe <- reactive({summary_table_hp_mood()$`Safe hp` })
-    plot_mood_safe <- reactive({})
+    plot_mood_safe <- reactive({hp_mood_plot(summary_table_hp_mood()$`Safe hp`)})
     output$table_mood_safe <- shiny::renderTable({(table_mood_safe())}, striped = TRUE)
     output$plot_mood_safe <- renderPlotly({plot_mood_safe()})
     
@@ -5453,7 +5538,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_crisis <- renderPlotly({plot_hpdone_crisis()})
     
     table_mood_crisis <- reactive({summary_table_hp_mood()$`Crisis hp`})
-    plot_mood_crisis <- reactive({})
+    plot_mood_crisis <- reactive({hp_mood_plot(summary_table_hp_mood()$`Crisis hp`)})
     output$table_mood_crisis <- shiny::renderTable({(table_mood_crisis())}, striped = TRUE)
     output$plot_mood_crisis <- renderPlotly({plot_mood_crisis()})
     

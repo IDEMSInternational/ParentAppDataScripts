@@ -338,7 +338,7 @@ parentapp_shiny <- function(country, study){
                                            solidHeader = TRUE,
                                            title = "Number of users who have started a workshop",
                                            status = "info",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_ws_started", height = "240"),
                                            shiny::tableOutput("table_ws_started")
                                        )#closes box
@@ -350,12 +350,11 @@ parentapp_shiny <- function(country, study){
                                            solidHeader = TRUE,
                                            title = "Percentage of starters who completed a workshop",
                                            status = "info",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_ws_rel_completed", height = "240"),
                                            shiny::tableOutput("table_ws_rel_completed")
                                        )#closes box
                                      ) #closes fluid row
-                                     
                             ) # closes Additional Insights
                 ) #closes tabsetPanel for workshop
         ), #closes tabItem
@@ -2104,11 +2103,22 @@ parentapp_shiny <- function(country, study){
                                        box(width = 12,
                                            collapsible = TRUE,
                                            solidHeader = TRUE,
-                                           title = "Number of users starting each home practice review (value is true rather than false or missing)",
+                                           title = "Number of users starting each home practice review",
                                            status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hp_rev_totals", height = "240"),
-                                           shiny::tableOutput("table_hp_rev_totals")
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_hp_started", height = "240"),
+                                           shiny::tableOutput("table_hp_started")
+                                       )#closes box
+                                     ), #closes fluid row  
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Proportion of users who completed each home practice review, out of those who started",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_hp_done", height = "240"),
+                                           shiny::tableOutput("table_hp_done")
                                        )#closes box
                                      ), #closes fluid row  
                                      
@@ -3026,10 +3036,19 @@ parentapp_shiny <- function(country, study){
           plhdata_checkgroup <- plhdata_org_clean %>% dplyr::filter(PilotSite %in% c(input$OrgDem))
         } else if (study == "Optimisation"){
           plhdata_checkgroup <- plhdata_org_clean %>%
-            dplyr::filter(Cluster %in% c(input$opt_cluster)) %>%
-            dplyr::filter(Support %in% c(input$opt_support)) %>%
-            dplyr::filter(Skin %in% c(input$opt_skin)) %>%
-            dplyr::filter(`Digital Literacy` %in% c(input$opt_diglit))
+            dplyr::filter(Cluster %in% c(input$opt_cluster))
+          if (!is.null(input$opt_support)) {
+            plhdata_checkgroup <- plhdata_checkgroup %>%
+              dplyr::filter(Support %in% c(input$opt_support))
+          }
+          if (!is.null(input$opt_skin)) {
+            plhdata_checkgroup <- plhdata_checkgroup %>%
+              dplyr::filter(Skin %in% c(input$opt_skin))
+          }
+          if (!is.null(input$opt_diglit)) {
+            plhdata_checkgroup <- plhdata_checkgroup %>%
+              dplyr::filter(`Digital Literacy` %in% c(input$opt_diglit))
+          }
         } else {
           plhdata_checkgroup <- plhdata_org_clean
         }
@@ -3039,9 +3058,36 @@ parentapp_shiny <- function(country, study){
       return(plhdata_checkgroup)
     })
     
+    opt_factors <- reactive({
+      if (country == "Tanzania"){
+        if (study == "Pilot"){
+          opt_factors <- c("PilotStudy")
+        } else if (study == "Optimisation"){
+          opt_factors <- c()
+          if (!is.null(input$opt_support)){
+            opt_factors <- c(opt_factors, "Support")
+          }
+          if (!is.null(input$opt_skin)){
+            opt_factors <- c(opt_factors, "Skin")
+          }
+          if (!is.null(input$opt_diglit)){
+            opt_factors <- c(opt_factors, "Digital Literacy")
+          }
+          if (length(opt_factors) == 0){
+            opt_factors <- c("Org")
+          }
+        } else {
+          opt_factors <- c("Org")
+        }
+      } else {
+        opt_factors <- c("Org")
+      }
+        return(opt_factors)
+      })
+    
     # Demographics ---------------------------------------------------
     summary_table_baseline <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_baseline_survey)
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_baseline_survey)
       if (country == "Tanzania"){
         if (study == "Pilot"){
           summary_table_baseline_build %>% 
@@ -3049,12 +3095,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+           summary_table_baseline_build <- summary_table_baseline_build %>% 
+            purrr::map(.f =~.x %>%
+                         dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3201,9 +3258,11 @@ parentapp_shiny <- function(country, study){
     
     # Workshop Engagement ---------------------------------------------------
     summary_table_completion_level <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_completion_level,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_completion_level,
                                                                replace = "rp.contact.field.w_",
                                                                replace_after = "_completion_level")
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
       if (country == "Tanzania"){
         if (study == "Pilot"){
           summary_table_baseline_build %>% 
@@ -3211,12 +3270,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3246,7 +3316,13 @@ parentapp_shiny <- function(country, study){
     }) 
     
     plot_ws_totals  <- reactive({
-      summary_mean_completion_level_long <- pivot_longer(table_ws_totals(), cols = !Org, names_to = "Workshop", values_to = "Value")
+      summary_mean_completion_level_long <- pivot_longer(table_ws_totals(), cols = !opt_factors(), names_to = "Workshop", values_to = "Value")
+      if (study == "Optimisation" && country == "Tanzania"){
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+          mutate(Org = toString(opt_factors()))
+      } else {
+        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed()) %>% filter(Org != "Total")
+      }
       ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = Value, fill = Org)) + 
         geom_bar(stat = "identity", position = "dodge") +
         # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -3373,28 +3449,55 @@ parentapp_shiny <- function(country, study){
           summary_table_completion_level[[i]]$`100` <- 0
         }
       }
-      
-      relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
+     select_items <- c(opt_factors(), "started", "perc_completed")
+     
+     relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
                                         mutate(started = Total - `0` - `NA`,
                                                perc_completed = `100`/started*100) %>%
-                                        select(c(Org, started, perc_completed)))
-      return(relative_perc_completed)
+                                        select(select_items))
+      return(relative_perc_completed)   
     })
     table_ws_started <- reactive({
       table_ws_started <- plyr::ldply(relative_perc_completed()) %>%
-        pivot_wider(id_cols = Org, names_from = .id, values_from = started)
+        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = started)
       return(table_ws_started)
     })
-    plot_ws_started <- reactive({}) 
+    plot_ws_started  <- reactive({
+      if (study == "Optimisation" && country == "Tanzania"){
+        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed())
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+          mutate(Org = toString(opt_factors()))
+      } else {
+        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed()) %>% filter(Org != "Total")
+      }
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = started, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
+        viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "Workshop")
+    }) 
     output$table_ws_started <- shiny::renderTable({(table_ws_started())}, striped = TRUE)
     output$plot_ws_started <- renderPlotly({plot_ws_started()})
     
     table_ws_rel_completed <- reactive({
       table_perc_completed <- plyr::ldply(relative_perc_completed()) %>%
-        pivot_wider(id_cols = Org, names_from = .id, values_from = perc_completed)
+        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = perc_completed)
       return(table_perc_completed)
     })
-    plot_ws_rel_completed <- reactive({}) 
+    plot_ws_rel_completed  <- reactive({
+      if (study == "Optimisation" && country == "Tanzania"){
+        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed())
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+          mutate(Org = toString(opt_factors()))
+      } else {
+        summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed()) %>% filter(Org != "Total")
+      }
+      plot <-       ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = perc_completed, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
+        viridis::scale_fill_viridis(discrete = TRUE)+
+        labs(x = "Workshop")
+    }) 
     output$table_ws_rel_completed <- shiny::renderTable({(table_ws_rel_completed())}, striped = TRUE)
     output$plot_ws_rel_completed <- renderPlotly({plot_ws_rel_completed()})
     
@@ -3406,7 +3509,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_all <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_all,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_all,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "_completion_level")
       if (country == "Tanzania"){
@@ -3416,12 +3519,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3556,7 +3670,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_relax_ws_totals <- renderPlotly({plot_pp_relax_ws_totals()})
     
     summary_table_habits_self_care <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_self_care,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_self_care,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "_w_self_care")
       if (country == "Tanzania"){
@@ -3566,12 +3680,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3585,7 +3710,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_1on1 <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_1on1,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_1on1,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_1on1")
       if (country == "Tanzania"){
@@ -3595,12 +3720,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3614,7 +3750,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_praise <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_praise,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_praise,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_praise")
       if (country == "Tanzania"){
@@ -3624,12 +3760,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3643,7 +3790,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_instruct <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_instruct,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_instruct,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_instruct")
       if (country == "Tanzania"){
@@ -3653,12 +3800,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3672,7 +3830,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_stress <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_stress,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_stress,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_stress")
       if (country == "Tanzania"){
@@ -3682,12 +3840,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3701,7 +3870,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_money <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_money,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_money,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_money")
       if (country == "Tanzania"){
@@ -3711,12 +3880,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3730,7 +3910,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_rules <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_rules,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_rules,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_rules")
       if (country == "Tanzania"){
@@ -3740,12 +3920,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3759,7 +3950,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_consequence <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_consequence,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_consequence,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_consequence")
       if (country == "Tanzania"){
@@ -3769,12 +3960,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3788,7 +3990,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_solve <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_solve,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_solve,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_solve")
       if (country == "Tanzania"){
@@ -3798,12 +4000,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3817,7 +4030,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_safe <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_safe,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_safe,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_safe")
       if (country == "Tanzania"){
@@ -3827,12 +4040,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3846,7 +4070,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_crisis <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_crisis,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_crisis,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_crisis")
       if (country == "Tanzania"){
@@ -3856,12 +4080,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -3875,7 +4110,7 @@ parentapp_shiny <- function(country, study){
     })
     
     summary_table_habits_celebrate <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_celebrate,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_celebrate,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_celebrate")
       if (country == "Tanzania"){
@@ -3885,12 +4120,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -4726,7 +4972,7 @@ parentapp_shiny <- function(country, study){
     
     #FOURTH Tab In-week Engagement ---------------------------
     tables_app_opens <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_app_opens,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_app_opens,
                                                                replace = "rp.contact.field.")
       names(summary_table_baseline_build) <- data_app_opens_neat
       if (country == "Tanzania"){
@@ -4736,12 +4982,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -4806,17 +5063,15 @@ parentapp_shiny <- function(country, study){
     #NB no home practice for worshops 1 and 12 (welcome and celebration)
     
     # HP review started per week
-    table_hp_rev_totals <- reactive({table_hp_started %>% filter(Org %in% unique(selected_data_dem()$Org))})
-    plot_hp_rev_totals <- reactive({})
-    output$table_hp_rev_totals <- shiny::renderTable({(table_hp_rev_totals())}, striped = TRUE)
-    output$plot_hp_rev_totals <- renderPlotly({plot_hp_rev_totals()})
-    
-    
-    # home practice review - user claims they had a chance to do the hp
-    summary_table_hp_done <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_hp_done,
+    # Engagement sub tab: HP -------------------------
+    summary_table_hp_totals <- reactive({
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(),
+                                                               data = selected_data_dem(),
+                                                               columns_to_summarise = data_hp_started,
                                                                replace = "rp.contact.field.w_",
-                                                               replace_after = "_done")
+                                                               replace_after = "_hp_review_started")
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
       if (country == "Tanzania"){
         if (study == "Pilot"){
           summary_table_baseline_build %>% 
@@ -4824,12 +5079,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -4842,9 +5108,135 @@ parentapp_shiny <- function(country, study){
       }
     })
     
+    relative_hp_started <- reactive({
+      summary_table_hp_totals <- summary_table_hp_totals()
+      for (i in 1:length(summary_table_hp_totals)){
+        if (!"true" %in% colnames(summary_table_hp_totals[[i]])) {
+          summary_table_hp_totals$true <- 0
+        }
+      }
+      
+      select_items <- c(opt_factors(), "true")
+      
+      relative_hp_started <- imap(summary_table_hp_totals, ~.x %>%
+                                    select(select_items))
+      return(relative_hp_started)   
+    })
+    table_hp_started <- reactive({
+      table_hp_started <- plyr::ldply(relative_hp_started()) %>%
+        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = true)
+      return(table_hp_started)
+    })
+    plot_hp_started  <- reactive({
+      if (study == "Optimisation" && country == "Tanzania"){
+        summary_mean_completion_level_long <- plyr::ldply(relative_hp_started())
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+          mutate(Org = toString(opt_factors()))
+      } else {
+        summary_mean_completion_level_long <- plyr::ldply(relative_hp_started()) %>% filter(Org != "Total")
+      }
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = true, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
+        viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "Workshop")
+    }) 
+    output$table_hp_started <- shiny::renderTable({(table_hp_started())}, striped = TRUE)
+    output$plot_hp_started <- renderPlotly({plot_hp_started()})
+    
+    # home practice review - user claims they had a chance to do the hp
+    
+    summary_table_hp_done <- reactive({
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(),
+                                                               data = selected_data_dem(),
+                                                               columns_to_summarise = data_hp_done,
+                                                               replace = "rp.contact.field.w_",
+                                                               replace_after = "_hp_done")
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
+      if (country == "Tanzania"){
+        if (study == "Pilot"){
+          summary_table_baseline_build %>% 
+            purrr::map(.f =~.x %>%
+                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
+                         janitor::adorn_totals("row"))
+        } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
+          summary_table_baseline_build %>% 
+            purrr::map(.f =~.x %>%
+                         janitor::adorn_totals("row"))
+        } else {
+          summary_table_baseline_build %>% 
+            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
+        }
+      } else {
+        summary_table_baseline_build %>% 
+          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
+        #janitor::adorn_totals("row"))
+      }
+    })
+    
+    relative_hp_done <- reactive({
+      summary_table_hp_done <- summary_table_hp_done()
+      for (i in 1:length(summary_table_hp_done)){
+        if (!"yes" %in% colnames(summary_table_hp_done[[i]])) {
+          summary_table_hp_done$yes <- 0
+        }
+      }
+      
+      select_items <- c(opt_factors(), "yes")
+      
+      relative_hp_done <- imap(summary_table_hp_done, ~.x %>%
+                                 select(select_items))
+      return(relative_hp_done)   
+    })
+    table_perc_long <- reactive({
+      hp_started_long <- plyr::ldply(relative_hp_started())
+      hp_done_long <- plyr::ldply(relative_hp_done())
+      
+      table_perc_long <- full_join(hp_started_long, hp_done_long) %>%
+        mutate(perc_complete = yes/true)
+      return(table_perc_long)
+    })
+    table_hp_done <- reactive({
+      table_hp_done <- table_perc_long() %>%
+        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = perc_complete)
+      return(table_hp_done)
+    })
+    plot_hp_done  <- reactive({
+      summary_mean_completion_level_long <- table_perc_long()
+      if (study == "Optimisation" && country == "Tanzania"){
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+          mutate(Org = toString(opt_factors()))
+      } else {
+        summary_mean_completion_level_long <- plyr::ldply(relative_hp_done()) %>% filter(Org != "Total")
+      }
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = perc_complete, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = c("1on1", "Praise", "Instruct", "Stress hp breathe done", "Stress hp talk done", "Money", "Rules", "Consequence", "Solve", "Safe", "Crisis", "Celebrate")) +
+        viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "Workshop", y = "Completed")
+    }) 
+    output$table_hp_done <- shiny::renderTable({(table_hp_done())}, striped = TRUE)
+    output$plot_hp_done <- renderPlotly({plot_hp_done()})
+    
     # home practice review - user notes how HP went
     summary_table_hp_mood <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_hp_mood,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_hp_mood,
                                                                replace = "rp.contact.field.w_",
                                                                replace_after = "_mood")
       if (country == "Tanzania"){
@@ -4854,12 +5246,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 
@@ -5327,7 +5730,7 @@ parentapp_shiny <- function(country, study){
     
     #SIXTH Tab Parent Library
     summary_table_library <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(data = selected_data_dem(), columns_to_summarise = data_library,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_library,
                                                                replace = "rp.contact.field.click_pc_",
                                                                replace_after = "count")
       data_library_neat <- naming_conventions(names(summary_table_library), replace = "Rp.contact.field.click hs")
@@ -5339,12 +5742,23 @@ parentapp_shiny <- function(country, study){
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table_baseline_build <- summary_table_baseline_build %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
           summary_table_baseline_build %>% 
             purrr::map(.f =~.x %>%
-                         
-                         dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-                         dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-                         dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
                          janitor::adorn_totals("row"))
         } else {
           summary_table_baseline_build %>% 

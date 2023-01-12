@@ -589,13 +589,13 @@ data_hp_chall <- c("hp_list_challenges_1on1", "hp_list_challenges_instruct", "hp
                    "hp_list_challenges_consequence", "hp_list_challenges_solve", "hp_list_challenges_safe", "hp_list_challenges_crisis")
 
 # overview table for home practice review started: number of users per home practice who reached first screen, i.e. only "true" not "false" or NA
-data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
-summary_table_hp_started <- multiple_table_output(plhdata_org_clean, data_hp_started) 
-names(summary_table_hp_started) <- data_hp_started_neat
+#data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
+#summary_table_hp_started <- multiple_table_output(plhdata_org_clean, data_hp_started) 
+#names(summary_table_hp_started) <- data_hp_started_neat
 
-table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
-if (!"true" %in% colnames(table_hp_started_long)) { table_hp_started_long$true <- 0 }
-table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_from = .id, values_from = c(true))
+#table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
+#if (!"true" %in% colnames(table_hp_started_long)) { table_hp_started_long$true <- 0 }
+#table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_from = .id, values_from = c(true))
 #how to call in Rshiny: summary_table_hp_started$`1on1 hp` etc
 
 

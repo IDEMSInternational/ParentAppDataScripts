@@ -418,10 +418,10 @@ checkbox_input <- function(inputId, country = country, study = study){
                                                  "9", "10", "11", "12", "13", "14", "15", "16"))),
              fluidRow(box(width = 4,
                           checkboxGroupInput(inputId = "opt_support",
-                                             label = "Support",
-                                             c("Self-guided" = "Self-guided",
-                                               "WhatsApp" = "WhatsApp"),
-                                             selected = c("Self-guided", "WhatsApp"))),
+                                       label = "Support",
+                                       c("Self-guided" = "Self-guided",
+                                         "WhatsApp" = "WhatsApp"),
+                                       selected = c("Self-guided", "WhatsApp"))),
                       box(width = 4, checkboxGroupInput(inputId = "opt_skin",
                                                         label = "Skin type",
                                                         c("Module" = "Module",
@@ -493,32 +493,33 @@ top_boxes <- function(country){
 summary_table_base_build <- function(data = plhdata_org_clean,
                                      columns_to_summarise = data_baseline_survey,
                                      replace = "rp.contact.field.",
-                                     replace_after = NULL){
+                                     replace_after = NULL,
+                                     opt_factors = c("Support", "Skin", "Digital Literacy")){
   if (country == "Tanzania"){
     if (study == "Pilot"){
       return(multiple_table_output(data = data,
-                            columns_to_summarise = columns_to_summarise,
-                            replace = replace,
-                            replace_after = replace_after,
-                            factors = "PilotSite"))
+                                   columns_to_summarise = columns_to_summarise,
+                                   replace = replace,
+                                   replace_after = replace_after,
+                                   factors = "PilotSite"))
     } else if (study == "Optimisation"){
       return(multiple_table_output(data = data,
                                    columns_to_summarise = columns_to_summarise,
                                    replace = replace,
                                    replace_after = replace_after,
-                                   factors = c("Support", "Skin", "Digital Literacy")))
+                                   factors = opt_factors)) #))
     } else {
       return(multiple_table_output(data = data,
-                            columns_to_summarise = columns_to_summarise,
-                            replace = replace,
-                            replace_after = replace_after))
+                                   columns_to_summarise = columns_to_summarise,
+                                   replace = replace,
+                                   replace_after = replace_after))
     }
   } else {
     # otherwise we have the different Organisations in the code anyway so it's nice and easy. 
     return(multiple_table_output(data = data,
-                          columns_to_summarise = columns_to_summarise,
-                          replace = replace,
-                          replace_after = replace_after))
+                                 columns_to_summarise = columns_to_summarise,
+                                 replace = replace,
+                                 replace_after = replace_after))
   }
-  }
+}
 

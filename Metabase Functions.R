@@ -376,6 +376,12 @@ challenge_freq <- function(data = plhdata_org_clean, group_by = "Org", var, appe
   
   plh_list <- plyr::ldply(plh_list)
   plh_list <- plh_list %>% group_by(plh_list1, Org) %>% summarise(n())
+  
+  plh_list <- plh_list %>%
+    dplyr::filter(!plh_list1 %in% c("other_challenge", "undefined", "null")) %>%
+    dplyr::filter(!is.na(plh_list1)) %>%
+    pivot_wider(names_from = plh_list1, values_from = `n()`) %>%
+    mutate_all(~replace(., is.na(.), 0))
   return(plh_list)
 }
 

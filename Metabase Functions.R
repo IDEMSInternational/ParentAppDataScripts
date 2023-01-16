@@ -160,7 +160,7 @@ get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, 
 }
 
 # same function used in parent text
-summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise, summaries = c("frequencies", "mean"),
+summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise, summaries = c("frequencies", "mean", "total"),
                                 include_country_margins, country_factor, together = FALSE, include_margins = FALSE, na.rm = TRUE){
   
   summaries <- match.arg(summaries)
@@ -214,6 +214,11 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
         mutate(across({{ columns_to_summarise }}, ~fct_relevel(.x, "Total", after = Inf))) %>%
         select(-c("id"))
     }
+  } else if (summaries == "total") {
+    summary_output <- data %>%
+      group_by(across({{ factors }}), .drop = FALSE) %>%
+      #mutate(across({{ columns_to_summarise }}, ~as.numeric(.))) %>%
+      summarise(across({{ columns_to_summarise }}, ~sum(.x, na.rm = na.rm)))
   } else {
     summary_output <- data %>%
       group_by(across({{ factors }}), .drop = FALSE) %>%
@@ -240,7 +245,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
   return(summary_output)
 }
 
-summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise, summaries = c("frequencies", "mean"),
+summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise, summaries = c("frequencies", "mean", "total"),
                           replace = "rp.contact.field.", replace_after = NULL, include_margins = FALSE, include_country_margins = TRUE, 
                           country_factor = "country", wider_table = TRUE, na.rm = TRUE,
                           display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,
@@ -259,7 +264,7 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
                                       na.rm = na.rm)
   
   return_table_names <- naming_conventions(colnames(return_table), replace = replace, replace_after = replace_after)
-  if (summaries == "mean"){
+  if (summaries %in% c("mean", "total")){
     if (naming_convention){
       colnames(return_table) <- naming_conventions(colnames(return_table), replace = replace, replace_after = replace_after)
     }
@@ -552,3 +557,21 @@ hp_mood_plot <- function(data){
     labs(x = "How did you find it?", y = "Frequency")
 }
 
+plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
+  summary_workshop_long <- data %>%
+    pivot_longer(cols = !factors) %>%
+    mutate(name = fct_relevel(name, week_order))   # set the order of variables
+  if (country == "Tanzania"){
+    if (study == "Optimisation"){
+      summary_workshop_long <- summary_workshop_long %>%
+        mutate(Org = toString(factors)) # TODO: fix this
+    } else {
+      summary_workshop_long <- rename(summary_workshop_long, Org = factors)
+    }
+  } else {
+    summary_workshop_long <- summary_workshop_long %>% filter(Org != "Total")
+  }
+  return(ggplot(summary_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
+           geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+           geom_line() + labs(x = "Workshop week", y = "Number of points"))
+}

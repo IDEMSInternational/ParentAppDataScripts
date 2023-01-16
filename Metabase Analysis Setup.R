@@ -5,7 +5,7 @@
 ##################################
 
 country <- "Tanzania"
-study <- "Pilot"
+study <- "Optimisation"
 ### extract data ----------------------------------------------------------------------
 # to get user data
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
@@ -126,6 +126,7 @@ plhdata_org_clean <- plhdata_org_clean %>%
                                  "Other")))
 
 print(country)
+print(study)
 if (country == "Tanzania"){
   if (study == "Optimisation"){
     plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "Optimisation Study")

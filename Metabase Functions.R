@@ -560,17 +560,21 @@ hp_mood_plot <- function(data, factors){
 plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
   summary_workshop_long <- data %>%
     pivot_longer(cols = !factors) %>%
-    mutate(name = fct_relevel(name, week_order))   # set the order of variables
+    mutate(name = fct_relevel(name, week_order)) %>%  # set the order of variables
+    filter()
+  
   if (country == "Tanzania"){
     if (study == "Optimisation"){
       summary_workshop_long <- summary_workshop_long %>%
-        tidyr::unite(col = "Org", {{ factors }})
+        tidyr::unite(col = "Org", {{ factors }})%>%
+        filter(name != "Total")
     } else {
-      summary_workshop_long <- rename(summary_workshop_long, Org = factors)
+      summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
     }
   } else {
-    summary_workshop_long <- summary_workshop_long %>% filter(Org != "Total")
+    summary_workshop_long <- summary_workshop_long %>% filter(name != "Total")
   }
+  
   return(ggplot(summary_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
            geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
            geom_line() + labs(x = "Workshop week", y = "Number of points"))

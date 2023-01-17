@@ -2053,7 +2053,7 @@ parentapp_shiny <- function(country, study){
                                            solidHeader = TRUE,
                                            title = "Cumulative app opens",
                                            status = "success",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_appopen_totals", height = "240"),
                                            shiny::tableOutput("table_appopen_totals")
                                        ) #closes box
@@ -2065,15 +2065,146 @@ parentapp_shiny <- function(country, study){
                                            solidHeader = TRUE,
                                            title = "Mean app opens per workshop week",
                                            status = "success",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_appopen_mean_week", height = "240"),
                                            shiny::tableOutput("table_appopen_mean_week")
                                        )#closes box
-                                     ) #closes fluid row
+                                     ), #closes fluid row
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           status = "success",  
+                                           title = "App Opens for Week 1: Welcome and Self Care",
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_self_care", height = "240"),
+                                           shiny::tableOutput("table_appopen_self_care")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           status = "success", 
+                                           title = "App Opens for Week 2: One-on-One Time",
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_1on1", height = "240"),
+                                           shiny::tableOutput("table_appopen_1on1")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 3: Praise",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_praise", height = "240"),
+                                           shiny::tableOutput("table_appopen_praise")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 4: Positive Instructions",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_instructions", height = "240"),
+                                           shiny::tableOutput("table_appopen_instructions")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 5: Stress",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_stress", height = "240"),
+                                           shiny::tableOutput("table_appopen_stress")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 6: Budgeting",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_budget", height = "240"),
+                                           shiny::tableOutput("table_appopen_budget")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 7: Rules",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_rules", height = "240"),
+                                           shiny::tableOutput("table_appopen_rules")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 8: Consequences",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_consequences", height = "240"),
+                                           shiny::tableOutput("table_appopen_consequences")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 9: Problem Solving",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_problem_solving", height = "240"),
+                                           shiny::tableOutput("table_appopen_problem_solving")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 10: Teen Safety",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_teen_safety", height = "240"),
+                                           shiny::tableOutput("table_appopen_teen_safety")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 11: Crisis",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_crisis", height = "240"),
+                                           shiny::tableOutput("table_appopen_crisis")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 12: Celebration and Next Steps",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_celebration", height = "240"),
+                                           shiny::tableOutput("table_appopen_celebration")
+                                       ) #closes box
+                                     ) #closes fluidrow
                             ), #closes tabPanel App Opens
                             
                             tabPanel("Push Notifications",
-                                     
                                      fluidRow(
                                        box(width = 12,
                                            collapsible = TRUE,
@@ -2969,42 +3100,42 @@ parentapp_shiny <- function(country, study){
       return(summary_workshop)
     }
     
-    mult_summary_table_filter <- function(summary_table_baseline_build){
+    mult_summary_table_filter <- function(summary_table = summary_table_baseline_build){
       if (country == "Tanzania"){
         if (study == "Pilot"){
-          summary_table_baseline_build <- summary_table_baseline_build %>% 
+          summary_table <- summary_table %>% 
             purrr::map(.f =~.x %>%
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
           if (!is.null(input$opt_support)){
-            summary_table_baseline_build <- summary_table_baseline_build %>% 
+            summary_table <- summary_table %>% 
               purrr::map(.f =~.x %>%
                            dplyr::filter(Support %in% c(selected_data_dem()$Support)))
           }
           if (!is.null(input$opt_skin)){
-            summary_table_baseline_build <- summary_table_baseline_build %>% 
+            summary_table <- summary_table %>% 
               purrr::map(.f =~.x %>%
                            dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
           }
           if (!is.null(input$opt_diglit)){
-            summary_table_baseline_build <- summary_table_baseline_build %>% 
+            summary_table <- summary_table %>% 
               purrr::map(.f =~.x %>%
                            dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
           }
-          summary_table_baseline_build <- summary_table_baseline_build %>% 
+          summary_table <- summary_table %>% 
             purrr::map(.f =~.x %>%
                          janitor::adorn_totals("row"))
         } else {
-          summary_table_baseline_build <- summary_table_baseline_build %>% 
+          summary_table <- summary_table %>% 
             purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
         }
       } else {
-        summary_table_baseline_build <- summary_table_baseline_build %>% 
+        summary_table <- summary_table %>% 
           purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
         #janitor::adorn_totals("row"))
       }
-      return(summary_table_baseline_build) 
+      return(summary_table) 
     }
     
     # Demographics ---------------------------------------------------
@@ -4386,78 +4517,196 @@ parentapp_shiny <- function(country, study){
     
     #FOURTH Tab In-week Engagement ---------------------------
     tables_app_opens <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_app_opens,
-                                                               replace = "rp.contact.field.")
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(),
+                                                               columns_to_summarise = data_app_opens,
+                                                               replace = "rp.contact.field.app_launch_count")
       names(summary_table_baseline_build) <- data_app_opens_neat
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          if (!is.null(input$opt_support)){
-            summary_table_baseline_build <- summary_table_baseline_build %>% 
-              purrr::map(.f =~.x %>%
-                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
-          }
-          if (!is.null(input$opt_skin)){
-            summary_table_baseline_build <- summary_table_baseline_build %>% 
-              purrr::map(.f =~.x %>%
-                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
-          }
-          if (!is.null(input$opt_diglit)){
-            summary_table_baseline_build <- summary_table_baseline_build %>% 
-              purrr::map(.f =~.x %>%
-                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
-          }
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         janitor::adorn_totals("row"))
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
+      
+      mult_summary_table_filter(summary_table = summary_table_baseline_build)
     })
     
     #App Opens tab 4.1
     table_appopen_totals <- reactive({
       tables_app_opens()$`Total`
     }) 
-    plot_appopen_totals <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.app_launch_count", replace = "rp.contact.field.")}) 
+    plot_appopen_totals <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_totals(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+      }) 
     output$table_appopen_totals <- shiny::renderTable({(table_appopen_totals())}, striped = TRUE)
     output$plot_appopen_totals <- renderPlotly({plot_appopen_totals()})
     
     table_appopen_mean_week <- reactive({
       #Average app opens per ws week
-      summary_mean_appopens <- selected_data_dem() %>%
-        group_by(Org) %>%
-        summarise(across(data_app_opens, mean, na.rm = TRUE))
-      colnames(summary_mean_appopens)[2:length(summary_mean_appopens)] <- data_app_opens_neat
-      if (country == "Tanzania"){
-        summary_mean_appopens <- summary_mean_appopens
-      } else {
-        summary_mean_appopens <- summary_mean_appopens %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_mean_appopens
+      summary_mean_appopens <- summary_table(factors = opt_factors(),
+                                             summaries = "mean", columns_to_summarise = data_app_opens,
+                                             replace = "rp.contact.field.app_launch_count_w_")
+      summary_mean_appopens <- rename(summary_mean_appopens, "Total" = `Rp.contact.field.app launch count`)
+      summary_table_filter(summary_mean_appopens)
     }) 
     plot_appopen_mean_week <- reactive({
-      # Make the table longer so that it is in a format for use in ggplot
-      summary_mean_appopens_long <- table_appopen_mean_week() %>%
-        pivot_longer(cols = !Org, names_to = "Workshop Week", values_to = "Value") %>% mutate(`Workshop Week` = fct_relevel(`Workshop Week`, data_app_opens_neat))
-      ggplot(summary_mean_appopens_long, aes(x = `Workshop Week`, y = Value, fill = Org)) + 
-        geom_bar(stat = "identity", position = "dodge") +
-        scale_x_discrete(guide = guide_axis(angle = 90), limits = data_app_opens_neat) +
-        viridis::scale_fill_viridis(discrete = TRUE)
+      plot_fn <- plot_totals_function(table_appopen_mean_week(), opt_factors())
+      plot_fn + labs(y = "Mean App Opens")
     }) 
     output$table_appopen_mean_week <- shiny::renderTable({(table_appopen_mean_week())}, striped = TRUE)
     output$plot_appopen_mean_week <- renderPlotly({plot_appopen_mean_week()})
+    
+    table_appopen_self_care <- reactive({
+      tables_app_opens()$`Welcome and Self care(1)`
+    }) 
+    plot_appopen_self_care <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_self_care(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_self_care <- shiny::renderTable({(table_appopen_self_care())}, striped = TRUE)
+    output$plot_appopen_self_care <- renderPlotly({plot_appopen_self_care()})
+    
+    table_appopen_1on1 <- reactive({
+      tables_app_opens()$`One-on-one time(2)`
+    }) 
+    plot_appopen_1on1 <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_1on1(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_1on1 <- shiny::renderTable({(table_appopen_1on1())}, striped = TRUE)
+    output$plot_appopen_1on1 <- renderPlotly({plot_appopen_1on1()})
+    
+    table_appopen_praise <- reactive({
+      tables_app_opens()$`Praise (3)`
+    }) 
+    plot_appopen_praise <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_praise(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_praise <- shiny::renderTable({(table_appopen_praise())}, striped = TRUE)
+    output$plot_appopen_praise <- renderPlotly({plot_appopen_praise()})
+    
+    
+    table_appopen_instructions <- reactive({
+      tables_app_opens()$`Positive Instructions(4)`
+    }) 
+    plot_appopen_instructions <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_instructions(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_instructions <- shiny::renderTable({(table_appopen_instructions())}, striped = TRUE)
+    output$plot_appopen_instructions <- renderPlotly({plot_appopen_instructions()})
+    
+    
+    table_appopen_stress <- reactive({
+      tables_app_opens()$`Managing Stress(5)`
+    }) 
+    plot_appopen_stress <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_stress(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_stress <- shiny::renderTable({(table_appopen_stress())}, striped = TRUE)
+    output$plot_appopen_stress <- renderPlotly({plot_appopen_stress()})
+    
+    
+    table_appopen_budget <- reactive({
+      tables_app_opens()$`Family Budget(6)`
+    }) 
+    plot_appopen_budget <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_budget(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_budget <- shiny::renderTable({(table_appopen_budget())}, striped = TRUE)
+    output$plot_appopen_budget <- renderPlotly({plot_appopen_budget()})
+    
+    
+    table_appopen_rules <- reactive({
+      tables_app_opens()$`Rules(7)`
+    }) 
+    plot_appopen_rules <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_rules(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_rules <- shiny::renderTable({(table_appopen_rules())}, striped = TRUE)
+    output$plot_appopen_rules <- renderPlotly({plot_appopen_rules()})
+    
+    
+    table_appopen_consequences <- reactive({
+      tables_app_opens()$`Calm Consequences(8)`
+    }) 
+    plot_appopen_consequences <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_consequences(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_consequences <- shiny::renderTable({(table_appopen_consequences())}, striped = TRUE)
+    output$plot_appopen_consequences <- renderPlotly({plot_appopen_consequences()})
+    
+    
+    table_appopen_problem_solving <- reactive({
+      tables_app_opens()$`Problem Solving(9)`
+    }) 
+    plot_appopen_problem_solving <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_problem_solving(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_problem_solving <- shiny::renderTable({(table_appopen_problem_solving())}, striped = TRUE)
+    output$plot_appopen_problem_solving <- renderPlotly({plot_appopen_problem_solving()})
+    
+    
+    table_appopen_teen_safety <- reactive({
+      tables_app_opens()$`Teen Safety(10)`
+    }) 
+    plot_appopen_teen_safety <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_teen_safety(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_teen_safety <- shiny::renderTable({(table_appopen_teen_safety())}, striped = TRUE)
+    output$plot_appopen_teen_safety <- renderPlotly({plot_appopen_teen_safety()})
+    
+    
+    table_appopen_crisis <- reactive({
+      tables_app_opens()$`Crisis(11)`
+    }) 
+    plot_appopen_crisis <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_crisis(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_crisis <- shiny::renderTable({(table_appopen_crisis())}, striped = TRUE)
+    output$plot_appopen_crisis <- renderPlotly({plot_appopen_crisis()})
+    
+    
+    table_appopen_celebration <- reactive({
+      tables_app_opens()$`Celebration & Next Steps(12)`
+    }) 
+    plot_appopen_celebration <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_celebration(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_celebration <- shiny::renderTable({(table_appopen_celebration())}, striped = TRUE)
+    output$plot_appopen_celebration <- renderPlotly({plot_appopen_celebration()})
     
     # Push notifications tab 4.2
     table_pushn_totals <- reactive({pn_summary_count }) 

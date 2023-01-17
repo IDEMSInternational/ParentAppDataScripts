@@ -2883,7 +2883,8 @@ parentapp_shiny <- function(country, study){
     selected_data_dem <- reactive({
       if (country == "Tanzania"){
         if (study == "Pilot"){
-          plhdata_checkgroup <- plhdata_org_clean %>% dplyr::filter(PilotSite %in% c(input$OrgDem))
+          plhdata_checkgroup <- plhdata_org_clean %>%
+            dplyr::filter(PilotSite %in% c(input$OrgDem))
         } else if (study == "Optimisation"){
           plhdata_checkgroup <- plhdata_org_clean %>%
             dplyr::filter(Cluster %in% c(input$opt_cluster))
@@ -3004,28 +3005,6 @@ parentapp_shiny <- function(country, study){
         #janitor::adorn_totals("row"))
       }
       return(summary_table_baseline_build) 
-    }
-    
-    hp_mood_plot <- function(data){
-      plot_data <- data %>%
-        dplyr::select(-Total) %>%
-        pivot_longer(cols = !opt_factors())
-      
-      if (country == "Tanzania"){
-        if (study == "Optimisation"){
-          plot_data <- plot_data %>%
-            mutate(Org = toString(opt_factors()))
-        } else {
-          plot_data <- plot_data %>% mutate(Org = PilotSite)
-        }
-      }
-      plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
-      plot + geom_bar(stat = "identity", position = "dodge") +
-        scale_x_discrete(guide = guide_axis(angle = 90),
-                         limits = c("sad", "ok", "happy", "NA"),
-                         labels = c("Sad", "Ok", "Happy", "NA")) +
-        viridis::scale_fill_viridis(discrete = TRUE) +
-        labs(x = "How did you find it?", y = "Frequency")
     }
     
     # Demographics ---------------------------------------------------
@@ -4629,7 +4608,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_1on1 <- renderPlotly({plot_hpdone_1on1()})
     
     table_mood_1on1 <- reactive({summary_table_hp_mood()$`1on1 hp`})
-    plot_mood_1on1 <- reactive({hp_mood_plot(summary_table_hp_mood()$`1on1 hp`)})
+    plot_mood_1on1 <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`1on1 hp`)})
     output$table_mood_1on1 <- shiny::renderTable({(table_mood_1on1())}, striped = TRUE)
     output$plot_mood_1on1 <- renderPlotly({plot_mood_1on1()})
     
@@ -4722,7 +4701,7 @@ parentapp_shiny <- function(country, study){
     
     table_mood_praise <- reactive({})
     plot_mood_praise <- reactive({})
-    #plot_mood_praise <- reactive({hp_mood_plot(summary_table_hp_mood()$`praise hp`)})
+    #plot_mood_praise <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`praise hp`)})
     
     output$table_mood_praise <- shiny::renderTable({(table_mood_praise())}, striped = TRUE)
     output$plot_mood_praise <- renderPlotly({plot_mood_praise()})
@@ -4741,7 +4720,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_instruct <- renderPlotly({plot_hpdone_instruct()})
     
     table_mood_instruct <- reactive({summary_table_hp_mood()$`Instruct hp`  })
-    plot_mood_instruct <- reactive({hp_mood_plot(summary_table_hp_mood()$`Instruct hp`)})
+    plot_mood_instruct <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Instruct hp`)})
     output$table_mood_instruct <- shiny::renderTable({(table_mood_instruct())}, striped = TRUE)
     output$plot_mood_instruct <- renderPlotly({plot_mood_instruct()})
     
@@ -4765,7 +4744,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_stress_br <- renderPlotly({plot_hpdone_stress_br()})
     
     table_mood_stress_br <- reactive({summary_table_hp_mood()$`Stress hp breathe` })
-    plot_mood_stress_br <- reactive({hp_mood_plot(summary_table_hp_mood()$`Stress hp breathe`)})
+    plot_mood_stress_br <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Stress hp breathe`)})
     output$table_mood_stress_br <- shiny::renderTable({(table_mood_stress_br())}, striped = TRUE)
     output$plot_mood_stress_br <- renderPlotly({plot_mood_stress_br()})
     
@@ -4790,7 +4769,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_stress_tk <- renderPlotly({plot_hpdone_stress_tk()})
     
     table_mood_stress_tk <- reactive({summary_table_hp_mood()$`Stress hp talk` })
-    plot_mood_stress_tk <- reactive({hp_mood_plot(summary_table_hp_mood()$`Stress hp talk`)})
+    plot_mood_stress_tk <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Stress hp talk`)})
     output$table_mood_stress_tk <- shiny::renderTable({(table_mood_stress_tk())}, striped = TRUE)
     output$plot_mood_stress_tk <- renderPlotly({plot_mood_stress_tk()})
     
@@ -4807,12 +4786,12 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_money <- renderPlotly({plot_hpdone_money()})
     
     table_mood_money <- reactive({summary_table_hp_mood()$`Money hp` })
-    plot_mood_money <- reactive({hp_mood_plot(summary_table_hp_mood()$`Money hp`)})
+    plot_mood_money <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Money hp`)})
     output$table_mood_money <- shiny::renderTable({(table_mood_money())}, striped = TRUE)
     output$plot_mood_money <- renderPlotly({plot_mood_money()})
 
     table_mood_rules <- reactive({summary_table_hp_mood()$`Rules hp` })
-    plot_mood_rules <- reactive({hp_mood_plot(summary_table_hp_mood()$`Rules hp`)})
+    plot_mood_rules <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Rules hp`)})
     output$table_mood_rules <- shiny::renderTable({(table_mood_rules())}, striped = TRUE)
     output$plot_mood_rules <- renderPlotly({plot_mood_rules()})
     
@@ -4836,7 +4815,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_rule <- renderPlotly({plot_hpdone_rule()})
     
     table_mood_rule <- reactive({summary_table_hp_mood()$`Rules hp` })
-    plot_mood_rule <- reactive({hp_mood_plot(summary_table_hp_mood()$`Rules hp`)})
+    plot_mood_rule <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Rules hp`)})
     output$table_mood_rule <- shiny::renderTable({(table_mood_rule())}, striped = TRUE)
     output$plot_mood_rule <- renderPlotly({plot_mood_rule()})
     
@@ -4864,7 +4843,7 @@ parentapp_shiny <- function(country, study){
                      group_by = opt_factors(),
                      append_var = "rp.contact.field.w_consequence_hp_challenge")
     })
-    plot_mood_consequence <- reactive({hp_mood_plot(summary_table_hp_mood()$`Consequence hp`)})
+    plot_mood_consequence <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Consequence hp`)})
     output$table_mood_consequence <- shiny::renderTable({(table_mood_consequence())}, striped = TRUE)
     output$plot_mood_consequence <- renderPlotly({plot_mood_consequence()})
     
@@ -4888,7 +4867,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_solve <- renderPlotly({plot_hpdone_solve()})
     
     table_mood_solve <- reactive({summary_table_hp_mood()$`Solve hp` })
-    plot_mood_solve <- reactive({hp_mood_plot(summary_table_hp_mood()$`Solve hp`)})
+    plot_mood_solve <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Solve hp`)})
     output$table_mood_solve <- shiny::renderTable({(table_mood_solve())}, striped = TRUE)
     output$plot_mood_solve <- renderPlotly({plot_mood_solve()})
     
@@ -4912,7 +4891,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_safe <- renderPlotly({plot_hpdone_safe()})
     
     table_mood_safe <- reactive({summary_table_hp_mood()$`Safe hp` })
-    plot_mood_safe <- reactive({hp_mood_plot(summary_table_hp_mood()$`Safe hp`)})
+    plot_mood_safe <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Safe hp`)})
     output$table_mood_safe <- shiny::renderTable({(table_mood_safe())}, striped = TRUE)
     output$plot_mood_safe <- renderPlotly({plot_mood_safe()})
     
@@ -4936,7 +4915,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hpdone_crisis <- renderPlotly({plot_hpdone_crisis()})
     
     table_mood_crisis <- reactive({summary_table_hp_mood()$`Crisis hp`})
-    plot_mood_crisis <- reactive({hp_mood_plot(summary_table_hp_mood()$`Crisis hp`)})
+    plot_mood_crisis <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Crisis hp`)})
     output$table_mood_crisis <- shiny::renderTable({(table_mood_crisis())}, striped = TRUE)
     output$plot_mood_crisis <- renderPlotly({plot_mood_crisis()})
     

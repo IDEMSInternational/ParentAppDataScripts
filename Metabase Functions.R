@@ -535,15 +535,15 @@ summary_table_base_build <- function(data = plhdata_org_clean,
 }
 
 
-hp_mood_plot <- function(data){
+hp_mood_plot <- function(data, factors){
   plot_data <- data %>%
     dplyr::select(-Total) %>%
-    pivot_longer(cols = !opt_factors())
+    pivot_longer(cols = !factors)
   
   if (country == "Tanzania"){
     if (study == "Optimisation"){
       plot_data <- plot_data %>%
-        mutate(Org = toString(opt_factors()))
+        tidyr::unite(col = "Org", {{ factors }})
     } else {
       plot_data <- plot_data %>% mutate(Org = PilotSite)
     }
@@ -564,7 +564,7 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
   if (country == "Tanzania"){
     if (study == "Optimisation"){
       summary_workshop_long <- summary_workshop_long %>%
-        mutate(Org = toString(factors)) # TODO: fix this
+        tidyr::unite(col = "Org", {{ factors }})
     } else {
       summary_workshop_long <- rename(summary_workshop_long, Org = factors)
     }

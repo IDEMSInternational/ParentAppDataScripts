@@ -12,7 +12,7 @@ library(gt)
 library(readxl)
 options(dplyr.summarise.inform = FALSE)
 country <- "Tanzania" # Tanzania, all
-study <- "Pilot"
+study <- "Optimisation"
 source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))
 parentapp_shiny(country = country, study = study)

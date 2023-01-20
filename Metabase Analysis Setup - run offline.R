@@ -1,142 +1,19 @@
-##################################
-##################################
-####### User Data Analysis #######
-##################################
-##################################
+#nrow(plhdata_org_clean)
 
-country <- "Tanzania"
+#rio::export(x = nf_data1, file = "data/nf_data1.xlsx")
+#rio::export(x = plhdata_org_clean, file = "data/plhdata_org_offline_TZ_Opt.xlsx")
 study <- "Optimisation"
-### extract data ----------------------------------------------------------------------
-# to get user data
-plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
-# plhdata_org <- plhdata_org1
-## Data Cleaning - User Data ## --------------------------------------------------------
-## Tidy up "Organisation" Variable:
-# replace missing values in Organisation and rp.contact.field.organisation_code by Miss so that it is a factor level
-plhdata_org$Organisation <- forcats::as_factor(tidyr::replace_na(plhdata_org$Organisation, "Miss"))
 
-# look and Recode Factor organisation_full to just the main levels # Question: What about "null"?
-plhdata_org$rp.contact.field.organisation_code <- as_factor(replace_na(plhdata_org$rp.contact.field.organisation_code, "Miss"))
-
-# Combine Factors Organisation and rp.contact.field.organisation_code 
-plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,
-                                                    plhdata_org$rp.contact.field.organisation_code), drop=TRUE)
-
-plhdata_org <- plhdata_org %>%
-  mutate(organisation_full = ifelse((rp.contact.field.organisation_code == "organisation_1") & (app_deployment_name %in% c("plh_tz", "PLH TZ")),
-                                    "ICS",
-                                    as.character(organisation_full)))
-
-# filter out ICS users from before August
-#plhdata_org <- plhdata_org %>%
-#  mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
-#                    ifelse(as.Date(createdAt) > as.Date("2022-08-01"), TRUE, FALSE))) %>%
-#  filter(valid_ics)
-# filter out users without an intel phone?
-
-# for now, filter out users not in the excel data
-
-# Create Optimisation Group Data for Optimisation Study - Tanzania
-valid_ids <- UIC_Tracker_Tanzania %>%
-  filter(complete.cases(YourParentAppCode))  %>%
-  filter(Study == "Optimisation") %>%
-  select(c(YourParentAppCode, opt_cluster, experimental_condition))
-
-# user ID "75bbbdc21741f155" has an extra b in one source so it is important we still do fuzzy join
-plhdata_org_opt_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
-# get the app user IDs where we have a code from the optimisation group.
-valid_app_user_id_TZ <- (plhdata_org_opt_fuzzy %>% filter(!is.na(YourParentAppCode)))$app_user_id
-plhdata_org <- plhdata_org %>% 
-  mutate(valid_ics_1 = ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE)) %>%
-  mutate(organisation_full = ifelse(valid_ics_1, "Optimisation Study", organisation_full))
-
-plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>% dplyr::select(c(app_user_id, opt_cluster, experimental_condition))
-plhdata_org <- full_join(plhdata_org, plhdata_org_opt_fuzzy_opt_cluster, by = c("app_user_id" = "app_user_id"))
-plhdata_org <- plhdata_org %>%
-  mutate(Cluster = opt_cluster,
-         Support = ifelse(experimental_condition < 5, "Self-guided", "WhatsApp"),
-         Skin = ifelse(experimental_condition %in% c(1, 2, 5, 6), "Module", "Workshop"),
-         `Digital Literacy` = ifelse(experimental_condition %in% c(1, 3, 5, 7), "On", "Off"))
-
-# Create Pilot Group Data for Pilot Study - Tanzania
-valid_ids <- UIC_Tracker_Tanzania %>%
-    filter(complete.cases(YourParentAppCode))  %>%
-    filter(Study == "Pilot") %>%
-    select(c(YourParentAppCode, PilotSite))
-  
-plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
-valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
-plhdata_org <- plhdata_org %>% 
-    mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
-                              ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE))) %>%
-    filter(valid_ics)
-plhdata_org <- plhdata_org %>%
-    mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4",
-                                                         "48621962b0612b7c", "d5faa072c966ea8d",
-                                                         "df1088af5f3d4c87", "5b2ba92c32c6a3e2",
-                                                         "f3aff268263b1d62", "a05a0fe6cd3cb52d",
-                                                         "7f56c4c0a8a2f36f", "fab4ae58ac03f920"),
-                                      "ICS",
-                                      as.character(organisation_full)))
-  
-# add in new row containing ICS, and app_user_id  -  08/09/22
-#fab4ne58ac03f920
-#oe5824bd19aa8c4
-#plhdata_org[(nrow(plhdata_org)+1):(nrow(plhdata_org)+2),] <- NA
-#plhdata_org$app_user_id[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("fab4ne58ac03f920", "oe5824bd19aa8c4")
-#plhdata_org$organisation_full[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("ICS", "ICS")
-#plhdata_org$app_version[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("0.0", "0.0")
-
-# get unique cases only
-#View(plhdata_org_ics_fuzzy %>% filter(app_user_id == "a60b902a430aaec2"))
-plhdata_org_ics_fuzzy <- unique(plhdata_org_ics_fuzzy %>% dplyr::select(-c("YourParentAppCode")))
-plhdata_org_pilot_site <- plhdata_org_ics_fuzzy %>% dplyr::select(c(app_user_id, PilotSite)) %>% filter(!is.na(PilotSite))
-nrow((plhdata_org_pilot_site))
-plhdata_org <- full_join(plhdata_org, plhdata_org_pilot_site, by = c("app_user_id" = "app_user_id"))
-
-# TO CHECK:
-#plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
-# Note: "2c5bfeb1c97cffdf" "oe5824bd19aa8c4" are in "Miss.Miss"
-plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
-                                 replace=c(`ICS` = "ICS", `Optimisation Study` = "Optimisation Study", `Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
-                                           `Miss.idems Margherita` = "Other", `Miss.IDEMS Ohad` = "Other", `Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other",  `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other",
-                                           `Miss.other` ="Other", `Miss.zlto` ="Other", `Miss.hpccc` ="Other", `Miss.seven_passes` ="Other", `Miss.Hillcrest facilitator` ="Other", `Miss.Hillcrest Facilitator ` ="Other", `Miss.a00af0c3b3887330` ="Other",
-                                           `Nontobeko.Miss` = "Nontobeko", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko",  `Nontobeko.nontobekoM` = "Nontobeko",
-                                           `Nontobeko.NontobekoM` = "Nontobeko", `Nontobeko.null` ="Nontobeko", `Miss.NontobekoM` = "Nontobeko", 
-                                           `Joy.Miss` = "Joy", `Joy.c9097349f34b364c` ="Joy", `Joy.null` ="Joy",
-                                           `Dlalanathi.Miss` = "Dlalanathi",  `Dlalanathi.null` = "Dlalanathi", `Miss.dlalanathiThandeka` = "Dlalanathi",  `Dlalanathi.dlanathiThandeka` ="Dlalanathi",
-                                           `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", 
-                                           `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba", `Miss.dlalanathi`="Dlalanathi",
-                                           `Miss.organisation_1` = "Other", `Miss.organisation_2` = "Other",`Miss.organisation_6` = "Other"))
-
-#####Create a subset for cleaned organisations ####
-# TODO: none are called Miss in "Org" due to how you defined it
-plhdata_org_clean <- plhdata_org %>%
-  filter(Org != "Other")%>%
-  mutate(Org = factor(Org))
-
-# Create subsets of the data based on valid app user ID's
-plhdata_org_clean <- plhdata_org_clean %>%
-  dplyr::filter(!is.na(app_version))
-
-# add in country variable
-plhdata_org_clean <- plhdata_org_clean %>%
-  mutate(country = ifelse(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"), "South Africa",
-                          ifelse(Org %in% c("ICS", "Optimisation Study"), "Tanzania",
-                                 "Other")))
-
-print(country)
-print(study)
-if (country == "Tanzania"){
-  if (study == "Optimisation"){
-    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "Optimisation Study")
-  } else {
-    plhdata_org_clean <- plhdata_org_clean %>% mutate(PilotSite = replace_na(PilotSite, "Unknown"))
-    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
-  }
-} else if (country == "South Africa"){
-  plhdata_org_clean <- plhdata_org_clean %>% filter(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"))
+if (study == "Optimisation"){
+  plhdata_org_clean <- rio::import(file = here("data/plhdata_org_offline_TZ_Opt.xlsx"))
+} else {
+  plhdata_org_clean <- rio::import(file = here("data/plhdata_org_offline_TZ_Pilot.xlsx"))
 }
+nf_data1 <- rio::import(file = here("data/nf_data1.xlsx"))
+
+plhdata_org_clean <- plhdata_org_clean %>%
+  mutate(Cluster = opt_cluster)
+#plhdata_org_clean <- rio::import(file = here("data/plhdata_org_offline_TZ_Pilot.xlsx"))
 
 # Sorting Name Changes --------------------------------------------------
 old_names <- c("a_1_final", "a_2_final", "a_3_final", "a_4_final", "a_5_part_1_final", "a_5_part_2_final", "a_6_final", "a_7_part_1_final")
@@ -205,14 +82,6 @@ plhdata_org_clean <- plhdata_org_clean %>%
 #plhdata_org_clean$rp.contact.field.survey_welcome_ps_v0.16.2[281:290]
 
 # Tidying up for together/individual and modular/workshop skins
-#json_data <- NULL
-#for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
-#  # which variables to select?
-#  json_data[[i]] <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
-#}
-#saveRDS(json_data, file = "data/json_data.RDS")
-json_data <- readRDS(file = "data/json_data.RDS")
-
 if (study == "Optimisation"){
   plhdata_org_clean_mod <- plhdata_org_clean %>% filter(rp.contact.field._app_skin == "modular")
   data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
@@ -228,14 +97,14 @@ if (study == "Optimisation"){
   for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
     # which variables to select?
     
-    json_data_i <- json_data[[i]]
+    json_data <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
     # rows.id, rows.individual, rows.together, rows.completed_field
-    json_data_i <- json_data_i %>% dplyr::select(c(rows.id, rows.individual, rows.together, rows.completed_field)) %>%
+    json_data <- json_data %>% dplyr::select(c(rows.id, rows.individual, rows.together, rows.completed_field)) %>%
       filter(!rows.id %in% c("home_practice", "hp_review"))
-    json_data_i_ind <- json_data_i %>% filter(rows.individual == TRUE)
-    completed_rows_ind <- paste0("rp.contact.field.", json_data_i_ind$rows.completed_field)
-    json_data_i_tog <- json_data_i %>% filter(rows.together == TRUE)
-    completed_rows_tog <- paste0("rp.contact.field.", json_data_i_tog$rows.completed_field)
+    json_data_ind <- json_data %>% filter(rows.individual == TRUE)
+    completed_rows_ind <- paste0("rp.contact.field.", json_data_ind$rows.completed_field)
+    json_data_tog <- json_data %>% filter(rows.together == TRUE)
+    completed_rows_tog <- paste0("rp.contact.field.", json_data_tog$rows.completed_field)
     
     plhdata_org_clean_mod_inds <- plhdata_org_clean_mod %>%
       filter(rp.contact.field.workshop_path != "together") %>%
@@ -587,13 +456,13 @@ data_hp_chall <- c("hp_list_challenges_1on1", "hp_list_challenges_instruct", "hp
                    "hp_list_challenges_consequence", "hp_list_challenges_solve", "hp_list_challenges_safe", "hp_list_challenges_crisis")
 
 # overview table for home practice review started: number of users per home practice who reached first screen, i.e. only "true" not "false" or NA
-#data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
-#summary_table_hp_started <- multiple_table_output(plhdata_org_clean, data_hp_started) 
-#names(summary_table_hp_started) <- data_hp_started_neat
+data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
+summary_table_hp_started <- multiple_table_output(plhdata_org_clean, data_hp_started) 
+names(summary_table_hp_started) <- data_hp_started_neat
 
-#table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
-#if (!"true" %in% colnames(table_hp_started_long)) { table_hp_started_long$true <- 0 }
-#table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_from = .id, values_from = c(true))
+table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
+if (!"true" %in% colnames(table_hp_started_long)) { table_hp_started_long$true <- 0 }
+table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_from = .id, values_from = c(true))
 #how to call in Rshiny: summary_table_hp_started$`1on1 hp` etc
 
 
@@ -767,9 +636,9 @@ data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey
 
 # download push notification data
 # TODO: add fuzzy join to get_nf_data function
-nf_data <- get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
+#nf_data <- get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
 # 
-
+nf_data <- nf_data1 #get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
 
 # # what variables do we want in the nf data - org, sex, - add a few in.
 data_baseline_nf <-
@@ -814,3 +683,4 @@ nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
 #     percentage_responded = number_responded / number_received *
 #       100
 #   )
+

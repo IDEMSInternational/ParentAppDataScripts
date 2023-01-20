@@ -102,7 +102,6 @@ plhdata_org_clean <- plhdata_org_clean %>%
                                  "Other")))
 
 print(country)
-print(study)
 if (country == "Tanzania"){
   if (study == "Optimisation"){
     plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "Optimisation Study")
@@ -113,6 +112,80 @@ if (country == "Tanzania"){
   plhdata_org_clean <- plhdata_org_clean %>% filter(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"))
 }
 
+# Sorting Name Changes --------------------------------------------------
+old_names <- c("a_1_final", "a_2_final", "a_3_final", "a_4_final", "a_5_part_1_final", "a_5_part_2_final", "a_6_final", "a_7_part_1_final")
+new_names <- c("ppf", "ppp", "ps", "cme", "fs", "fi", "cmp", "cs")
+df_names <- data.frame(old_names, new_names)
+for (v in c("v0.16.2", "v0.16.3", "v0.16.4")){
+  for (i in 1:nrow(df_names)){
+    old_name = df_names[i,1]
+    new_name = df_names[i,2]
+    plhdata_org_clean <- plhdata_org_clean %>%
+      map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
+             .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE))
+    # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
+  }
+}
+
+for (v in c("v0.16.4")){ # and other versions?
+  for (i in 1:nrow(df_names)){
+    old_name = df_names[i,1]
+    new_name = df_names[i,2]
+    plhdata_org_clean <- plhdata_org_clean %>%
+      map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
+             .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE, survey = "final"))
+    # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
+  }
+}
+
+# We first rename the _v system into the old system of a_1 etc
+# We then rename into the new naming system, where it can be directly renamed. However, some cannot.
+
+# Which cannot:
+# rp.contact.field.survey_welcome_a_3_final, rp.contact.field.survey_welcome_a_4_final, rp.contact.field.survey_welcome_a_6_final, rp.contact.field.survey_welcome_a_7_part_1_final
+# any after a7p1?
+
+# Next steps here:
+# did the question change for any of these. Need to check.
+# p7a2, a3, 8, 9 - what were those questions before? what are they now? Check and update.
+# what to do where the question changed?
+# display differently for optimisation than for pilot if optimisation has different questions? Discuss.
+
+plhdata_org_clean <- plhdata_org_clean %>%
+  mutate(rp.contact.field.survey_welcome_ppf = ifelse(!is.na(rp.contact.field.survey_welcome_ppf), rp.contact.field.survey_welcome_ppf, rp.contact.field.survey_welcome_a_1_final),
+         rp.contact.field.survey_welcome_ppp = ifelse(!is.na(rp.contact.field.survey_welcome_ppp), rp.contact.field.survey_welcome_ppp, rp.contact.field.survey_welcome_a_2_final),
+         rp.contact.field.survey_welcome_fin_s = ifelse(!is.na(rp.contact.field.survey_welcome_fin_s), rp.contact.field.survey_welcome_fin_s, rp.contact.field.survey_welcome_a_5_part_1_final),
+         rp.contact.field.survey_welcome_fin_fi = ifelse(!is.na(rp.contact.field.survey_welcome_fin_fi), rp.contact.field.survey_welcome_fin_fi, rp.contact.field.survey_welcome_a_5_part_2_final)) %>%
+  mutate(rp.contact.field.survey_final_ppf = ifelse(!is.na(rp.contact.field.survey_final_ppf), rp.contact.field.survey_final_ppf, rp.contact.field.survey_final_a_1_final),
+         rp.contact.field.survey_final_ppp = ifelse(!is.na(rp.contact.field.survey_final_ppp), rp.contact.field.survey_final_ppp, rp.contact.field.survey_final_a_2_final),
+         rp.contact.field.survey_final_fin_s = ifelse(!is.na(rp.contact.field.survey_final_fin_s), rp.contact.field.survey_final_fin_s, rp.contact.field.survey_final_a_5_part_1_final),
+         rp.contact.field.survey_final_fin_fi = ifelse(!is.na(rp.contact.field.survey_final_fin_fi), rp.contact.field.survey_final_fin_fi, rp.contact.field.survey_final_a_5_part_2_final))
+
+
+
+# todo: following not working
+#plhdata_org_clean <- plhdata_org_clean %>%
+#  map2_df(.x = c("a_1_final", "a_2_final", "a_3_final"),
+#          .y = c("ppf", "ppp", "ps"),
+#          .f = ~version_variables_rename(old_name = .x, new_name = .y))
+
+##plhdata_org_clean$rp.contact.field.survey_welcome_a_1_final[281:290]
+##plhdata_org_clean$rp.contact.field.survey_welcome_ppf_v0.16.2[281:290]
+#
+#plhdata_org_clean$rp.contact.field.survey_welcome_a_2_final[281:290]
+#plhdata_org_clean$rp.contact.field.survey_welcome_ppp_v0.16.2[281:290]##
+#
+#plhdata_org_clean$rp.contact.field.survey_welcome_a_3_final[281:290]
+#plhdata_org_clean$rp.contact.field.survey_welcome_ps_v0.16.2[281:290]
+
+# Tidying up for together/individual and modular/workshop skins
+#json_data <- NULL
+#for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
+#  # which variables to select?
+#  json_data[[i]] <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
+#}
+#saveRDS(json_data, file = "data/json_data.RDS")
+json_data <- readRDS(file = "data/json_data.RDS")
 
 if (study == "Optimisation"){
   plhdata_org_clean_mod <- plhdata_org_clean %>% filter(rp.contact.field._app_skin == "modular")
@@ -123,22 +196,20 @@ if (study == "Optimisation"){
                              "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
   # Esmee - what is the definition of completion at the moment for workshop skin?
   # which rows.id do they have to have == true in in these to say they've completed?
-  # filter to individual == TRUE, and then we have the relevant columns to calculate
-  # filter to together == TRUE and then we have the relevant columns to calculate
   total_completed_ind <- NULL
   total_completed_tog <- NULL
   j = 0
   for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
     # which variables to select?
     
-    json_data <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
+    json_data_i <- json_data[[i]]
     # rows.id, rows.individual, rows.together, rows.completed_field
-    json_data <- json_data %>% dplyr::select(c(rows.id, rows.individual, rows.together, rows.completed_field)) %>%
+    json_data_i <- json_data_i %>% dplyr::select(c(rows.id, rows.individual, rows.together, rows.completed_field)) %>%
       filter(!rows.id %in% c("home_practice", "hp_review"))
-    json_data_ind <- json_data %>% filter(rows.individual == TRUE)
-    completed_rows_ind <- paste0("rp.contact.field.", json_data_ind$rows.completed_field)
-    json_data_tog <- json_data %>% filter(rows.together == TRUE)
-    completed_rows_tog <- paste0("rp.contact.field.", json_data_tog$rows.completed_field)
+    json_data_i_ind <- json_data_i %>% filter(rows.individual == TRUE)
+    completed_rows_ind <- paste0("rp.contact.field.", json_data_i_ind$rows.completed_field)
+    json_data_i_tog <- json_data_i %>% filter(rows.together == TRUE)
+    completed_rows_tog <- paste0("rp.contact.field.", json_data_i_tog$rows.completed_field)
     
     plhdata_org_clean_mod_inds <- plhdata_org_clean_mod %>%
       filter(rp.contact.field.workshop_path != "together") %>%
@@ -179,6 +250,10 @@ if (study == "Optimisation"){
                                                     rp.contact.field.w_crisis_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_crisis_completion_level.mod, rp.contact.field.w_crisis_completion_level),
                                                     rp.contact.field.w_celebrate_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_celebrate_completion_level.mod, rp.contact.field.w_celebrate_completion_level))
 }
+
+#head(plhdata_org_clean$rp.contact.field._app_skin)
+#head(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
+#head(xx$rp.contact.field.w_self_care_completion_level)
 
 
 # More cleaning
@@ -229,7 +304,7 @@ names(plhdata_org_clean_1) <- c("ID", "App user ID", "Created at", "Optimisation
 plhdata_org_clean_1 <- plhdata_org_clean_1 %>% arrange(`Created at`)
 plhdata_org_clean_select <- plhdata_org_clean_1[1:100,]
 
-writexl::write_xlsx(plhdata_org_clean_select, path = "TZ_Optimisation_100_20221207.xlsx")
+#writexl::write_xlsx(plhdata_org_clean_select, path = "TZ_Optimisation_100_20221207.xlsx")
 
 
 
@@ -295,7 +370,7 @@ plhdata_org_clean_mis <- plhdata_org_clean_all %>%
            (Skin == "Workshop" & Skin_PA_var == "modular"))
 
 
-writexl::write_xlsx(plhdata_org_clean_all, path = "TZ_data_20221214.xlsx")
+writexl::write_xlsx(plhdata_org_clean_all, path = "TZ_data_20230117.xlsx")
 
 
 

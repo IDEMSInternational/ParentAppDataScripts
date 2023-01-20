@@ -1,10 +1,10 @@
 
 # 1. Functions -------------------------------------------------------------------------
 # 3. Define UI -----------------------------------------------------------------------------
-parentapp_shiny <- function(country){
+parentapp_shiny <- function(country, study){
   # Define UI
   ui <- dashboardPage(
-    header = dashboardHeader(title = paste(country, "ParentApp Dashboard")),
+    header = dashboardHeader(title = paste(country, study, "ParentApp Dashboard")),
     sidebar = dashboardSidebar(
       sidebarMenu(
         menuItem("Overview and Demographics", tabName = "demographics", icon = icon("users")),
@@ -17,8 +17,7 @@ parentapp_shiny <- function(country){
     
     dashboardBody(# Boxes need to be put in a row (or column)
       top_boxes(country = country), #closes fluidRow
-      #column(6, align = "center", checkbox_sites(study = study)),
-      fluidRow(checkbox_input(inputId = "Dem", country = country)), #closes fluidRow
+      fluidRow(checkbox_input(inputId = "Dem", country = country, study = study)), #closes fluidRow
       tabItems(
         # First tab content layout
         tabItem(tabName = "demographics",
@@ -41,7 +40,7 @@ parentapp_shiny <- function(country){
                 
                 fluidRow(
                   box(width = 12,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "App first downloaded and opened",
                       status = "primary",  
@@ -52,96 +51,98 @@ parentapp_shiny <- function(country){
                 ), #closes fluid row
                 
                 fluidRow(
-                  box(width = 4,
-                      collapsible = FALSE,
+                  box(width = 6,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Language",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_language", height = "240"), #generates graph
                       shiny::tableOutput("table_language")  #generates table
                   ), #closes box
                   
-                  box(width = 4,
-                      collapsible = FALSE,
+                  box(width = 6,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Workshop format",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_ws_format", height = "240"),
                       shiny::tableOutput("table_ws_format")
-                  ), #closes box
+                  )), #closes box, fluid row
                   
-                  box(width = 4,
-                      collapsible = FALSE,
+                fluidRow(
+                  box(width = 6,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "App version",
                       status = "primary", # primary, success, info, warning, danger
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_app_version", height = "240"),
                       shiny::tableOutput("table_app_version")
-                  ) #closes box
-                ), #closes fluidRow
-                
-                fluidRow(
-                  box(width = 4,
-                      collapsible = FALSE,
+                  ), #closes box
+                  box(width = 6,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Parent gender",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_parent_gender", height = "240"), #generates graph
                       shiny::tableOutput("table_parent_gender")  #generates table
-                  ), #closes box
-                  
-                  box(width = 4,
-                      collapsible = FALSE,
+                  ) #closes box
+                ), #closes fluidRow
+
+                fluidRow(
+                  box(width = 6,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Parent age",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_parent_age", height = "240"),
                       shiny::tableOutput("table_parent_age")
                   ), #closes box
                   
-                  box(width = 4,
-                      collapsible = FALSE,
+                  box(width = 6,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Adults in household",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_household_adults", height = "240"),
                       shiny::tableOutput("table_household_adults")
                   ) #closes box
                 ), #closes fluidRow
                 
                 fluidRow(
-                  box(width = 4,
-                      collapsible = FALSE,
+                  box(width = 6,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Teens in household",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_household_teens", height = "240"),
                       shiny::tableOutput("table_household_teens")
                   ), #closes box
                   
-                  box(width = 4,
-                      collapsible = FALSE,
+                  box(width = 6,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Children in household",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_household_children", height = "240"),
                       shiny::tableOutput("table_household_children")
-                  ), #closes box
+                  ) #closes box
+                ), # closes fluidrow
                   
-                  box(width = 4,
-                      collapsible = FALSE,
+                fluidRow(
+                  box(width = 6,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Babies in household",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_household_babies", height = "240"),
                       shiny::tableOutput("table_household_babies")
                   ) #closes box
@@ -174,7 +175,7 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average workshop completion",
                                            status = "info",  
@@ -186,23 +187,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 1: Welcome and Self-Care",
                                            status = "info",
-                                           h5("As individual: percentage out of 9 steppers; <br> As group: not an option for first workshop"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 9 steppers;"), h5("As group: not an option for first workshop"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_self_care", height = "240"),
                                            shiny::tableOutput("table_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 2: One-on-One Time",
                                            status = "info",  
-                                           h5("As individual: percentage out of 7 steppers; <br> As group: percentage out of 9 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 7 steppers;"), h5("As group: percentage out of 9 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_1on1", height = "240"),
                                            shiny::tableOutput("table_w_1on1")
                                        ) #closes box
@@ -210,23 +211,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 3: Praise",
                                            status = "info",  
-                                           h5("As individual: percentage out of 9 steppers <br> As group: percentage out of 11 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 9 steppers"), h5("As group: percentage out of 11 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_praise", height = "240"),
                                            shiny::tableOutput("table_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 4: Positive Instructions",
                                            status = "info",  
-                                           h5("As individual: percentage out of 11 steppers <br> As group: percentage out of 13 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 11 steppers"), h5("As group: percentage out of 13 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_instruct", height = "240"),
                                            shiny::tableOutput("table_w_instruct")
                                        ) #closes box
@@ -234,23 +235,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 5: Managing Stress",
                                            status = "info",
-                                           h5("As individual: percentage out of 10 steppers <br> As group: percentage out of 11 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 10 steppers"), h5("As group: percentage out of 11 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_stress", height = "240"),
                                            shiny::tableOutput("table_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 6: Family Budgets",
                                            status = "info",  
-                                           h5("As individual: percentage out of 18 steppers <br> As group: percentage out of 18 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 18 steppers"), h5("As group: percentage out of 18 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_money", height = "240"),
                                            shiny::tableOutput("table_w_money")
                                        ) #closes box
@@ -258,23 +259,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 7: Rules",
                                            status = "info",  
-                                           h5("As individual: percentage out of 10 steppers <br> As group: npercentage out of 11 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 10 steppers"), h5("As group: npercentage out of 11 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_rules", height = "240"),
                                            shiny::tableOutput("table_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 8: Calm Consequences",
                                            status = "info",  
-                                           h5("As individual: percentage out of 12 steppers <br> As group: npercentage out of 14 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 12 steppers"), h5("As group: npercentage out of 14 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_consequence", height = "240"),
                                            shiny::tableOutput("table_w_consequence")
                                        ) #closes box
@@ -282,23 +283,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 9: Problem Solving",
                                            status = "info",  
-                                           h5("As individual: percentage out of 10 steppers <br> As group: npercentage out of 12 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 10 steppers"), h5("As group: npercentage out of 12 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_solve", height = "240"),
                                            shiny::tableOutput("table_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 10: Teen Safety",
                                            status = "info",  
-                                           h5("As individual: percentage out of 11 steppers <br> As group: npercentage out of 12 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 11 steppers"), h5("As group: npercentage out of 12 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_safe", height = "240"),
                                            shiny::tableOutput("table_w_safe")
                                        ) #closes box
@@ -306,23 +307,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 11: Dealing with Crisis",
                                            status = "info",  
-                                           h5("As individual: percentage out of 11 steppers <br> As group: npercentage out of 12 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 11 steppers"), h5("As group: npercentage out of 12 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_crisis", height = "240"),
                                            shiny::tableOutput("table_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Workshop 12: Celebration and Next Steps",
                                            status = "info",  
-                                           h5("As individual: percentage out of 6 steppers <br> As group: npercentage out of 9 steppers"),
-                                           #background = "orange",
+                                           h5("As individual: percentage out of 6 steppers"), h5("As group: npercentage out of 9 steppers"),
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_w_celebrate")
                                        ) #closes box
@@ -333,11 +334,11 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Number of users who have started a workshop",
                                            status = "info",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_ws_started", height = "240"),
                                            shiny::tableOutput("table_ws_started")
                                        )#closes box
@@ -345,16 +346,15 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Percentage of starters who completed a workshop",
                                            status = "info",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_ws_rel_completed", height = "240"),
                                            shiny::tableOutput("table_ws_rel_completed")
                                        )#closes box
                                      ) #closes fluid row
-                                     
                             ) # closes Additional Insights
                 ) #closes tabsetPanel for workshop
         ), #closes tabItem
@@ -405,7 +405,7 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points summary",
                                            status = "warning",  
@@ -416,22 +416,35 @@ parentapp_shiny <- function(country){
                                      ), #closes fluid row
                                      
                                      fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Parent points summary",
+                                           status = "warning",  
+                                           #background = "orange",
+                                           plotlyOutput(outputId = "plot_pp_means", height = "240"),
+                                           shiny::tableOutput("table_pp_means")
+                                       )#closes box
+                                     ), #closes fluid row
+                                     
+                                     
+                                     fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: Relax",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax", height = "240"),
                                            shiny::tableOutput("table_pp_relax")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: Treat yourself well",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself")
                                        ) #closes box
@@ -439,21 +452,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: Praise yourself",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: One-on-one Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time")
                                        ) #closes box
@@ -461,21 +474,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: Praise your teen",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: Get positive",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively")
                                        ) #closes box
@@ -483,21 +496,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: Breathe not yell",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe", height = "240"),
                                            shiny::tableOutput("table_pp_breathe")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: Good money choice",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money", height = "240"),
                                            shiny::tableOutput("table_pp_money")
                                        ) #closes box
@@ -505,21 +518,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: Calm consequence",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_consequence")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Parent points: Safe",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe", height = "240"),
                                            shiny::tableOutput("table_pp_safe")
                                        ) #closes box
@@ -530,7 +543,7 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average Relax Points per Workshop Week",
                                            status = "warning",  
@@ -542,21 +555,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_1on1")
                                        ) #closes box
@@ -564,21 +577,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_instruct")
                                        ) #closes box
@@ -586,21 +599,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_money")
                                        ) #closes box
@@ -608,21 +621,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_consequence")
                                        ) #closes box
@@ -630,21 +643,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_safe")
                                        ) #closes box
@@ -652,21 +665,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Relax Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_relax_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_relax_w_celebrate")
                                        ) #closes box
@@ -677,7 +690,7 @@ parentapp_shiny <- function(country){
                             tabPanel("Treat Self", #pp2
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average Treat Yourself Points per Workshop Week",
                                            status = "warning",  
@@ -689,21 +702,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_1on1")
                                        ) #closes box
@@ -711,21 +724,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_instruct")
                                        ) #closes box
@@ -733,21 +746,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_money")
                                        ) #closes box
@@ -755,21 +768,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_consequence")
                                        ) #closes box
@@ -777,21 +790,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_safe")
                                        ) #closes box
@@ -799,21 +812,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Treat Yourself Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_treat_yourself_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_treat_yourself_w_celebrate")
                                        ) #closes box
@@ -824,7 +837,7 @@ parentapp_shiny <- function(country){
                             tabPanel("Praise Self", #pp3 praise yourself
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average Praise Yourself Points per Workshop Week",
                                            status = "warning",  
@@ -836,21 +849,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_1on1")
                                        ) #closes box
@@ -858,21 +871,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_instruct")
                                        ) #closes box
@@ -880,21 +893,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_money")
                                        ) #closes box
@@ -902,21 +915,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_consequence")
                                        ) #closes box
@@ -924,21 +937,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_safe")
                                        ) #closes box
@@ -946,21 +959,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Yourself Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_yourself_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_praise_yourself_w_celebrate")
                                        ) #closes box
@@ -970,7 +983,7 @@ parentapp_shiny <- function(country){
                             tabPanel("1-on-1",  #pp4 spend time together
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average 1-on-1 Time Points per Workshop Week",
                                            status = "warning",  
@@ -982,21 +995,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_1on1")
                                        ) #closes box
@@ -1004,21 +1017,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_instruct")
                                        ) #closes box
@@ -1026,21 +1039,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_money")
                                        ) #closes box
@@ -1048,21 +1061,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_consequence")
                                        ) #closes box
@@ -1070,21 +1083,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_safe")
                                        ) #closes box
@@ -1092,21 +1105,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "1-on-1 Time Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_spend_time_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_spend_time_w_celebrate")
                                        ) #closes box
@@ -1116,7 +1129,7 @@ parentapp_shiny <- function(country){
                             tabPanel("Praise Teen", #pp5
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average Praise Teen Points per Workshop Week",
                                            status = "warning",  
@@ -1128,21 +1141,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_1on1")
                                        ) #closes box
@@ -1150,21 +1163,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_instruct")
                                        ) #closes box
@@ -1172,21 +1185,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_money")
                                        ) #closes box
@@ -1194,21 +1207,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_consequence")
                                        ) #closes box
@@ -1216,21 +1229,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_safe")
                                        ) #closes box
@@ -1238,21 +1251,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Praise Teen Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_praise_teen_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_praise_teen_w_celebrate")
                                        ) #closes box
@@ -1262,7 +1275,7 @@ parentapp_shiny <- function(country){
                             tabPanel("Positive", #pp6 get positive
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average Get Positive Points per Workshop Week",
                                            status = "warning",  
@@ -1274,21 +1287,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_1on1")
                                        ) #closes box
@@ -1296,21 +1309,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_instruct")
                                        ) #closes box
@@ -1318,21 +1331,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_money")
                                        ) #closes box
@@ -1340,21 +1353,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_consequence")
                                        ) #closes box
@@ -1362,21 +1375,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_safe")
                                        ) #closes box
@@ -1384,21 +1397,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Get Positive Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_instruct_positively_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_instruct_positively_w_celebrate")
                                        ) #closes box
@@ -1408,7 +1421,7 @@ parentapp_shiny <- function(country){
                             tabPanel("Breathe", #pp7 breathe not yell
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average Breathe Points per Workshop Week",
                                            status = "warning",  
@@ -1420,21 +1433,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_1on1")
                                        ) #closes box
@@ -1442,21 +1455,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_instruct")
                                        ) #closes box
@@ -1464,21 +1477,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_money")
                                        ) #closes box
@@ -1486,21 +1499,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_consequence")
                                        ) #closes box
@@ -1508,21 +1521,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_safe")
                                        ) #closes box
@@ -1530,21 +1543,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Breathe Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_breathe_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_breathe_w_celebrate")
                                        ) #closes box
@@ -1554,7 +1567,7 @@ parentapp_shiny <- function(country){
                             tabPanel("Money", #pp8 good money choice
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average Good Money Choice Points per Workshop Week",
                                            status = "warning",  
@@ -1566,21 +1579,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_1on1")
                                        ) #closes box
@@ -1588,21 +1601,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_instruct")
                                        ) #closes box
@@ -1610,21 +1623,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_money")
                                        ) #closes box
@@ -1632,21 +1645,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_consequence")
                                        ) #closes box
@@ -1654,21 +1667,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_safe")
                                        ) #closes box
@@ -1676,21 +1689,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Good Money Choice Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_money_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_money_w_celebrate")
                                        ) #closes box
@@ -1700,7 +1713,7 @@ parentapp_shiny <- function(country){
                             tabPanel("Consequence", #pp9 calm consequence
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average Calm Consequence Points per Workshop Week",
                                            status = "warning",  
@@ -1712,21 +1725,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_1on1")
                                        ) #closes box
@@ -1734,21 +1747,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_instruct")
                                        ) #closes box
@@ -1756,21 +1769,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_money")
                                        ) #closes box
@@ -1778,21 +1791,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_consequence")
                                        ) #closes box
@@ -1800,21 +1813,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_safe")
                                        ) #closes box
@@ -1822,21 +1835,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Calm Consequence Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_consequence_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_consequence_w_celebrate")
                                        ) #closes box
@@ -1846,7 +1859,7 @@ parentapp_shiny <- function(country){
                             tabPanel("Safe",  #pp10 safe
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average Safe Points per Workshop Week",
                                            status = "warning",  
@@ -1858,21 +1871,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 1: Welcome and Self-Care",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_self_care", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_self_care")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 2: One-on-One Time",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_1on1", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_1on1")
                                        ) #closes box
@@ -1880,21 +1893,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 3: Praise",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_praise", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_praise")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 4: Positive Instructions",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_instruct", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_instruct")
                                        ) #closes box
@@ -1902,21 +1915,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 5: Managing Stress",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_stress", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 6: Family Budgets",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_money", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_money")
                                        ) #closes box
@@ -1924,21 +1937,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 7: Rules",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_rules", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_rules")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 8: Calm Consequences",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_consequence", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_consequence")
                                        ) #closes box
@@ -1946,21 +1959,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 9: Problem Solving",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_solve", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_solve")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 10: Teen Safety",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_safe", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_safe")
                                        ) #closes box
@@ -1968,21 +1981,21 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 11: Dealing with Crisis",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_crisis", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_crisis")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Safe Points in Workshop 12: Celebration and Next Steps",
                                            status = "warning",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_pp_safe_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_pp_safe_w_celebrate")
                                        ) #closes box
@@ -2036,11 +2049,11 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Cumulative app opens",
                                            status = "success",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_appopen_totals", height = "240"),
                                            shiny::tableOutput("table_appopen_totals")
                                        ) #closes box
@@ -2048,24 +2061,155 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Mean app opens per workshop week",
                                            status = "success",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_appopen_mean_week", height = "240"),
                                            shiny::tableOutput("table_appopen_mean_week")
                                        )#closes box
-                                     ) #closes fluid row
+                                     ), #closes fluid row
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           status = "success",  
+                                           title = "App Opens for Week 1: Welcome and Self Care",
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_self_care", height = "240"),
+                                           shiny::tableOutput("table_appopen_self_care")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           status = "success", 
+                                           title = "App Opens for Week 2: One-on-One Time",
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_1on1", height = "240"),
+                                           shiny::tableOutput("table_appopen_1on1")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 3: Praise",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_praise", height = "240"),
+                                           shiny::tableOutput("table_appopen_praise")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 4: Positive Instructions",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_instructions", height = "240"),
+                                           shiny::tableOutput("table_appopen_instructions")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 5: Stress",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_stress", height = "240"),
+                                           shiny::tableOutput("table_appopen_stress")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 6: Budgeting",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_budget", height = "240"),
+                                           shiny::tableOutput("table_appopen_budget")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 7: Rules",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_rules", height = "240"),
+                                           shiny::tableOutput("table_appopen_rules")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 8: Consequences",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_consequences", height = "240"),
+                                           shiny::tableOutput("table_appopen_consequences")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 9: Problem Solving",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_problem_solving", height = "240"),
+                                           shiny::tableOutput("table_appopen_problem_solving")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 10: Teen Safety",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_teen_safety", height = "240"),
+                                           shiny::tableOutput("table_appopen_teen_safety")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 11: Crisis",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_crisis", height = "240"),
+                                           shiny::tableOutput("table_appopen_crisis")
+                                       ) #closes box
+                                     ), #closes fluidrow
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "App Opens for Week 12: Celebration and Next Steps",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_appopen_celebration", height = "240"),
+                                           shiny::tableOutput("table_appopen_celebration")
+                                       ) #closes box
+                                     ) #closes fluidrow
                             ), #closes tabPanel App Opens
                             
                             tabPanel("Push Notifications",
-                                     
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
-                                           title = "Push notifiation clicks overview",
+                                           title = "Push notification clicks overview",
                                            status = "success",  
                                            #background = "orange",
                                            plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
@@ -2075,7 +2219,7 @@ parentapp_shiny <- function(country){
                                        #          
                                        #          fluidRow(
                                        #            box(width = 12,
-                                       #                collapsible = FALSE,
+                                       #                collapsible = TRUE,
                                        #                solidHeader = TRUE,
                                        #                title = "Push notification types sent",
                                        #                status = "success",  
@@ -2089,7 +2233,7 @@ parentapp_shiny <- function(country){
                             tabPanel("Home Practice",
                                      # fluidRow(
                                      #   box(width = 12,
-                                     #       collapsible = FALSE,
+                                     #       collapsible = TRUE,
                                      #       solidHeader = TRUE,
                                      #       title = "Number of users starting each home practice (currently not collected)",
                                      #       status = "success",  
@@ -2101,370 +2245,218 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
-                                           title = "Number of users starting each home practice review (value is true rather than false or missing)",
+                                           title = "Number of users starting each home practice review",
                                            status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hp_rev_totals", height = "240"),
-                                           shiny::tableOutput("table_hp_rev_totals")
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_hp_started", height = "240"),
+                                           shiny::tableOutput("table_hp_started")
+                                       )#closes box
+                                     ), #closes fluid row  
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Proportion of users who completed each home practice review, out of those who started",
+                                           status = "success",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_hp_done", height = "240"),
+                                           shiny::tableOutput("table_hp_done")
                                        )#closes box
                                      ), #closes fluid row  
                                      
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 2: One-on-One Time - completion", #NB this is the reported completion of HP itself, not ther Review of the HP (stored under variable rp-contact-field.w_stress_hp_review_completed)
-                                           status = "success",
-                                           h5("Question for this column phrased as 'Did you have a chance to do this?'"),
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_1on1", height = "240"),
-                                           shiny::tableOutput("table_hpdone_1on1")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 2: One-on-One Time - how it went",
-                                           h5("Question for this column only asked if completion question answered with 'Yes'; phrased as 'How did it go?'"),
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_1on1", height = "240"),
-                                           shiny::tableOutput("table_mood_1on1")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 2: One-on-One Time - challenges selected",
-                                           status = "success",  
-                                           h5("Question for this column phrased as 'What challenge did you have?' and asked irespective of previous answers."),
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_1on1", height = "240"),
-                                           shiny::tableOutput("table_chall_1on1")
-                                       ) #closes box
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 2: One-on-One Time",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             h5("Question for this column phrased as 'Did you have a chance to do this?'"),
+                                                             plotlyOutput(outputId = "plot_hpdone_1on1", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_1on1")), #closes box
+                                                         box(width = "50%",  
+                                                             h5("Question for this column only asked if completion question answered with 'Yes'; phrased as 'How did it go?'"),
+                                                             plotlyOutput(outputId = "plot_mood_1on1", height = "240"),
+                                                             shiny::tableOutput("table_mood_1on1")), #closes box
+                                                         box(width = "100%", 
+                                                             h5("Question for this column phrased as 'What challenge did you have?' and asked irrespective of previous answers."),
+                                                             plotlyOutput(outputId = "plot_chall_1on1", height = "240"),
+                                                             shiny::tableOutput("table_chall_1on1")) #closes box
+                                                         )
+                                                  )
+                                              ), #closes fluid row
+                                     
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 3: Praise",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             h5("Question for this column phrased as 'Did you have a chance to do this?'"),
+                                                             plotlyOutput(outputId = "plot_hpdone_praise", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_praise"))
+                                                  )
+                                     )
                                      ), #closes fluid row
                                      
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 3: Praise - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_praise", height = "240"),
-                                           shiny::tableOutput("table_hpdone_praise")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "No 'review' for week 3 home practice",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_praise", height = "240"),
-                                           shiny::tableOutput("table_mood_praise")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "No challenges for week 3 home practice",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_praise", height = "240"),
-                                           shiny::tableOutput("table_chall_praise")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 4: Positive Instructions - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_instruct", height = "240"),
-                                           shiny::tableOutput("table_hpdone_instruct")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 4: Positive Instructions - how it went",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_instruct", height = "240"),
-                                           shiny::tableOutput("table_mood_instruct")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 4: Positive Instructions - challenges selected",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_instruct", height = "240"),
-                                           shiny::tableOutput("table_chall_instruct")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 5: Managing Stress (breathe) - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_stress_br", height = "240"),
-                                           shiny::tableOutput("table_hpdone_stress_br")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 5: Managing Stress (breathe) - how it went",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_stress_br", height = "240"),
-                                           shiny::tableOutput("table_mood_stress_br")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 5: Managing Stress (breathe & talk) - challenges selected",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_stress_br", height = "240"),
-                                           shiny::tableOutput("table_chall_stress_br")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 5: Managing Stress (talk) - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_stress_tk", height = "240"),
-                                           shiny::tableOutput("table_hpdone_stress_tk")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 5: Managing Stress (talk) - how it went",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_stress_tk", height = "240"),
-                                           shiny::tableOutput("table_mood_stress_tk")
-                                           # ), #closes box
-                                           # 
-                                           # box(width = 4,
-                                           #     collapsible = FALSE,
-                                           #     solidHeader = TRUE,
-                                           #     title = "Home Practice Week 5: Managing Stress (talk) - challenges selected",
-                                           #     status = "success",  
-                                           #     #background = "orange",
-                                           #     plotlyOutput(outputId = "plot_chall_stress_tk", height = "240"),
-                                           #     shiny::tableOutput("table_chall_stress_tk")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 6: Budgets - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_money", height = "240"),
-                                           shiny::tableOutput("table_hpdone_money")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 6: Budgets - how it went",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_money", height = "240"),
-                                           shiny::tableOutput("table_mood_money")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 6: Budgets - challenges selected",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_money", height = "240"),
-                                           shiny::tableOutput("table_chall_money")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 7: Rules - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_rules", height = "240"),
-                                           shiny::tableOutput("table_hpdone_rules")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 7: Rules - how it went",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_rules", height = "240"),
-                                           shiny::tableOutput("table_mood_rules")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 7: Rules - challenges selected",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_rules", height = "240"),
-                                           shiny::tableOutput("table_chall_rules")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 8: Calm Consequences - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_consequence", height = "240"),
-                                           shiny::tableOutput("table_hpdone_consequence")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 8: Calm Consequences - how it went",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_consequence", height = "240"),
-                                           shiny::tableOutput("table_mood_consequence")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 8: Calm Consequences - challenges selected",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_consequence", height = "240"),
-                                           shiny::tableOutput("table_chall_consequence")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 9: Problem Solving - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_solve", height = "240"),
-                                           shiny::tableOutput("table_hpdone_solve")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 9: Problem Solving - how it went",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_solve", height = "240"),
-                                           shiny::tableOutput("table_mood_solve")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 9: Problem Solving - challenges selected",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_solve", height = "240"),
-                                           shiny::tableOutput("table_chall_solve")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 10: Teen Safety - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_safe", height = "240"),
-                                           shiny::tableOutput("table_hpdone_safe")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 10: Teen Safety - how it went",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_safe", height = "240"),
-                                           shiny::tableOutput("table_mood_safe")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 10: Teen Safety - challenges selected",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_safe", height = "240"),
-                                           shiny::tableOutput("table_chall_safe")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 11: Dealing with Crisis - completion",
-                                           status = "success",
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_hpdone_crisis", height = "240"),
-                                           shiny::tableOutput("table_hpdone_crisis")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 11: Dealing with Crisis - how it went",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_mood_crisis", height = "240"),
-                                           shiny::tableOutput("table_mood_crisis")
-                                       ), #closes box
-                                       
-                                       box(width = 4,
-                                           collapsible = FALSE,
-                                           solidHeader = TRUE,
-                                           title = "Home Practice Week 11: Dealing with Crisis - challenges selected",
-                                           status = "success",  
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_chall_crisis", height = "240"),
-                                           shiny::tableOutput("table_chall_crisis")
-                                       ) #closes box
-                                     ) #closes fluid row         
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 4: Positive Instructions",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             plotlyOutput(outputId = "plot_hpdone_instruct", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_instruct")), #closes box
+                                                         box(width = "50%",  
+                                                             plotlyOutput(outputId = "plot_mood_instruct", height = "240"),
+                                                             shiny::tableOutput("table_mood_instruct")), #closes box
+                                                         box(width = "100%", 
+                                                             plotlyOutput(outputId = "plot_chall_instruct", height = "240"),
+                                                             shiny::tableOutput("table_chall_instruct")) #closes box
+                                                  ))), #closes fluid row
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 5: Managing Stress (breathe)",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             plotlyOutput(outputId = "plot_hpdone_stress_br", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_stress_br")), #closes box
+                                                         box(width = "50%",  
+                                                             plotlyOutput(outputId = "plot_mood_stress_br", height = "240"),
+                                                             shiny::tableOutput("table_mood_stress_br")), #closes box
+                                                         box(width = "100%", 
+                                                             plotlyOutput(outputId = "plot_chall_stress_br", height = "240"),
+                                                             shiny::tableOutput("table_chall_stress_br")) #closes box
+                                                  ))), #closes fluid row
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 5: Managing Stress (talk)",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             plotlyOutput(outputId = "plot_hpdone_stress_tk", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_stress_tk")), #closes box
+                                                         box(width = "50%",  
+                                                             plotlyOutput(outputId = "plot_mood_stress_tk", height = "240"),
+                                                             shiny::tableOutput("table_mood_stress_tk")), #closes box
+                                                         box(width = "100%", 
+                                                             plotlyOutput(outputId = "plot_chall_stress_tk", height = "240"),
+                                                             shiny::tableOutput("table_chall_stress_tk")) #closes box
+                                                  ))), #closes fluid row
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 6: Budgets",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             plotlyOutput(outputId = "plot_hpdone_money", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_money")), #closes box
+                                                         box(width = "50%",  
+                                                             plotlyOutput(outputId = "plot_mood_money", height = "240"),
+                                                             shiny::tableOutput("table_mood_money")), #closes box
+                                                         box(width = "100%", 
+                                                             plotlyOutput(outputId = "plot_chall_money", height = "240"),
+                                                             shiny::tableOutput("table_chall_money")) #closes box
+                                                  ))), #closes fluid row
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 7: Rules",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             plotlyOutput(outputId = "plot_hpdone_rules", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_rules")), #closes box
+                                                         box(width = "50%",  
+                                                             plotlyOutput(outputId = "plot_mood_rules", height = "240"),
+                                                             shiny::tableOutput("table_mood_rules")), #closes box
+                                                         box(width = "100%", 
+                                                             plotlyOutput(outputId = "plot_chall_rules", height = "240"),
+                                                             shiny::tableOutput("table_chall_rules")) #closes box
+                                                  ))), #closes fluid row
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 8: Calm Consequences",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             plotlyOutput(outputId = "plot_hpdone_consequence", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_consequence")), #closes box
+                                                         box(width = "50%",  
+                                                             plotlyOutput(outputId = "plot_mood_consequence", height = "240"),
+                                                             shiny::tableOutput("table_mood_consequence")), #closes box
+                                                         box(width = "100%", 
+                                                             plotlyOutput(outputId = "plot_chall_consequence", height = "240"),
+                                                             shiny::tableOutput("table_chall_consequence")) #closes box
+                                                  ))), #closes fluid row
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 9: Problem Solving",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             plotlyOutput(outputId = "plot_hpdone_solve", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_solve")), #closes box
+                                                         box(width = "50%",  
+                                                             plotlyOutput(outputId = "plot_mood_solve", height = "240"),
+                                                             shiny::tableOutput("table_mood_solve")), #closes box
+                                                         box(width = "100%", 
+                                                             plotlyOutput(outputId = "plot_chall_solve", height = "240"),
+                                                             shiny::tableOutput("table_chall_solve")) #closes box
+                                                  ))), #closes fluid row
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 10: Teen Safety",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             plotlyOutput(outputId = "plot_hpdone_safe", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_safe")), #closes box
+                                                         box(width = "50%",  
+                                                             plotlyOutput(outputId = "plot_mood_safe", height = "240"),
+                                                             shiny::tableOutput("table_mood_safe")), #closes box
+                                                         box(width = "100%", 
+                                                             plotlyOutput(outputId = "plot_chall_safe", height = "240"),
+                                                             shiny::tableOutput("table_chall_safe")) #closes box
+                                                  ))), #closes fluid row
+                                     fluidRow(box(width = 12,
+                                                  collapsible = TRUE,
+                                                  solidHeader = TRUE,
+                                                  title = "Home Practice Week 11: Dealing with Crisis",
+                                                  status = "success",
+                                                  style='width:100%;overflow-x: scroll;',
+                                                  column(width = 12,
+                                                         box(width = "50%", 
+                                                             plotlyOutput(outputId = "plot_hpdone_crisis", height = "240"),
+                                                             shiny::tableOutput("table_hpdone_crisis")), #closes box
+                                                         box(width = "50%",  
+                                                             plotlyOutput(outputId = "plot_mood_crisis", height = "240"),
+                                                             shiny::tableOutput("table_mood_crisis")), #closes box
+                                                         box(width = "100%", 
+                                                             plotlyOutput(outputId = "plot_chall_crisis", height = "240"),
+                                                             shiny::tableOutput("table_chall_crisis")) #closes box
+                                                  ))) #closes fluid row
                             ), #closes tabPanel Home practice
                             
                             tabPanel("Quick Start Buttons",
@@ -2504,7 +2496,7 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Baseline survey completion",
                                            status = "danger", 
@@ -2516,24 +2508,24 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of attention",
                                            status = "danger",  
                                            h5("How many days in the past week were you able to give them your attention and do something that they enjoyed with them? [0-7],
                                                               NB the question was changed for the Tanzania rollout to: How many days in the past week were you able to do something fun together?"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_attention", height = "240"),
                                            shiny::tableOutput("table_sv1_attention")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of praise",
                                            status = "danger",
                                            h5("How many days in the past week have you praised your teen? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_praise", height = "240"),
                                            shiny::tableOutput("table_sv1_praise")
                                        ) #closes box
@@ -2541,23 +2533,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of stress",
                                            status = "danger",  
                                            h5("How many days in the past week did you feel very stressed as a parent/caregiver? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_stress", height = "240"),
                                            shiny::tableOutput("table_sv1_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of shouting",
                                            status = "danger",
                                            h5("How many days in the past week did you shout, scream or yell at your teen? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_shout", height = "240"),
                                            shiny::tableOutput("table_sv1_shout")
                                        ) #closes box
@@ -2565,23 +2557,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of money worries",
                                            status = "danger",  
                                            h5("How many days in the past week have you worried or felt anxious about money? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_money", height = "240"),
                                            shiny::tableOutput("table_sv1_money")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days out of food money (last month)",
                                            status = "danger",  
                                            h5("How many days in the past month (30 days) did you run out of money to pay for food? [0-30]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_food_money", height = "240"),
                                            shiny::tableOutput("table_sv1_food_money")
                                        ) #closes box
@@ -2589,24 +2581,24 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of hitting",
                                            status = "danger", 
                                            h5("In the past week, did you physically discipline your children by hitting, spanking, or slapping with your hand or an object like a stick or a belt? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_hitting", height = "240"),
                                            shiny::tableOutput("table_sv1_hitting")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days with knowledge of teen activity",
                                            status = "danger", 
                                            h5("How many days in the past week did you know what your teen was doing and who they were with? [0-7] NB this question was removed for the Tanzania rollout."),
                                            #h7("NB next question only asked if this one is answered with '7'"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_week_teen_activity", height = "240"),
                                            shiny::tableOutput("table_sv1_week_teen_activity")
                                        ) #closes box
@@ -2614,25 +2606,25 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Lockdown",
                                            status = "danger",
                                            h5("Were you in lockdown this week? [Yes/No], NB next question only asked if this one is answered with 'Yes', NB this question was removed for the Tanzania rollout."),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_lockdown", height = "240"),
                                            shiny::tableOutput("table_sv1_lockdown")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Non-lockdown knowledge of teen activity",
                                            status = "danger",
                                            h5("How many days in a typical non-lockdown week do you know what your teen is doing and who they are with? [0-7],
                                                               NB this question is only asked if the parent said they had knowledge 7/7 days and then indicated that it was a lockdown week,
                                                               NB this question was removed for the Tanzania rollout."),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_reg_teen_activity", height = "240"),
                                            shiny::tableOutput("table_sv1_reg_teen_activity")
                                        ) #closes box
@@ -2640,7 +2632,7 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of sexual safety talk (last month)",
                                            status = "danger",  
@@ -2648,18 +2640,18 @@ parentapp_shiny <- function(country){
                                                            NB the question was changed for the Tanzania rollout to:
                                                           [In the past month, did you talk with your teen about keeping safe from sexual violence online or offline? This could be about going out with friends or about the websites and apps they use.]
                                                               How many days have you had a talk like this?"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_sex_talk", height = "240"),
                                            shiny::tableOutput("table_sv1_sex_talk")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of COVID safe teenager behaviour",
                                            status = "danger", 
                                            h5("How many days last week did your teenager stay safe through wearing a mask, keeping a distance from people and keeping away from crowded places? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv1_covid_safe", height = "240"),
                                            shiny::tableOutput("table_sv1_covid_safe")
                                        ) #closes box
@@ -2672,7 +2664,7 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Endline survey completion",
                                            status = "danger",  
@@ -2683,24 +2675,24 @@ parentapp_shiny <- function(country){
                                      ), # closes fluidRow
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of attention",
                                            status = "danger",  
                                            h5("How many days in the past week were you able to give them your attention and do something that they enjoyed with them? [0-7],
                                                               NB the question was changed for the Tanzania rollout to: How many days in the past week were you able to do something fun together?"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_attention", height = "240"),
                                            shiny::tableOutput("table_sv2_attention")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of praise",
                                            status = "danger",
                                            h5("How many days in the past week have you praised your teen? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_praise", height = "240"),
                                            shiny::tableOutput("table_sv2_praise")
                                        ) #closes box
@@ -2708,23 +2700,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of stress",
                                            status = "danger",  
                                            h5("How many days in the past week did you feel very stressed as a parent/caregiver? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_stress", height = "240"),
                                            shiny::tableOutput("table_sv2_stress")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of shouting",
                                            status = "danger",
                                            h5("How many days in the past week did you shout, scream or yell at your teen? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_shout", height = "240"),
                                            shiny::tableOutput("table_sv2_shout")
                                        ) #closes box
@@ -2732,23 +2724,23 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of money worries",
                                            status = "danger",  
                                            h5("How many days in the past week have you worried or felt anxious about money? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_money", height = "240"),
                                            shiny::tableOutput("table_sv2_money")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days out of food money (last month)",
                                            status = "danger",  
                                            h5("How many days in the past month (30 days) did you run out of money to pay for food? [0-30]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_food_money", height = "240"),
                                            shiny::tableOutput("table_sv2_food_money")
                                        ) #closes box
@@ -2756,24 +2748,24 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of hitting",
                                            status = "danger", 
                                            h5("In the past week, did you physically discipline your children by hitting, spanking, or slapping with your hand or an object like a stick or a belt? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_hitting", height = "240"),
                                            shiny::tableOutput("table_sv2_hitting")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days with knowledge of teen activity",
                                            status = "danger", 
                                            h5("How many days in the past week did you know what your teen was doing and who they were with? [0-7] NB this question was removed for the Tanzania rollout."),
                                            #h7("NB next question only asked if this one is answered with '7'"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_week_teen_activity", height = "240"),
                                            shiny::tableOutput("table_sv2_week_teen_activity")
                                        ) #closes box
@@ -2781,25 +2773,25 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Lockdown",
                                            status = "danger",
                                            h5("Were you in lockdown this week? [Yes/No], NB next question only asked if this one is answered with 'Yes', NB this question was removed for the Tanzania rollout."),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_lockdown", height = "240"),
                                            shiny::tableOutput("table_sv2_lockdown")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Non-lockdown knowledge of teen activity",
                                            status = "danger",
                                            h5("How many days in a typical non-lockdown week do you know what your teen is doing and who they are with? [0-7],
                                                               NB this question is only asked if the parent said they had knowledge 7/7 days and then indicated that it was a lockdown week,
                                                               NB this question was removed for the Tanzania rollout."),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_reg_teen_activity", height = "240"),
                                            shiny::tableOutput("table_sv2_reg_teen_activity")
                                        ) #closes box
@@ -2807,7 +2799,7 @@ parentapp_shiny <- function(country){
                                      
                                      fluidRow(
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of sexual safety talk (last month)",
                                            status = "danger",  
@@ -2815,18 +2807,18 @@ parentapp_shiny <- function(country){
                                                            NB the question was changed for the Tanzania rollout to:
                                                           [In the past month, did you talk with your teen about keeping safe from sexual violence online or offline? This could be about going out with friends or about the websites and apps they use.]
                                                               How many days have you had a talk like this?"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_sex_talk", height = "240"),
                                            shiny::tableOutput("table_sv2_sex_talk")
                                        ), #closes box
                                        
                                        box(width = 6,
-                                           collapsible = FALSE,
+                                           collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Days of COVID safe teenager behaviour",
                                            status = "danger", 
                                            h5("How many days last week did your teenager stay safe through wearing a mask, keeping a distance from people and keeping away from crowded places? [0-7]"),
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_sv2_covid_safe", height = "240"),
                                            shiny::tableOutput("table_sv2_covid_safe")
                                        ) #closes box
@@ -2857,7 +2849,7 @@ parentapp_shiny <- function(country){
                 
                 fluidRow(
                   box(width = 12,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Parent Library average clicks per workshop week",
                       status = "primary",  
@@ -2868,7 +2860,7 @@ parentapp_shiny <- function(country){
                 
                 fluidRow(
                   box(width = 12,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Parent Library access",
                       status = "primary",  
@@ -2879,21 +2871,21 @@ parentapp_shiny <- function(country){
                 
                 fluidRow(
                   box(width = 6,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "My Tips (based on customisation)",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_lib_tips", height = "240"), #generates graph
                       shiny::tableOutput("table_lib_tips")  #generates table
                   ), #closes box
                   
                   box(width = 6,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Essential Tools (from each workshop week)",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_lib_tools", height = "240"),
                       shiny::tableOutput("table_lib_tools")
                   ) #closes box
@@ -2901,21 +2893,21 @@ parentapp_shiny <- function(country){
                 
                 fluidRow(
                   box(width = 6,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Relax and Activities (fun with teen)",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_lib_activities", height = "240"), #generates graph
                       shiny::tableOutput("table_lib_activities")  #generates table
                   ), #closes box
                   
                   box(width = 6,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Customise ParentApp",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_lib_custom", height = "240"),
                       shiny::tableOutput("table_lib_custom")
                   ) #closes box
@@ -2923,21 +2915,21 @@ parentapp_shiny <- function(country){
                 
                 fluidRow(
                   box(width = 6,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Help (quick parenting tips)",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_lib_help", height = "240"), #generates graph
                       shiny::tableOutput("table_lib_help")  #generates table
                   ), #closes box
                   
                   box(width = 6,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Technical Support",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_lib_tech", height = "240"),
                       shiny::tableOutput("table_lib_tech")
                   ) #closes box
@@ -2945,21 +2937,21 @@ parentapp_shiny <- function(country){
                 
                 fluidRow(
                   box(width = 6,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Coping COVID",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_lib_covid", height = "240"), #generates graph
                       shiny::tableOutput("table_lib_covid")  #generates table
                   ), #closes box
                   
                   box(width = 6,
-                      collapsible = FALSE,
+                      collapsible = TRUE,
                       solidHeader = TRUE,
                       title = "Coping with Grief",
                       status = "primary",  
-                      #background = "orange",
+                      style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_lib_grief", height = "240"), #generates graph
                       shiny::tableOutput("table_lib_grief")  #generates table
                   ) #closes box
@@ -2977,17 +2969,11 @@ parentapp_shiny <- function(country){
     
     observe({
       #autoRefresh()
+      #source(here("Metabase Analysis Setup - run offline.R"))
       source(here("Metabase Analysis Setup.R"))
-      #updated_data <- update_data()
-      #df <- updated_data[[1]]
-      #df_consent <- updated_data[[2]]
-      #all_flows <- updated_data[[3]]
-      #parenting_survey <- updated_data[[4]]
-      #pp_data_frame <- updated_data[[5]]
     })
     
     #SUMMARY STATS HEADER displays (same for all tabs)
-    
     if (country != "Tanzania"){
       output$myvaluebox1 <- shinydashboard::renderValueBox({
         shinydashboard::valueBox(nrow(plhdata_org_clean), subtitle = "Enrolled", icon = icon("user"),
@@ -3011,14 +2997,40 @@ parentapp_shiny <- function(country){
                                   color = "navy")}) 
     }
     
+    # if (country == "Tanzania" && study == "Optimisation"){
+    #   output$opt_chk_support <- renderUI({
+    #     checkboxGroupInput(inputId = "opt_support",
+    #                                          label = "Support level",
+    #                                          c("Self-guided" = "Self-guided",
+    #                                            "WhatsApp" = "WhatsApp"),
+    #                                          selected = c("Self-guided", "WhatsApp"))
+    #   })
+    #   observeEvent(input$chk_support, {
+    #     if (input$chk_support) shinyjs::enable(id="opt_support")  
+    #     else shinyjs::disable(id="opt_support")
+    #   })
+    # }
+    
     selected_data_dem <- reactive({
       if (country == "Tanzania"){
         if (study == "Pilot"){
-          plhdata_checkgroup <- plhdata_org_clean %>% dplyr::filter(PilotSite %in% c(input$OrgDem))
-          print(nrow(plhdata_checkgroup))
-          print(plhdata_checkgroup$PilotSite)
+          plhdata_checkgroup <- plhdata_org_clean %>%
+            dplyr::filter(PilotSite %in% c(input$OrgDem))
         } else if (study == "Optimisation"){
-          plhdata_checkgroup <- plhdata_org_clean
+          plhdata_checkgroup <- plhdata_org_clean %>%
+            dplyr::filter(Cluster %in% c(input$opt_cluster))
+          if (!is.null(input$opt_support)) {
+            plhdata_checkgroup <- plhdata_checkgroup %>%
+              dplyr::filter(Support %in% c(input$opt_support))
+          }
+          if (!is.null(input$opt_skin)) {
+            plhdata_checkgroup <- plhdata_checkgroup %>%
+              dplyr::filter(Skin %in% c(input$opt_skin))
+          }
+          if (!is.null(input$opt_diglit)) {
+            plhdata_checkgroup <- plhdata_checkgroup %>%
+              dplyr::filter(`Digital Literacy` %in% c(input$opt_diglit))
+          }
         } else {
           plhdata_checkgroup <- plhdata_org_clean
         }
@@ -3028,26 +3040,108 @@ parentapp_shiny <- function(country){
       return(plhdata_checkgroup)
     })
     
-    # Demographics ---------------------------------------------------
-    summary_table_baseline <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_baseline_survey)
+    opt_factors <- reactive({
       if (country == "Tanzania"){
         if (study == "Pilot"){
-          summary_table_baseline_build %>% 
+          opt_factors <- c("PilotSite")
+        } else if (study == "Optimisation"){
+          opt_factors <- c()
+          if (!is.null(input$opt_support)){
+            opt_factors <- c(opt_factors, "Support")
+          }
+          if (!is.null(input$opt_skin)){
+            opt_factors <- c(opt_factors, "Skin")
+          }
+          if (!is.null(input$opt_diglit)){
+            opt_factors <- c(opt_factors, "Digital Literacy")
+          }
+          if (length(opt_factors) == 0){
+            opt_factors <- c("Org")
+          }
+        } else {
+          opt_factors <- c("Org")
+        }
+      } else {
+        opt_factors <- c("Org")
+      }
+        return(opt_factors)
+      })
+    
+    summary_table_filter <- function(summary_workshop){
+      if (country == "Tanzania"){
+        if (study == "Pilot"){
+          summary_workshop <- summary_workshop %>% 
+            dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
+            janitor::adorn_totals("row")
+        } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_workshop <- summary_workshop %>% 
+              dplyr::filter(Support %in% c(selected_data_dem()$Support))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_workshop <- summary_workshop %>% 
+              dplyr::filter(Skin %in% c(selected_data_dem()$Skin))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_workshop <- summary_workshop %>% 
+              dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`))
+          }
+          summary_workshop <- summary_workshop %>% 
+            janitor::adorn_totals("row")
+        } else {
+          summary_workshop <- summary_workshop %>% 
+            dplyr::filter(Org %in% unique(selected_data_dem()$Org))
+        }
+      } else {
+        summary_workshop <- summary_workshop %>% 
+          dplyr::filter(Org %in% unique(selected_data_dem()$Org)) #%>%
+        #janitor::adorn_totals("row"))
+      }
+      return(summary_workshop)
+    }
+    
+    mult_summary_table_filter <- function(summary_table = summary_table_baseline_build){
+      if (country == "Tanzania"){
+        if (study == "Pilot"){
+          summary_table <- summary_table %>% 
             purrr::map(.f =~.x %>%
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
-          
+          if (!is.null(input$opt_support)){
+            summary_table <- summary_table %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_table <- summary_table %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_table <- summary_table %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
+          summary_table <- summary_table %>% 
+            purrr::map(.f =~.x %>%
+                         janitor::adorn_totals("row"))
         } else {
-          summary_table_baseline_build %>% 
+          summary_table <- summary_table %>% 
             purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
         }
       } else {
-        summary_table_baseline_build %>% 
+        summary_table <- summary_table %>% 
           purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
         #janitor::adorn_totals("row"))
       }
+      return(summary_table) 
+    }
+    
+    # Demographics ---------------------------------------------------
+    summary_table_baseline <- reactive({
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_baseline_survey)
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     table_app_launch <- reactive({}) 
@@ -3079,7 +3173,7 @@ parentapp_shiny <- function(country){
       # we add in a "default" field from rp.contact.field.workshop_path_user_choice
       summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.workshop_path", replace = "rp.contact.field.")
     }) 
-    output$table_ws_format <- shiny::renderTable({(table_ws_format())}, striped = TRUE)
+    output$table_ws_format <- shiny::renderTable({(table_ws_format())}, striped = TRUE, style = "height:500px; overflow-y: scroll;overflow-x: scroll;")
     output$plot_ws_format <- renderPlotly({plot_ws_format()})
     
     #App version
@@ -3094,7 +3188,7 @@ parentapp_shiny <- function(country){
         labs(x = "App version")
       #summary_plot(plhdata_org_clean, app_version)
     }) 
-    output$table_app_version <- shiny::renderTable({(table_app_version())}, striped = TRUE)
+    output$table_app_version <- shiny::renderTable({(table_app_version())}, striped = TRUE, options = list(scrollX = TRUE))
     output$plot_app_version <- renderPlotly({plot_app_version()})
     
     #Parent gender plot and tabled
@@ -3184,26 +3278,12 @@ parentapp_shiny <- function(country){
     
     # Workshop Engagement ---------------------------------------------------
     summary_table_completion_level <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_completion_level,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_completion_level,
                                                                replace = "rp.contact.field.w_",
                                                                replace_after = "_completion_level")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     #Table of averages
@@ -3215,15 +3295,57 @@ parentapp_shiny <- function(country){
                                                      columns_to_summarise = data_completion_level,
                                                      replace = "rp.contact.field.w_",
                                                      replace_after = "_completion_level",
-                                                     summaries = "mean")
-      summary_mean_completion_level <- summary_mean_completion_level %>%
-        dplyr::filter(Org %in% unique(selected_data_dem()$Org))
-      #dplyr::filter(Org %in% unique(selected_data_dem()$Org))
-      return(summary_mean_completion_level)
+                                                     summaries = "mean",
+                                                     factors = opt_factors())
+      
+      if (country == "Tanzania"){
+        if (study == "Pilot"){
+          summary_mean_completion_level %>% 
+            purrr::map(.f =~.x %>%
+                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
+                         janitor::adorn_totals("row"))
+        } else if (study == "Optimisation"){
+          if (!is.null(input$opt_support)){
+            summary_mean_completion_level <- summary_mean_completion_level %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+          }
+          if (!is.null(input$opt_skin)){
+            summary_mean_completion_level <- summary_mean_completion_level %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+          }
+          if (!is.null(input$opt_diglit)){
+            summary_mean_completion_level <- summary_mean_completion_level %>% 
+              purrr::map(.f =~.x %>%
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+          }
+          summary_mean_completion_level %>% 
+            purrr::map(.f =~.x %>%
+                         janitor::adorn_totals("row"))
+        } else {
+          summary_mean_completion_level %>% 
+            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
+        }
+      } else {
+        summary_mean_completion_level %>% 
+          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
+        #janitor::adorn_totals("row"))
+      }
     }) 
     
     plot_ws_totals  <- reactive({
-      summary_mean_completion_level_long <- pivot_longer(table_ws_totals(), cols = !Org, names_to = "Workshop", values_to = "Value")
+      summary_mean_completion_level_long <- pivot_longer(table_ws_totals(), cols = !opt_factors(), names_to = "Workshop", values_to = "Value")
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% mutate(Org = opt_factors())
+        }
+      } else {
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
+      }
       ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = Value, fill = Org)) + 
         geom_bar(stat = "identity", position = "dodge") +
         # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -3350,28 +3472,64 @@ parentapp_shiny <- function(country){
           summary_table_completion_level[[i]]$`100` <- 0
         }
       }
-      
-      relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
+     select_items <- c(opt_factors(), "started", "perc_completed")
+     
+     relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
                                         mutate(started = Total - `0` - `NA`,
                                                perc_completed = `100`/started*100) %>%
-                                        select(c(Org, started, perc_completed)))
-      return(relative_perc_completed)
+                                        select(select_items))
+      return(relative_perc_completed)   
     })
     table_ws_started <- reactive({
       table_ws_started <- plyr::ldply(relative_perc_completed()) %>%
-        pivot_wider(id_cols = Org, names_from = .id, values_from = started)
+        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = started)
       return(table_ws_started)
     })
-    plot_ws_started <- reactive({}) 
+    plot_ws_started  <- reactive({
+      summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed())
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(PilotSite != "Total") %>% mutate(Org = PilotSite)
+        }
+      } else {
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
+      }
+      
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = started, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
+        viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "Workshop")
+    }) 
     output$table_ws_started <- shiny::renderTable({(table_ws_started())}, striped = TRUE)
     output$plot_ws_started <- renderPlotly({plot_ws_started()})
     
     table_ws_rel_completed <- reactive({
       table_perc_completed <- plyr::ldply(relative_perc_completed()) %>%
-        pivot_wider(id_cols = Org, names_from = .id, values_from = perc_completed)
+        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = perc_completed)
       return(table_perc_completed)
     })
-    plot_ws_rel_completed <- reactive({}) 
+    plot_ws_rel_completed  <- reactive({
+      summary_mean_completion_level_long <- plyr::ldply(relative_perc_completed())
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(PilotSite != "Total") %>% mutate(Org = PilotSite)
+        }
+      } else {
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
+      }
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = perc_completed, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
+        viridis::scale_fill_viridis(discrete = TRUE)+
+        labs(x = "Workshop")
+    }) 
     output$table_ws_rel_completed <- shiny::renderTable({(table_ws_rel_completed())}, striped = TRUE)
     output$plot_ws_rel_completed <- renderPlotly({plot_ws_rel_completed()})
     
@@ -3383,56 +3541,69 @@ parentapp_shiny <- function(country){
     })
     
     summary_table_habits_all <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_all,
-                                                               replace = "rp.contact.field.parent_point_count_")
-      #, replace_after = "_completion_level")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_all,
+                                                               replace = "rp.contact.field.parent_point_count_",
+                                                               replace_after = "_completion_level")
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     #Table of averages
     table_pp_totals <- reactive({
+      summary_total_habits <- summary_table(data = selected_data_dem(),
+                                           columns_to_summarise = data_habit_parent_points_all,
+                                           replace = "rp.contact.field.parent_point_count_",
+                                           summaries = "total",
+                                           factors = opt_factors())
+      summary_table_filter(summary_total_habits)
+    })
+    plot_pp_totals  <- reactive({
+        summary_mean_completion_level_long <- pivot_longer(table_pp_totals(), cols = !opt_factors(), names_to = "Parent Points", values_to = "Value")
+        if (country == "Tanzania"){
+          if (study == "Optimisation"){
+            summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+              mutate(Org = toString(opt_factors()))
+          } else {
+            summary_mean_completion_level_long <- summary_mean_completion_level_long %>% mutate(Org = opt_factors())
+          }
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
+        }
+        ggplot(summary_mean_completion_level_long, aes(x = Org, y = Value, fill = `Parent Points`)) + 
+          geom_bar(stat = "identity", position = "fill") +
+          viridis::scale_fill_viridis(discrete = TRUE) +
+          labs(x = "Organisation", title = "Proportion of parent points given in each category within an organisation")
+    }) 
+    output$table_pp_totals <- shiny::renderTable({(table_pp_totals())}, striped = TRUE, caption = "Total parent points for each category split by organisation")
+    output$plot_pp_totals <- renderPlotly({plot_pp_totals()})
+    
+    #Table of averages
+    table_pp_means <- reactive({
       summary_mean_habits <- summary_table(data = selected_data_dem(),
                                            columns_to_summarise = data_habit_parent_points_all,
                                            replace = "rp.contact.field.parent_point_count_",
-                                           summaries = "mean")
-      summary_mean_habits <- summary_mean_habits %>%
-        dplyr::filter(Org %in% unique(selected_data_dem()$Org))
-      return(summary_mean_habits)
+                                           summaries = "mean",
+                                           factors = opt_factors())
+      summary_table_filter(summary_mean_habits)
     }) 
-    plot_pp_totals  <- reactive({
-      table_to_plot <- selected_data_dem() %>%
-        group_by(Org) %>%
-        summarise(across(data_habit_parent_points_all, sum, na.rm = TRUE))
-      colnames(table_to_plot) <- naming_conventions(colnames(table_to_plot), "rp.contact.field.parent_point_count_")
-      table_to_plot <- pivot_longer(table_to_plot, cols = !Org, names_to = "Parent Points", values_to = "Value")
-      ggplot(table_to_plot, aes(x = Org, y = Value, fill = `Parent Points`)) +
+    plot_pp_means  <- reactive({
+      summary_mean_completion_level_long <- pivot_longer(table_pp_means(), cols = !opt_factors(), names_to = "Parent Points", values_to = "Value")
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% mutate(Org = opt_factors())
+        }
+      } else {
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
+      }
+      ggplot(summary_mean_completion_level_long, aes(x = Org, y = Value, fill = `Parent Points`)) + 
         geom_bar(stat = "identity", position = "fill") +
         viridis::scale_fill_viridis(discrete = TRUE) +
         labs(x = "Organisation", title = "Proportion of parent points given in each category within an organisation")
-      
-      # summary_mean_habits_long <- pivot_longer(summary_mean_habits, cols = !Org, names_to = "Parent Points", values_to = "Value")
-      # ggplot(summary_mean_habits_long, aes(x = Org, y = Value, fill = `Parent Points`)) +
-      #   geom_bar(stat = "identity", position = "stack") +
-      #   viridis::scale_fill_viridis(discrete = TRUE)
     }) 
-    output$table_pp_totals <- shiny::renderTable({(table_pp_totals())}, striped = TRUE, caption = "Mean parent points for each category split by organisation")
-    output$plot_pp_totals <- renderPlotly({plot_pp_totals()})
+    output$table_pp_means <- shiny::renderTable({(table_pp_means())}, striped = TRUE, caption = "Mean parent points for each category split by organisation")
+    output$plot_pp_means <- renderPlotly({plot_pp_means()})
     
     # pp_relax
     table_pp_relax <- reactive({
@@ -3502,304 +3673,101 @@ parentapp_shiny <- function(country){
     
     #Parent Point sub tab Relax points pp1
     table_pp_relax_ws_totals <- reactive({
-      #Average relax parent points pp1
-      #summary_relax_workshop <- multiple_table_output(columns_to_summarise = relax_workshop_vars, replace = "rp.contact.field.parent_point_count_relax_w_")
-      summary_relax_workshop <- selected_data_dem() %>%
-        group_by(Org) %>%
-        summarise(across(all_of(relax_workshop_vars), mean, na.rm = TRUE))
-      colnames(summary_relax_workshop) <- naming_conventions(colnames(summary_relax_workshop), "rp.contact.field.parent_point_count_relax_w_")
-      if (country != "Tanzania"){
-        summary_relax_workshop <- summary_relax_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      return(summary_relax_workshop)
+      summary_relax_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = relax_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_relax_w_")
+      summary_table_filter(summary_relax_workshop)
     })
     output$table_pp_relax_ws_totals <- shiny::renderTable({table_pp_relax_ws_totals()})
     plot_pp_relax_ws_totals <- reactive({
-      # Make the table longer so that it is in a format for use in ggplot
-      summary_relax_workshop_long <- table_pp_relax_ws_totals() %>%
-        pivot_longer(cols = !Org) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      ggplot(summary_relax_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")
+      plot_totals_function(table_pp_relax_ws_totals(), factors = opt_factors())
     })
     output$plot_pp_relax_ws_totals <- renderPlotly({plot_pp_relax_ws_totals()})
     
     summary_table_habits_self_care <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_self_care,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_self_care,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "_w_self_care")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_1on1 <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_1on1,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_1on1,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_1on1")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_praise <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_praise,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_praise,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_praise")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_instruct <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_instruct,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_instruct,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_instruct")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_stress <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_stress,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_stress,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_stress")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_money <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_money,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_money,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_money")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_rules <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_rules,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_rules,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_rules")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_consequence <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_consequence,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_consequence,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_consequence")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_solve <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_solve,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_solve,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_solve")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_safe <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_safe,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_safe,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_safe")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_crisis <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_crisis,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_crisis,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_crisis")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     summary_table_habits_celebrate <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_habit_parent_points_w_celebrate,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_celebrate,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_celebrate")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     table_pp_relax_w_self_care <- reactive({
@@ -3810,47 +3778,47 @@ parentapp_shiny <- function(country){
     output$plot_pp_relax_w_self_care <- renderPlotly({plot_pp_relax_w_self_care()})
     
     table_pp_relax_w_1on1 <- reactive({summary_table_habits_1on1()$`Relax`})
-    plot_pp_relax_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_1on1", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_1on1 <- shiny::renderTable({(table_pp_relax_w_1on1())}, striped = TRUE)
     output$plot_pp_relax_w_1on1 <- renderPlotly({plot_pp_relax_w_1on1()})
     
     table_pp_relax_w_praise <- reactive({summary_table_habits_praise()$`Relax`})
-    plot_pp_relax_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_praise", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_praise <- shiny::renderTable({(table_pp_relax_w_praise())}, striped = TRUE)
     output$plot_pp_relax_w_praise <- renderPlotly({plot_pp_relax_w_praise()})
     
     table_pp_relax_w_instruct <- reactive({summary_table_habits_instruct()$`Relax`})
-    plot_pp_relax_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_instruct", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_instruct <- shiny::renderTable({(table_pp_relax_w_instruct())}, striped = TRUE)
     output$plot_pp_relax_w_instruct <- renderPlotly({plot_pp_relax_w_instruct()})
     
     table_pp_relax_w_stress <- reactive({summary_table_habits_stress()$`Relax`%>% filter(Org %in% c((input$OrgDem)))})
-    plot_pp_relax_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_stress", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_stress", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_stress <- shiny::renderTable({(table_pp_relax_w_stress())}, striped = TRUE)
     output$plot_pp_relax_w_stress <- renderPlotly({plot_pp_relax_w_stress()})
     
     table_pp_relax_w_money <- reactive({summary_table_habits_money()$`Relax`})
-    plot_pp_relax_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_money", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_money <- shiny::renderTable({(table_pp_relax_w_money())}, striped = TRUE)
     output$plot_pp_relax_w_money <- renderPlotly({plot_pp_relax_w_money()})
     
     table_pp_relax_w_rules <- reactive({summary_table_habits_rules()$`Relax`})
-    plot_pp_relax_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_rules", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_rules <- shiny::renderTable({(table_pp_relax_w_rules())}, striped = TRUE)
     output$plot_pp_relax_w_rules <- renderPlotly({plot_pp_relax_w_rules()})
     
     table_pp_relax_w_consequence <- reactive({summary_table_habits_consequence()$`Relax`})
-    plot_pp_relax_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_consequence", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_consequence <- shiny::renderTable({(table_pp_relax_w_consequence())}, striped = TRUE)
     output$plot_pp_relax_w_consequence <- renderPlotly({plot_pp_relax_w_consequence()})
     
     table_pp_relax_w_solve <- reactive({summary_table_habits_solve()$`Relax`})
-    plot_pp_relax_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_solve", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_solve <- shiny::renderTable({(table_pp_relax_w_solve())}, striped = TRUE)
     output$plot_pp_relax_w_solve <- renderPlotly({plot_pp_relax_w_solve()})
     
     table_pp_relax_w_safe <- reactive({summary_table_habits_safe()$`Relax`})
-    plot_pp_relax_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_safe", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_safe <- shiny::renderTable({(table_pp_relax_w_safe())}, striped = TRUE)
     output$plot_pp_relax_w_safe <- renderPlotly({plot_pp_relax_w_safe()})
     
@@ -3858,57 +3826,49 @@ parentapp_shiny <- function(country){
     plot_pp_relax_w_crisis <- reactive({
       summary_plot(data = selected_data_dem(),
                    columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_crisis",
-                   replace = "rp.contact.field.parent_point_count_",
+                   replace = "rp.contact.field.parent_point_count_relax_w_",
                    plot_type = "boxplot")})
     output$table_pp_relax_w_crisis <- shiny::renderTable({(table_pp_relax_w_crisis())}, striped = TRUE)
     output$plot_pp_relax_w_crisis <- renderPlotly({plot_pp_relax_w_crisis()})
     
     table_pp_relax_w_celebrate <- reactive({summary_table_habits_celebrate()$`Relax`})
-    plot_pp_relax_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_relax_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_relax_w_celebrate", replace = "rp.contact.field.parent_point_count_relax_w_", plot_type = "boxplot")})
     output$table_pp_relax_w_celebrate <- shiny::renderTable({(table_pp_relax_w_celebrate())}, striped = TRUE)
     output$plot_pp_relax_w_celebrate <- renderPlotly({plot_pp_relax_w_celebrate()})
     
     #Parent Point sub tab Treat Yourself points pp2
     table_pp_treat_yourself_ws_totals <- reactive({
-      #Average treat_yourself parent points pp2
-      summary_treat_yourself_workshop <- selected_data_dem() %>%
-        group_by(Org, .drop = TRUE) %>%
-        summarise(across(treat_yourself_workshop_vars, mean, na.rm = TRUE))
-      colnames(summary_treat_yourself_workshop) <- naming_conventions(colnames(summary_treat_yourself_workshop), "rp.contact.field.parent_point_count_treat_yourself_w_")
-      if (country != "Tanzania"){
-        summary_treat_yourself_workshop <- summary_treat_yourself_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      return(summary_treat_yourself_workshop)
-    }) 
-    plot_pp_treat_yourself_ws_totals  <- reactive({
-      summary_treat_yourself_workshop_long <- table_pp_treat_yourself_ws_totals() %>%
-        pivot_longer(cols = !Org) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      ggplot(summary_treat_yourself_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")
-    }) 
+      summary_treat_yourself_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = treat_yourself_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_treat_yourself_w_")
+      summary_table_filter(summary_treat_yourself_workshop)
+    })
+    
+    plot_pp_treat_yourself_ws_totals <- reactive({
+      plot_totals_function(table_pp_treat_yourself_ws_totals(), factors = opt_factors())
+    })
     output$table_pp_treat_yourself_ws_totals <- shiny::renderTable({(table_pp_treat_yourself_ws_totals())}, striped = TRUE)
     output$plot_pp_treat_yourself_ws_totals <- renderPlotly({plot_pp_treat_yourself_ws_totals()})
     
     table_pp_treat_yourself_w_self_care <- reactive({summary_table_habits_self_care()$`Treat yourself`})
-    plot_pp_treat_yourself_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_self_care", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_self_care", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_self_care <- shiny::renderTable({(table_pp_treat_yourself_w_self_care())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_self_care <- renderPlotly({plot_pp_treat_yourself_w_self_care()})
     
     table_pp_treat_yourself_w_1on1 <- reactive({summary_table_habits_1on1()$`Treat yourself`})
-    plot_pp_treat_yourself_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_1on1", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_1on1 <- shiny::renderTable({(table_pp_treat_yourself_w_1on1())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_1on1 <- renderPlotly({plot_pp_treat_yourself_w_1on1()})
     
     table_pp_treat_yourself_w_praise <- reactive({summary_table_habits_praise()$`Treat yourself `})
-    plot_pp_treat_yourself_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_praise", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_praise <- shiny::renderTable({(table_pp_treat_yourself_w_praise())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_praise <- renderPlotly({plot_pp_treat_yourself_w_praise()})
     
     table_pp_treat_yourself_w_instruct <- reactive({summary_table_habits_instruct()$`Treat yourself `})
-    plot_pp_treat_yourself_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_instruct", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_instruct <- shiny::renderTable({(table_pp_treat_yourself_w_instruct())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_instruct <- renderPlotly({plot_pp_treat_yourself_w_instruct()})
     
@@ -3918,773 +3878,839 @@ parentapp_shiny <- function(country){
     output$plot_pp_treat_yourself_w_stress <- renderPlotly({plot_pp_treat_yourself_w_stress()})
     
     table_pp_treat_yourself_w_money <- reactive({summary_table_habits_money()$`Treat yourself `})
-    plot_pp_treat_yourself_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_money", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_money <- shiny::renderTable({(table_pp_treat_yourself_w_money())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_money <- renderPlotly({plot_pp_treat_yourself_w_money()})
     
     #ERROR
     table_pp_treat_yourself_w_rules <- reactive({summary_table_habits_rules()$`Treat yourself `})
-    plot_pp_treat_yourself_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_rules", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_rules <- shiny::renderTable({(table_pp_treat_yourself_w_rules())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_rules <- renderPlotly({plot_pp_treat_yourself_w_rules()})
     
     table_pp_treat_yourself_w_consequence <- reactive({summary_table_habits_consequence()$`Treat yourself`})
-    plot_pp_treat_yourself_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_consequence", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_consequence <- shiny::renderTable({(table_pp_treat_yourself_w_consequence())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_consequence <- renderPlotly({plot_pp_treat_yourself_w_consequence()})
     
     table_pp_treat_yourself_w_solve <- reactive({summary_table_habits_solve()$`Treat yourself`})
-    plot_pp_treat_yourself_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_solve", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_solve <- shiny::renderTable({(table_pp_treat_yourself_w_solve())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_solve <- renderPlotly({plot_pp_treat_yourself_w_solve()})
     
     table_pp_treat_yourself_w_safe <- reactive({summary_table_habits_safe()$`Treat yourself`})
-    plot_pp_treat_yourself_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_safe", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_safe <- shiny::renderTable({(table_pp_treat_yourself_w_safe())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_safe <- renderPlotly({plot_pp_treat_yourself_w_safe()})
     
     table_pp_treat_yourself_w_crisis <- reactive({summary_table_habits_crisis()$`Treat yourself`})
-    plot_pp_treat_yourself_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_crisis", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_crisis <- shiny::renderTable({(table_pp_treat_yourself_w_crisis())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_crisis <- renderPlotly({plot_pp_treat_yourself_w_crisis()})
     
     table_pp_treat_yourself_w_celebrate <- reactive({summary_table_habits_celebrate()$`Treat yourself`})
-    plot_pp_treat_yourself_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_treat_yourself_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_treat_yourself_w_celebrate", replace = "rp.contact.field.parent_point_count_treat_yourself_w", plot_type = "boxplot")})
     output$table_pp_treat_yourself_w_celebrate <- shiny::renderTable({(table_pp_treat_yourself_w_celebrate())}, striped = TRUE)
     output$plot_pp_treat_yourself_w_celebrate <- renderPlotly({plot_pp_treat_yourself_w_celebrate()})
     
     # Parent Point sub tab Praise Yourself points pp3
     table_pp_praise_yourself_ws_totals <- reactive({
-      #Average praise_yourself parent points pp3
-      summary_praise_yourself_workshop <- selected_data_dem() %>%
-        group_by(Org, .drop = TRUE) %>%
-        summarise(across(praise_yourself_workshop_vars, mean, na.rm = TRUE))
-      colnames(summary_praise_yourself_workshop) <- naming_conventions(colnames(summary_praise_yourself_workshop), "rp.contact.field.parent_point_count_praise_yourself_w_")
-      if (country != "Tanzania"){
-        summary_praise_yourself_workshop <- summary_praise_yourself_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_praise_yourself_workshop
+      summary_praise_yourself_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = praise_yourself_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_praise_yourself_w_")
+      summary_table_filter(summary_praise_yourself_workshop)
     })
+    
     plot_pp_praise_yourself_ws_totals <- reactive({
-      # Make the table longer so that it is in a format for use in ggplot
-      summary_praise_yourself_workshop_long <- table_pp_praise_yourself_ws_totals() %>%
-        pivot_longer(cols = !Org) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      ggplot(summary_praise_yourself_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")
+      plot_totals_function(table_pp_praise_yourself_ws_totals(), factors = opt_factors())
     })
     output$table_pp_praise_yourself_ws_totals <- shiny::renderTable({table_pp_praise_yourself_ws_totals()})
     output$plot_pp_praise_yourself_ws_totals <- renderPlotly({plot_pp_praise_yourself_ws_totals()})
     
     table_pp_praise_yourself_w_self_care <- reactive({summary_table_habits_self_care()$`Praise yourself`})
-    plot_pp_praise_yourself_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_self_care", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_self_care", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_self_care <- shiny::renderTable({(table_pp_praise_yourself_w_self_care())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_self_care <- renderPlotly({plot_pp_praise_yourself_w_self_care()})
     
     table_pp_praise_yourself_w_1on1 <- reactive({summary_table_habits_1on1()$`Praise yourself`})
-    plot_pp_praise_yourself_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_1on1", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_1on1 <- shiny::renderTable({(table_pp_praise_yourself_w_1on1())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_1on1 <- renderPlotly({plot_pp_praise_yourself_w_1on1()})
     
     table_pp_praise_yourself_w_praise <- reactive({summary_table_habits_praise()$`Praise yourself `})
-    plot_pp_praise_yourself_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_praise", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_praise <- shiny::renderTable({(table_pp_praise_yourself_w_praise())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_praise <- renderPlotly({plot_pp_praise_yourself_w_praise()})
     
     table_pp_praise_yourself_w_instruct <- reactive({summary_table_habits_instruct()$`Praise yourself `})
-    plot_pp_praise_yourself_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_instruct", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_instruct <- shiny::renderTable({(table_pp_praise_yourself_w_instruct())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_instruct <- renderPlotly({plot_pp_praise_yourself_w_instruct()})
     
     table_pp_praise_yourself_w_stress <- reactive({summary_table_habits_stress()$`Praise yourself `})
-    plot_pp_praise_yourself_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_stress", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_stress", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_stress <- shiny::renderTable({(table_pp_praise_yourself_w_stress())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_stress <- renderPlotly({plot_pp_praise_yourself_w_stress()})
     
     table_pp_praise_yourself_w_money <- reactive({summary_table_habits_money()$`Praise yourself `})
-    plot_pp_praise_yourself_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_money", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_money <- shiny::renderTable({(table_pp_praise_yourself_w_money())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_money <- renderPlotly({plot_pp_praise_yourself_w_money()})
     
     table_pp_praise_yourself_w_rules <- reactive({summary_table_habits_rules()$`Praise yourself `})
-    plot_pp_praise_yourself_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_rules", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_rules <- shiny::renderTable({(table_pp_praise_yourself_w_rules())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_rules <- renderPlotly({plot_pp_praise_yourself_w_rules()})
     
     table_pp_praise_yourself_w_consequence <- reactive({summary_table_habits_consequence()$`Praise yourself`})
-    plot_pp_praise_yourself_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_consequence", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_consequence <- shiny::renderTable({(table_pp_praise_yourself_w_consequence())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_consequence <- renderPlotly({plot_pp_praise_yourself_w_consequence()})
     
     table_pp_praise_yourself_w_solve <- reactive({summary_table_habits_solve()$`Praise yourself`})
-    plot_pp_praise_yourself_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_solve", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_solve <- shiny::renderTable({(table_pp_praise_yourself_w_solve())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_solve <- renderPlotly({plot_pp_praise_yourself_w_solve()})
     
     table_pp_praise_yourself_w_safe <- reactive({summary_table_habits_safe()$`Praise yourself`})
-    plot_pp_praise_yourself_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_safe", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_safe <- shiny::renderTable({(table_pp_praise_yourself_w_safe())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_safe <- renderPlotly({plot_pp_praise_yourself_w_safe()})
     
     table_pp_praise_yourself_w_crisis <- reactive({summary_table_habits_crisis()$`Praise yourself`})
-    plot_pp_praise_yourself_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_crisis", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_crisis <- shiny::renderTable({(table_pp_praise_yourself_w_crisis())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_crisis <- renderPlotly({plot_pp_praise_yourself_w_crisis()})
     
     table_pp_praise_yourself_w_celebrate <- reactive({summary_table_habits_celebrate()$`Praise yourself`})
-    plot_pp_praise_yourself_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_yourself_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_yourself_w_celebrate", replace = "rp.contact.field.parent_point_count_praise_yourself_w_", plot_type = "boxplot")})
     output$table_pp_praise_yourself_w_celebrate <- shiny::renderTable({(table_pp_praise_yourself_w_celebrate())}, striped = TRUE)
     output$plot_pp_praise_yourself_w_celebrate <- renderPlotly({plot_pp_praise_yourself_w_celebrate()})
     
     # Parent Point sub tab Spend Time points pp4
     table_pp_spend_time_ws_totals <- reactive({
-      #Average spend_time parent points pp4
-      summary_spend_time_workshop <- selected_data_dem() %>%
-        group_by(Org) %>%
-        summarise(across(spend_time_workshop_vars, mean, na.rm = TRUE))
-      colnames(summary_spend_time_workshop) <- naming_conventions(colnames(summary_spend_time_workshop), "rp.contact.field.parent_point_count_spend_time_w_")
-      if (country != "Tanzania"){
-        summary_spend_time_workshop <- summary_spend_time_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_spend_time_workshop
+      summary_spend_time_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = spend_time_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_spend_time_w_")
+      summary_table_filter(summary_spend_time_workshop)
     })
     plot_pp_spend_time_ws_totals <- reactive({
-      # Make the table longer so that it is in a format for use in ggplot
-      summary_spend_time_workshop_long <- table_pp_spend_time_ws_totals() %>%
-        pivot_longer(cols = !Org) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      ggplot(summary_spend_time_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")})
+      plot_totals_function(table_pp_spend_time_ws_totals(), factors = opt_factors())
+    })
     output$table_pp_spend_time_ws_totals <- shiny::renderTable({table_pp_spend_time_ws_totals()})
     output$plot_pp_spend_time_ws_totals <- renderPlotly({plot_pp_spend_time_ws_totals()})
     
     table_pp_spend_time_w_self_care <- reactive({summary_table_habits_self_care()$`Spend time`})
-    plot_pp_spend_time_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_self_care", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_self_care", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_self_care <- shiny::renderTable({(table_pp_spend_time_w_self_care())}, striped = TRUE)
     output$plot_pp_spend_time_w_self_care <- renderPlotly({plot_pp_spend_time_w_self_care()})
     
     table_pp_spend_time_w_1on1 <- reactive({summary_table_habits_1on1()$`Spend time`})
-    plot_pp_spend_time_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_1on1", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_1on1 <- shiny::renderTable({(table_pp_spend_time_w_1on1())}, striped = TRUE)
     output$plot_pp_spend_time_w_1on1 <- renderPlotly({plot_pp_spend_time_w_1on1()})
     
     table_pp_spend_time_w_praise <- reactive({summary_table_habits_praise()$`Spend time `})
-    plot_pp_spend_time_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_praise", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_praise <- shiny::renderTable({(table_pp_spend_time_w_praise())}, striped = TRUE)
     output$plot_pp_spend_time_w_praise <- renderPlotly({plot_pp_spend_time_w_praise()})
     
     table_pp_spend_time_w_instruct <- reactive({summary_table_habits_instruct()$`Spend time `})
-    plot_pp_spend_time_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_instruct", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_instruct <- shiny::renderTable({(table_pp_spend_time_w_instruct())}, striped = TRUE)
     output$plot_pp_spend_time_w_instruct <- renderPlotly({plot_pp_spend_time_w_instruct()})
     
     table_pp_spend_time_w_stress <- reactive({summary_table_habits_stress()$`Spend time `})
-    plot_pp_spend_time_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_stress", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_stress", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_stress <- shiny::renderTable({(table_pp_spend_time_w_stress())}, striped = TRUE)
     output$plot_pp_spend_time_w_stress <- renderPlotly({plot_pp_spend_time_w_stress()})
     
     table_pp_spend_time_w_money <- reactive({summary_table_habits_money()$`Spend time `})
-    plot_pp_spend_time_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_money", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_money <- shiny::renderTable({(table_pp_spend_time_w_money())}, striped = TRUE)
     output$plot_pp_spend_time_w_money <- renderPlotly({plot_pp_spend_time_w_money()})
     
     table_pp_spend_time_w_rules <- reactive({summary_table_habits_rules()$`Spend time `})
-    plot_pp_spend_time_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_rules", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_rules <- shiny::renderTable({(table_pp_spend_time_w_rules())}, striped = TRUE)
     output$plot_pp_spend_time_w_rules <- renderPlotly({plot_pp_spend_time_w_rules()})
     
     table_pp_spend_time_w_consequence <- reactive({summary_table_habits_consequence()$`Spend time`})
-    plot_pp_spend_time_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_consequence", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_consequence <- shiny::renderTable({(table_pp_spend_time_w_consequence())}, striped = TRUE)
     output$plot_pp_spend_time_w_consequence <- renderPlotly({plot_pp_spend_time_w_consequence()})
     
     table_pp_spend_time_w_solve <- reactive({summary_table_habits_solve()$`Spend time`})
-    plot_pp_spend_time_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_solve", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_solve <- shiny::renderTable({(table_pp_spend_time_w_solve())}, striped = TRUE)
     output$plot_pp_spend_time_w_solve <- renderPlotly({plot_pp_spend_time_w_solve()})
     
     table_pp_spend_time_w_safe <- reactive({summary_table_habits_safe()$`Spend time`})
-    plot_pp_spend_time_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_safe", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_safe <- shiny::renderTable({(table_pp_spend_time_w_safe())}, striped = TRUE)
     output$plot_pp_spend_time_w_safe <- renderPlotly({plot_pp_spend_time_w_safe()})
     
     table_pp_spend_time_w_crisis <- reactive({summary_table_habits_crisis()$`Spend time`})
-    plot_pp_spend_time_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_crisis", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_crisis <- shiny::renderTable({(table_pp_spend_time_w_crisis())}, striped = TRUE)
     output$plot_pp_spend_time_w_crisis <- renderPlotly({plot_pp_spend_time_w_crisis()})
     
     table_pp_spend_time_w_celebrate <- reactive({summary_table_habits_celebrate()$`Spend time`})
-    plot_pp_spend_time_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_spend_time_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_spend_time_w_celebrate", replace = "rp.contact.field.parent_point_count_spend_time_w_", plot_type = "boxplot")})
     output$table_pp_spend_time_w_celebrate <- shiny::renderTable({(table_pp_spend_time_w_celebrate())}, striped = TRUE)
     output$plot_pp_spend_time_w_celebrate <- renderPlotly({plot_pp_spend_time_w_celebrate()})
     
     # Parent Point sub tab Praise Teen points pp5
     table_pp_praise_teen_ws_totals <- reactive({
-      #Average praise_teen parent points pp5
-      summary_praise_teen_workshop <- selected_data_dem() %>%
-        group_by(Org, .drop = TRUE) %>%
-        summarise(across(praise_teen_workshop_vars, mean, na.rm = TRUE))
-      colnames(summary_praise_teen_workshop) <- naming_conventions(colnames(summary_praise_teen_workshop), "rp.contact.field.parent_point_count_praise_teen_w_")
-      if (country != "Tanzania"){
-        summary_praise_teen_workshop <- summary_praise_teen_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_praise_teen_workshop
+      summary_praise_teen_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = praise_teen_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_praise_teen_w_")
+      summary_table_filter(summary_praise_teen_workshop)
     })
     plot_pp_praise_teen_ws_totals <- reactive({
-      # Make the table longer so that it is in a format for use in ggplot
-      summary_praise_teen_workshop_long <- table_pp_praise_teen_ws_totals() %>%
-        pivot_longer(cols = !Org) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      # summary_praise_teen_workshop_long
-      ggplot(summary_praise_teen_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")})
+      plot_totals_function(table_pp_praise_teen_ws_totals(), factors = opt_factors())
+    })
     output$table_pp_praise_teen_ws_totals <- shiny::renderTable({table_pp_praise_teen_ws_totals()})
     output$plot_pp_praise_teen_ws_totals <- renderPlotly({plot_pp_praise_teen_ws_totals()})
     
     table_pp_praise_teen_w_self_care <- reactive({summary_table_habits_self_care()$`Praise teen`})
-    plot_pp_praise_teen_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_self_care", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_self_care", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_self_care <- shiny::renderTable({(table_pp_praise_teen_w_self_care())}, striped = TRUE)
     output$plot_pp_praise_teen_w_self_care <- renderPlotly({plot_pp_praise_teen_w_self_care()})
     
     table_pp_praise_teen_w_1on1 <- reactive({summary_table_habits_1on1()$`Praise teen`})
-    plot_pp_praise_teen_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_1on1", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_1on1 <- shiny::renderTable({(table_pp_praise_teen_w_1on1())}, striped = TRUE)
     output$plot_pp_praise_teen_w_1on1 <- renderPlotly({plot_pp_praise_teen_w_1on1()})
     
     table_pp_praise_teen_w_praise <- reactive({summary_table_habits_praise()$`Praise teen `})
-    plot_pp_praise_teen_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_praise", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_praise <- shiny::renderTable({(table_pp_praise_teen_w_praise())}, striped = TRUE)
     output$plot_pp_praise_teen_w_praise <- renderPlotly({plot_pp_praise_teen_w_praise()})
     
     table_pp_praise_teen_w_instruct <- reactive({summary_table_habits_instruct()$`Praise teen `})
-    plot_pp_praise_teen_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_instruct", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_instruct <- shiny::renderTable({(table_pp_praise_teen_w_instruct())}, striped = TRUE)
     output$plot_pp_praise_teen_w_instruct <- renderPlotly({plot_pp_praise_teen_w_instruct()})
     
     table_pp_praise_teen_w_stress <- reactive({summary_table_habits_stress()$`Praise teen `})
-    plot_pp_praise_teen_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_stress", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_stress", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_stress <- shiny::renderTable({(table_pp_praise_teen_w_stress())}, striped = TRUE)
     output$plot_pp_praise_teen_w_stress <- renderPlotly({plot_pp_praise_teen_w_stress()})
     
     table_pp_praise_teen_w_money <- reactive({summary_table_habits_money()$`Praise teen `})
-    plot_pp_praise_teen_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_money", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_money <- shiny::renderTable({(table_pp_praise_teen_w_money())}, striped = TRUE)
     output$plot_pp_praise_teen_w_money <- renderPlotly({plot_pp_praise_teen_w_money()})
     
     table_pp_praise_teen_w_rules <- reactive({summary_table_habits_rules()$`Praise teen `})
-    plot_pp_praise_teen_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_rules", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_rules <- shiny::renderTable({(table_pp_praise_teen_w_rules())}, striped = TRUE)
     output$plot_pp_praise_teen_w_rules <- renderPlotly({plot_pp_praise_teen_w_rules()})
     
     table_pp_praise_teen_w_consequence <- reactive({summary_table_habits_consequence()$`Praise teen`})
-    plot_pp_praise_teen_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_consequence", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_consequence <- shiny::renderTable({(table_pp_praise_teen_w_consequence())}, striped = TRUE)
     output$plot_pp_praise_teen_w_consequence <- renderPlotly({plot_pp_praise_teen_w_consequence()})
     
     table_pp_praise_teen_w_solve <- reactive({summary_table_habits_solve()$`Praise teen`})
-    plot_pp_praise_teen_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_solve", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_solve <- shiny::renderTable({(table_pp_praise_teen_w_solve())}, striped = TRUE)
     output$plot_pp_praise_teen_w_solve <- renderPlotly({plot_pp_praise_teen_w_solve()})
     
     table_pp_praise_teen_w_safe <- reactive({summary_table_habits_safe()$`Praise teen`})
-    plot_pp_praise_teen_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_safe", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_safe <- shiny::renderTable({(table_pp_praise_teen_w_safe())}, striped = TRUE)
     output$plot_pp_praise_teen_w_safe <- renderPlotly({plot_pp_praise_teen_w_safe()})
     
     table_pp_praise_teen_w_crisis <- reactive({summary_table_habits_crisis()$`Praise teen`})
-    plot_pp_praise_teen_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_praise_teen_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_crisis", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_crisis <- shiny::renderTable({(table_pp_praise_teen_w_crisis())}, striped = TRUE)
     output$plot_pp_praise_teen_w_crisis <- renderPlotly({plot_pp_praise_teen_w_crisis()})
     
-    able_pp_praise_teen_w_celebrate <- reactive({summary_table_habits_celebrate()$`Praise teen`})
-    plot_pp_praise_teen_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    table_pp_praise_teen_w_celebrate <- reactive({summary_table_habits_celebrate()$`Praise teen`})
+    plot_pp_praise_teen_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_praise_teen_w_celebrate", replace = "rp.contact.field.parent_point_count_praise_teen_w_", plot_type = "boxplot")})
     output$table_pp_praise_teen_w_celebrate <- shiny::renderTable({(table_pp_praise_teen_w_celebrate())}, striped = TRUE)
     output$plot_pp_praise_teen_w_celebrate <- renderPlotly({plot_pp_praise_teen_w_celebrate()})
     
     # Parent Point sub tab Instruct Positively points pp6
     table_pp_instruct_positively_ws_totals <- reactive({
-      #Average instruct_positively parent points pp6
-      summary_instruct_positively_workshop <- selected_data_dem() %>%
-        group_by(Org, .drop = TRUE) %>%
-        summarise(across(instruct_positively_workshop_vars, mean, na.rm = TRUE))
-      colnames(summary_instruct_positively_workshop) <- naming_conventions(colnames(summary_instruct_positively_workshop), "rp.contact.field.parent_point_count_instruct_positively_w_")
-      if (country != "Tanzania"){
-        summary_instruct_positively_workshop <- summary_instruct_positively_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_instruct_positively_workshop
+      summary_instruct_positively_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = instruct_positively_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_instruct_positively_w_")
+      summary_table_filter(summary_instruct_positively_workshop)
     })
     plot_pp_instruct_positively_ws_totals <- reactive({
-      # Make the table longer so that it is in a format for use in ggplot
-      summary_instruct_positively_workshop_long <- table_pp_instruct_positively_ws_totals() %>%
-        pivot_longer(cols = !Org) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      ggplot(summary_instruct_positively_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")})
+      plot_totals_function(table_pp_instruct_positively_ws_totals(), factors = opt_factors())
+    })
     output$table_pp_instruct_positively_ws_totals <- shiny::renderTable({table_pp_instruct_positively_ws_totals()})
     output$plot_pp_instruct_positively_ws_totals <- renderPlotly({plot_pp_instruct_positively_ws_totals()})
     
     table_pp_instruct_positively_w_self_care <- reactive({summary_table_habits_self_care()$`Instruct positively`})
-    plot_pp_instruct_positively_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_self_care", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_self_care", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_self_care <- shiny::renderTable({(table_pp_instruct_positively_w_self_care())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_self_care <- renderPlotly({plot_pp_instruct_positively_w_self_care()})
     
     table_pp_instruct_positively_w_1on1 <- reactive({summary_table_habits_1on1()$`Instruct positively`})
-    plot_pp_instruct_positively_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_1on1", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_1on1 <- shiny::renderTable({(table_pp_instruct_positively_w_1on1())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_1on1 <- renderPlotly({plot_pp_instruct_positively_w_1on1()})
     
     table_pp_instruct_positively_w_praise <- reactive({summary_table_habits_praise()$`Instruct positively `})
-    plot_pp_instruct_positively_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_praise", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_praise <- shiny::renderTable({(table_pp_instruct_positively_w_praise())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_praise <- renderPlotly({plot_pp_instruct_positively_w_praise()})
     
     table_pp_instruct_positively_w_instruct <- reactive({summary_table_habits_instruct()$`Instruct positively `})
-    plot_pp_instruct_positively_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_instruct", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_instruct <- shiny::renderTable({(table_pp_instruct_positively_w_instruct())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_instruct <- renderPlotly({plot_pp_instruct_positively_w_instruct()})
     
     table_pp_instruct_positively_w_stress <- reactive({summary_table_habits_stress()$`Instruct positively `})
-    plot_pp_instruct_positively_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_stress", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_stress", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_stress <- shiny::renderTable({(table_pp_instruct_positively_w_stress())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_stress <- renderPlotly({plot_pp_instruct_positively_w_stress()})
     
     table_pp_instruct_positively_w_money <- reactive({summary_table_habits_money()$`Instruct positively`})
-    plot_pp_instruct_positively_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_money", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_money <- shiny::renderTable({(table_pp_instruct_positively_w_money())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_money <- renderPlotly({plot_pp_instruct_positively_w_money()})
     
     table_pp_instruct_positively_w_rules <- reactive({summary_table_habits_rules()$`Instruct positively`})
-    plot_pp_instruct_positively_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_rules", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_rules <- shiny::renderTable({(table_pp_instruct_positively_w_rules())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_rules <- renderPlotly({plot_pp_instruct_positively_w_rules()})
     
     table_pp_instruct_positively_w_consequence <- reactive({summary_table_habits_consequence()$`Instruct positively`})
-    plot_pp_instruct_positively_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_consequence", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_consequence <- shiny::renderTable({(table_pp_instruct_positively_w_consequence())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_consequence <- renderPlotly({plot_pp_instruct_positively_w_consequence()})
     
     table_pp_instruct_positively_w_solve <- reactive({summary_table_habits_solve()$`Instruct positively`})
-    plot_pp_instruct_positively_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_solve", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_solve <- shiny::renderTable({(table_pp_instruct_positively_w_solve())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_solve <- renderPlotly({plot_pp_instruct_positively_w_solve()})
     
     table_pp_instruct_positively_w_safe <- reactive({summary_table_habits_safe()$`Instruct positively`})
-    plot_pp_instruct_positively_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_safe", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_safe <- shiny::renderTable({(table_pp_instruct_positively_w_safe())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_safe <- renderPlotly({plot_pp_instruct_positively_w_safe()})
     
     table_pp_instruct_positively_w_crisis <- reactive({summary_table_habits_crisis()$`Instruct positively`})
-    plot_pp_instruct_positively_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_crisis", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_crisis <- shiny::renderTable({(table_pp_instruct_positively_w_crisis())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_crisis <- renderPlotly({plot_pp_instruct_positively_w_crisis()})
     
     table_pp_instruct_positively_w_celebrate <- reactive({summary_table_habits_celebrate()$`Instruct positively`})
-    plot_pp_instruct_positively_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_instruct_positively_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_instruct_positively_w_celebrate", replace = "rp.contact.field.parent_point_count_instruct_positively_w", plot_type = "boxplot")})
     output$table_pp_instruct_positively_w_celebrate <- shiny::renderTable({(table_pp_instruct_positively_w_celebrate())}, striped = TRUE)
     output$plot_pp_instruct_positively_w_celebrate <- renderPlotly({plot_pp_instruct_positively_w_celebrate()})
     
     # Parent Point sub tab Breathe points pp7
     table_pp_breathe_ws_totals <- reactive({
-      #Average breathe parent points pp7
-      summary_breathe_workshop <- selected_data_dem() %>%
-        group_by(Org, .drop = TRUE) %>%
-        summarise(across(breathe_workshop_vars, mean, na.rm = TRUE))
-      colnames(summary_breathe_workshop) <- naming_conventions(colnames(summary_breathe_workshop), "rp.contact.field.parent_point_count_breathe_w_")
-      if (country != "Tanzania"){
-        summary_breathe_workshop <- summary_breathe_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_breathe_workshop
+      summary_breathe_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = breathe_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_breathe_w_")
+      summary_table_filter(summary_breathe_workshop)
     })
     plot_pp_breathe_ws_totals <- reactive({
-      # Make the table longer so that it is in a format for use in ggplot
-      summary_breathe_workshop_long <- table_pp_breathe_ws_totals() %>%
-        pivot_longer(cols = !Org) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      ggplot(summary_breathe_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")})
+      plot_totals_function(table_pp_breathe_ws_totals(), factors = opt_factors())
+    })
     output$table_pp_breathe_ws_totals <- shiny::renderTable({table_pp_breathe_ws_totals()})
     output$plot_pp_breathe_ws_totals <- renderPlotly({plot_pp_breathe_ws_totals()})
     
     table_pp_breathe_w_self_care <- reactive({summary_table_habits_self_care()$`Breathe`})
-    plot_pp_breathe_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_self_care", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_self_care", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_self_care <- shiny::renderTable({(table_pp_breathe_w_self_care())}, striped = TRUE)
     output$plot_pp_breathe_w_self_care <- renderPlotly({plot_pp_breathe_w_self_care()})
     
     table_pp_breathe_w_1on1 <- reactive({summary_table_habits_1on1()$`Breathe `})
-    plot_pp_breathe_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_1on1", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_1on1 <- shiny::renderTable({(table_pp_breathe_w_1on1())}, striped = TRUE)
     output$plot_pp_breathe_w_1on1 <- renderPlotly({plot_pp_breathe_w_1on1()})
     
     table_pp_breathe_w_praise <- reactive({summary_table_habits_praise()$`Breathe `})
-    plot_pp_breathe_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_praise", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_praise <- shiny::renderTable({(table_pp_breathe_w_praise())}, striped = TRUE)
     output$plot_pp_breathe_w_praise <- renderPlotly({plot_pp_breathe_w_praise()})
     
     table_pp_breathe_w_instruct <- reactive({summary_table_habits_instruct()$`Breathe `})
-    plot_pp_breathe_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_instruct", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_instruct <- shiny::renderTable({(table_pp_breathe_w_instruct())}, striped = TRUE)
     output$plot_pp_breathe_w_instruct <- renderPlotly({plot_pp_breathe_w_instruct()})
     
     table_pp_breathe_w_stress <- reactive({summary_table_habits_stress()$`Breathe `})
-    plot_pp_breathe_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_stress", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_stress", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_stress <- shiny::renderTable({(table_pp_breathe_w_stress())}, striped = TRUE)
     output$plot_pp_breathe_w_stress <- renderPlotly({plot_pp_breathe_w_stress()})
     
     table_pp_breathe_w_money <- reactive({summary_table_habits_money()$`Breathe `})
-    plot_pp_breathe_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_money", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_money <- shiny::renderTable({(table_pp_breathe_w_money())}, striped = TRUE)
     output$plot_pp_breathe_w_money <- renderPlotly({plot_pp_breathe_w_money()})
     
     table_pp_breathe_w_rules <- reactive({summary_table_habits_rules()$`Breathe `})
-    plot_pp_breathe_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_rules", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_rules <- shiny::renderTable({(table_pp_breathe_w_rules())}, striped = TRUE)
     output$plot_pp_breathe_w_rules <- renderPlotly({plot_pp_breathe_w_rules()})
     
     table_pp_breathe_w_consequence <- reactive({summary_table_habits_consequence()$`Breathe`})
-    plot_pp_breathe_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_consequence", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_consequence <- shiny::renderTable({(table_pp_breathe_w_consequence())}, striped = TRUE)
     output$plot_pp_breathe_w_consequence <- renderPlotly({plot_pp_breathe_w_consequence()})
     
     table_pp_breathe_w_solve <- reactive({summary_table_habits_solve()$`Breathe`})
-    plot_pp_breathe_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_solve", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_solve <- shiny::renderTable({(table_pp_breathe_w_solve())}, striped = TRUE)
     output$plot_pp_breathe_w_solve <- renderPlotly({plot_pp_breathe_w_solve()})
     
     table_pp_breathe_w_safe <- reactive({summary_table_habits_safe()$`Breathe`})
-    plot_pp_breathe_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_safe", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_safe <- shiny::renderTable({(table_pp_breathe_w_safe())}, striped = TRUE)
     output$plot_pp_breathe_w_safe <- renderPlotly({plot_pp_breathe_w_safe()})
     
     table_pp_breathe_w_crisis <- reactive({summary_table_habits_crisis()$`Breathe`})
-    plot_pp_breathe_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_crisis", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_crisis <- shiny::renderTable({(table_pp_breathe_w_crisis())}, striped = TRUE)
     output$plot_pp_breathe_w_crisis <- renderPlotly({plot_pp_breathe_w_crisis()})
     
     table_pp_breathe_w_celebrate <- reactive({summary_table_habits_celebrate()$`Breathe`})
-    plot_pp_breathe_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_breathe_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_breathe_w_celebrate", replace = "rp.contact.field.parent_point_count_breathe_w_", plot_type = "boxplot")})
     output$table_pp_breathe_w_celebrate <- shiny::renderTable({(table_pp_breathe_w_celebrate())}, striped = TRUE)
     output$plot_pp_breathe_w_celebrate <- renderPlotly({plot_pp_breathe_w_celebrate()})
     
     # Parent Point sub tab Money points pp8
     table_pp_money_ws_totals <- reactive({
-      #Average spend_time parent points pp8
-      summary_money_workshop <- selected_data_dem() %>%
-        group_by(Org, .drop = TRUE) %>%
-        summarise(across(money_workshop_vars, mean, na.rm = TRUE))
-      colnames(summary_money_workshop) <- naming_conventions(colnames(summary_money_workshop), "rp.contact.field.parent_point_count_money_w_")
-      if (country != "Tanzania"){
-        summary_money_workshop <- summary_money_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_money_workshop
+      summary_money_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = money_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_money_w_")
+      summary_table_filter(summary_money_workshop)
     })
     plot_pp_money_ws_totals <- reactive({
-      summary_money_workshop_long <- table_pp_money_ws_totals() %>%
-        pivot_longer(cols = !Org) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      ggplot(summary_money_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")})
+      plot_totals_function(table_pp_money_ws_totals(), factors = opt_factors())
+    })
     output$table_pp_money_ws_totals <- shiny::renderTable({table_pp_money_ws_totals()})
     output$plot_pp_money_ws_totals <- renderPlotly({plot_pp_money_ws_totals()})
     
     table_pp_money_w_self_care <- reactive({summary_table_habits_self_care()$`Money`})
-    plot_pp_money_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_self_care", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_self_care", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_self_care <- shiny::renderTable({(table_pp_money_w_self_care())}, striped = TRUE)
     output$plot_pp_money_w_self_care <- renderPlotly({plot_pp_money_w_self_care()})
     
     table_pp_money_w_1on1 <- reactive({summary_table_habits_1on1()$`Money `})
-    plot_pp_money_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_1on1", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_1on1 <- shiny::renderTable({(table_pp_money_w_1on1())}, striped = TRUE)
     output$plot_pp_money_w_1on1 <- renderPlotly({plot_pp_money_w_1on1()})
     
     table_pp_money_w_praise <- reactive({summary_table_habits_praise()$`Money `})
-    plot_pp_money_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_praise", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_praise <- shiny::renderTable({(table_pp_money_w_praise())}, striped = TRUE)
     output$plot_pp_money_w_praise <- renderPlotly({plot_pp_money_w_praise()})
     
     table_pp_money_w_instruct <- reactive({summary_table_habits_instruct()$`Money `})
-    plot_pp_money_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_instruct", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_instruct <- shiny::renderTable({(table_pp_money_w_instruct())}, striped = TRUE)
     output$plot_pp_money_w_instruct <- renderPlotly({plot_pp_money_w_instruct()})
     
     table_pp_money_w_stress <- reactive({summary_table_habits_stress()$`Money `})
-    plot_pp_money_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_stress", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_stress", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_stress <- shiny::renderTable({(table_pp_money_w_stress())}, striped = TRUE)
     output$plot_pp_money_w_stress <- renderPlotly({plot_pp_money_w_stress()})
     
     table_pp_money_w_money <- reactive({summary_table_habits_money()$`Money `})
-    plot_pp_money_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_money", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_money <- shiny::renderTable({(table_pp_money_w_money())}, striped = TRUE)
     output$plot_pp_money_w_money <- renderPlotly({plot_pp_money_w_money()})
     
     table_pp_money_w_rules <- reactive({summary_table_habits_rules()$`Money `})
-    plot_pp_money_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_rules", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_rules <- shiny::renderTable({(table_pp_money_w_rules())}, striped = TRUE)
     output$plot_pp_money_w_rules <- renderPlotly({plot_pp_money_w_rules()})
     
     table_pp_money_w_consequence <- reactive({summary_table_habits_consequence()$`Money`})
-    plot_pp_money_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_consequence", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_consequence <- shiny::renderTable({(table_pp_money_w_consequence())}, striped = TRUE)
     output$plot_pp_money_w_consequence <- renderPlotly({plot_pp_money_w_consequence()})
     
     table_pp_money_w_solve <- reactive({summary_table_habits_solve()$`Money`})
-    plot_pp_money_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_solve", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_solve <- shiny::renderTable({(table_pp_money_w_solve())}, striped = TRUE)
     output$plot_pp_money_w_solve <- renderPlotly({plot_pp_money_w_solve()})
     
     table_pp_money_w_safe <- reactive({summary_table_habits_safe()$`Money`})
-    plot_pp_money_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_safe", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_safe <- shiny::renderTable({(table_pp_money_w_safe())}, striped = TRUE)
     output$plot_pp_money_w_safe <- renderPlotly({plot_pp_money_w_safe()})
     
     table_pp_money_w_crisis <- reactive({summary_table_habits_crisis()$`Money`})
-    plot_pp_money_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_crisis", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_crisis <- shiny::renderTable({(table_pp_money_w_crisis())}, striped = TRUE)
     output$plot_pp_money_w_crisis <- renderPlotly({plot_pp_money_w_crisis()})
     
     table_pp_money_w_celebrate <- reactive({summary_table_habits_celebrate()$`Money`})
-    plot_pp_money_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_money_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_money_w_celebrate", replace = "rp.contact.field.parent_point_count_money_w_", plot_type = "boxplot")})
     output$table_pp_money_w_celebrate <- shiny::renderTable({(table_pp_money_w_celebrate())}, striped = TRUE)
     output$plot_pp_money_w_celebrate <- renderPlotly({plot_pp_money_w_celebrate()})
     
     # Parent Point sub tab Consequence points pp9
     table_pp_consequence_ws_totals <- reactive({
-      summary_consequence_workshop <- selected_data_dem() %>%
-        group_by(Org, .drop = TRUE) %>%
-        summarise(across(consequence_workshop_vars, mean, na.rm = TRUE))
-      colnames(summary_consequence_workshop) <- naming_conventions(colnames(summary_consequence_workshop), "rp.contact.field.parent_point_count_consequence_w_")
-      if (country != "Tanzania"){
-        summary_consequence_workshop <- summary_consequence_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_consequence_workshop
+      summary_consequence_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = consequence_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_consequence_w_")
+      summary_table_filter(summary_consequence_workshop)
     })
     plot_pp_consequence_ws_totals <- reactive({
-      summary_consequence_workshop_long <- table_pp_consequence_ws_totals() %>%
-        pivot_longer(cols = !Org) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      ggplot(summary_consequence_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")})
+      plot_totals_function(table_pp_consequence_ws_totals(), factors = opt_factors())
+    })
     output$table_pp_consequence_ws_totals <- shiny::renderTable({table_pp_consequence_ws_totals()})
     output$plot_pp_consequence_ws_totals <- renderPlotly({plot_pp_consequence_ws_totals()})
     
     table_pp_consequence_w_self_care <- reactive({summary_table_habits_self_care()$`Consequence`})
-    plot_pp_consequence_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_self_care", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_self_care", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_self_care <- shiny::renderTable({(table_pp_consequence_w_self_care())}, striped = TRUE)
     output$plot_pp_consequence_w_self_care <- renderPlotly({plot_pp_consequence_w_self_care()})
     
     table_pp_consequence_w_1on1 <- reactive({summary_table_habits_1on1()$`Consequence `})
-    plot_pp_consequence_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_1on1", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_1on1 <- shiny::renderTable({(table_pp_consequence_w_1on1())}, striped = TRUE)
     output$plot_pp_consequence_w_1on1 <- renderPlotly({plot_pp_consequence_w_1on1()})
     
     table_pp_consequence_w_praise <- reactive({summary_table_habits_praise()$`Consequence `})
-    plot_pp_consequence_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_praise", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_praise <- shiny::renderTable({(table_pp_consequence_w_praise())}, striped = TRUE)
     output$plot_pp_consequence_w_praise <- renderPlotly({plot_pp_consequence_w_praise()})
     
     table_pp_consequence_w_instruct <- reactive({summary_table_habits_instruct()$`Consequence `})
-    plot_pp_consequence_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_instruct", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_instruct <- shiny::renderTable({(table_pp_consequence_w_instruct())}, striped = TRUE)
     output$plot_pp_consequence_w_instruct <- renderPlotly({plot_pp_consequence_w_instruct()})
     
     table_pp_consequence_w_stress <- reactive({summary_table_habits_stress()$`Consequence `})
-    plot_pp_consequence_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_stress", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_stress", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_stress <- shiny::renderTable({(table_pp_consequence_w_stress())}, striped = TRUE)
     output$plot_pp_consequence_w_stress <- renderPlotly({plot_pp_consequence_w_stress()})
     
     table_pp_consequence_w_money <- reactive({summary_table_habits_money()$`Consequence `})
-    plot_pp_consequence_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_money", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_money <- shiny::renderTable({(table_pp_consequence_w_money())}, striped = TRUE)
     output$plot_pp_consequence_w_money <- renderPlotly({plot_pp_consequence_w_money()})
     
     table_pp_consequence_w_rules <- reactive({summary_table_habits_rules()$`Consequence `})
-    plot_pp_consequence_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_rules", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_rules <- shiny::renderTable({(table_pp_consequence_w_rules())}, striped = TRUE)
     output$plot_pp_consequence_w_rules <- renderPlotly({plot_pp_consequence_w_rules()})
     
     table_pp_consequence_w_consequence <- reactive({summary_table_habits_consequence()$`Consequence`})
-    plot_pp_consequence_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_consequence", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_consequence <- shiny::renderTable({(table_pp_consequence_w_consequence())}, striped = TRUE)
     output$plot_pp_consequence_w_consequence <- renderPlotly({plot_pp_consequence_w_consequence()})
     
     table_pp_consequence_w_solve <- reactive({summary_table_habits_solve()$`Consequence`})
-    plot_pp_consequence_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_solve", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_solve <- shiny::renderTable({(table_pp_consequence_w_solve())}, striped = TRUE)
-    output$plot_pp_money_w_solve <- renderPlotly({plot_pp_consequence_w_solve()})
+    output$plot_pp_consequence_w_solve <- renderPlotly({plot_pp_consequence_w_solve()})
     
     table_pp_consequence_w_safe <- reactive({summary_table_habits_safe()$`Consequence`})
-    plot_pp_consequence_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_safe", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_safe <- shiny::renderTable({(table_pp_consequence_w_safe())}, striped = TRUE)
     output$plot_pp_consequence_w_safe <- renderPlotly({plot_pp_consequence_w_safe()})
     
     table_pp_consequence_w_crisis <- reactive({summary_table_habits_crisis()$`Consequence`})
-    plot_pp_consequence_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_crisis", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_crisis <- shiny::renderTable({(table_pp_consequence_w_crisis())}, striped = TRUE)
     output$plot_pp_consequence_w_crisis <- renderPlotly({plot_pp_consequence_w_crisis()})
     
     table_pp_consequence_w_celebrate <- reactive({summary_table_habits_celebrate()$`Consequence`})
-    plot_pp_consequence_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_consequence_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_consequence_w_celebrate", replace = "rp.contact.field.parent_point_count_consequence_w_", plot_type = "boxplot")})
     output$table_pp_consequence_w_celebrate <- shiny::renderTable({(table_pp_consequence_w_celebrate())}, striped = TRUE)
     output$plot_pp_consequence_w_celebrate <- renderPlotly({plot_pp_consequence_w_celebrate()})
     
     # Parent Point sub tab Safe points pp10
     table_pp_safe_ws_totals <- reactive({
-      summary_safe_workshop <- selected_data_dem() %>%
-        group_by(Org, .drop = TRUE) %>%
-        summarise(across(safe_workshop_vars, mean, na.rm = TRUE))
-      colnames(summary_safe_workshop) <- naming_conventions(colnames(summary_safe_workshop), "rp.contact.field.parent_point_count_safe_w_")
-      if (country != "Tanzania"){
-        summary_safe_workshop <- summary_safe_workshop %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_safe_workshop
+      summary_safe_workshop <- summary_table(data = selected_data_dem(),
+                                              factors = opt_factors(),
+                                              columns_to_summarise = safe_workshop_vars,
+                                              summaries = c("mean"),
+                                              replace = "rp.contact.field.parent_point_count_safe_w_")
+      summary_table_filter(summary_safe_workshop)
     })
     plot_pp_safe_ws_totals <- reactive({
-      summary_safe_workshop_long <- table_pp_safe_ws_totals() %>%
-        group_by(Org, .drop = TRUE) %>%
-        mutate(name = fct_relevel(name, week_order))   # set the order of variables
-      ggplot(summary_safe_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-        geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        geom_line() + labs(x = "Workshop week", y = "Number of points")})
+      plot_totals_function(table_pp_safe_ws_totals(), factors = opt_factors())
+    })
     output$table_pp_safe_ws_totals <- shiny::renderTable({table_pp_safe_ws_totals()})
     output$plot_pp_safe_ws_totals <- renderPlotly({plot_pp_safe_ws_totals()})
     
     table_pp_safe_w_self_care <- reactive({summary_table_habits_self_care()$`Safe`})
-    plot_pp_safe_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_self_care", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_self_care <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_self_care", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_self_care <- shiny::renderTable({(table_pp_safe_w_self_care())}, striped = TRUE)
     output$plot_pp_safe_w_self_care <- renderPlotly({plot_pp_safe_w_self_care()})
     
     table_pp_safe_w_1on1 <- reactive({summary_table_habits_1on1()$`Safe `})
-    plot_pp_safe_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_1on1", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_1on1 <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_1on1", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_1on1 <- shiny::renderTable({(table_pp_safe_w_1on1())}, striped = TRUE)
     output$plot_pp_safe_w_1on1 <- renderPlotly({plot_pp_safe_w_1on1()})
     
     table_pp_safe_w_praise <- reactive({summary_table_habits_praise()$`Safe `})
-    plot_pp_safe_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_praise", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_praise <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_praise", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_praise <- shiny::renderTable({(table_pp_safe_w_praise())}, striped = TRUE)
     output$plot_pp_safe_w_praise <- renderPlotly({plot_pp_safe_w_praise()})
     
     table_pp_safe_w_instruct <- reactive({summary_table_habits_instruct()$`Safe `})
-    plot_pp_safe_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_instruct", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_instruct <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_instruct", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_instruct <- shiny::renderTable({(table_pp_safe_w_instruct())}, striped = TRUE)
     output$plot_pp_safe_w_instruct <- renderPlotly({plot_pp_safe_w_instruct()})
     
     table_pp_safe_w_stress <- reactive({summary_table_habits_stress()$`Safe `})
-    plot_pp_safe_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_stress", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_stress <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_stress", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_stress <- shiny::renderTable({(table_pp_safe_w_stress())}, striped = TRUE)
     output$plot_pp_safe_w_stress <- renderPlotly({plot_pp_safe_w_stress()})
     
     table_pp_safe_w_money <- reactive({summary_table_habits_money()$`Safe `})
-    plot_pp_safe_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_money", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_money <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_money", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_money <- shiny::renderTable({(table_pp_safe_w_money())}, striped = TRUE)
     output$plot_pp_safe_w_money <- renderPlotly({plot_pp_safe_w_money()})
     
     table_pp_safe_w_rules <- reactive({summary_table_habits_rules()$`Safe `})
-    plot_pp_safe_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_rules", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_rules <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_rules", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_rules <- shiny::renderTable({(table_pp_safe_w_rules())}, striped = TRUE)
     output$plot_pp_safe_w_rules <- renderPlotly({plot_pp_safe_w_rules()})
     
     table_pp_safe_w_consequence <- reactive({summary_table_habits_consequence()$`Safe`})
-    plot_pp_safe_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_consequence", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_consequence <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_consequence", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_consequence <- shiny::renderTable({(table_pp_safe_w_consequence())}, striped = TRUE)
     output$plot_pp_safe_w_consequence <- renderPlotly({plot_pp_safe_w_consequence()})
     
     table_pp_safe_w_solve <- reactive({summary_table_habits_solve()$`Safe`})
-    plot_pp_safe_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_solve", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_solve <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_solve", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_solve <- shiny::renderTable({(table_pp_safe_w_solve())}, striped = TRUE)
-    output$plot_pp_money_w_solve <- renderPlotly({plot_pp_safe_w_solve()})
+    output$plot_pp_safe_w_solve <- renderPlotly({plot_pp_safe_w_solve()})
     
     table_pp_safe_w_safe <- reactive({summary_table_habits_safe()$`Safe`})
-    plot_pp_safe_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_safe", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_safe <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_safe", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_safe <- shiny::renderTable({(table_pp_safe_w_safe())}, striped = TRUE)
     output$plot_pp_safe_w_safe <- renderPlotly({plot_pp_safe_w_safe()})
     
     table_pp_safe_w_crisis <- reactive({summary_table_habits_crisis()$`Safe`})
-    plot_pp_safe_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_crisis", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_crisis <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_crisis", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_crisis <- shiny::renderTable({(table_pp_safe_w_crisis())}, striped = TRUE)
     output$plot_pp_safe_w_crisis <- renderPlotly({plot_pp_safe_w_crisis()})
     
     table_pp_safe_w_celebrate <- reactive({summary_table_habits_celebrate()$`Safe`})
-    plot_pp_safe_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_celebrate", replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")})
+    plot_pp_safe_w_celebrate <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.parent_point_count_safe_w_celebrate", replace = "rp.contact.field.parent_point_count_safe_w", plot_type = "boxplot")})
     output$table_pp_safe_w_celebrate <- shiny::renderTable({(table_pp_safe_w_celebrate())}, striped = TRUE)
     output$plot_pp_safe_w_celebrate <- renderPlotly({plot_pp_safe_w_celebrate()})
     
     
     #FOURTH Tab In-week Engagement ---------------------------
     tables_app_opens <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_app_opens,
-                                                               replace = "rp.contact.field.")
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(),
+                                                               columns_to_summarise = data_app_opens,
+                                                               replace = "rp.contact.field.app_launch_count")
       names(summary_table_baseline_build) <- data_app_opens_neat
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
+      
+      mult_summary_table_filter(summary_table = summary_table_baseline_build)
     })
     
     #App Opens tab 4.1
     table_appopen_totals <- reactive({
       tables_app_opens()$`Total`
     }) 
-    plot_appopen_totals <- reactive({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.app_launch_count", replace = "rp.contact.field.")}) 
+    plot_appopen_totals <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_totals(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+      }) 
     output$table_appopen_totals <- shiny::renderTable({(table_appopen_totals())}, striped = TRUE)
     output$plot_appopen_totals <- renderPlotly({plot_appopen_totals()})
     
     table_appopen_mean_week <- reactive({
       #Average app opens per ws week
-      summary_mean_appopens <- selected_data_dem() %>%
-        group_by(Org) %>%
-        summarise(across(data_app_opens, mean, na.rm = TRUE))
-      colnames(summary_mean_appopens)[2:length(summary_mean_appopens)] <- data_app_opens_neat
-      if (country == "Tanzania"){
-        summary_mean_appopens <- summary_mean_appopens
-      } else {
-        summary_mean_appopens <- summary_mean_appopens %>%
-          dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      summary_mean_appopens
+      summary_mean_appopens <- summary_table(factors = opt_factors(),
+                                             summaries = "mean", columns_to_summarise = data_app_opens,
+                                             replace = "rp.contact.field.app_launch_count_w_")
+      summary_mean_appopens <- rename(summary_mean_appopens, "Total" = `Rp.contact.field.app launch count`)
+      summary_table_filter(summary_mean_appopens)
     }) 
     plot_appopen_mean_week <- reactive({
-      # Make the table longer so that it is in a format for use in ggplot
-      summary_mean_appopens_long <- table_appopen_mean_week() %>%
-        pivot_longer(cols = !Org, names_to = "Workshop Week", values_to = "Value") %>% mutate(`Workshop Week` = fct_relevel(`Workshop Week`, data_app_opens_neat))
-      ggplot(summary_mean_appopens_long, aes(x = `Workshop Week`, y = Value, fill = Org)) + 
-        geom_bar(stat = "identity", position = "dodge") +
-        scale_x_discrete(guide = guide_axis(angle = 90), limits = data_app_opens_neat) +
-        viridis::scale_fill_viridis(discrete = TRUE)
+      plot_fn <- plot_totals_function(table_appopen_mean_week(), opt_factors())
+      plot_fn + labs(y = "Mean App Opens")
     }) 
     output$table_appopen_mean_week <- shiny::renderTable({(table_appopen_mean_week())}, striped = TRUE)
     output$plot_appopen_mean_week <- renderPlotly({plot_appopen_mean_week()})
     
+    table_appopen_self_care <- reactive({
+      tables_app_opens()$`Welcome and Self care(1)`
+    }) 
+    plot_appopen_self_care <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_self_care(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_self_care <- shiny::renderTable({(table_appopen_self_care())}, striped = TRUE)
+    output$plot_appopen_self_care <- renderPlotly({plot_appopen_self_care()})
+    
+    table_appopen_1on1 <- reactive({
+      tables_app_opens()$`One-on-one time(2)`
+    }) 
+    plot_appopen_1on1 <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_1on1(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_1on1 <- shiny::renderTable({(table_appopen_1on1())}, striped = TRUE)
+    output$plot_appopen_1on1 <- renderPlotly({plot_appopen_1on1()})
+    
+    table_appopen_praise <- reactive({
+      tables_app_opens()$`Praise (3)`
+    }) 
+    plot_appopen_praise <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_praise(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_praise <- shiny::renderTable({(table_appopen_praise())}, striped = TRUE)
+    output$plot_appopen_praise <- renderPlotly({plot_appopen_praise()})
+    
+    
+    table_appopen_instructions <- reactive({
+      tables_app_opens()$`Positive Instructions(4)`
+    }) 
+    plot_appopen_instructions <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_instructions(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_instructions <- shiny::renderTable({(table_appopen_instructions())}, striped = TRUE)
+    output$plot_appopen_instructions <- renderPlotly({plot_appopen_instructions()})
+    
+    
+    table_appopen_stress <- reactive({
+      tables_app_opens()$`Managing Stress(5)`
+    }) 
+    plot_appopen_stress <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_stress(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_stress <- shiny::renderTable({(table_appopen_stress())}, striped = TRUE)
+    output$plot_appopen_stress <- renderPlotly({plot_appopen_stress()})
+    
+    
+    table_appopen_budget <- reactive({
+      tables_app_opens()$`Family Budget(6)`
+    }) 
+    plot_appopen_budget <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_budget(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_budget <- shiny::renderTable({(table_appopen_budget())}, striped = TRUE)
+    output$plot_appopen_budget <- renderPlotly({plot_appopen_budget()})
+    
+    
+    table_appopen_rules <- reactive({
+      tables_app_opens()$`Rules(7)`
+    }) 
+    plot_appopen_rules <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_rules(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_rules <- shiny::renderTable({(table_appopen_rules())}, striped = TRUE)
+    output$plot_appopen_rules <- renderPlotly({plot_appopen_rules()})
+    
+    
+    table_appopen_consequences <- reactive({
+      tables_app_opens()$`Calm Consequences(8)`
+    }) 
+    plot_appopen_consequences <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_consequences(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_consequences <- shiny::renderTable({(table_appopen_consequences())}, striped = TRUE)
+    output$plot_appopen_consequences <- renderPlotly({plot_appopen_consequences()})
+    
+    
+    table_appopen_problem_solving <- reactive({
+      tables_app_opens()$`Problem Solving(9)`
+    }) 
+    plot_appopen_problem_solving <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_problem_solving(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_problem_solving <- shiny::renderTable({(table_appopen_problem_solving())}, striped = TRUE)
+    output$plot_appopen_problem_solving <- renderPlotly({plot_appopen_problem_solving()})
+    
+    
+    table_appopen_teen_safety <- reactive({
+      tables_app_opens()$`Teen Safety(10)`
+    }) 
+    plot_appopen_teen_safety <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_teen_safety(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_teen_safety <- shiny::renderTable({(table_appopen_teen_safety())}, striped = TRUE)
+    output$plot_appopen_teen_safety <- renderPlotly({plot_appopen_teen_safety()})
+    
+    
+    table_appopen_crisis <- reactive({
+      tables_app_opens()$`Crisis(11)`
+    }) 
+    plot_appopen_crisis <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_crisis(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_crisis <- shiny::renderTable({(table_appopen_crisis())}, striped = TRUE)
+    output$plot_appopen_crisis <- renderPlotly({plot_appopen_crisis()})
+    
+    
+    table_appopen_celebration <- reactive({
+      tables_app_opens()$`Celebration & Next Steps(12)`
+    }) 
+    plot_appopen_celebration <- reactive({
+      plot_fn <- plot_totals_function(table_appopen_celebration(), opt_factors())
+      v <- as.numeric(as.character(plot_fn$data$name))
+      plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
+        scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
+    })
+    output$table_appopen_celebration <- shiny::renderTable({(table_appopen_celebration())}, striped = TRUE)
+    output$plot_appopen_celebration <- renderPlotly({plot_appopen_celebration()})
+    
     # Push notifications tab 4.2
     table_pushn_totals <- reactive({pn_summary_count }) 
-    plot_pushn_totals <- reactive({
-    }) 
+    plot_pushn_totals <- reactive({}) 
     output$table_pushn_totals <- shiny::renderTable({(table_pushn_totals())}, striped = TRUE)
     output$plot_pushn_totals <- renderPlotly({plot_pushn_totals()})
     
@@ -4700,58 +4726,128 @@ parentapp_shiny <- function(country){
     #NB no home practice for worshops 1 and 12 (welcome and celebration)
     
     # HP review started per week
-    table_hp_rev_totals <- reactive({table_hp_started %>% filter(Org %in% unique(selected_data_dem()$Org))})
-    plot_hp_rev_totals <- reactive({})
-    output$table_hp_rev_totals <- shiny::renderTable({(table_hp_rev_totals())}, striped = TRUE)
-    output$plot_hp_rev_totals <- renderPlotly({plot_hp_rev_totals()})
-    
-    
-    # home practice review - user claims they had a chance to do the hp
-    summary_table_hp_done <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_hp_done,
+    # Engagement sub tab: HP -------------------------
+    summary_table_hp_totals <- reactive({
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(),
+                                                               data = selected_data_dem(),
+                                                               columns_to_summarise = data_hp_started,
                                                                replace = "rp.contact.field.w_",
-                                                               replace_after = "_done")
+                                                               replace_after = "_hp_review_started")
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
+      mult_summary_table_filter(summary_table_baseline_build)
+    })
+    
+    relative_hp_started <- reactive({
+      summary_table_hp_totals <- summary_table_hp_totals()
+      for (i in 1:length(summary_table_hp_totals)){
+        if (!"true" %in% colnames(summary_table_hp_totals[[i]])) {
+          summary_table_hp_totals$true <- 0
+        }
+      }
+      
+      select_items <- c(opt_factors(), "true")
+      
+      relative_hp_started <- imap(summary_table_hp_totals, ~.x %>%
+                                    select(select_items))
+      return(relative_hp_started)   
+    })
+    table_hp_started <- reactive({
+      table_hp_started <- plyr::ldply(relative_hp_started()) %>%
+        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = true)
+      return(table_hp_started)
+    })
+    plot_hp_started  <- reactive({
+      summary_mean_completion_level_long <- plyr::ldply(relative_hp_started())
       if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
         } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(PilotSite != "Total") %>% mutate(Org = PilotSite)
         }
       } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = true, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
+        viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "Workshop")
+    }) 
+    output$table_hp_started <- shiny::renderTable({(table_hp_started())}, striped = TRUE)
+    output$plot_hp_started <- renderPlotly({plot_hp_started()})
+    
+    # home practice review - user claims they had a chance to do the hp
+    
+    summary_table_hp_done <- reactive({
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(),
+                                                               data = selected_data_dem(),
+                                                               columns_to_summarise = data_hp_done,
+                                                               replace = "rp.contact.field.w_",
+                                                               replace_after = "_hp_done")
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
+      mult_summary_table_filter(summary_table_baseline_build)
     })
+    
+    relative_hp_done <- reactive({
+      summary_table_hp_done <- summary_table_hp_done()
+      for (i in 1:length(summary_table_hp_done)){
+        if (!"yes" %in% colnames(summary_table_hp_done[[i]])) {
+          summary_table_hp_done$yes <- 0
+        }
+      }
+      
+      select_items <- c(opt_factors(), "yes")
+      
+      relative_hp_done <- imap(summary_table_hp_done, ~.x %>%
+                                 select(select_items))
+      return(relative_hp_done)   
+    })
+    table_perc_long <- reactive({
+      hp_started_long <- plyr::ldply(relative_hp_started())
+      hp_done_long <- plyr::ldply(relative_hp_done())
+      
+      table_perc_long <- full_join(hp_started_long, hp_done_long) %>%
+        mutate(perc_complete = yes/true)
+      return(table_perc_long)
+    })
+    table_hp_done <- reactive({
+      table_hp_done <- table_perc_long() %>%
+        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = perc_complete)
+      return(table_hp_done)
+    })
+    plot_hp_done  <- reactive({
+      summary_mean_completion_level_long <- table_perc_long()
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            mutate(Org = toString(opt_factors()))
+        } else {
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(PilotSite != "Total") %>% mutate(Org = PilotSite)
+        }
+      } else {
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
+      }
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = perc_complete, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = c("1on1", "Praise", "Instruct", "Stress hp breathe done", "Stress hp talk done", "Money", "Rules", "Consequence", "Solve", "Safe", "Crisis", "Celebrate")) +
+        viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "Workshop", y = "Completed")
+    }) 
+    output$table_hp_done <- shiny::renderTable({(table_hp_done())}, striped = TRUE)
+    output$plot_hp_done <- renderPlotly({plot_hp_done()})
     
     # home practice review - user notes how HP went
     summary_table_hp_mood <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_hp_mood,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(),
+                                                               columns_to_summarise = data_hp_mood,
                                                                replace = "rp.contact.field.w_",
                                                                replace_after = "_mood")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      summary_table_baseline_build <- summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     #HP 2 One on One (NB no HP for WS 1)
@@ -4760,15 +4856,90 @@ parentapp_shiny <- function(country){
     output$table_hpdone_1on1 <- shiny::renderTable({(table_hpdone_1on1())}, striped = TRUE)
     output$plot_hpdone_1on1 <- renderPlotly({plot_hpdone_1on1()})
     
-    table_mood_1on1 <- reactive({summary_table_hp_mood()$`1on1 hp` })
-    plot_mood_1on1 <- reactive({})
+    table_mood_1on1 <- reactive({summary_table_hp_mood()$`1on1 hp`})
+    plot_mood_1on1 <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`1on1 hp`)})
     output$table_mood_1on1 <- shiny::renderTable({(table_mood_1on1())}, striped = TRUE)
     output$plot_mood_1on1 <- renderPlotly({plot_mood_1on1()})
     
-    table_chall_1on1 <- reactive({summary_table_hp_chall$`Challenges 1on1` })
-    plot_chall_1on1 <- reactive({})
+    change_rname <- function(x){
+        names(x) <- opt_factors()
+        return(x)
+    }
+    
+    summary_challenges_setup <- reactive({
+      if (country == "Tanzania"){
+        if (study == "Pilot"){
+          chall_data <- selected_data_dem() %>% mutate(Org = PilotSite)
+        } else {
+          if (!is.null(input$opt_support)){
+            if (!is.null(input$opt_skin)){
+              if (!is.null(input$opt_diglit)){
+                chall_data <- selected_data_dem() %>% mutate(Org = paste(Support, Skin, `Digital Literacy`))
+              } else {
+                chall_data <- selected_data_dem() %>% mutate(Org = paste(Support, Skin))
+              }
+            } else {
+              if (!is.null(input$opt_diglit)){
+                chall_data <- selected_data_dem() %>% mutate(Org = paste(Support, `Digital Literacy`))
+              } else {
+                chall_data <- selected_data_dem() %>% mutate(Org = Support)
+              }
+            }
+          } else {
+            if (!is.null(input$opt_skin)){
+              if (!is.null(input$opt_diglit)){
+                chall_data <- selected_data_dem() %>% mutate(Org = paste(Skin, `Digital Literacy`))
+              } else {
+                chall_data <- selected_data_dem() %>% mutate(Org = Skin)
+              }
+            } else {
+              if (!is.null(input$opt_diglit)){
+                chall_data <- selected_data_dem() %>% mutate(Org = `Digital Literacy`)
+              } else {
+              }
+            }
+          }
+        }
+        } else {
+          chall_data <- selected_data_dem()
+        }
+      
+        chall_table <- map2(challenge_vars, chall_ap_vars, ~ challenge_freq(data = chall_data,
+                                                                            group_by = "Org",
+                                                                            var = .x,
+                                                                            append_var = .y))
+        names(chall_table) <- naming_conventions(challenge_vars, replace = "rp.contact.field.w_", replace_after = "_hp_challenge_list")
+        return(chall_table)
+    })
+    
+    summary_challenges <- reactive({
+        if (study == "Optimisation" & country == "Tanzania"){
+          new_org_cols <- summary_challenges_setup() %>%
+            purrr::map(.f =~ data.frame(stringr::str_split(.x$Org, pattern = " ", simplify = TRUE))) %>%
+            purrr::map(., change_rname)
+          chall_table <- summary_challenges_setup() %>% purrr::map(.f =~ .x %>% dplyr::select(-c("Org")))
+          chall_table_bind <- purrr::map2(new_org_cols, chall_table, 
+                                          .f =~ cbind(.x, .y))
+          chall_table <- chall_table_bind
+        } else {
+          chall_table <- summary_challenges_setup()
+        }
+        return(chall_table)
+      })
+    
+    table_chall_1on1 <- reactive({
+      summary_challenges()$`1on1`
+    })
+    plot_chall_1on1 <- reactive({
+      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`1on1`, cols = !Org)
+      ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
+        geom_bar(stat = "identity", position = "dodge") +
+        # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+        scale_x_discrete(guide = guide_axis(angle = 90)) +
+        viridis::scale_fill_viridis(discrete = TRUE)
+    })
     output$table_chall_1on1 <- shiny::renderTable({(table_chall_1on1())}, striped = TRUE,
-                                                  caption = "1 = I don’t have enough time; <br> 2 = My teen does not want to spend time with me; <br> 3 = My teen only wants to watch TV or play on his/her phone; <br> 4 = My teen wants to do things that are not safe or that cost money; <br> 5 = My teen wants to do things that I cannot physically do; <br> 6 = My teen chose a competitive activity. I won and s/he got angry.; <br> 7 = I struggled to end the one-on-one time; <br> 8 = All my children want one-on-one time with me at the same time")
+                                                  caption = "1 = I don’t have enough time; 2 = My teen does not want to spend time with me; 3 = My teen only wants to watch TV or play on his/her phone; 4 = My teen wants to do things that are not safe or that cost money; 5 = My teen wants to do things that I cannot physically do; 6 = My teen chose a competitive activity. I won and s/he got angry.; 7 = I struggled to end the one-on-one time; 8 = All my children want one-on-one time with me at the same time")
     output$plot_chall_1on1 <- renderPlotly({plot_chall_1on1()})
     
     #HP 3 Praise (no review/ mood and no challenges)
@@ -4779,10 +4950,13 @@ parentapp_shiny <- function(country){
     
     table_mood_praise <- reactive({})
     plot_mood_praise <- reactive({})
+    #plot_mood_praise <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`praise hp`)})
+    
     output$table_mood_praise <- shiny::renderTable({(table_mood_praise())}, striped = TRUE)
     output$plot_mood_praise <- renderPlotly({plot_mood_praise()})
     
-    table_chall_praise <- reactive({})
+    table_chall_praise <- reactive({
+    })
     plot_chall_praise <- reactive({})
     output$table_chall_praise <- shiny::renderTable({(table_chall_praise())}, striped = TRUE)
     # caption
@@ -4795,14 +4969,21 @@ parentapp_shiny <- function(country){
     output$plot_hpdone_instruct <- renderPlotly({plot_hpdone_instruct()})
     
     table_mood_instruct <- reactive({summary_table_hp_mood()$`Instruct hp`  })
-    plot_mood_instruct <- reactive({})
+    plot_mood_instruct <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Instruct hp`)})
     output$table_mood_instruct <- shiny::renderTable({(table_mood_instruct())}, striped = TRUE)
     output$plot_mood_instruct <- renderPlotly({plot_mood_instruct()})
     
-    table_chall_instruct <- reactive({summary_table_hp_chall$`Challenges 1on1` })
-    plot_chall_instruct <- reactive({})
+    table_chall_instruct <- reactive({
+      summary_challenges()$`Instruct`
+    })
+    plot_chall_instruct <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Instruct`, cols = !Org)
+    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
+      geom_bar(stat = "identity", position = "dodge") +
+      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      scale_x_discrete(guide = guide_axis(angle = 90)) +
+      viridis::scale_fill_viridis(discrete = TRUE)})
     output$table_chall_instruct <- shiny::renderTable({(table_chall_instruct())}, striped = TRUE,
-                                                      caption = "1 = My teenager did not want to follow the instruction; <br> 2 = I did not find time to spend one-on-one time with my teen; <br> 3 = I gave a negative instead of a positive instruction; <br> 4 = I shouted at my teen when they behaved negatively, instead of giving them a positive instruction for what they should do")
+                                                      caption = "1 = My teenager did not want to follow the instruction; 2 = I did not find time to spend one-on-one time with my teen; 3 = I gave a negative instead of a positive instruction; 4 = I shouted at my teen when they behaved negatively, instead of giving them a positive instruction for what they should do")
     output$plot_chall_instruct <- renderPlotly({plot_chall_instruct()})
     
     #HP 5.1 Stress - Breathe
@@ -4812,15 +4993,22 @@ parentapp_shiny <- function(country){
     output$plot_hpdone_stress_br <- renderPlotly({plot_hpdone_stress_br()})
     
     table_mood_stress_br <- reactive({summary_table_hp_mood()$`Stress hp breathe` })
-    plot_mood_stress_br <- reactive({})
+    plot_mood_stress_br <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Stress hp breathe`)})
     output$table_mood_stress_br <- shiny::renderTable({(table_mood_stress_br())}, striped = TRUE)
     output$plot_mood_stress_br <- renderPlotly({plot_mood_stress_br()})
     
     # TODO: for summary_table_hp_chall add filter options
-    table_chall_stress_br <- reactive({summary_table_hp_chall$`Challenges 1on1`})
-    plot_chall_stress_br <- reactive({})
+    table_chall_stress_br <- reactive({
+      summary_challenges()$`Stress`
+    })
+    plot_chall_stress_br <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Stress`, cols = !Org)
+    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
+      geom_bar(stat = "identity", position = "dodge") +
+      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      scale_x_discrete(guide = guide_axis(angle = 90)) +
+      viridis::scale_fill_viridis(discrete = TRUE)})
     output$table_chall_stress_br <- shiny::renderTable({(table_chall_stress_br())}, striped = TRUE,
-                                                       caption = "1 = I was afraid my teen would think I was weak; <br> 2 = I felt uncomfortable about naming specific difficult feelings; <br> 3 = My teen felt uncomfortable when I shared my feelings; <br> 4 = When I shared my feelings, my teen asked many questions, which made me uncomfortable; <br> 5 = I was too stressed or angry to try sharing my feelings – I prefer to be alone when I feel like that")
+                                                       caption = "1 = I was afraid my teen would think I was weak; 2 = I felt uncomfortable about naming specific difficult feelings; 3 = My teen felt uncomfortable when I shared my feelings; 4 = When I shared my feelings, my teen asked many questions, which made me uncomfortable; 5 = I was too stressed or angry to try sharing my feelings – I prefer to be alone when I feel like that")
     output$plot_chall_stress_br <- renderPlotly({plot_chall_stress_br()})
     
     #HP 5.2 Stress - Talk
@@ -4830,14 +5018,14 @@ parentapp_shiny <- function(country){
     output$plot_hpdone_stress_tk <- renderPlotly({plot_hpdone_stress_tk()})
     
     table_mood_stress_tk <- reactive({summary_table_hp_mood()$`Stress hp talk` })
-    plot_mood_stress_tk <- reactive({})
+    plot_mood_stress_tk <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Stress hp talk`)})
     output$table_mood_stress_tk <- shiny::renderTable({(table_mood_stress_tk())}, striped = TRUE)
     output$plot_mood_stress_tk <- renderPlotly({plot_mood_stress_tk()})
     
     # table_chall_stress_tk <- reactive({summary_table_hp_chall$`Challenges 1on1` })
     # plot_chall_stress_tk <- reactive({})
     # output$table_chall_stress_tk <- shiny::renderTable({(table_chall_stress_tk())}, striped = TRUE)
-    #       #caption = "1 = ; <br> 2 = ; <br> 3 = ; <br> 4 =; <br> 3 = ; <br> 5 = ; <br> 6 = ; <br> 7 = ; <br> 8 = ")
+    #       #caption = "1 = ; 2 = ; 3 = ; 4 =; 3 = ; 5 = ; 6 = ; 7 = ; 8 = ")
     # output$plot_chall_stress_tk <- renderPlotly({plot_chall_stress_tk()})
     
     #HP 6 Fam Budg
@@ -4847,14 +5035,26 @@ parentapp_shiny <- function(country){
     output$plot_hpdone_money <- renderPlotly({plot_hpdone_money()})
     
     table_mood_money <- reactive({summary_table_hp_mood()$`Money hp` })
-    plot_mood_money <- reactive({})
+    plot_mood_money <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Money hp`)})
     output$table_mood_money <- shiny::renderTable({(table_mood_money())}, striped = TRUE)
     output$plot_mood_money <- renderPlotly({plot_mood_money()})
+
+    table_mood_rules <- reactive({summary_table_hp_mood()$`Rules hp` })
+    plot_mood_rules <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Rules hp`)})
+    output$table_mood_rules <- shiny::renderTable({(table_mood_rules())}, striped = TRUE)
+    output$plot_mood_rules <- renderPlotly({plot_mood_rules()})
     
-    table_chall_money <- reactive({summary_table_hp_chall$`Challenges 1on1` })
-    plot_chall_money <- reactive({})
+    table_chall_money <- reactive({
+      summary_challenges()$`Money`
+    })
+    plot_chall_money <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Money`, cols = !Org)
+    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
+      geom_bar(stat = "identity", position = "dodge") +
+      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      scale_x_discrete(guide = guide_axis(angle = 90)) +
+      viridis::scale_fill_viridis(discrete = TRUE)})
     output$table_chall_money <- shiny::renderTable({(table_chall_money())}, striped = TRUE,
-                                                   caption = "1 = I did not want to tell my family how much I earn; <br> 2 = When budgeting, we could not agree on what should fall under needs and what should fall under wants; <br> 3 = I did not understand what to do; <br> 4 = My teen did not want to do the budgeting with me")
+                                                   caption = "1 = I did not want to tell my family how much I earn; 2 = When budgeting, we could not agree on what should fall under needs and what should fall under wants; 3 = I did not understand what to do; 4 = My teen did not want to do the budgeting with me")
     output$plot_chall_money <- renderPlotly({plot_chall_money()})
     
     #HP 7 Rules
@@ -4864,14 +5064,21 @@ parentapp_shiny <- function(country){
     output$plot_hpdone_rule <- renderPlotly({plot_hpdone_rule()})
     
     table_mood_rule <- reactive({summary_table_hp_mood()$`Rules hp` })
-    plot_mood_rule <- reactive({})
+    plot_mood_rule <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Rules hp`)})
     output$table_mood_rule <- shiny::renderTable({(table_mood_rule())}, striped = TRUE)
     output$plot_mood_rule <- renderPlotly({plot_mood_rule()})
     
-    table_chall_rule <- reactive({summary_table_hp_chall$`Challenges 1on1` })
-    plot_chall_rule <- reactive({})
+    table_chall_rule <- reactive({
+      summary_challenges()$`Rules`
+    })
+    plot_chall_rule <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Rules`, cols = !Org)
+    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
+      geom_bar(stat = "identity", position = "dodge") +
+      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      scale_x_discrete(guide = guide_axis(angle = 90)) +
+      viridis::scale_fill_viridis(discrete = TRUE)})
     output$table_chall_rule <- shiny::renderTable({(table_chall_rule())}, striped = TRUE,
-                                                  caption = "1 = My teen and I could not agree on a rule; <br> 2 = My teen felt it was unfair that they have to follow the rule while I don’t have to follow it; <br> 3 = I felt uncomfortable, because I feel that I should be the one establishing the rule, not my teen; <br> 4 = My partner felt uncomfortable, because they feel that they should be the one establishing the rule, not the teen; <br> 5 = When we tried to set a rule, we got into an argument; <br> 6 = We were not able to stick to the rule")
+                                                  caption = "1 = My teen and I could not agree on a rule; 2 = My teen felt it was unfair that they have to follow the rule while I don’t have to follow it; 3 = I felt uncomfortable, because I feel that I should be the one establishing the rule, not my teen; 4 = My partner felt uncomfortable, because they feel that they should be the one establishing the rule, not the teen; 5 = When we tried to set a rule, we got into an argument; 6 = We were not able to stick to the rule")
     output$plot_chall_rule <- renderPlotly({plot_chall_rule()})
     
     #HP 8 Calm Cons
@@ -4880,15 +5087,26 @@ parentapp_shiny <- function(country){
     output$table_hpdone_consequence <- shiny::renderTable({(table_hpdone_consequence())}, striped = TRUE)
     output$plot_hpdone_consequence <- renderPlotly({plot_hpdone_consequence()})
     
-    table_mood_consequence <- reactive({summary_table_hp_mood()$`Consequence hp` })
-    plot_mood_consequence <- reactive({})
+    table_mood_consequence <- reactive({
+      challenge_freq(var = "rp.contact.field.w_consequence_hp_challenge_list",
+                     group_by = opt_factors(),
+                     append_var = "rp.contact.field.w_consequence_hp_challenge")
+    })
+    plot_mood_consequence <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Consequence hp`)})
     output$table_mood_consequence <- shiny::renderTable({(table_mood_consequence())}, striped = TRUE)
     output$plot_mood_consequence <- renderPlotly({plot_mood_consequence()})
     
-    table_chall_consequence <- reactive({summary_table_hp_chall$`Challenges 1on1` })
-    plot_chall_consequence <- reactive({})
+    table_chall_consequence <- reactive({
+      summary_challenges()$`Consequence`
+    })
+    plot_chall_consequence <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Consequence`, cols = !Org)
+    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
+      geom_bar(stat = "identity", position = "dodge") +
+      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      scale_x_discrete(guide = guide_axis(angle = 90)) +
+      viridis::scale_fill_viridis(discrete = TRUE)})
     output$table_chall_consequence <- shiny::renderTable({(table_chall_consequence())}, striped = TRUE,
-                                                         caption = "1 = I got very angry when my teen broke the rule; <br> 2 = My teen got very angry with me after I gave the consequence; <br> 3 = I introduced the consequence without first discussing it with my teen; <br> 4 = I forgot to follow through with the consequence; <br> 5 = Even with the consequence, my teen still does not follow the rule; <br> 6 = We only created a negative consequence, not a positive consequence; <br> 7 = My teen suggested being hit as a negative consequence")
+                                                         caption = "1 = I got very angry when my teen broke the rule; 2 = My teen got very angry with me after I gave the consequence; 3 = I introduced the consequence without first discussing it with my teen; 4 = I forgot to follow through with the consequence; 5 = Even with the consequence, my teen still does not follow the rule; 6 = We only created a negative consequence, not a positive consequence; 7 = My teen suggested being hit as a negative consequence")
     output$plot_chall_consequence <- renderPlotly({plot_chall_consequence()})
     
     #HP 9 Pr Solve
@@ -4898,14 +5116,21 @@ parentapp_shiny <- function(country){
     output$plot_hpdone_solve <- renderPlotly({plot_hpdone_solve()})
     
     table_mood_solve <- reactive({summary_table_hp_mood()$`Solve hp` })
-    plot_mood_solve <- reactive({})
+    plot_mood_solve <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Solve hp`)})
     output$table_mood_solve <- shiny::renderTable({(table_mood_solve())}, striped = TRUE)
     output$plot_mood_solve <- renderPlotly({plot_mood_solve()})
     
-    table_chall_solve <- reactive({summary_table_hp_chall$`Challenges 1on1` })
-    plot_chall_solve <- reactive({})
+    table_chall_solve <- reactive({
+      summary_challenges()$`Solve`
+    })
+    plot_chall_solve <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Solve`, cols = !Org)
+    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
+      geom_bar(stat = "identity", position = "dodge") +
+      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      scale_x_discrete(guide = guide_axis(angle = 90)) +
+      viridis::scale_fill_viridis(discrete = TRUE)})
     output$table_chall_solve <- shiny::renderTable({(table_chall_solve())}, striped = TRUE,
-                                                   caption = "1 = I forgot the steps of problem solving; <br> 2 = I started with the solutions right away; <br> 3 = We could not agree on a solution to try out and we got into an argument; <br> 4 = I got angry when the problem came up and I forgot to use the problem-solving steps; <br> 5 = My teen got angry and did not want to talk about the problem")
+                                                   caption = "1 = I forgot the steps of problem solving; 2 = I started with the solutions right away; 3 = We could not agree on a solution to try out and we got into an argument; 4 = I got angry when the problem came up and I forgot to use the problem-solving steps; 5 = My teen got angry and did not want to talk about the problem")
     output$plot_chall_solve <- renderPlotly({plot_chall_solve()})
     
     #HP 10 Teen Safe
@@ -4915,14 +5140,21 @@ parentapp_shiny <- function(country){
     output$plot_hpdone_safe <- renderPlotly({plot_hpdone_safe()})
     
     table_mood_safe <- reactive({summary_table_hp_mood()$`Safe hp` })
-    plot_mood_safe <- reactive({})
+    plot_mood_safe <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Safe hp`)})
     output$table_mood_safe <- shiny::renderTable({(table_mood_safe())}, striped = TRUE)
     output$plot_mood_safe <- renderPlotly({plot_mood_safe()})
     
-    table_chall_safe <- reactive({summary_table_hp_chall$`Challenges 1on1`})
-    plot_chall_safe <- reactive({})
+    table_chall_safe <- reactive({
+      summary_challenges()$`Safe`
+    })
+    plot_chall_safe <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Safe`, cols = !Org)
+    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
+      geom_bar(stat = "identity", position = "dodge") +
+      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      scale_x_discrete(guide = guide_axis(angle = 90)) +
+      viridis::scale_fill_viridis(discrete = TRUE)})
     output$table_chall_safe <- shiny::renderTable({(table_chall_safe())}, striped = TRUE,
-                                                  caption = "1 = My teen and I disagreed on which areas and online activities were unsafe; <br> 2 = My teen identified the house of someone I trust as unsafe. I was shocked and did not know what to do; <br> 3 = My teen insisted that the bar (or another place I don’t feel is safe) is safe for them to visit. I don’t know how to convince my teen; <br> 4 = As an adult, I feel responsible to protect - but when I told my teen what is safe and what is not, my teen got angry; <br> 5 = It was hard to identify support resources available in my community, because I don’t know my community so well / there are few services available; <br> 6 = I don’t know much about technology, so I don’t know how to talk about it with my teen")
+                                                  caption = "1 = My teen and I disagreed on which areas and online activities were unsafe; 2 = My teen identified the house of someone I trust as unsafe. I was shocked and did not know what to do; 3 = My teen insisted that the bar (or another place I don’t feel is safe) is safe for them to visit. I don’t know how to convince my teen; 4 = As an adult, I feel responsible to protect - but when I told my teen what is safe and what is not, my teen got angry; 5 = It was hard to identify support resources available in my community, because I don’t know my community so well / there are few services available; 6 = I don’t know much about technology, so I don’t know how to talk about it with my teen")
     output$plot_chall_safe <- renderPlotly({plot_chall_safe()})
     
     #HP 11 D w Crisis
@@ -4932,14 +5164,21 @@ parentapp_shiny <- function(country){
     output$plot_hpdone_crisis <- renderPlotly({plot_hpdone_crisis()})
     
     table_mood_crisis <- reactive({summary_table_hp_mood()$`Crisis hp`})
-    plot_mood_crisis <- reactive({})
+    plot_mood_crisis <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Crisis hp`)})
     output$table_mood_crisis <- shiny::renderTable({(table_mood_crisis())}, striped = TRUE)
     output$plot_mood_crisis <- renderPlotly({plot_mood_crisis()})
     
-    table_chall_crisis <- reactive({summary_table_hp_chall$`Challenges 1on1` })
-    plot_chall_crisis <- reactive({})
+    table_chall_crisis <- reactive({
+      summary_challenges()$`Crisis`
+    })
+    plot_chall_crisis <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Crisis`, cols = !Org)
+    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
+      geom_bar(stat = "identity", position = "dodge") +
+      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      scale_x_discrete(guide = guide_axis(angle = 90)) +
+      viridis::scale_fill_viridis(discrete = TRUE)})
     output$table_chall_crisis <- shiny::renderTable({(table_chall_crisis())}, striped = TRUE,
-                                                    caption = "1 = My teen told me that something serious happened to them and I did not know how to handle it; <br> 2 = The conversation made me very uncomfortable because I was reminded of a negative experience I had; <br> 3 = One of us did not feel comfortable")
+                                                    caption = "1 = My teen told me that something serious happened to them and I did not know how to handle it; 2 = The conversation made me very uncomfortable because I was reminded of a negative experience I had; 3 = One of us did not feel comfortable")
     output$plot_chall_crisis <- renderPlotly({plot_chall_crisis()})
     
     #FIFTH Tab Surveys
@@ -4972,7 +5211,7 @@ parentapp_shiny <- function(country){
     table_sv1_attention <- reactive({
       summary_table_survey_past_week()$Attention  }) 
     output$table_sv1_attention <- shiny::renderTable({(table_sv1_attention())}, striped = TRUE,
-                                                     caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                     caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     plot_sv1_attention  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_ppf", replace = "rp.contact.field.")})
     output$plot_sv1_attention <- renderPlotly({plot_sv1_attention()})
@@ -4983,7 +5222,7 @@ parentapp_shiny <- function(country){
     plot_sv1_praise  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_ppp", replace = "rp.contact.field.")})
     output$table_sv1_praise <- shiny::renderTable({(table_sv1_praise())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_praise <- renderPlotly({plot_sv1_praise()})
     
     # sv1_stress a_3
@@ -4992,7 +5231,7 @@ parentapp_shiny <- function(country){
     plot_sv1_stress  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_3_final", replace = "rp.contact.field.")})
     output$table_sv1_stress <- shiny::renderTable({(table_sv1_stress())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_stress <- renderPlotly({plot_sv1_stress()})
     
     # sv1_shout a_4
@@ -5001,7 +5240,7 @@ parentapp_shiny <- function(country){
     plot_sv1_shout  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_4_final", replace = "rp.contact.field.")})
     output$table_sv1_shout <- shiny::renderTable({(table_sv1_shout())}, striped = TRUE,
-                                                 caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_shout <- renderPlotly({plot_sv1_shout()})
     
     # sv1_money a_5 p1
@@ -5010,7 +5249,7 @@ parentapp_shiny <- function(country){
     plot_sv1_money  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_fin_s", replace = "rp.contact.field.")})
     output$table_sv1_money <- shiny::renderTable({(table_sv1_money())}, striped = TRUE,
-                                                 caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_money <- renderPlotly({plot_sv1_money()})
     
     # sv1_food_money a_5 
@@ -5019,7 +5258,7 @@ parentapp_shiny <- function(country){
     plot_sv1_food_money  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_fin_fi", replace = "rp.contact.field.")}) 
     output$table_sv1_food_money <- shiny::renderTable({(table_sv1_food_money())}, striped = TRUE,
-                                                      caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                      caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_food_money <- renderPlotly({plot_sv1_food_money()})
     
     # sv1_hitting a_6
@@ -5028,7 +5267,7 @@ parentapp_shiny <- function(country){
     plot_sv1_hitting  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_6_final", replace = "rp.contact.field.")}) 
     output$table_sv1_hitting <- shiny::renderTable({(table_sv1_hitting())}, striped = TRUE,
-                                                   caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                   caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_hitting <- renderPlotly({plot_sv1_hitting()})
     
     # sv1_week_teen_activity a_7 p1
@@ -5037,7 +5276,7 @@ parentapp_shiny <- function(country){
     plot_sv1_week_teen_activity  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_7_part_1_final", replace = "rp.contact.field.")})
     output$table_sv1_week_teen_activity <- shiny::renderTable({(table_sv1_week_teen_activity())}, striped = TRUE,
-                                                              caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                              caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_week_teen_activity <- renderPlotly({plot_sv1_week_teen_activity()})
     
     # sv1_lockdown a_7 p2
@@ -5046,7 +5285,7 @@ parentapp_shiny <- function(country){
     plot_sv1_lockdown  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_7_part_2_final", replace = "rp.contact.field.")})
     output$table_sv1_lockdown <- shiny::renderTable({(table_sv1_lockdown())}, striped = TRUE,
-                                                    caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                    caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_lockdown <- renderPlotly({plot_sv1_lockdown()})
     
     # sv1_reg_teen_activity a_7 p3
@@ -5055,7 +5294,7 @@ parentapp_shiny <- function(country){
     plot_sv1_reg_teen_activity  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_7_part_3_final", replace = "rp.contact.field.")}) 
     output$table_sv1_reg_teen_activity <- shiny::renderTable({(table_sv1_reg_teen_activity())}, striped = TRUE,
-                                                             caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                             caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_reg_teen_activity <- renderPlotly({plot_sv1_reg_teen_activity()})
     
     # sv1_sex_talk a_8
@@ -5064,7 +5303,7 @@ parentapp_shiny <- function(country){
     plot_sv1_sex_talk  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_8_final", replace = "rp.contact.field.")})
     output$table_sv1_sex_talk <- shiny::renderTable({(table_sv1_sex_talk())}, striped = TRUE,
-                                                    caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                    caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_sex_talk <- renderPlotly({plot_sv1_sex_talk()})
     
     # sv1_covid_safe a_9
@@ -5073,7 +5312,7 @@ parentapp_shiny <- function(country){
     plot_sv1_covid_safe  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_9_final", replace = "rp.contact.field.")})
     output$table_sv1_covid_safe <- shiny::renderTable({(table_sv1_covid_safe())}, striped = TRUE,
-                                                      caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                      caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv1_covid_safe <- renderPlotly({plot_sv1_covid_safe()})
     
     # Final pilot survey 
@@ -5106,7 +5345,7 @@ parentapp_shiny <- function(country){
     table_sv2_attention <- reactive({
       summary_table_survey_final()$Attention  }) 
     output$table_sv2_attention <- shiny::renderTable({(table_sv2_attention())}, striped = TRUE,
-                                                     caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                     caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     
     # sv2_praise a_2
     table_sv2_praise <- reactive({
@@ -5114,7 +5353,7 @@ parentapp_shiny <- function(country){
     plot_sv2_praise  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_ppp", replace = "rp.contact.field.")})
     output$table_sv2_praise <- shiny::renderTable({(table_sv2_praise())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_praise <- renderPlotly({plot_sv2_praise()})
     
     # sv2_stress a_3
@@ -5123,7 +5362,7 @@ parentapp_shiny <- function(country){
     plot_sv2_stress  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_a_3_final", replace = "rp.contact.field.")})
     output$table_sv2_stress <- shiny::renderTable({(table_sv2_stress())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_stress <- renderPlotly({plot_sv2_stress()})
     
     # sv2_shout a_4
@@ -5132,7 +5371,7 @@ parentapp_shiny <- function(country){
     plot_sv2_shout  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_a_4_final", replace = "rp.contact.field.")})
     output$table_sv2_shout <- shiny::renderTable({(table_sv2_shout())}, striped = TRUE,
-                                                 caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_shout <- renderPlotly({plot_sv2_shout()})
     
     # sv2_money a_5 p1
@@ -5141,7 +5380,7 @@ parentapp_shiny <- function(country){
     plot_sv2_money  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_fin_s", replace = "rp.contact.field.")})
     output$table_sv2_money <- shiny::renderTable({(table_sv2_money())}, striped = TRUE,
-                                                 caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_money <- renderPlotly({plot_sv2_money()})
     
     # sv2_food_money a_5 
@@ -5150,7 +5389,7 @@ parentapp_shiny <- function(country){
     plot_sv2_food_money  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_fin_fi", replace = "rp.contact.field.")}) 
     output$table_sv2_food_money <- shiny::renderTable({(table_sv2_food_money())}, striped = TRUE,
-                                                      caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                      caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_food_money <- renderPlotly({plot_sv2_food_money()})
     
     # sv2_hitting a_6
@@ -5159,7 +5398,7 @@ parentapp_shiny <- function(country){
     plot_sv2_hitting  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_a_6_final", replace = "rp.contact.field.")}) 
     output$table_sv2_hitting <- shiny::renderTable({(table_sv2_hitting())}, striped = TRUE,
-                                                   caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                   caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_hitting <- renderPlotly({plot_sv2_hitting()})
     
     # sv2_week_teen_activity a_7 p1
@@ -5168,7 +5407,7 @@ parentapp_shiny <- function(country){
     plot_sv2_week_teen_activity  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_a_7_part_1_final", replace = "rp.contact.field.")})
     output$table_sv2_week_teen_activity <- shiny::renderTable({(table_sv2_week_teen_activity())}, striped = TRUE,
-                                                              caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                              caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_week_teen_activity <- renderPlotly({plot_sv2_week_teen_activity()})
     
     # sv2_lockdown a_7 p2
@@ -5177,7 +5416,7 @@ parentapp_shiny <- function(country){
     plot_sv2_lockdown  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_a_7_part_2_final", replace = "rp.contact.field.")})
     output$table_sv2_lockdown <- shiny::renderTable({(table_sv2_lockdown())}, striped = TRUE,
-                                                    caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                    caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_lockdown <- renderPlotly({plot_sv2_lockdown()})
     
     # sv2_reg_teen_activity a_7 p3
@@ -5186,7 +5425,7 @@ parentapp_shiny <- function(country){
     plot_sv2_reg_teen_activity  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_a_7_part_3_final", replace = "rp.contact.field.")}) 
     output$table_sv2_reg_teen_activity <- shiny::renderTable({(table_sv2_reg_teen_activity())}, striped = TRUE,
-                                                             caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                             caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_reg_teen_activity <- renderPlotly({plot_sv2_reg_teen_activity()})
     
     # sv2_sex_talk a_8
@@ -5195,7 +5434,7 @@ parentapp_shiny <- function(country){
     plot_sv2_sex_talk  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_a_8_final", replace = "rp.contact.field.")})
     output$table_sv2_sex_talk <- shiny::renderTable({(table_sv2_sex_talk())}, striped = TRUE,
-                                                    caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                    caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_sex_talk <- renderPlotly({plot_sv2_sex_talk()})
     
     # sv2_covid_safe a_9
@@ -5204,33 +5443,17 @@ parentapp_shiny <- function(country){
     plot_sv2_covid_safe  <- reactive({
       summary_plot(selected_data_dem(), "rp.contact.field.survey_final_a_9_final", replace = "rp.contact.field.")})
     output$table_sv2_covid_safe <- shiny::renderTable({(table_sv2_covid_safe())}, striped = TRUE,
-                                                      caption = "no_value = selected 'choose not to answer'; <br> null = skipped using the navigation buttons; <br> NA = survey not accessed or data not synced")
+                                                      caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     output$plot_sv2_covid_safe <- renderPlotly({plot_sv2_covid_safe()})
     
     #SIXTH Tab Parent Library
     summary_table_library <- reactive({
-      summary_table_baseline_build <- summary_table_base_build(columns_to_summarise = data_library,
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_library,
                                                                replace = "rp.contact.field.click_pc_",
                                                                replace_after = "count")
       data_library_neat <- naming_conventions(names(summary_table_library), replace = "Rp.contact.field.click hs")
       names(summary_table_baseline_build) <- data_library_neat
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          
-        } else {
-          summary_table_baseline_build %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table_baseline_build %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      mult_summary_table_filter(summary_table_baseline_build)
     })
     
     #average clicks on parent library (mean per org)

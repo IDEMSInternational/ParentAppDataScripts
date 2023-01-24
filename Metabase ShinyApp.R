@@ -2055,7 +2055,8 @@ parentapp_shiny <- function(country, study){
                                            status = "success",  
                                            style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_appopen_totals", height = "240"),
-                                           shiny::tableOutput("table_appopen_totals")
+                                           shiny::tableOutput("table_appopen_totals"),
+                                           shiny::tableOutput("table_appopen_summary")
                                        ) #closes box
                                      ), #closes fluidrow
                                      
@@ -3154,8 +3155,8 @@ parentapp_shiny <- function(country, study){
     
     observe({
       #autoRefresh()
-      source(here("Metabase Analysis Setup - run offline.R"))
-      #source(here("Metabase Analysis Setup.R"))
+      #source(here("Metabase Analysis Setup - run offline.R"))
+      source(here("Metabase Analysis Setup.R"))
     })
     
     #SUMMARY STATS HEADER displays (same for all tabs)
@@ -3482,61 +3483,12 @@ parentapp_shiny <- function(country, study){
                                                      replace_after = "_completion_level",
                                                      summaries = "mean",
                                                      factors = opt_factors())
-      
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_mean_completion_level %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         janitor::adorn_totals("row"))
-        } else if (study == "Optimisation"){
-          if (!is.null(input$opt_support)){
-            summary_mean_completion_level <- summary_mean_completion_level %>% 
-              purrr::map(.f =~.x %>%
-                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
-          }
-          if (!is.null(input$opt_skin)){
-            summary_mean_completion_level <- summary_mean_completion_level %>% 
-              purrr::map(.f =~.x %>%
-                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
-          }
-          if (!is.null(input$opt_diglit)){
-            summary_mean_completion_level <- summary_mean_completion_level %>% 
-              purrr::map(.f =~.x %>%
-                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
-          }
-          summary_mean_completion_level %>% 
-            purrr::map(.f =~.x %>%
-                         janitor::adorn_totals("row"))
-        } else {
-          summary_mean_completion_level %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_mean_completion_level %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals("row"))
-      }
+      summary_table_filter(summary_mean_completion_level)
     }) 
     
     plot_ws_totals  <- reactive({
-      summary_mean_completion_level_long <- pivot_longer(table_ws_totals(), cols = !opt_factors(), names_to = "Workshop", values_to = "Value")
-      if (country == "Tanzania"){
-        if (study == "Optimisation"){
-          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
-            mutate(Org = toString(opt_factors()))
-        } else {
-          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% mutate(Org = opt_factors())
-        }
-      } else {
-        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
-      }
-      ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = Value, fill = Org)) + 
-        geom_bar(stat = "identity", position = "dodge") +
-        # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
-        viridis::scale_fill_viridis(discrete = TRUE) 
-      #if needed: + flip axis coord_flip()
+      hp_mood_plot(data = table_ws_totals(), factors = opt_factors(), 
+                   limits = week_order, xlab = NULL, manipulation = "longer")
     }) 
     output$table_ws_totals <- shiny::renderTable({(table_ws_totals())}, striped = TRUE)
     output$plot_ws_totals <- renderPlotly({plot_ws_totals()})
@@ -4711,6 +4663,17 @@ parentapp_shiny <- function(country, study){
       
       mult_summary_table_filter(summary_table = summary_table_baseline_build)
     })
+    
+    # summary app opens table
+    table_appopen_summary <- reactive({
+      selected_data_dem() %>%
+        group_by(across(opt_factors())) %>%
+        summarise(Min = min(rp.contact.field.app_launch_count, na.rm = TRUE),
+                  Mean = mean(rp.contact.field.app_launch_count, na.rm = TRUE),
+                  Max = max(rp.contact.field.app_launch_count, na.rm = TRUE),
+                  SD = sd(rp.contact.field.app_launch_count, na.rm = TRUE))
+    }) 
+    output$table_appopen_summary <- shiny::renderTable({(table_appopen_summary())}, striped = TRUE)
     
     #App Opens tab 4.1
     table_appopen_totals <- reactive({

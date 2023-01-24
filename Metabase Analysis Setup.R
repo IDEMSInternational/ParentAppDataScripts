@@ -130,6 +130,15 @@ plhdata_org_clean <- plhdata_org %>%
   filter(Org != "Other")%>%
   mutate(Org = factor(Org))
 
+plhdata_org_clean <- plhdata_org_clean %>%
+  dplyr::mutate(rp.contact.field.user_age = replace(rp.contact.field.user_age,
+                                                    rp.contact.field.user_age %in% c(-29, 2, 1794, 5655),
+                                                    NA)) %>%
+  dplyr::mutate(rp.contact.field.user_age = ifelse(rp.contact.field.user_age > 1960,
+                                                   lubridate::year(Sys.Date()) - rp.contact.field.user_age,
+                                                   ifelse(rp.contact.field.user_age < 0, NA, rp.contact.field.user_age)))
+
+
 # Create subsets of the data based on valid app user ID's
 plhdata_org_clean <- plhdata_org_clean %>%
   dplyr::filter(!is.na(app_version))

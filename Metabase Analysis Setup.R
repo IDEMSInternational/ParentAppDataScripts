@@ -6,6 +6,21 @@
 
 country <- "Tanzania"
 study <- "Optimisation"
+
+### Set up UIC data
+
+# add in start dates for clusters
+UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>% 
+  mutate(whatsapp_start_date = if_else(opt_cluster == 1, as.Date("2022-11-27"),
+                       if_else(opt_cluster == 3, as.Date("2022-12-17"),
+                              if_else(opt_cluster == 4, as.Date("2023-01-10"),
+                                     if_else(opt_cluster == 6, as.Date("2022-11-24"),
+                                            if_else(opt_cluster == 7, as.Date("2022-11-26"),
+                                                   if_else(opt_cluster == 11, as.Date("2023-01-10"),
+                                                          if_else(opt_cluster == 13, as.Date("2022-12-24"),
+                                                                 if_else(opt_cluster == 14, as.Date("2022-12-24"),
+                                                                        as.Date(NA))))))))))
+
 ### extract data ----------------------------------------------------------------------
 # to get user data
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)

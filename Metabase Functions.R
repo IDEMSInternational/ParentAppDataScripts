@@ -535,10 +535,17 @@ summary_table_base_build <- function(data = plhdata_org_clean,
 }
 
 
-hp_mood_plot <- function(data, factors){
-  plot_data <- data %>%
-    dplyr::select(-Total) %>%
-    pivot_longer(cols = !factors)
+hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("sad", "ok", "happy", "NA"),
+                         xlab = "How did you find it?"){
+  if (manipulation == "ldply"){
+    plot_data <- plyr::ldply(data, `.id` = "name")
+  } else if (manipulation == "longer"){
+    plot_data <- data %>%
+      dplyr::select(-Total) %>%
+      pivot_longer(cols = !factors)
+  } else {
+    plot_data <- data
+  }
   
   if (country == "Tanzania"){
     if (study == "Optimisation"){
@@ -551,10 +558,9 @@ hp_mood_plot <- function(data, factors){
   plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
   plot + geom_bar(stat = "identity", position = "dodge") +
     scale_x_discrete(guide = guide_axis(angle = 90),
-                     limits = c("sad", "ok", "happy", "NA"),
-                     labels = c("Sad", "Ok", "Happy", "NA")) +
+                     limits = limits) +
     viridis::scale_fill_viridis(discrete = TRUE) +
-    labs(x = "How did you find it?", y = "Frequency")
+    labs(x = xlab, y = "Frequency")
 }
 
 plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
@@ -578,4 +584,36 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
   return(ggplot(summary_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
            geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
            geom_line() + labs(x = "Workshop week", y = "Number of points"))
+}
+
+survey_table <- function(data = plhdata_org_clean, metadata = r_variables_names, location_ID = "survey_past_week",
+                         factors = "Org"){
+  data_to_tabulate <- metadata %>% filter(location_ID == {{ location_ID }})
+  
+  summary_table <- data %>%
+    # take the data, and select the relevant variables
+    dplyr::select(c(factors, country, app_user_id, data_to_tabulate$metabase_ID)) %>%
+    tidyr::unite(col = "Org", {{ factors }}) %>%
+    # rearrange the data frame
+    pivot_longer(cols = -c(Org, country, app_user_id), names_to = "metabase_ID") %>%
+    # join with our metadata on the variables
+    full_join(., data_to_tabulate) %>%
+    group_by(Org, country, app_user_id, display_name) %>%
+    #mutate(value = as.numeric(value)) %>%
+    filter(complete.cases(value)) %>%
+    # take the most recent value that is not NA
+    summarise(value = last(value))
+  
+  summary_table_wider <- summary_table %>%
+    # to the format for the summary_table function
+    pivot_wider(id_cols = c(Org, country, app_user_id),
+                names_from = display_name) %>%
+    ungroup()
+  
+  summary_table_wider <- summary_table_wider %>%
+    map(.x = unique(summary_table$display_name),
+        .f = ~summary_table(data = summary_table_wider, factors = "Org", columns_to_summarise = .x, display = FALSE, include_margins = TRUE),
+        id = .x)
+  names(summary_table_wider) <- unique(summary_table$display_name)
+  return(summary_table_wider)
 }

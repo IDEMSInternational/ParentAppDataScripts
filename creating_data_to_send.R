@@ -356,8 +356,60 @@ plhdata_org_clean_survey <- plhdata_org_clean %>%
 names(plhdata_org_clean_survey) <- c("App user ID", "Welcome Survey Completion", "Final Survey Completion")
 
 
+# number of app opens -------------------
+plhdata_org_clean_appopens <- plhdata_org_clean %>%
+  dplyr::select(app_user_id, data_app_opens)
+names(plhdata_org_clean_appopens) <- paste0("app_launch_", naming_conventions(names(plhdata_org_clean_appopens),
+                                                        replace = "rp.contact.field.app_launch_count_w_"))
+names(plhdata_org_clean_appopens)[[1]] <- c("App user ID")
+names(plhdata_org_clean_appopens)[[2]] <- c("app_launch_count")
+
+# home practice activity response (yes/no) for each home practice activity
+plhdata_org_clean_hp_response <- plhdata_org_clean %>%
+  dplyr::select(app_user_id, data_hp_started)
+names(plhdata_org_clean_hp_response) <- paste0("hp_started_", naming_conventions(names(plhdata_org_clean_hp_response),
+                                                        replace = "rp.contact.field.w_",
+                                                        replace_after = "_hp_review_started"))
+names(plhdata_org_clean_hp_response)[[1]] <- c("App user ID")
+
+# data_hp_done
+plhdata_org_clean_hp_done <- plhdata_org_clean %>%
+  dplyr::select(app_user_id, data_hp_done)
+names(plhdata_org_clean_hp_done) <- paste0("hp_done_", naming_conventions(names(plhdata_org_clean_hp_done),
+                                                                                 replace = "rp.contact.field.w_",
+                                                                                 replace_after = "_hp_done"))
+names(plhdata_org_clean_hp_done)[[1]] <- c("App user ID")
+
+# data hp mood
+plhdata_org_clean_hp_mood <- plhdata_org_clean %>%
+  dplyr::select(app_user_id, data_hp_mood)
+names(plhdata_org_clean_hp_mood) <- paste0("hp_mood_", naming_conventions(names(plhdata_org_clean_hp_mood),
+                                                                          replace = "rp.contact.field.w_",
+                                                                          replace_after = "_hp_mood"))
+names(plhdata_org_clean_hp_mood)[[1]] <- c("App user ID")
+
+# Survey responses
+initial_survey_id <- (r_variables_names %>% filter(location_ID == "survey_initial_1"))$metabase_ID
+initial_survey_id_name <- (r_variables_names %>% filter(location_ID == "survey_initial_1"))$display_name
+plhdata_org_clean_initial_survey <- plhdata_org_clean %>%
+  dplyr::select(app_user_id, initial_survey_id)
+names(plhdata_org_clean_initial_survey) <- c("App user ID", paste0("initial_survey_", initial_survey_id_name))
+
+# Survey responses
+final_survey_id <- (r_variables_names %>% filter(location_ID == "survey_final"))$metabase_ID
+final_survey_id_name <- (r_variables_names %>% filter(location_ID == "survey_final"))$display_name
+plhdata_org_clean_final_survey <- plhdata_org_clean %>%
+  dplyr::select(app_user_id, final_survey_id)
+names(plhdata_org_clean_final_survey) <- c("App user ID", paste0("final_survey_", final_survey_id_name))
+
 # Bang 'em together -------------------------------------------
 plhdata_org_clean_all <- full_join(plhdata_org_clean_CL, plhdata_org_clean_survey, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_appopens, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_response, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_done, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_mood, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_initial_survey, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_final_survey, by = "App user ID")
 
 plhdata_org_clean_all <- plhdata_org_clean_all %>%
   mutate(Support = ifelse(`Experimental Condition` < 5, "Self-guided", "WhatsApp"),
@@ -370,8 +422,11 @@ plhdata_org_clean_mis <- plhdata_org_clean_all %>%
            (Skin == "Workshop" & Skin_PA_var == "modular"))
 
 
-writexl::write_xlsx(plhdata_org_clean_all, path = "TZ_data_20230117.xlsx")
+writexl::write_xlsx(plhdata_org_clean_all, path = "TZ_data_20230119.xlsx")
 
 
+names(plhdata_org_clean_all)
 
 View(plhdata_org_clean_all)
+
+

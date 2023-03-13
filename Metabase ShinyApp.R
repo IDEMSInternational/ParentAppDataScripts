@@ -16,7 +16,13 @@ parentapp_shiny <- function(country, study){
       )), #closes sidebarMenu and dashboardSidebar
     
     dashboardBody(# Boxes need to be put in a row (or column)
-      top_boxes(country = country), #closes fluidRow
+      #top_boxes(country = country), #closes fluidRow
+      fluidRow(
+        shinydashboard::valueBoxOutput("myvaluebox1", width=3), 
+        shinydashboard::valueBoxOutput("myvaluebox2", width=3),
+        shinydashboard::valueBoxOutput("myvaluebox3", width=3),
+        shinydashboard::valueBoxOutput("myvaluebox4", width=3)
+      ),
       fluidRow(checkbox_input(inputId = "Dem", country = country, study = study)), #closes fluidRow
       tabItems(
         # First tab content layout
@@ -172,14 +178,13 @@ parentapp_shiny <- function(country, study){
                 
                 tabsetPanel(type = "tabs",
                             tabPanel("Overview",
-                                     
                                      fluidRow(
                                        box(width = 12,
                                            collapsible = TRUE,
                                            solidHeader = TRUE,
                                            title = "Average workshop completion",
                                            status = "info",  
-                                           #background = "orange",
+                                           style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_ws_totals", height = "240"),
                                            shiny::tableOutput("table_ws_totals")
                                        )#closes box
@@ -2213,21 +2218,20 @@ parentapp_shiny <- function(country, study){
                                            title = "Push notification clicks overview",
                                            status = "success",  
                                            #background = "orange",
-                                           plotlyOutput(outputId = "plot_pushn_totals", height = "240"),
                                            shiny::tableOutput("table_pushn_totals")
                                        )#closes box
-                                       # ), #closes fluidrow
-                                       #          
-                                       #          fluidRow(
-                                       #            box(width = 12,
-                                       #                collapsible = TRUE,
-                                       #                solidHeader = TRUE,
-                                       #                title = "Push notification types sent",
-                                       #                status = "success",  
-                                       #                #background = "orange",
-                                       #                plotlyOutput(outputId = "plot_pushn_mean", height = "240"), #needs to be renames
-                                       #                shiny::tableOutput("table_pushn_mean")
-                                       #            ) #closes box
+                                       ), #closes fluidrow
+
+                                                fluidRow(
+                                                  box(width = 12,
+                                                      collapsible = TRUE,
+                                                      solidHeader = TRUE,
+                                                      title = "Push notification types sent",
+                                                      status = "success",
+                                                      #background = "orange",
+                                                      plotlyOutput(outputId = "plot_pushn_mean", height = "240"), #needs to be renames
+                                                      shiny::tableOutput("table_pushn_mean")
+                                                  ) #closes box
                                      ) #closes fluid row
                             ), #closes tabPanel Push Notifications
                             
@@ -3159,30 +3163,6 @@ parentapp_shiny <- function(country, study){
       source(here("Metabase Analysis Setup.R"))
     })
     
-    #SUMMARY STATS HEADER displays (same for all tabs)
-    if (country != "Tanzania"){
-      output$myvaluebox1 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(nrow(plhdata_org_clean), subtitle = "Enrolled", icon = icon("user"),
-                                 color = "aqua")})
-      output$myvaluebox2 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Amathuba")), subtitle = "Amathuba", icon = icon("user"),
-                                  color = "navy")})
-      output$myvaluebox3 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Dlalanathi")), subtitle = "Dlalanathi", icon = icon("user"),
-                                  color = "navy")})
-      output$myvaluebox4 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Joy")), subtitle = "Joy", icon = icon("user"),
-                                  color = "navy")})
-      output$myvaluebox5 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Nontobeko")), subtitle = "Nontobeko", icon = icon("user"),
-                                  color = "navy")})
-    }
-    if (country == "all"){
-      output$myvaluebox6 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "ICS")), subtitle = "ICS", icon = icon("user"),
-                                  color = "navy")}) 
-    }
-    
     # if (country == "Tanzania" && study == "Optimisation"){
     #   output$opt_chk_support <- renderUI({
     #     checkboxGroupInput(inputId = "opt_support",
@@ -3226,6 +3206,51 @@ parentapp_shiny <- function(country, study){
       return(plhdata_checkgroup)
     })
     
+    last_sync <- reactive({
+      if (country == "Tanzania"){
+        time_diff <- difftime(lubridate::now(tzone = "UTC"), as.POSIXct(selected_data_dem()$updatedAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"), units = "hours")
+      return(time_diff)
+      }
+    })
+    
+    #SUMMARY STATS HEADER displays (same for all tabs)
+    #if (country == "Tanzania"){
+      output$myvaluebox1 <- shinydashboard::renderValueBox({
+        shinydashboard::valueBox(length(last_sync()[last_sync() <= 7*24]), subtitle = "synced in last 7 days", icon = icon("user"),
+                                 color = "green")})
+      output$myvaluebox2 <- shinydashboard::renderValueBox({
+        shinydashboard::valueBox(length(last_sync()[last_sync() <= 14*24]), subtitle = "synced in last 14 days", icon = icon("user"),
+                                 color = "yellow")})
+      output$myvaluebox3 <- shinydashboard::renderValueBox({
+        shinydashboard::valueBox(length(last_sync()[last_sync() <= 30*24]), subtitle = "synced in last 30 days", icon = icon("user"),
+                                 color = "purple")})
+      output$myvaluebox4 <- shinydashboard::renderValueBox({
+        shinydashboard::valueBox(length(last_sync()[last_sync() <= 60*24]), subtitle = "synced in last 60 days", icon = icon("user"),
+                                 color = "orange")})
+  #   } else {
+  #     output$myvaluebox1 <- shinydashboard::renderValueBox({
+  #       shinydashboard::valueBox(nrow(plhdata_org_clean), subtitle = "Enrolled", icon = icon("user"),
+  #                                color = "aqua")})
+  #     output$myvaluebox2 <- shinydashboard::renderValueBox({
+  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Amathuba")), subtitle = "Amathuba", icon = icon("user"),
+  #                                 color = "navy")})
+  #     output$myvaluebox3 <- shinydashboard::renderValueBox({
+  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Dlalanathi")), subtitle = "Dlalanathi", icon = icon("user"),
+  #                                 color = "navy")})
+  #     output$myvaluebox4 <- shinydashboard::renderValueBox({
+  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Joy")), subtitle = "Joy", icon = icon("user"),
+  #                                 color = "navy")})
+  #     output$myvaluebox5 <- shinydashboard::renderValueBox({
+  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Nontobeko")), subtitle = "Nontobeko", icon = icon("user"),
+  #                                 color = "navy")})
+  #   }
+  #   if (country == "all"){
+  #     output$myvaluebox6 <- shinydashboard::renderValueBox({
+  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "ICS")), subtitle = "ICS", icon = icon("user"),
+  #                                 color = "navy")}) 
+  #   }
+  # }
+    
     opt_factors <- reactive({
       if (country == "Tanzania"){
         if (study == "Pilot"){
@@ -3253,27 +3278,36 @@ parentapp_shiny <- function(country, study){
         return(opt_factors)
       })
     
-    summary_table_filter <- function(summary_workshop){
+    summary_table_filter <- function(summary_workshop, add_totals = TRUE){
       if (country == "Tanzania"){
         if (study == "Pilot"){
           summary_workshop <- summary_workshop %>% 
             dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
+            mutate(PilotSite = as.character(PilotSite))
+          if (add_totals){
+            summary_workshop <- summary_workshop %>%
             janitor::adorn_totals("row")
+          }
         } else if (study == "Optimisation"){
           if (!is.null(input$opt_support)){
             summary_workshop <- summary_workshop %>% 
-              dplyr::filter(Support %in% c(selected_data_dem()$Support))
+              dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
+              mutate(Support = as.character(Support))
           }
           if (!is.null(input$opt_skin)){
             summary_workshop <- summary_workshop %>% 
-              dplyr::filter(Skin %in% c(selected_data_dem()$Skin))
+              dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
+              mutate(Skin = as.character(Skin))
           }
           if (!is.null(input$opt_diglit)){
             summary_workshop <- summary_workshop %>% 
-              dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`))
+              dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
+              mutate(`Digital Literacy` = as.character(`Digital Literacy`))
           }
-          summary_workshop <- summary_workshop %>% 
-            janitor::adorn_totals("row")
+          if (add_totals){
+            summary_workshop <- summary_workshop %>%
+              janitor::adorn_totals("row")
+          }
         } else {
           summary_workshop <- summary_workshop %>% 
             dplyr::filter(Org %in% unique(selected_data_dem()$Org))
@@ -3292,22 +3326,26 @@ parentapp_shiny <- function(country, study){
           summary_table <- summary_table %>% 
             purrr::map(.f =~.x %>%
                          dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
+                         mutate(PilotSite = as.character(PilotSite)) %>%
                          janitor::adorn_totals("row"))
         } else if (study == "Optimisation"){
           if (!is.null(input$opt_support)){
             summary_table <- summary_table %>% 
               purrr::map(.f =~.x %>%
-                           dplyr::filter(Support %in% c(selected_data_dem()$Support)))
+                           dplyr::filter(Support %in% c(selected_data_dem()$Support))%>%
+                           mutate(Support = as.character(Support)))
           }
           if (!is.null(input$opt_skin)){
             summary_table <- summary_table %>% 
               purrr::map(.f =~.x %>%
-                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)))
+                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin))%>%
+                           mutate(Skin = as.character(Skin)))
           }
           if (!is.null(input$opt_diglit)){
             summary_table <- summary_table %>% 
               purrr::map(.f =~.x %>%
-                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)))
+                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`))%>%
+                           mutate(`Digital Literacy` = as.character(`Digital Literacy`)))
           }
           summary_table <- summary_table %>% 
             purrr::map(.f =~.x %>%
@@ -3331,11 +3369,10 @@ parentapp_shiny <- function(country, study){
     })
     
     table_app_launch <- reactive({}) 
-    plot_app_launch  <- reactive({
-      first_app_plot <- ggplot(data = selected_data_dem(), aes(x = rp.contact.field.first_app_open)) +
+    plot_app_launch  <- reactive({ # last sync
+      ggplot(data = selected_data_dem(), aes(x = as.POSIXct(updatedAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"))) +
         geom_freqpoly() +
-        labs(x = "Date app first opened", y = "Count")
-      first_app_plot
+        labs(x = "Last sync (updatedAt)", y = "Count")
     }) 
     output$table_app_launch <- shiny::renderTable({(table_app_launch())}, striped = TRUE)
     output$plot_app_launch <- renderPlotly({plot_app_launch()})
@@ -3483,7 +3520,30 @@ parentapp_shiny <- function(country, study){
                                                      replace_after = "_completion_level",
                                                      summaries = "mean",
                                                      factors = opt_factors())
-      summary_table_filter(summary_mean_completion_level)
+      summary_mean_completion_level <- summary_table_filter(summary_mean_completion_level, add_totals = FALSE)
+      
+      means_total <- NULL
+      for (i in 1:length(summary_mean_completion_level)){
+        if(is.numeric(summary_mean_completion_level[[i]])){
+          means_total[i] <- round(mean(summary_mean_completion_level[[i]], na.rm = TRUE), 1)
+        } else {
+          means_total[i] <- NA
+        }
+      }
+      means_total <- data.frame(t(plyr::ldply(means_total)))
+      names(means_total) <- names(summary_mean_completion_level)
+      j <- 1
+      for (i in 1:length(means_total)){
+        if (is.na(means_total[[i]])){
+          if (j == 1) {
+            means_total[[i]][length(means_total[[i]])] <- "Total"
+            j <- j + 1
+          } else {
+            means_total[[i]][length(means_total[[i]])] <- "-"
+          }
+        }
+      }
+      rbind(summary_mean_completion_level, means_total)
     }) 
     
     plot_ws_totals  <- reactive({
@@ -4856,18 +4916,52 @@ parentapp_shiny <- function(country, study){
     output$table_appopen_celebration <- shiny::renderTable({(table_appopen_celebration())}, striped = TRUE)
     output$plot_appopen_celebration <- renderPlotly({plot_appopen_celebration()})
     
-    # Push notifications tab 4.2
-    table_pushn_totals <- reactive({pn_summary_count }) 
-    plot_pushn_totals <- reactive({}) 
-    output$table_pushn_totals <- shiny::renderTable({(table_pushn_totals())}, striped = TRUE)
-    output$plot_pushn_totals <- renderPlotly({plot_pushn_totals()})
+    nf_data_join <- reactive({
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          plhorg_nf <- selected_data_dem() %>%
+            dplyr::select(c("app_user_id", "Support", "Skin", "Digital Literacy"))
+        } else {
+          plhorg_nf <- selected_data_dem() %>%
+            dplyr::select(c("app_user_id", "PilotSite"))
+        }
+      }
+      # link nf data to user data by app_user_id
+      # use inner_join: remove from nf anyone not in plhdata_org
+      inner_join(nf_data, plhorg_nf)
+    })
     
-    # table_pushn_mean <- reactive({
-    # })
-    # plot_pushn_mean <- reactive({
-    # })
-    # output$table_pushn_mean <- shiny::renderTable({(table_pushn_mean())}, striped = TRUE)
-    # output$plot_pushn_mean <- renderPlotly({plot_pushn_mean()})
+    # Push notifications tab 4.2
+    table_pushn_totals <- reactive({notification_summary(nf_data_join(), factors = opt_factors()) %>%
+        mutate(`Notifications responded to` = paste0(round(replied / received * 100, 1), "% (", replied, "/", received, ")")) %>%
+        dplyr::select(-c("replied", "received"))}) 
+    output$table_pushn_totals <- shiny::renderTable({(table_pushn_totals())}, striped = TRUE)
+    
+    table_pushn_mean <- reactive({
+      notification_summary(nf_data_join(), factors = c(opt_factors(), "campaign_id")) %>%
+        mutate(`Notifications responded to` = paste0(round(replied / received * 100, 1), "% (", replied, "/", received, ")")) %>%
+        dplyr::select(-c("replied", "received"))
+      })
+    plot_pushn_mean <- reactive({
+      notif <- notification_summary(nf_data_join(), factors = c(opt_factors(), "campaign_id")) %>%
+        mutate(perc_received = replied/received)
+      
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          notif <- notif %>%
+            tidyr::unite(col = "Org", opt_factors())
+        } else {
+          notif <- notif %>% mutate(Org = opt_factors())
+        }
+      }
+      plot <- ggplot(notif, aes(x = campaign_id, y = perc_received, fill = Org))
+      plot + geom_bar(stat = "identity", position = "dodge") +
+        scale_x_discrete(guide = guide_axis(angle = 90)) +
+        viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "Campaign ID", y = "Percentage responded")
+    })
+    output$table_pushn_mean <- shiny::renderTable({(table_pushn_mean())}, striped = TRUE)
+    output$plot_pushn_mean <- renderPlotly({plot_pushn_mean()})
     
     
     # Home Practice tab 4.3
@@ -4908,7 +5002,7 @@ parentapp_shiny <- function(country, study){
     plot_hp_started  <- reactive({
       relative_hp_started <- imap(relative_hp_started(), ~.x %>%
                                     rename(value = true))
-      hp_mood_plot(relative_hp_started, opt_factors(), manipulation = "ldply", limits =  c("Praise", "Instruct", "Stress hp breathe done", "Stress hp talk done", "Money", "Rules", "Consequence", "Solve", "Safe", "Crisis"),
+      hp_mood_plot(relative_hp_started, opt_factors(), manipulation = "ldply", limits =  c("Praise", "Instruct", "Stress", "Money", "Rules", "Consequence", "Solve", "Safe", "Crisis"),
                    xlab = "Workshop week")
     }) 
     output$table_hp_started <- shiny::renderTable({(table_hp_started())}, striped = TRUE)
@@ -4942,9 +5036,20 @@ parentapp_shiny <- function(country, study){
       return(relative_hp_done)   
     })
     table_perc_long <- reactive({
+      relative_hp_done_stress <- summary_table_base_build(opt_factors = opt_factors(),
+                                                               data = selected_data_dem(),
+                                                               columns_to_summarise = "rp.contact.field.w_stress_hp_done",
+                                                               replace = "rp.contact.field.w_",
+                                                               replace_after = "_hp_done")
+      relative_hp_done_stress <- relative_hp_done_stress %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
+      relative_hp_done_stress <- mult_summary_table_filter(relative_hp_done_stress)
+      
+      relative_hp_done_stress <- plyr::ldply(relative_hp_done_stress)
       hp_started_long <- plyr::ldply(relative_hp_started())
       hp_done_long <- plyr::ldply(relative_hp_done())
       
+      hp_done_long <- full_join(relative_hp_done_stress, hp_done_long)
       table_perc_long <- full_join(hp_started_long, hp_done_long) %>%
         mutate(perc_complete = yes/true)
       return(table_perc_long)
@@ -4956,7 +5061,7 @@ parentapp_shiny <- function(country, study){
     })
     plot_hp_done  <- reactive({
       summary_mean_completion_level_long <- table_perc_long() %>% rename(value = perc_complete) %>% rename(name = `.id`)
-      hp_mood_plot(summary_mean_completion_level_long, opt_factors(), manipulation = "none", limits = c("1on1", "Praise", "Instruct", "Stress hp breathe done", "Stress hp talk done", "Money", "Rules", "Consequence", "Solve", "Safe", "Crisis", "Celebrate"),
+      hp_mood_plot(summary_mean_completion_level_long, opt_factors(), manipulation = "none", limits = c("1on1", "Praise", "Instruct", "Stress", "Money", "Rules", "Consequence", "Solve", "Safe", "Crisis"),
                    xlab = "Workshop week")
     }) 
     output$table_hp_done <- shiny::renderTable({(table_hp_done())}, striped = TRUE)
@@ -5306,7 +5411,11 @@ parentapp_shiny <- function(country, study){
     
     #FIFTH Tab Surveys
     summary_table_survey_past_week <- reactive({
-      summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_initial_1")
+      #if (study == "Optimisation"){ # and for TZ
+        summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_initial_1")
+      #} else {
+      #  summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_past_week")
+      #}
       summary_table_baseline_build %>%
         purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
       #mult_summary_table_filter(summary_table_baseline_build)
@@ -5506,6 +5615,7 @@ parentapp_shiny <- function(country, study){
     ##
     summary_table_survey_last_week <- reactive({
       summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_final_1")
+      # if pilot, this should be "survey_final", but then the boxes need to change too. 
       summary_table_baseline_build %>%
         purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
       #mult_summary_table_filter(summary_table_baseline_build)

@@ -496,7 +496,14 @@ top_boxes <- function(country){
       shinydashboard::valueBoxOutput("myvaluebox2", width=2),
       shinydashboard::valueBoxOutput("myvaluebox3", width=2),
       shinydashboard::valueBoxOutput("myvaluebox4", width=2),
-      shinydashboard::valueBoxOutput("myvaluebox5", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox5", width=2)
+    )
+  } else if (country == "Tanzania"){
+    fluidRow(
+      shinydashboard::valueBoxOutput("myvaluebox1", width=3), 
+      shinydashboard::valueBoxOutput("myvaluebox2", width=3),
+      shinydashboard::valueBoxOutput("myvaluebox3", width=3),
+      shinydashboard::valueBoxOutput("myvaluebox4", width=3)
     )
   }
 }
@@ -540,9 +547,14 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("sad
   if (manipulation == "ldply"){
     plot_data <- plyr::ldply(data, `.id` = "name")
   } else if (manipulation == "longer"){
-    plot_data <- data %>%
-      dplyr::select(-Total) %>%
-      pivot_longer(cols = !factors)
+    if ("Total" %in% names(data)){
+      plot_data <- data %>%
+        dplyr::select(-Total) %>%
+        pivot_longer(cols = !factors)
+    } else {
+      plot_data <- data %>%
+        pivot_longer(cols = !factors)
+    }
   } else {
     plot_data <- data
   }
@@ -616,4 +628,16 @@ survey_table <- function(data = plhdata_org_clean, metadata = r_variables_names,
         id = .x)
   names(summary_table_wider) <- unique(summary_table$display_name)
   return(summary_table_wider)
+}
+
+notification_summary <- function(data = nf_data, factors){
+  numerator <- data %>%
+    filter(action_id == "tap") %>%
+    group_by(across(c({{ factors }})), .drop = FALSE) %>%
+    summarise(replied = n())
+  denominator <- data %>%
+    group_by(across(c({{ factors }})), .drop = FALSE) %>%
+    summarise(received = n())
+  notifications_perc <- full_join(numerator, denominator)
+  return(notifications_perc)
 }

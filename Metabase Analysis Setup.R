@@ -55,7 +55,8 @@ plhdata_org <- plhdata_org %>%
 valid_ids <- UIC_Tracker_Tanzania %>%
   filter(complete.cases(YourParentAppCode))  %>%
   filter(Study == "Optimisation") %>%
-  select(c(YourParentAppCode, opt_cluster, experimental_condition))
+  select(c(YourParentAppCode, opt_cluster, experimental_condition,
+           OnboardingDate))
 
 # user ID "75bbbdc21741f155" has an extra b in one source so it is important we still do fuzzy join
 plhdata_org_opt_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
@@ -65,7 +66,7 @@ plhdata_org <- plhdata_org %>%
   mutate(valid_ics_1 = ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE)) %>%
   mutate(organisation_full = ifelse(valid_ics_1, "Optimisation Study", organisation_full))
 
-plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>% dplyr::select(c(app_user_id, opt_cluster, experimental_condition))
+plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>% dplyr::select(c(app_user_id, opt_cluster, experimental_condition, OnboardingDate))
 plhdata_org <- full_join(plhdata_org, plhdata_org_opt_fuzzy_opt_cluster, by = c("app_user_id" = "app_user_id"))
 plhdata_org <- plhdata_org %>%
   mutate(Cluster = opt_cluster,
@@ -131,11 +132,12 @@ plhdata_org_clean <- plhdata_org %>%
   mutate(Org = factor(Org))
 
 plhdata_org_clean <- plhdata_org_clean %>%
+  dplyr::mutate(rp.contact.field.user_age = as.numeric(rp.contact.field.user_age)) %>%
   dplyr::mutate(rp.contact.field.user_age = replace(rp.contact.field.user_age,
                                                     rp.contact.field.user_age %in% c(-29, 2, 1794, 5655),
                                                     NA)) %>%
   dplyr::mutate(rp.contact.field.user_age = ifelse(rp.contact.field.user_age > 1960,
-                                                   lubridate::year(Sys.Date()) - rp.contact.field.user_age,
+                                                   2023 - rp.contact.field.user_age, #todo: fix more pernamently
                                                    ifelse(rp.contact.field.user_age < 0, NA, rp.contact.field.user_age)))
 
 
@@ -472,7 +474,6 @@ data_app_opens_neat <- c("Total", "Welcome and Self care(1)", "One-on-one time(2
                          "Managing Stress(5)", "Family Budget(6)","Rules(7)", "Calm Consequences(8)",  
                          "Problem Solving(9)", "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
 
-
 # Tab ?? ----------
 #Define workshop week order
 week_order <- c("Self care", "1on1", "Praise", "Instruct", "Stress", "Money", "Rules", "Consequence", "Solve", "Safe",
@@ -581,7 +582,14 @@ data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.f
                      "rp.contact.field.w_consequence_hp_review_started",  "rp.contact.field.w_solve_hp_review_started",  "rp.contact.field.w_safe_hp_review_started",
                      "rp.contact.field.w_crisis_hp_review_started")
 
-data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_stress_hp_breathe_done", "rp.contact.field.w_stress_hp_talk_done",
+plhdata_org_clean <- plhdata_org_clean %>%
+  dplyr::mutate(rp.contact.field.w_stress_hp_done = ifelse(rp.contact.field.w_stress_hp_talk_done == "yes" & 
+                                            rp.contact.field.w_stress_hp_breathe_done == "yes",
+                                          "yes",
+                                          "no"))
+
+data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done",
+                  "rp.contact.field.w_stress_hp_talk_done", "rp.contact.field.w_stress_hp_breathe_done",
                   "rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
                   "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
 
@@ -792,33 +800,9 @@ data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey
 # download push notification data
 # TODO: add fuzzy join to get_nf_data function
 nf_data <- get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
-# 
-
-
-# # what variables do we want in the nf data - org, sex, - add a few in.
-data_baseline_nf <-
-  c(
-    "Org",
-    "rp.contact.field.survey_welcome_completed",
-    "rp.contact.field.user_gender",
-    "rp.contact.field.user_age",
-    "rp.contact.field.household_adults",
-    "rp.contact.field.household_teens",
-    "rp.contact.field.household_babies",
-    "rp.contact.field.household_children",
-    "rp.contact.field._app_language",
-    "app_version",
-    "rp.contact.field.workshop_path"
-  )
-plhdata_org_clean_select <- plhdata_org_clean %>%
-  dplyr::select(c(app_user_id, data_baseline_nf))
-
+nf_data$campaign_id <- naming_conventions(nf_data$campaign_id, replace = "nf_")
 
 # Notification Data ---------------------------
-# link nf data to user data by app_user_id
-# use inner_join: remove from nf anyone not in plhdata_org
-nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
-
 #pn_summary_count <- nf_data_join %>%
 #  group_by(app_user_id, Org, rp.contact.field._app_language) %>%
 #  summarise(

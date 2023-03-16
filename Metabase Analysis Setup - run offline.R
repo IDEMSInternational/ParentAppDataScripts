@@ -48,7 +48,7 @@ for (v in c("v0.16.4")){ # and other versions?
 # rp.contact.field.survey_welcome_a_3_final, rp.contact.field.survey_welcome_a_4_final, rp.contact.field.survey_welcome_a_6_final, rp.contact.field.survey_welcome_a_7_part_1_final
 # any after a7p1?
 
-# Next steps here:
+# Next steps here
 # did the question change for any of these. Need to check.
 # p7a2, a3, 8, 9 - what were those questions before? what are they now? Check and update.
 # what to do where the question changed?
@@ -63,8 +63,6 @@ plhdata_org_clean <- plhdata_org_clean %>%
          rp.contact.field.survey_final_ppp = ifelse(!is.na(rp.contact.field.survey_final_ppp), rp.contact.field.survey_final_ppp, rp.contact.field.survey_final_a_2_final),
          rp.contact.field.survey_final_fin_s = ifelse(!is.na(rp.contact.field.survey_final_fin_s), rp.contact.field.survey_final_fin_s, rp.contact.field.survey_final_a_5_part_1_final),
          rp.contact.field.survey_final_fin_fi = ifelse(!is.na(rp.contact.field.survey_final_fin_fi), rp.contact.field.survey_final_fin_fi, rp.contact.field.survey_final_a_5_part_2_final))
-
-
 
 # todo: following not working
 #plhdata_org_clean <- plhdata_org_clean %>%
@@ -426,8 +424,14 @@ data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.f
                      "rp.contact.field.w_consequence_hp_review_started",  "rp.contact.field.w_solve_hp_review_started",  "rp.contact.field.w_safe_hp_review_started",
                      "rp.contact.field.w_crisis_hp_review_started")
 
-data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_stress_hp_breathe_done", "rp.contact.field.w_stress_hp_talk_done",
-                  "rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
+plhdata_org_clean <- plhdata_org_clean %>%
+  dplyr::mutate(rp.contact.field.w_stress_hp_done = ifelse(rp.contact.field.w_stress_hp_talk_done == "yes" & 
+                                                             rp.contact.field.w_stress_hp_breathe_done == "yes",
+                                                           "yes",
+                                                           "no"))
+
+data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_stress_hp_talk_done",
+                  "rp.contact.field.w_stress_hp_breathe_done", "rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
                   "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
 
 # NB No mood 'review' for week 3 home practice (praise)
@@ -456,13 +460,13 @@ data_hp_chall <- c("hp_list_challenges_1on1", "hp_list_challenges_instruct", "hp
                    "hp_list_challenges_consequence", "hp_list_challenges_solve", "hp_list_challenges_safe", "hp_list_challenges_crisis")
 
 # overview table for home practice review started: number of users per home practice who reached first screen, i.e. only "true" not "false" or NA
-data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
-summary_table_hp_started <- multiple_table_output(plhdata_org_clean, data_hp_started) 
-names(summary_table_hp_started) <- data_hp_started_neat
-
-table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
-if (!"true" %in% colnames(table_hp_started_long)) { table_hp_started_long$true <- 0 }
-table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_from = .id, values_from = c(true))
+# data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
+# summary_table_hp_started <- multiple_table_output(plhdata_org_clean, data_hp_started) 
+# names(summary_table_hp_started) <- data_hp_started_neat
+# 
+# table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
+# if (!"true" %in% colnames(table_hp_started_long)) { table_hp_started_long$true <- 0 }
+# table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_from = .id, values_from = c(true))
 #how to call in Rshiny: summary_table_hp_started$`1on1 hp` etc
 
 
@@ -640,29 +644,8 @@ data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey
 # 
 nf_data <- nf_data1 #get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
 
-# # what variables do we want in the nf data - org, sex, - add a few in.
-data_baseline_nf <-
-  c(
-    "Org",
-    "rp.contact.field.survey_welcome_completed",
-    "rp.contact.field.user_gender",
-    "rp.contact.field.user_age",
-    "rp.contact.field.household_adults",
-    "rp.contact.field.household_teens",
-    "rp.contact.field.household_babies",
-    "rp.contact.field.household_children",
-    "rp.contact.field._app_language",
-    "app_version",
-    "rp.contact.field.workshop_path"
-  )
-plhdata_org_clean_select <- plhdata_org_clean %>%
-  dplyr::select(c(app_user_id, data_baseline_nf))
+nf_data$campaign_id <- naming_conventions(nf_data$campaign_id, replace = "nf_")
 
-
-# Notification Data ---------------------------
-# link nf data to user data by app_user_id
-# use inner_join: remove from nf anyone not in plhdata_org
-nf_data_join <- inner_join(nf_data, plhdata_org_clean_select)
 
 #pn_summary_count <- nf_data_join %>%
 #  group_by(app_user_id, Org, rp.contact.field._app_language) %>%

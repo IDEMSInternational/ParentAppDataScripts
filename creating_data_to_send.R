@@ -2,11 +2,14 @@
 
 # taken from Metabase Analysis Setup.R
 country <- "Tanzania"
-study <- "Optimisation"
+study <- "Pilot"
 ### extract data ----------------------------------------------------------------------
 # to get user data
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
 #plhdata_org <- plhdata_org1
+
+nf_data <- get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
+#nf_data <- nf_data1
 ## Data Cleaning - User Data ## --------------------------------------------------------
 ## Tidy up "Organisation" Variable:
 # replace missing values in Organisation and rp.contact.field.organisation_code by Miss so that it is a factor level
@@ -25,10 +28,21 @@ plhdata_org <- plhdata_org %>%
                                     as.character(organisation_full)))
 
 # Create Optimisation Group Data for Optimisation Study - Tanzania
+# add in start dates for clusters
+UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>% 
+  mutate(whatsapp_start_date = if_else(opt_cluster == 1, as.Date("2022-11-27"),
+                                       if_else(opt_cluster == 3, as.Date("2022-12-17"),
+                                               if_else(opt_cluster == 4, as.Date("2023-01-10"),
+                                                       if_else(opt_cluster == 6, as.Date("2022-11-24"),
+                                                               if_else(opt_cluster == 7, as.Date("2022-11-26"),
+                                                                       if_else(opt_cluster == 11, as.Date("2023-01-10"),
+                                                                               if_else(opt_cluster == 13, as.Date("2022-12-24"),
+                                                                                       if_else(opt_cluster == 14, as.Date("2022-12-24"),
+                                                                                               as.Date(NA))))))))))
 valid_ids <- UIC_Tracker_Tanzania %>%
   filter(complete.cases(YourParentAppCode))  %>%
   filter(Study == "Optimisation") %>%
-  select(c(YourParentAppCode, opt_cluster, experimental_condition))
+  select(c(YourParentAppCode, opt_cluster, experimental_condition, OnboardingDate, whatsapp_start_date, opt_ward))
 
 plhdata_org_opt_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 # get the app user IDs where we have a code from the optimisation group.
@@ -37,17 +51,17 @@ plhdata_org <- plhdata_org %>%
   mutate(valid_ics_1 = ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE)) %>%
   mutate(organisation_full = ifelse(valid_ics_1, "Optimisation Study", organisation_full))
 
-plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>% dplyr::select(c(app_user_id, opt_cluster, experimental_condition))
+plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>%
+  dplyr::select(c(app_user_id, opt_cluster, experimental_condition, OnboardingDate, whatsapp_start_date, opt_ward))
 plhdata_org <- full_join(plhdata_org, plhdata_org_opt_fuzzy_opt_cluster, by = c("app_user_id" = "app_user_id"))
 
 # Create Pilot Group Data for Pilot Study - Tanzania
 valid_ids <- UIC_Tracker_Tanzania %>%
   filter(complete.cases(YourParentAppCode))  %>%
   filter(Study == "Pilot") %>%
-  select(YourParentAppCode)
+  select(c(YourParentAppCode, PilotSite))
 
 plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
-
 valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
 plhdata_org <- plhdata_org %>% 
   mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
@@ -58,17 +72,24 @@ plhdata_org <- plhdata_org %>%
                                                        "48621962b0612b7c", "d5faa072c966ea8d",
                                                        "df1088af5f3d4c87", "5b2ba92c32c6a3e2",
                                                        "f3aff268263b1d62", "a05a0fe6cd3cb52d",
-                                                       "7f56c4c0a8a2f36f"),
+                                                       "7f56c4c0a8a2f36f", "fab4ae58ac03f920"),
                                     "ICS",
                                     as.character(organisation_full)))
 
 # add in new row containing ICS, and app_user_id  -  08/09/22
 #fab4ne58ac03f920
 #oe5824bd19aa8c4
-plhdata_org[(nrow(plhdata_org)+1):(nrow(plhdata_org)+2),] <- NA
-plhdata_org$app_user_id[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("fab4ne58ac03f920", "oe5824bd19aa8c4")
-plhdata_org$organisation_full[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("ICS", "ICS")
-plhdata_org$app_version[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("0.0", "0.0")
+# plhdata_org[(nrow(plhdata_org)+1):(nrow(plhdata_org)+2),] <- NA
+# plhdata_org$app_user_id[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("fab4ne58ac03f920", "oe5824bd19aa8c4")
+# plhdata_org$organisation_full[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("ICS", "ICS")
+# plhdata_org$app_version[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("0.0", "0.0")
+
+# get unique cases only
+#View(plhdata_org_ics_fuzzy %>% filter(app_user_id == "a60b902a430aaec2"))
+plhdata_org_ics_fuzzy <- unique(plhdata_org_ics_fuzzy %>% dplyr::select(-c("YourParentAppCode")))
+plhdata_org_pilot_site <- plhdata_org_ics_fuzzy %>% dplyr::select(c(app_user_id, PilotSite)) %>% filter(!is.na(PilotSite))
+nrow((plhdata_org_pilot_site))
+plhdata_org <- full_join(plhdata_org, plhdata_org_pilot_site, by = c("app_user_id" = "app_user_id"))
 
 # TO CHECK:
 #plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
@@ -250,7 +271,6 @@ if (study == "Optimisation"){
                                                     rp.contact.field.w_crisis_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_crisis_completion_level.mod, rp.contact.field.w_crisis_completion_level),
                                                     rp.contact.field.w_celebrate_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_celebrate_completion_level.mod, rp.contact.field.w_celebrate_completion_level))
 }
-
 #head(plhdata_org_clean$rp.contact.field._app_skin)
 #head(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
 #head(xx$rp.contact.field.w_self_care_completion_level)
@@ -281,28 +301,42 @@ plhdata_org_clean$rp.contact.field.first_app_open <- as.Date(plhdata_org_clean$r
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(across(starts_with("rp.contact.field.app_launch_count"), ~as.numeric(.)))
 
-
+#plhdata_org_clean <- plhdata_org_clean_ready
 # Info wanted ----------------------------------------------------------------
-
 # Baseline Survey
 data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
                           "rp.contact.field.user_age", "rp.contact.field.household_adults",
                           "rp.contact.field.household_teens", "rp.contact.field.household_babies",
                           "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.workshop_path")
 r_variables_names <- readxl::read_excel("r_variables_names.xlsx")
-data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey_initial_1")
+if (study == "Optimisation"){
+  data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey_initial_1")
+} else {
+  data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey_past_week")
+}
 data_welcome_survey <- data_survey_past_week_all$metabase_ID
 data_welcome_survey_names <- data_survey_past_week_all$display_name
 
-plhdata_org_clean_1 <- plhdata_org_clean %>% dplyr::select(c(id, app_user_id, createdAt, opt_cluster, experimental_condition,
-                                                           data_baseline_survey, data_welcome_survey))
-names(plhdata_org_clean_1) <- c("ID", "App user ID", "Created at", "Optimisation Cluster", "Experimental Condition",
-                              "Welcome survey", "Gender", "Age", "Household adults", "Household teens", "Household babies",
-                              "Household children", "App language", "App version", "Workshop path",
-                              data_welcome_survey_names)
+if (study == "Optimisation"){
+  plhdata_org_clean_1 <- plhdata_org_clean %>% dplyr::select(c(id, app_user_id, createdAt, opt_cluster, experimental_condition, opt_ward,
+                                                               updatedAt,
+                                                               data_baseline_survey, data_welcome_survey))
+  names(plhdata_org_clean_1) <- c("ID", "App user ID", "Created at", "Optimisation Cluster", "Experimental Condition", "Ward", "Last sync",
+                                  "Welcome survey", "Gender", "Age", "Household adults", "Household teens", "Household babies",
+                                  "Household children", "App language", "App version", "Workshop path",
+                                  data_welcome_survey_names)
+} else {
+  plhdata_org_clean_1 <- plhdata_org_clean %>% dplyr::select(c(id, app_user_id, createdAt, PilotSite,
+                                                               data_baseline_survey, data_welcome_survey))
+  names(plhdata_org_clean_1) <- c("ID", "App user ID", "Created at", "PilotSite",
+                                  "Welcome survey", "Gender", "Age", "Household adults", "Household teens", "Household babies",
+                                  "Household children", "App language", "App version", "Workshop path",
+                                  data_welcome_survey_names)
+}
 
-plhdata_org_clean_1 <- plhdata_org_clean_1 %>% arrange(`Created at`)
-plhdata_org_clean_select <- plhdata_org_clean_1[1:100,]
+plhdata_org_welcome <- plhdata_org_clean_1
+# plhdata_org_clean_1 <- plhdata_org_clean_1 %>% arrange(`Created at`)
+# plhdata_org_clean_select <- plhdata_org_clean_1[1:100,]
 
 #writexl::write_xlsx(plhdata_org_clean_select, path = "TZ_Optimisation_100_20221207.xlsx")
 
@@ -318,33 +352,38 @@ data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.
 completion_vars <- c("Self Care Level", "One-on-one Time Level", "Praise Level", "Positive Instructions Level", "Managing Stress Level", "Family Budgets Level", "RulesLevel", "Calm Consequences Level", "Problem Solving Level", "Teen Safety Level", "Dealing with Crisis Level", "Celebration & Next Steps Level")
 
 plhdata_org_clean_CL <- plhdata_org_clean %>%
-  dplyr::mutate(across(data_completion_level, ~ifelse(. == 100, "true", "false"))) %>%
+  dplyr::mutate(across(data_completion_level, ~ifelse(. == 100, TRUE, FALSE))) %>%
   dplyr::select(app_user_id, data_completion_level)
 colnames(plhdata_org_clean_CL) <- gsub("_completion_level", "_completed", colnames(plhdata_org_clean_CL))
 data_completion_vars <- colnames(plhdata_org_clean_CL)[-1]
 completion_total_vars <- c("Self Care Complete", "One-on-one Time Complete", "Praise Complete", "Positive Instructions Complete", "Managing Stress Complete", "Family Budgets Complete", "RulesComplete", "Calm Consequences Complete", "Problem Solving Complete", "Teen Safety Complete", "Dealing with Crisis Complete", "Celebration & Next Steps Complete")
 
-plhdata_org_clean_CL <- full_join(plhdata_org_clean, plhdata_org_clean_CL, by = "app_user_id", suffix = c("", ".mod"))
+plhdata_org_clean_1 <- plhdata_org_clean %>%
+  dplyr::mutate(across(data_completion_vars, ~ifelse(. == "true", TRUE, FALSE))) %>%
+  dplyr::select(c(app_user_id, rp.contact.field._app_skin, data_completion_vars, data_completion_level))
+plhdata_org_clean_CL <- full_join(plhdata_org_clean_1, plhdata_org_clean_CL, by = "app_user_id", suffix = c("", ".mod"))
+
+if (study == "Pilot"){
+  plhdata_org_clean_CL <- plhdata_org_clean_CL %>% mutate(rp.contact.field._app_skin = ifelse(is.na(rp.contact.field._app_skin), "workshop", rp.contact.field._app_skin)) 
+}
 plhdata_org_clean_CL <- plhdata_org_clean_CL %>%
-  mutate(rp.contact.field.w_self_care_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_self_care_completed.mod, rp.contact.field.w_self_care_completed),
-                                                    rp.contact.field.w_1on1_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_1on1_completed.mod, rp.contact.field.w_1on1_completed),
-                                                    rp.contact.field.w_praise_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_praise_completed.mod, rp.contact.field.w_praise_completed),
-                                                    rp.contact.field.w_instruct_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_instruct_completed.mod, rp.contact.field.w_instruct_completed),
-                                                    rp.contact.field.w_stress_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_stress_completed.mod, rp.contact.field.w_stress_completed),
-                                                    rp.contact.field.w_money_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_money_completed.mod, rp.contact.field.w_money_completed),
-                                                    rp.contact.field.w_rules_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_rules_completed.mod, rp.contact.field.w_rules_completed),
-                                                    rp.contact.field.w_consequence_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_consequence_completed.mod, rp.contact.field.w_consequence_completed),
-                                                    rp.contact.field.w_solve_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_solve_completed.mod, rp.contact.field.w_solve_completed),
-                                                    rp.contact.field.w_safe_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_safe_completed.mod, rp.contact.field.w_safe_completed),
-                                                    rp.contact.field.w_crisis_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_crisis_completed.mod, rp.contact.field.w_crisis_completed),
-                                                    rp.contact.field.w_celebrate_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_celebrate_completed.mod, rp.contact.field.w_celebrate_completed))
+  mutate(rp.contact.field.w_self_care_completed = if_else(rp.contact.field._app_skin == "modular", rp.contact.field.w_self_care_completed.mod, rp.contact.field.w_self_care_completed),
+         rp.contact.field.w_1on1_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_1on1_completed.mod, rp.contact.field.w_1on1_completed),
+         rp.contact.field.w_praise_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_praise_completed.mod, rp.contact.field.w_praise_completed),
+         rp.contact.field.w_instruct_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_instruct_completed.mod, rp.contact.field.w_instruct_completed),
+         rp.contact.field.w_stress_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_stress_completed.mod, rp.contact.field.w_stress_completed),
+         rp.contact.field.w_money_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_money_completed.mod, rp.contact.field.w_money_completed),
+         rp.contact.field.w_rules_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_rules_completed.mod, rp.contact.field.w_rules_completed),
+         rp.contact.field.w_consequence_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_consequence_completed.mod, rp.contact.field.w_consequence_completed),
+         rp.contact.field.w_solve_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_solve_completed.mod, rp.contact.field.w_solve_completed),
+         rp.contact.field.w_safe_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_safe_completed.mod, rp.contact.field.w_safe_completed),
+         rp.contact.field.w_crisis_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_crisis_completed.mod, rp.contact.field.w_crisis_completed),
+         rp.contact.field.w_celebrate_completed = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_celebrate_completed.mod, rp.contact.field.w_celebrate_completed))
 
 plhdata_org_clean_CL <- plhdata_org_clean_CL %>%
-  dplyr::select(c(id, app_user_id, createdAt, opt_cluster,
-                  experimental_condition, data_completion_level,
+  dplyr::select(c(app_user_id, data_completion_level,
                   data_completion_vars, rp.contact.field._app_skin))
-names(plhdata_org_clean_CL) <- c("ID", "App user ID", "Created at",
-                                "Optimisation Cluster", "Experimental Condition",
+names(plhdata_org_clean_CL) <- c("App user ID",
                                 completion_vars, completion_total_vars, "Skin_PA_var")
 
 
@@ -389,27 +428,51 @@ names(plhdata_org_clean_hp_mood) <- paste0("hp_mood_", naming_conventions(names(
 names(plhdata_org_clean_hp_mood)[[1]] <- c("App user ID")
 
 # Survey responses
-initial_survey_id <- (r_variables_names %>% filter(location_ID == "survey_initial_1"))$metabase_ID
-initial_survey_id_name <- (r_variables_names %>% filter(location_ID == "survey_initial_1"))$display_name
+if (study == "Optimisation"){
+  initial_survey_id <- (r_variables_names %>% filter(location_ID == "survey_initial_1"))$metabase_ID
+  initial_survey_id_name <- (r_variables_names %>% filter(location_ID == "survey_initial_1"))$display_name
+} else {
+  initial_survey_id <- (r_variables_names %>% filter(location_ID == "survey_past_week"))$metabase_ID
+  initial_survey_id_name <- (r_variables_names %>% filter(location_ID == "survey_past_week"))$display_name
+}
+
 plhdata_org_clean_initial_survey <- plhdata_org_clean %>%
   dplyr::select(app_user_id, initial_survey_id)
 names(plhdata_org_clean_initial_survey) <- c("App user ID", paste0("initial_survey_", initial_survey_id_name))
 
 # Survey responses
-final_survey_id <- (r_variables_names %>% filter(location_ID == "survey_final"))$metabase_ID
-final_survey_id_name <- (r_variables_names %>% filter(location_ID == "survey_final"))$display_name
+
+if (study == "Optimisation"){
+  final_survey_id <- (r_variables_names %>% filter(location_ID == "survey_final_1"))$metabase_ID
+  final_survey_id_name <- (r_variables_names %>% filter(location_ID == "survey_final_1"))$display_name
+} else {
+  final_survey_id <- (r_variables_names %>% filter(location_ID == "survey_final"))$metabase_ID
+  final_survey_id_name <- (r_variables_names %>% filter(location_ID == "survey_final"))$display_name
+}
+
 plhdata_org_clean_final_survey <- plhdata_org_clean %>%
   dplyr::select(app_user_id, final_survey_id)
 names(plhdata_org_clean_final_survey) <- c("App user ID", paste0("final_survey_", final_survey_id_name))
 
+# parent points
+plhdata_org_clean_pp <- plhdata_org_clean %>%
+  dplyr::select(app_user_id, data_habit_parent_points_all)
+names(plhdata_org_clean_pp) <- paste0("parent_point_", naming_conventions(names(plhdata_org_clean_pp),
+                                                                          replace = "rp.contact.field.parent_point_count_"))
+names(plhdata_org_clean_pp)[[1]] <- c("App user ID")
+
 # Bang 'em together -------------------------------------------
-plhdata_org_clean_all <- full_join(plhdata_org_clean_CL, plhdata_org_clean_survey, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_welcome, plhdata_org_clean_CL, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_survey, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_appopens, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_response, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_done, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_mood, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_initial_survey, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_final_survey, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_pp, by = "App user ID")
+
+plhdata_org_clean_all <- unique(plhdata_org_clean_all)
 
 plhdata_org_clean_all <- plhdata_org_clean_all %>%
   mutate(Support = ifelse(`Experimental Condition` < 5, "Self-guided", "WhatsApp"),
@@ -422,11 +485,37 @@ plhdata_org_clean_mis <- plhdata_org_clean_all %>%
            (Skin == "Workshop" & Skin_PA_var == "modular"))
 
 
-writexl::write_xlsx(plhdata_org_clean_all, path = "TZ_data_20230119.xlsx")
+
+# Notification Data -----------------------------------------------------------------
+nf_data <- nf_data %>% filter(app_user_id %in% plhdata_org_clean_all$`App user ID`)
+
+nf_data <- nf_data %>%
+  dplyr::select(c(`App user ID` = app_user_id, app_user_record_id, action_recorded_timestamp,
+                  action_id, sent_recorded_timestamp, schedule_timestamp,
+                  notification_id = `id...16`, campaign_id))
+
+#nf_data_wider <- nf_data %>% pivot_wider(id_cols = `App user ID`, names_from = app_user_record_id,
+#                                         values_from = action_recorded_timestamp)
+# app_user_record_id = which notification number
+# action_recorded_timestamp = time they did the actino (NA if no action)
+# action_id = what action (tap or NA)
+# sent_recorded_timestamp / schedule_timestamp = not sure the difference here, but, I would guess the latter is when the nf was scheduled for and the former is when it was sent
+# I can send the text and title, but it is in swahili!
+# notification_id = seems to be the week? Linked to campaign_id
+# campaign_id = I assume the nf ID (so linked to the text/title)
+
+#nf_data <- nf_data1
+
+writexl::write_xlsx(plhdata_org_clean_all, path = "pilot_data_20230310.xlsx")
+writexl::write_xlsx(nf_data, path = "pilot_nf_data_20230310.xlsx")
 
 
 names(plhdata_org_clean_all)
 
 View(plhdata_org_clean_all)
 
+
+
+
+plhdata_org_clean$rp.contact.field.
 

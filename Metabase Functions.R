@@ -442,7 +442,9 @@ checkbox_input <- function(inputId, country = country, study = study){
                                                         label = "Digital literacy",
                                                         c("On" = "On",
                                                           "Off" = "Off"),
-                                                        selected = c("On", "Off"))))))
+                                                        selected = c("On", "Off"))),
+                      actionButton("goButton", "Submit", class = "btn-success")
+                      )))
     } else {
     }
   } else if (country == "all") {

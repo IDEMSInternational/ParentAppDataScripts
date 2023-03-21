@@ -3177,34 +3177,41 @@ parentapp_shiny <- function(country, study){
     #   })
     # }
     
-    selected_data_dem <- reactive({
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          plhdata_checkgroup <- plhdata_org_clean %>%
-            dplyr::filter(PilotSite %in% c(input$OrgDem))
-        } else if (study == "Optimisation"){
-          plhdata_checkgroup <- plhdata_org_clean %>%
-            dplyr::filter(Cluster %in% c(input$opt_cluster))
-          if (!is.null(input$opt_support)) {
-            plhdata_checkgroup <- plhdata_checkgroup %>%
-              dplyr::filter(Support %in% c(input$opt_support))
-          }
-          if (!is.null(input$opt_skin)) {
-            plhdata_checkgroup <- plhdata_checkgroup %>%
-              dplyr::filter(Skin %in% c(input$opt_skin))
-          }
-          if (!is.null(input$opt_diglit)) {
-            plhdata_checkgroup <- plhdata_checkgroup %>%
-              dplyr::filter(`Digital Literacy` %in% c(input$opt_diglit))
+    if (country == "Tanzania" & study == "Optimisation"){
+      selected_data_dem <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+        plhdata_checkgroup <- plhdata_org_clean %>%
+          dplyr::filter(Cluster %in% c(input$opt_cluster))
+        if (!is.null(input$opt_support)) {
+          plhdata_checkgroup <- plhdata_checkgroup %>%
+            dplyr::filter(Support %in% c(input$opt_support))
+        }
+        if (!is.null(input$opt_skin)) {
+          plhdata_checkgroup <- plhdata_checkgroup %>%
+            dplyr::filter(Skin %in% c(input$opt_skin))
+        }
+        if (!is.null(input$opt_diglit)) {
+          plhdata_checkgroup <- plhdata_checkgroup %>%
+            dplyr::filter(`Digital Literacy` %in% c(input$opt_diglit))
+        }
+        
+        return(plhdata_checkgroup)
+      })
+    } else {
+      selected_data_dem <- reactive({
+        if (country == "Tanzania"){
+          if (study == "Pilot"){
+            plhdata_checkgroup <- plhdata_org_clean %>%
+              dplyr::filter(PilotSite %in% c(input$OrgDem))
+          } else {
+            plhdata_checkgroup <- plhdata_org_clean
           }
         } else {
-          plhdata_checkgroup <- plhdata_org_clean
+          plhdata_checkgroup <- plhdata_org_clean %>% dplyr::filter(Org %in% c((input$OrgDem)))
         }
-      } else {
-        plhdata_checkgroup <- plhdata_org_clean %>% dplyr::filter(Org %in% c((input$OrgDem)))
-      }
-      return(plhdata_checkgroup)
-    })
+        return(plhdata_checkgroup)
+      })
+    }
+
     
     last_sync <- reactive({
       if (country == "Tanzania"){

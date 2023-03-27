@@ -3178,7 +3178,7 @@ parentapp_shiny <- function(country, study){
     # }
     
     if (country == "Tanzania" & study == "Optimisation"){
-      selected_data_dem <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+      selected_data_dem <- reactive({ #eventReactive({ifelse(input$goButton == 0, 1, input$goButton), {
         plhdata_checkgroup <- plhdata_org_clean %>%
           dplyr::filter(Cluster %in% c(input$opt_cluster))
         if (!is.null(input$opt_support)) {
@@ -3193,7 +3193,6 @@ parentapp_shiny <- function(country, study){
           plhdata_checkgroup <- plhdata_checkgroup %>%
             dplyr::filter(`Digital Literacy` %in% c(input$opt_diglit))
         }
-        
         return(plhdata_checkgroup)
       })
     } else {

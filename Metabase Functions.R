@@ -1,5 +1,3 @@
-# run libraries
-
 #' Interaction with chatbot
 #Source the personal setup for data
 source(here("config/Personal Setup.R"))
@@ -8,93 +6,9 @@ source(here("config/Personal Setup.R"))
 UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 UIC_Tracker_Tanzania <- rio::import(file = here("data/UIC Tracker Tanzania.xlsx"))
 
-# Reading in Data ------------------------------------------
-
-#Get the List of PLH Tables and data from server
-get_metabase_data <- function(site = plh_con, name = "app_users"){   #name = "app_users", "app_notification_interaction"
-  plh_tables <- dbListTables(site)
-  df <- dbReadTable(conn = site,
-                    name = name)
-  return(df)
-}
-
-get_nf_data <- function(site = plh_con){
-  df <- get_metabase_data(site = site, name = "app_notification_interaction")
-  appdata_df <- list()
-  
-  for (i in 1:nrow(df)) {
-    if (!is.na(df$notification_meta[i])){
-      appdata_df[[i]] <- data.frame(jsonlite::fromJSON(df$notification_meta[i]))
-    } else {
-      appdata_df[[i]] <- data.frame(i)
-    }
-  }
-  # combine the list into a data frame 
-  appdata <- plyr::ldply(appdata_df)
-  
-  # bind into main data frame
-  plhdata <- dplyr::bind_cols(df, appdata) %>% dplyr::select(-c("i"))
-  
-  return(plhdata)
-}
-
-get_user_data <- function(site = plh_con, date_from, date_to = NULL, format_date = "%Y-%m-%d", tzone_date = "UTC", include_UIC_data = TRUE, merge_check = TRUE, UIC_Tracker = UIC.Tracker, join_UIC = "UIC", max_dist = 5){ # ideally would have flatten = FALSE in there, but seems that this isn't an option from metabase.
-  df <- get_metabase_data(site = site, name = "app_users")
-  
-  # create empty list to store the data frames
-  appdata_df <- list()
-  
-  # for each row of the data, get the contact_fields
-  for (i in 1:nrow(df)) {
-    appdata_df[[i]] <- data.frame(jsonlite::fromJSON(df$contact_fields[i]))
-  }
-  
-  # combine the list into a data frame 
-  appdata <- plyr::ldply(appdata_df)
-  
-  # bind into main data frame
-  plhdata <- dplyr::bind_cols(df, appdata)
-  
-  # add UIC data?
-  if (include_UIC_data){
-    plhdata_org_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata, y = UIC_Tracker, by = c("app_user_id" = join_UIC[1]), max_dist = max_dist)
-    
-    #check the fuzzy matches 
-    plhdata_org_fuzzy_comp <- plhdata_org_fuzzy %>% 
-      filter(!is.na(plhdata_org_fuzzy$UIC)) %>% 
-      filter(app_user_id!=UIC | is.na(app_user_id)) %>% 
-      select(app_user_id, UIC)
-    
-    if (merge_check){
-      if (yesno::yesno2("Fuzzy matches are:\n",
-                        paste0(capture.output(plhdata_org_fuzzy_comp), collapse = "\n"),
-                        "\nDo you want to merge these changes in?") == TRUE){
-        return_data <- plhdata_org_fuzzy
-      } else {
-        warning("merging in fuzzy matches:\n", paste0(capture.output(plhdata_org_fuzzy_comp %>% filter(complete.cases(app_user_id))), collapse = "\n"))
-        return_data <- plhdata_org_fuzzy
-      }
-    }else{
-      return_data <- dplyr::full_join(x=plhdata, y=UIC_Tracker, by=c("app_user_id" = join_UIC))
-    }
-    
-  } else {
-    return_data <- plhdata
-  }
-  
-  if (!missing(date_from)){
-    return_data <- return_data %>% dplyr::filter(as.POSIXct(date_from, format = format_date, tzone = tzone_date) < as.POSIXct(return_data$createdAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"))
-  }
-  if (!missing(date_to)){
-    return_data <- return_data %>% dplyr::filter(as.POSIXct(date_to, format = format_date, tzone = tzone_date) > as.POSIXct(return_data$createdAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"))
-  }
-  
-  return(return_data)
-}
-
-# Write back to metabase - TODO: make into function?
-#dbWriteTable(parent_app_con, "Cleaned PLH data", select(plhdata_org_clean,!(contact_fields)), overwrite=TRUE)
-
+#######################################
+# Specific to ParentApp --------------------------------------------------
+#######################################
 # if a variable is missing from the data, add it in to have NA all donw
 add_na_variable <- function(data = plhdata_org_clean, variable){
   for (names in variable) {
@@ -106,6 +20,308 @@ add_na_variable <- function(data = plhdata_org_clean, variable){
   return(data)
 }
 
+notification_summary <- function(data = nf_data, factors){
+  numerator <- data %>%
+    filter(action_id == "tap") %>%
+    group_by(across(c({{ factors }})), .drop = FALSE) %>%
+    summarise(replied = n())
+  denominator <- data %>%
+    group_by(across(c({{ factors }})), .drop = FALSE) %>%
+    summarise(received = n())
+  notifications_perc <- full_join(numerator, denominator)
+  return(notifications_perc)
+}
+
+version_variables_rename <- function(data = plhdata_org_clean, survey = "welcome", old_name, new_name, new_name_v = "v0.16.2", old_system_replacement = FALSE){
+  col_name <- paste0("rp.contact.field.survey_", survey, "_", old_name)
+  if (old_system_replacement){
+    col_name_2 <- paste0("rp.contact.field.survey_", survey, "_", new_name, "_", new_name_v)
+  } else {
+    col_name_2 <- paste0("rp.contact.field.survey_", survey, "_", new_name)
+  }
+  data <- data %>%
+    mutate({{ col_name }} := ifelse(!is.na(.data[[col_name_2]]),
+                                    .data[[col_name_2]],
+                                    .data[[col_name]]))
+  return(data)
+}
+
+challenge_freq <- function(data = plhdata_org_clean, group_by = "Org", var, append_var){
+  data <- add_na_variable(data = data, variable = var)
+  data <- add_na_variable(data = data, variable = append_var)
+  plh_list <- stringr::str_split(data[[var]], pattern = ", ")
+  plh_append <- data[[append_var]]
+  plh_Org <- data[[group_by]]
+  for (i in 1:length(plh_list)){
+    plh_list1 <- c(plh_list[[i]], plh_append[i])
+    plh_list2 <- as.character(plh_Org[i])
+    df <- data.frame(plh_list1, Org = plh_list2)
+    plh_list[[i]] <- df
+  }
+  plh_list <- purrr::map(.x = plh_list,
+                         .f = ~ unique(.x))
+  
+  plh_list <- plyr::ldply(plh_list)
+  plh_list <- plh_list %>% group_by(plh_list1, Org) %>% summarise(n())
+  
+  plh_list <- plh_list %>%
+    dplyr::filter(!plh_list1 %in% c("other_challenge", "undefined", "null")) %>%
+    dplyr::filter(!is.na(plh_list1)) %>%
+    pivot_wider(names_from = plh_list1, values_from = `n()`) %>%
+    mutate_all(~replace(., is.na(.), 0))
+  return(plh_list)
+}
+
+survey_table <- function(data = plhdata_org_clean, metadata = r_variables_names, location_ID = "survey_past_week",
+                         factors = "Org"){
+  data_to_tabulate <- metadata %>% filter(location_ID == {{ location_ID }})
+  
+  summary_table <- data %>%
+    # take the data, and select the relevant variables
+    dplyr::select(c(factors, country, app_user_id, data_to_tabulate$metabase_ID)) %>%
+    tidyr::unite(col = "Org", {{ factors }}) %>%
+    # rearrange the data frame
+    pivot_longer(cols = -c(Org, country, app_user_id), names_to = "metabase_ID") %>%
+    # join with our metadata on the variables
+    full_join(., data_to_tabulate) %>%
+    group_by(Org, country, app_user_id, display_name) %>%
+    #mutate(value = as.numeric(value)) %>%
+    filter(complete.cases(value)) %>%
+    # take the most recent value that is not NA
+    summarise(value = last(value))
+  
+  summary_table_wider <- summary_table %>%
+    # to the format for the summary_table function
+    pivot_wider(id_cols = c(Org, country, app_user_id),
+                names_from = display_name) %>%
+    ungroup()
+  
+  summary_table_wider <- summary_table_wider %>%
+    map(.x = unique(summary_table$display_name),
+        .f = ~summary_table(data = summary_table_wider, factors = "Org", columns_to_summarise = .x, display = FALSE, include_margins = TRUE),
+        id = .x)
+  names(summary_table_wider) <- unique(summary_table$display_name)
+  return(summary_table_wider)
+}
+
+plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
+  summary_workshop_long <- data %>%
+    pivot_longer(cols = !factors) %>%
+    mutate(name = fct_relevel(name, week_order)) %>%  # set the order of variables
+    filter()
+  
+  if (country == "Tanzania"){
+    if (study == "Optimisation"){
+      summary_workshop_long <- summary_workshop_long %>%
+        tidyr::unite(col = "Org", {{ factors }})%>%
+        filter(name != "Total")
+    } else {
+      summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
+    }
+  } else {
+    summary_workshop_long <- summary_workshop_long %>% filter(name != "Total")
+  }
+  
+  return(ggplot(summary_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
+           geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+           geom_line() + labs(x = "Workshop week", y = "Number of points"))
+}
+
+#######################################
+# Shiny / ParentApp functions --------------------------------------------------
+#######################################
+checkbox_input <- function(inputId, country = country, study = study){
+  if (country == "South Africa") {
+    return(box(width = 6,
+               checkboxGroupInput(inputId = paste0("Org", inputId),
+                                  label = "Organisations to show:",
+                                  choices = c("Amathuba" = "Amathuba",
+                                              "Dlalanathi" = "Dlalanathi",
+                                              "Joy" = "Joy",
+                                              "Nontobeko" = "Nontobeko"),
+                                  selected = c("Amathuba","Dlalanathi",
+                                               "Joy","Nontobeko")
+               )))
+  } else if (country == "Tanzania"){
+    if (study == "Pilot"){
+      return(box(width = 6,
+                 checkboxGroupInput(inputId = paste0("Org", inputId),
+                                    label = "Site",
+                                    c("Mwanza" = "Mwanza",
+                                      "Mwanza 2" = "Mwanza 2",
+                                      "Shinyanga" = "Shinyanga",
+                                      "Unknown" = "Unknown"),
+                                    selected = c("Mwanza", "Mwanza 2", "Shinyanga", "Unknown")
+                 )))
+    } else if (study == "Optimisation") {
+      # return(box(checkboxInput(inputId = "chk_support",
+      #                          label = "Group by support",
+      #                          value = TRUE),
+      #            uiOutput("opt_chk_support")))
+      return(column(width = 12,
+                    box(checkboxGroupInput(inputId = "opt_cluster",
+                                           label = "Cluster",
+                                           c("1" = "1", "2"="2", "3" = "3", "4" = "4", 
+                                             "5" = "5", "6" = "6", "7" = "7", "8" = "8",
+                                             "9" = "9", "10"="10", "11"="11", "12"="12",
+                                             "13"="13", "14"="14", "15"="15", "16"="16"),
+                                           selected = c("1", "2", "3", "4", "5", "6", "7", "8",
+                                                        "9", "10", "11", "12", "13", "14", "15", "16"))),
+                    fluidRow(box(width = 4,
+                                 checkboxGroupInput(inputId = "opt_support",
+                                                    label = "Support",
+                                                    c("Self-guided" = "Self-guided",
+                                                      "WhatsApp" = "WhatsApp"),
+                                                    selected = c("Self-guided", "WhatsApp"))),
+                             box(width = 4, checkboxGroupInput(inputId = "opt_skin",
+                                                               label = "Skin type",
+                                                               c("Module" = "Module",
+                                                                 "Workshop" = "Workshop"),
+                                                               selected = c("Module", "Workshop"))),
+                             box(width = 4, checkboxGroupInput(inputId = "opt_diglit",
+                                                               label = "Digital literacy",
+                                                               c("On" = "On",
+                                                                 "Off" = "Off"),
+                                                               selected = c("On", "Off")))#,
+                             #actionButton("goButton", "Submit", class = "btn-success")
+                    )))
+    } else {
+    }
+  } else if (country == "all") {
+    return(fluidRow(
+      column(12, align = "centre",
+             box(width = 4,
+                 checkboxGroupInput(inputId = paste0("Ctry", inputId),
+                                    label = "Countries to select:",
+                                    choices = c("South Africa" = "plh_za",
+                                                "Tanzania" = "plh_tz"),
+                                    selected = c("plh_za","plh_tz"))),
+             box(width = 6,
+                 checkboxGroupInput(inputId = paste0("Org", inputId),
+                                    label = "Organisations to show:",
+                                    choices = c("SA: Amathuba" = "Amathuba",
+                                                "SA: Dlalanathi" = "Dlalanathi",
+                                                "SA: Joy" = "Joy",
+                                                "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
+                                    selected = c("Amathuba","Dlalanathi",
+                                                 "Joy","Nontobeko", "Tanzania")
+                 )))))
+  } else {
+  }
+}
+
+reactive_table <- function(data = plhdata_org_clean, country, inputId = "input$OrgDem"){
+  # need to do input$ here, but then need reactive here so it knows where to find input$
+  observe({
+    if (country == "Tanzania"){
+      plhdata_checkgroup <- data
+    } else {
+      plhdata_checkgroup <- data %>% filter(Org %in% c(input$OrgDem))
+    }
+    return(plhdata_checkgroup) 
+  })
+}
+
+top_boxes <- function(country){
+  if (country == "all"){
+    fluidRow(
+      shinydashboard::valueBoxOutput("myvaluebox1", width=2), 
+      shinydashboard::valueBoxOutput("myvaluebox2", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox3", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox4", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox5", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox6", width=2)
+    )
+  } else if (country == "South Africa"){
+    fluidRow(
+      shinydashboard::valueBoxOutput("myvaluebox1", width=2), 
+      shinydashboard::valueBoxOutput("myvaluebox2", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox3", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox4", width=2),
+      shinydashboard::valueBoxOutput("myvaluebox5", width=2)
+    )
+  } else if (country == "Tanzania"){
+    fluidRow(
+      shinydashboard::valueBoxOutput("myvaluebox1", width=3), 
+      shinydashboard::valueBoxOutput("myvaluebox2", width=3),
+      shinydashboard::valueBoxOutput("myvaluebox3", width=3),
+      shinydashboard::valueBoxOutput("myvaluebox4", width=3)
+    )
+  }
+}
+
+summary_table_base_build <- function(data = plhdata_org_clean,
+                                     columns_to_summarise = data_baseline_survey,
+                                     replace = "rp.contact.field.",
+                                     replace_after = NULL,
+                                     opt_factors = c("Support", "Skin", "Digital Literacy")){
+  if (country == "Tanzania"){
+    if (study == "Pilot"){
+      return(multiple_table_output(data = data,
+                                   columns_to_summarise = columns_to_summarise,
+                                   replace = replace,
+                                   replace_after = replace_after,
+                                   factors = "PilotSite"))
+    } else if (study == "Optimisation"){
+      return(multiple_table_output(data = data,
+                                   columns_to_summarise = columns_to_summarise,
+                                   replace = replace,
+                                   replace_after = replace_after,
+                                   factors = opt_factors)) #))
+    } else {
+      return(multiple_table_output(data = data,
+                                   columns_to_summarise = columns_to_summarise,
+                                   replace = replace,
+                                   replace_after = replace_after))
+    }
+  } else {
+    # otherwise we have the different Organisations in the code anyway so it's nice and easy. 
+    return(multiple_table_output(data = data,
+                                 columns_to_summarise = columns_to_summarise,
+                                 replace = replace,
+                                 replace_after = replace_after))
+  }
+}
+
+hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("sad", "ok", "happy", "NA"),
+                         xlab = "How did you find it?"){
+  if (manipulation == "ldply"){
+    plot_data <- plyr::ldply(data, `.id` = "name")
+  } else if (manipulation == "longer"){
+    if ("Total" %in% names(data)){
+      plot_data <- data %>%
+        dplyr::select(-Total) %>%
+        pivot_longer(cols = !factors)
+    } else {
+      plot_data <- data %>%
+        pivot_longer(cols = !factors)
+    }
+  } else {
+    plot_data <- data
+  }
+  
+  if (country == "Tanzania"){
+    if (study == "Optimisation"){
+      plot_data <- plot_data %>%
+        tidyr::unite(col = "Org", {{ factors }})
+    } else {
+      plot_data <- plot_data %>% mutate(Org = PilotSite)
+    }
+  }
+  plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
+  plot + geom_bar(stat = "identity", position = "dodge") +
+    scale_x_discrete(guide = guide_axis(angle = 90),
+                     limits = limits) +
+    viridis::scale_fill_viridis(discrete = TRUE) +
+    labs(x = xlab, y = "Frequency")
+}
+
+
+
+
+#######################################
+# Used for ParentApp and ParentText --------------------------------------------
+#######################################
 naming_conventions <- function(x, replace, replace_after) {
   if (!missing(replace)){
     x <- gsub(paste("^.*?", replace, ".*", sep = ""), "", x)
@@ -117,49 +333,7 @@ naming_conventions <- function(x, replace, replace_after) {
   x <- gsub("_", " ", x)
   x
 }
-# Write back to metabase - TODO: make into function?
-#dbWriteTable(parent_app_con, "Cleaned PLH data", select(plhdata_org_clean,!(contact_fields)), overwrite=TRUE)
 
-# if a variable is missing from the data, add it in to have NA all donw
-add_na_variable <- function(data = plhdata_org_clean, variable){
-  for (names in variable) {
-    if (!names %in% colnames(data)) {
-      data[, names] <- NA
-      warning(paste(names, "does not exist. Adding NAs"))
-    }
-  }
-  return(data)
-}
-
-
-# TODO: set up this function corerctly. 
-user_id_print <- function(data = plhdata_org, field, group_by = plhdata_org_clean$Org) {
-  plhdata_org_list <- plhdata_org %>%
-    select(c('app_user_id', rp.contact.field.parent_point_count_relax, Org)) %>%
-    arrange(Org)
-  return(plhdata_org_list)
-}
-
-# not sure if you want this sort of function or not, and if so, what it should do. Will come back to.
-get_app_user_IDs <- function(data = plhdata_org, factor_variable, factor_level, show_invalid = FALSE){
-  data_filter <- data %>% dplyr::filter(across({{ factor_variable }}) == factor_level)
-  
-  # Show any app user ids that are invalid and do not come from the app.
-  if (show_invalid){
-    print(data_filter %>% filter(is.na(app_version)) %>% select(app_user_id))
-  }
-  
-  # Create subsets of the data based on valid NONTOBEKOM app user ID's
-  data_filter <- data_filter %>% filter(!is.na(app_version))
-  
-  # Show the summary of app versions
-  #sjmisc::frq(x=plhdata_org_NONTOBEKO$'app_version', out="txt")
-  
-  # Show any app user ids that have only synced initial data.
-  data_filter %>% filter(is.na(rp.contact.field.first_app_open)) %>% select('app_user_id')
-}
-
-# same function used in parent text
 summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise, summaries = c("frequencies", "mean", "total"),
                                 include_country_margins, country_factor, together = FALSE, include_margins = FALSE, na.rm = TRUE){
   
@@ -348,298 +522,4 @@ multiple_plot_output <- function(data = plhdata_org_clean, columns_to_summarise,
   
   names(summary_plot_values) <- variable_display_names
   return(summary_plot_values)
-}
-
-version_variables_rename <- function(data = plhdata_org_clean, survey = "welcome", old_name, new_name, new_name_v = "v0.16.2", old_system_replacement = FALSE){
-  col_name <- paste0("rp.contact.field.survey_", survey, "_", old_name)
-  if (old_system_replacement){
-    col_name_2 <- paste0("rp.contact.field.survey_", survey, "_", new_name, "_", new_name_v)
-  } else {
-    col_name_2 <- paste0("rp.contact.field.survey_", survey, "_", new_name)
-  }
-  data <- data %>%
-    mutate({{ col_name }} := ifelse(!is.na(.data[[col_name_2]]),
-                                    .data[[col_name_2]],
-                                    .data[[col_name]]))
-  return(data)
-}
-
-challenge_freq <- function(data = plhdata_org_clean, group_by = "Org", var, append_var){
-  data <- add_na_variable(data = data, variable = var)
-  data <- add_na_variable(data = data, variable = append_var)
-  plh_list <- stringr::str_split(data[[var]], pattern = ", ")
-  plh_append <- data[[append_var]]
-  plh_Org <- data[[group_by]]
-  for (i in 1:length(plh_list)){
-    plh_list1 <- c(plh_list[[i]], plh_append[i])
-    plh_list2 <- as.character(plh_Org[i])
-    df <- data.frame(plh_list1, Org = plh_list2)
-    plh_list[[i]] <- df
-    }
-  plh_list <- purrr::map(.x = plh_list,
-                         .f = ~ unique(.x))
-  
-  plh_list <- plyr::ldply(plh_list)
-  plh_list <- plh_list %>% group_by(plh_list1, Org) %>% summarise(n())
-  
-  plh_list <- plh_list %>%
-    dplyr::filter(!plh_list1 %in% c("other_challenge", "undefined", "null")) %>%
-    dplyr::filter(!is.na(plh_list1)) %>%
-    pivot_wider(names_from = plh_list1, values_from = `n()`) %>%
-    mutate_all(~replace(., is.na(.), 0))
-  return(plh_list)
-}
-
-checkbox_input <- function(inputId, country = country, study = study){
-  if (country == "South Africa") {
-    return(box(width = 6,
-               checkboxGroupInput(inputId = paste0("Org", inputId),
-                                  label = "Organisations to show:",
-                                  choices = c("Amathuba" = "Amathuba",
-                                              "Dlalanathi" = "Dlalanathi",
-                                              "Joy" = "Joy",
-                                              "Nontobeko" = "Nontobeko"),
-                                  selected = c("Amathuba","Dlalanathi",
-                                               "Joy","Nontobeko")
-               )))
-  } else if (country == "Tanzania"){
-    if (study == "Pilot"){
-      return(box(width = 6,
-                 checkboxGroupInput(inputId = paste0("Org", inputId),
-                           label = "Site",
-                           c("Mwanza" = "Mwanza",
-                             "Mwanza 2" = "Mwanza 2",
-                             "Shinyanga" = "Shinyanga",
-                             "Unknown" = "Unknown"),
-                           selected = c("Mwanza", "Mwanza 2", "Shinyanga", "Unknown")
-                 )))
-    } else if (study == "Optimisation") {
-      # return(box(checkboxInput(inputId = "chk_support",
-      #                          label = "Group by support",
-      #                          value = TRUE),
-      #            uiOutput("opt_chk_support")))
-      return(column(width = 12,
-                    box(checkboxGroupInput(inputId = "opt_cluster",
-                                    label = "Cluster",
-                                    c("1" = "1", "2"="2", "3" = "3", "4" = "4", 
-                                      "5" = "5", "6" = "6", "7" = "7", "8" = "8",
-                                      "9" = "9", "10"="10", "11"="11", "12"="12",
-                                      "13"="13", "14"="14", "15"="15", "16"="16"),
-                                    selected = c("1", "2", "3", "4", "5", "6", "7", "8",
-                                                 "9", "10", "11", "12", "13", "14", "15", "16"))),
-             fluidRow(box(width = 4,
-                          checkboxGroupInput(inputId = "opt_support",
-                                       label = "Support",
-                                       c("Self-guided" = "Self-guided",
-                                         "WhatsApp" = "WhatsApp"),
-                                       selected = c("Self-guided", "WhatsApp"))),
-                      box(width = 4, checkboxGroupInput(inputId = "opt_skin",
-                                                        label = "Skin type",
-                                                        c("Module" = "Module",
-                                                          "Workshop" = "Workshop"),
-                                                        selected = c("Module", "Workshop"))),
-                      box(width = 4, checkboxGroupInput(inputId = "opt_diglit",
-                                                        label = "Digital literacy",
-                                                        c("On" = "On",
-                                                          "Off" = "Off"),
-                                                        selected = c("On", "Off"))),
-                      actionButton("goButton", "Submit", class = "btn-success")
-                      )))
-    } else {
-    }
-  } else if (country == "all") {
-    return(fluidRow(
-      column(12, align = "centre",
-      box(width = 4,
-               checkboxGroupInput(inputId = paste0("Ctry", inputId),
-                                  label = "Countries to select:",
-                                  choices = c("South Africa" = "plh_za",
-                                              "Tanzania" = "plh_tz"),
-                                  selected = c("plh_za","plh_tz"))),
-           box(width = 6,
-               checkboxGroupInput(inputId = paste0("Org", inputId),
-                                  label = "Organisations to show:",
-                                  choices = c("SA: Amathuba" = "Amathuba",
-                                              "SA: Dlalanathi" = "Dlalanathi",
-                                              "SA: Joy" = "Joy",
-                                              "SA: Nontobeko" = "Nontobeko", "TZ: ICS" ="Tanzania"),
-                                  selected = c("Amathuba","Dlalanathi",
-                                               "Joy","Nontobeko", "Tanzania")
-               )))))
-  } else {
-  }
-}
-
-reactive_table <- function(data = plhdata_org_clean, country, inputId = "input$OrgDem"){
-  # need to do input$ here, but then need reactive here so it knows where to find input$
-  observe({
-    if (country == "Tanzania"){
-      plhdata_checkgroup <- data
-    } else {
-      plhdata_checkgroup <- data %>% filter(Org %in% c(input$OrgDem))
-    }
-    return(plhdata_checkgroup) 
-  })
-}
-
-top_boxes <- function(country){
-  if (country == "all"){
-    fluidRow(
-      shinydashboard::valueBoxOutput("myvaluebox1", width=2), 
-      shinydashboard::valueBoxOutput("myvaluebox2", width=2),
-      shinydashboard::valueBoxOutput("myvaluebox3", width=2),
-      shinydashboard::valueBoxOutput("myvaluebox4", width=2),
-      shinydashboard::valueBoxOutput("myvaluebox5", width=2),
-      shinydashboard::valueBoxOutput("myvaluebox6", width=2)
-    )
-  } else if (country == "South Africa"){
-    fluidRow(
-      shinydashboard::valueBoxOutput("myvaluebox1", width=2), 
-      shinydashboard::valueBoxOutput("myvaluebox2", width=2),
-      shinydashboard::valueBoxOutput("myvaluebox3", width=2),
-      shinydashboard::valueBoxOutput("myvaluebox4", width=2),
-      shinydashboard::valueBoxOutput("myvaluebox5", width=2)
-    )
-  } else if (country == "Tanzania"){
-    fluidRow(
-      shinydashboard::valueBoxOutput("myvaluebox1", width=3), 
-      shinydashboard::valueBoxOutput("myvaluebox2", width=3),
-      shinydashboard::valueBoxOutput("myvaluebox3", width=3),
-      shinydashboard::valueBoxOutput("myvaluebox4", width=3)
-    )
-  }
-}
-
-summary_table_base_build <- function(data = plhdata_org_clean,
-                                     columns_to_summarise = data_baseline_survey,
-                                     replace = "rp.contact.field.",
-                                     replace_after = NULL,
-                                     opt_factors = c("Support", "Skin", "Digital Literacy")){
-  if (country == "Tanzania"){
-    if (study == "Pilot"){
-      return(multiple_table_output(data = data,
-                                   columns_to_summarise = columns_to_summarise,
-                                   replace = replace,
-                                   replace_after = replace_after,
-                                   factors = "PilotSite"))
-    } else if (study == "Optimisation"){
-      return(multiple_table_output(data = data,
-                                   columns_to_summarise = columns_to_summarise,
-                                   replace = replace,
-                                   replace_after = replace_after,
-                                   factors = opt_factors)) #))
-    } else {
-      return(multiple_table_output(data = data,
-                                   columns_to_summarise = columns_to_summarise,
-                                   replace = replace,
-                                   replace_after = replace_after))
-    }
-  } else {
-    # otherwise we have the different Organisations in the code anyway so it's nice and easy. 
-    return(multiple_table_output(data = data,
-                                 columns_to_summarise = columns_to_summarise,
-                                 replace = replace,
-                                 replace_after = replace_after))
-  }
-}
-
-
-hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("sad", "ok", "happy", "NA"),
-                         xlab = "How did you find it?"){
-  if (manipulation == "ldply"){
-    plot_data <- plyr::ldply(data, `.id` = "name")
-  } else if (manipulation == "longer"){
-    if ("Total" %in% names(data)){
-      plot_data <- data %>%
-        dplyr::select(-Total) %>%
-        pivot_longer(cols = !factors)
-    } else {
-      plot_data <- data %>%
-        pivot_longer(cols = !factors)
-    }
-  } else {
-    plot_data <- data
-  }
-  
-  if (country == "Tanzania"){
-    if (study == "Optimisation"){
-      plot_data <- plot_data %>%
-        tidyr::unite(col = "Org", {{ factors }})
-    } else {
-      plot_data <- plot_data %>% mutate(Org = PilotSite)
-    }
-  }
-  plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
-  plot + geom_bar(stat = "identity", position = "dodge") +
-    scale_x_discrete(guide = guide_axis(angle = 90),
-                     limits = limits) +
-    viridis::scale_fill_viridis(discrete = TRUE) +
-    labs(x = xlab, y = "Frequency")
-}
-
-plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
-  summary_workshop_long <- data %>%
-    pivot_longer(cols = !factors) %>%
-    mutate(name = fct_relevel(name, week_order)) %>%  # set the order of variables
-    filter()
-  
-  if (country == "Tanzania"){
-    if (study == "Optimisation"){
-      summary_workshop_long <- summary_workshop_long %>%
-        tidyr::unite(col = "Org", {{ factors }})%>%
-        filter(name != "Total")
-    } else {
-      summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
-    }
-  } else {
-    summary_workshop_long <- summary_workshop_long %>% filter(name != "Total")
-  }
-  
-  return(ggplot(summary_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-           geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-           geom_line() + labs(x = "Workshop week", y = "Number of points"))
-}
-
-survey_table <- function(data = plhdata_org_clean, metadata = r_variables_names, location_ID = "survey_past_week",
-                         factors = "Org"){
-  data_to_tabulate <- metadata %>% filter(location_ID == {{ location_ID }})
-  
-  summary_table <- data %>%
-    # take the data, and select the relevant variables
-    dplyr::select(c(factors, country, app_user_id, data_to_tabulate$metabase_ID)) %>%
-    tidyr::unite(col = "Org", {{ factors }}) %>%
-    # rearrange the data frame
-    pivot_longer(cols = -c(Org, country, app_user_id), names_to = "metabase_ID") %>%
-    # join with our metadata on the variables
-    full_join(., data_to_tabulate) %>%
-    group_by(Org, country, app_user_id, display_name) %>%
-    #mutate(value = as.numeric(value)) %>%
-    filter(complete.cases(value)) %>%
-    # take the most recent value that is not NA
-    summarise(value = last(value))
-  
-  summary_table_wider <- summary_table %>%
-    # to the format for the summary_table function
-    pivot_wider(id_cols = c(Org, country, app_user_id),
-                names_from = display_name) %>%
-    ungroup()
-  
-  summary_table_wider <- summary_table_wider %>%
-    map(.x = unique(summary_table$display_name),
-        .f = ~summary_table(data = summary_table_wider, factors = "Org", columns_to_summarise = .x, display = FALSE, include_margins = TRUE),
-        id = .x)
-  names(summary_table_wider) <- unique(summary_table$display_name)
-  return(summary_table_wider)
-}
-
-notification_summary <- function(data = nf_data, factors){
-  numerator <- data %>%
-    filter(action_id == "tap") %>%
-    group_by(across(c({{ factors }})), .drop = FALSE) %>%
-    summarise(replied = n())
-  denominator <- data %>%
-    group_by(across(c({{ factors }})), .drop = FALSE) %>%
-    summarise(received = n())
-  notifications_perc <- full_join(numerator, denominator)
-  return(notifications_perc)
 }

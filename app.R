@@ -10,6 +10,7 @@ library(tidyverse)
 library(yesno)
 library(gt)
 library(readxl)
+library(postgresr)
 options(dplyr.summarise.inform = FALSE)
 country <- "Tanzania" # Tanzania, all
 study <- "Optimisation"

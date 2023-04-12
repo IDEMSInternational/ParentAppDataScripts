@@ -12,7 +12,8 @@ parentapp_shiny <- function(country, study){
         menuItem("Parent Points", tabName = "parentpoints", icon = icon("star")),
         menuItem("In-week Engagement", tabName = "xtraengagement", icon = icon("user-check")),
         menuItem("Surveys", tabName = "surveys", icon = icon("question")),
-        menuItem("Parent Library", tabName = "library", icon = icon("book-reader"))
+        menuItem("Parent Library", tabName = "library", icon = icon("book-reader")),
+        menuItem("Download", tabName = "download", icon = icon("download"))
       )), #closes sidebarMenu and dashboardSidebar
     
     dashboardBody(# Boxes need to be put in a row (or column)
@@ -3146,21 +3147,44 @@ parentapp_shiny <- function(country, study){
                       shiny::tableOutput("table_lib_grief")  #generates table
                   ) #closes box
                 ) #closes fluidRow
-        ) #closes sixth tab item
+        ), #closes sixth tab item
+        
+        
+        tabItem(tabName = "download",
+                fluidRow(
+                  column(12, align = "centre",
+                         # splitLayout gets two boxes side by side.
+                         # in this case, it is just the header (h2), and an icon
+                         # we want 80% of the width to be the header (h2) and 20% the icon (hence cellWidths = ...)
+                         box(splitLayout(h2("Download"), icon("download", "fa-6x"),
+                                         cellArgs = list(style = "vertical-align: top"),
+                                         cellWidths = c("80%", "20%")),
+                             width = 15,
+                             title = NULL,
+                             collapsible = FALSE,
+                             solidHeader = TRUE,
+                             background = "aqua",
+                             height = "95px")
+                  ) #closes box
+                ), #closes fluid row
+                useShinyjs(),
+                shinyauthr::loginUI("login"),
+                uiOutput("build_download")
+        ) # closes download tab item
       ) # closes tabItems
     ) # closes dashboardBody
   )# closes dashboardPage
   
   # 4. Define Server -----------------------------------------------------------------------------
-  server <- function(input, output) {
+  server <- function(input, output, session) {
     
     # General Set Up ---------------------------------------------------
     #autoRefresh <- reactiveTimer(6 * 60 * 60 * 1000)
     
     observe({
       #autoRefresh()
-      #source(here("Metabase Analysis Setup - run offline.R"))
-      source(here("Metabase Analysis Setup.R"))
+      source(here("Metabase Analysis Setup - run offline.R"))
+      #source(here("Metabase Analysis Setup.R"))
     })
     
     # if (country == "Tanzania" && study == "Optimisation"){
@@ -3177,10 +3201,26 @@ parentapp_shiny <- function(country, study){
     #   })
     # }
     
+    # If Checkbox  
+    if (country == "Tanzania" & study == "Optimisation"){
+      observe({
+        if(input$select_cluster){
+          shinyjs::disable("opt_cluster")
+        } else {
+          shinyjs::enable("opt_cluster")
+        }
+      })
+    }
+    
     if (country == "Tanzania" & study == "Optimisation"){
       selected_data_dem <- reactive({ #eventReactive({ifelse(input$goButton == 0, 1, input$goButton), {
+        if(input$select_cluster){
+          opt_cluster_vals <- 1:16
+        } else {
+          opt_cluster_vals <- extract(input$opt_cluster)
+        }
         plhdata_checkgroup <- plhdata_org_clean %>%
-          dplyr::filter(Cluster %in% c(input$opt_cluster))
+          dplyr::filter(Cluster %in% c(opt_cluster_vals))
         if (!is.null(input$opt_support)) {
           plhdata_checkgroup <- plhdata_checkgroup %>%
             dplyr::filter(Support %in% c(input$opt_support))
@@ -5909,6 +5949,69 @@ parentapp_shiny <- function(country, study){
     output$table_lib_grief <- shiny::renderTable({(table_lib_grief())}, striped = TRUE)
     output$plot_lib_grief <- renderPlotly({plot_lib_grief()})
     
+    ## Download sheet -----------------------------------------
+    data_to_download <- reactive({
+      plhdata_group_ids <- selected_data_dem() %>% select(c('app_user_id', "createdAt", all_of(data_completion_level)))
+      plhdata_group_ids_group_1 <- threshhold_function(data = plhdata_group_ids, threshhold = 0)
+      plhdata_group_ids_group_1 <- plhdata_group_ids_group_1 %>%
+        mutate(engagement_total = self_care_started + one_on_one_started + praise_started + 
+                 instruct_started + stress_started + money_started + rules_started + consequence_started + 
+                 solve_started + safe_started + crisis_started + celebrate_started) 
+      #View(plhdata_group_ids_group_1)
+      plhdata_group_ids_group_1 <- plhdata_group_ids_group_1 %>%
+        mutate(createdAt = as.Date(createdAt, "%y %m %d", tz = "utc"), # can calculate by UIC tracker
+               curr_date = as.Date(Sys.Date(), "%y %m %d")) %>%
+        mutate(diff_in_days = curr_date - createdAt) %>%
+        mutate(week_number = floor(as.numeric(diff_in_days/7))) %>%
+        mutate(week_number = ifelse(week_number > 12, 12, week_number)) %>%
+        mutate(prop_complete = engagement_total / week_number) %>%
+        mutate(engagement_level = ifelse(prop_complete == 0, "not engaged",
+                                         ifelse(prop_complete <= 0.33, "low",
+                                                ifelse(prop_complete <= 0.67, "moderate",
+                                                       ifelse(prop_complete <= 1, "high",
+                                                              "else"))))) %>%
+        dplyr::select(-c(diff_in_days, curr_date, prop_complete))
+      names(plhdata_group_ids_group_1) <- naming_conventions(names(plhdata_group_ids_group_1), replace = "rp.contact.field.w_")
+      return(plhdata_group_ids_group_1)
+    })
+    
+    credentials <- shinyauthr::loginServer(
+      id = "login",
+      data = credentials_data,
+      user_col = user,
+      pwd_col = password)
+
+    output$build_download <- renderUI({
+      req(credentials()$user_auth)
+      tagList(fluidRow(
+        box(width = 6, 
+            selectInput("dataset", "Choose a dataset:", choices = c("Engagement Data")),
+            # Button
+            downloadButton("downloadData", "Download"))),
+        fluidRow(box(width = 12,
+                     dataTableOutput("download_table"),
+                     style='width:100%;overflow-x: scroll;')))
+    })
+    
+    datasetInput <- reactive({
+      switch(input$dataset,
+             "Engagement Data" = data_to_download())
+    })
+    
+    # Table of selected dataset ----
+    output$download_table <- renderDataTable({
+      return(datasetInput())
+    })
+    
+    output$downloadData <- downloadHandler(
+      filename = function() {
+        paste(input$dataset, ".csv", sep = "")
+      },
+      content = function(file) {
+        write.csv(datasetInput(), file, row.names = FALSE)
+      }
+    )
+
   } #close server
   shinyApp(ui = ui, server = server)
 } # close function

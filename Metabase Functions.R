@@ -130,6 +130,12 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
 #######################################
 # Shiny / ParentApp functions --------------------------------------------------
 #######################################
+extract <- function(text) {
+  text <- gsub(" ", "", text)
+  split <- strsplit(text, ",", fixed = FALSE)[[1]]
+  as.numeric(split)
+}
+
 checkbox_input <- function(inputId, country = country, study = study){
   if (country == "South Africa") {
     return(box(width = 6,
@@ -159,14 +165,12 @@ checkbox_input <- function(inputId, country = country, study = study){
       #                          value = TRUE),
       #            uiOutput("opt_chk_support")))
       return(column(width = 12,
-                    box(checkboxGroupInput(inputId = "opt_cluster",
-                                           label = "Cluster",
-                                           c("1" = "1", "2"="2", "3" = "3", "4" = "4", 
-                                             "5" = "5", "6" = "6", "7" = "7", "8" = "8",
-                                             "9" = "9", "10"="10", "11"="11", "12"="12",
-                                             "13"="13", "14"="14", "15"="15", "16"="16"),
-                                           selected = c("1", "2", "3", "4", "5", "6", "7", "8",
-                                                        "9", "10", "11", "12", "13", "14", "15", "16"))),
+                    box(checkboxInput(inputId = "select_cluster",
+                                      label = "All clusters",
+                                      value = TRUE),
+                      textInput(inputId = "opt_cluster",
+                                  label = "Cluster",
+                                  placeholder = "Enter values separated by a comma...")),
                     fluidRow(box(width = 4,
                                  checkboxGroupInput(inputId = "opt_support",
                                                     label = "Support",
@@ -316,7 +320,40 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("sad
     labs(x = xlab, y = "Frequency")
 }
 
-
+threshhold_function <- function(data, threshhold, sign = "gt"){
+  if (sign == "gt"){
+    plhdata_org_clean_engagement <- data %>%
+      mutate(self_care_started = ifelse(rp.contact.field.w_self_care_completion_level > threshhold, 1, 0),
+             one_on_one_started = ifelse(rp.contact.field.w_1on1_completion_level > threshhold, 1, 0),
+             praise_started = ifelse(rp.contact.field.w_praise_completion_level > threshhold, 1, 0),
+             instruct_started = ifelse(rp.contact.field.w_instruct_completion_level > threshhold, 1, 0),
+             stress_started = ifelse(rp.contact.field.w_stress_completion_level > threshhold, 1, 0),
+             money_started = ifelse(rp.contact.field.w_money_completion_level > threshhold, 1, 0),
+             rules_started = ifelse(rp.contact.field.w_rules_completion_level > threshhold, 1, 0),
+             consequence_started = ifelse(rp.contact.field.w_consequence_completion_level > threshhold, 1, 0),
+             solve_started = ifelse(rp.contact.field.w_solve_completion_level > threshhold, 1, 0),
+             safe_started = ifelse(rp.contact.field.w_safe_completion_level > threshhold, 1, 0),
+             crisis_started = ifelse(rp.contact.field.w_crisis_completion_level > threshhold, 1, 0),
+             celebrate_started = ifelse(rp.contact.field.w_celebrate_completion_level > threshhold, 1, 0))
+  } else if (sign == "lt"){
+    plhdata_org_clean_engagement <- data %>%
+      mutate(self_care_started = ifelse(rp.contact.field.w_self_care_completion_level < threshhold, 1, 0),
+             one_on_one_started = ifelse(rp.contact.field.w_1on1_completion_level < threshhold, 1, 0),
+             praise_started = ifelse(rp.contact.field.w_praise_completion_level < threshhold, 1, 0),
+             instruct_started = ifelse(rp.contact.field.w_instruct_completion_level < threshhold, 1, 0),
+             stress_started = ifelse(rp.contact.field.w_stress_completion_level < threshhold, 1, 0),
+             money_started = ifelse(rp.contact.field.w_money_completion_level < threshhold, 1, 0),
+             rules_started = ifelse(rp.contact.field.w_rules_completion_level < threshhold, 1, 0),
+             consequence_started = ifelse(rp.contact.field.w_consequence_completion_level < threshhold, 1, 0),
+             solve_started = ifelse(rp.contact.field.w_solve_completion_level < threshhold, 1, 0),
+             safe_started = ifelse(rp.contact.field.w_safe_completion_level < threshhold, 1, 0),
+             crisis_started = ifelse(rp.contact.field.w_crisis_completion_level < threshhold, 1, 0),
+             celebrate_started = ifelse(rp.contact.field.w_celebrate_completion_level < threshhold, 1, 0))
+  } else {
+    stop("sign must be one of gt or lt")
+  }
+  return(plhdata_org_clean_engagement)
+}
 
 
 #######################################

@@ -3183,8 +3183,8 @@ parentapp_shiny <- function(country, study){
     
     observe({
       #autoRefresh()
-      source(here("Metabase Analysis Setup - run offline.R"))
-      #source(here("Metabase Analysis Setup.R"))
+      #source(here("Metabase Analysis Setup - run offline.R"))
+      source(here("Metabase Analysis Setup.R"))
     })
     
     # if (country == "Tanzania" && study == "Optimisation"){
@@ -3213,7 +3213,7 @@ parentapp_shiny <- function(country, study){
     }
     
     if (country == "Tanzania" & study == "Optimisation"){
-      selected_data_dem0 <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+      selected_data_dem <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
         if(input$select_cluster){
           opt_cluster_vals <- 1:16
         } else {
@@ -3221,21 +3221,6 @@ parentapp_shiny <- function(country, study){
         }
         plhdata_checkgroup <- plhdata_org_clean %>%
           dplyr::filter(Cluster %in% c(opt_cluster_vals))
-        return(plhdata_checkgroup)
-      })
-    }
-    
-    
-    if (country == "Tanzania" & study == "Optimisation"){
-      selected_data_dem <- reactive({ #eventReactive({ifelse(input$goButton == 0, 1, input$goButton), {
-        # if(input$select_cluster){
-        #   opt_cluster_vals <- 1:16
-        # } else {
-        #   opt_cluster_vals <- extract(input$opt_cluster)
-        # }
-        # plhdata_checkgroup <- plhdata_org_clean %>%
-        #   dplyr::filter(Cluster %in% c(opt_cluster_vals))
-        plhdata_checkgroup <- selected_data_dem0()
         if (!is.null(input$opt_support)) {
           plhdata_checkgroup <- plhdata_checkgroup %>%
             dplyr::filter(Support %in% c(input$opt_support))
@@ -3312,7 +3297,7 @@ parentapp_shiny <- function(country, study){
   #   }
   # }
     
-    opt_factors <- reactive({
+    opt_factors <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       if (country == "Tanzania"){
         if (study == "Pilot"){
           opt_factors <- c("PilotSite")
@@ -3424,7 +3409,7 @@ parentapp_shiny <- function(country, study){
     }
     
     # Demographics ---------------------------------------------------
-    summary_table_baseline <- reactive({
+    summary_table_baseline <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_baseline_survey)
       mult_summary_table_filter(summary_table_baseline_build)
     })
@@ -3561,7 +3546,7 @@ parentapp_shiny <- function(country, study){
     #SECOND Tab Workshop Engagement Data
     
     # Workshop Engagement ---------------------------------------------------
-    summary_table_completion_level <- reactive({
+    summary_table_completion_level <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_completion_level,
                                                                replace = "rp.contact.field.w_",
                                                                replace_after = "_completion_level")
@@ -3571,7 +3556,7 @@ parentapp_shiny <- function(country, study){
     })
     
     #Table of averages
-    table_ws_totals <- reactive({
+    table_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       #mean average completion level per org
       # Percentage of users who completed a workshop out of those who started it
       # nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level == 100)) / nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_started == "true"))
@@ -3798,7 +3783,7 @@ parentapp_shiny <- function(country, study){
       values$total <- values$total + 1
     })
     
-    summary_table_habits_all <- reactive({
+    summary_table_habits_all <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_all,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "_completion_level")
@@ -3806,7 +3791,7 @@ parentapp_shiny <- function(country, study){
     })
     
     #Table of averages
-    table_pp_totals <- reactive({
+    table_pp_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_total_habits <- summary_table(data = selected_data_dem(),
                                            columns_to_summarise = data_habit_parent_points_all,
                                            replace = "rp.contact.field.parent_point_count_",
@@ -3835,7 +3820,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_totals <- renderPlotly({plot_pp_totals()})
     
     #Table of averages
-    table_pp_means <- reactive({
+    table_pp_means <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_mean_habits <- summary_table(data = selected_data_dem(),
                                            columns_to_summarise = data_habit_parent_points_all,
                                            replace = "rp.contact.field.parent_point_count_",
@@ -3930,7 +3915,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_safe <- renderPlotly({plot_pp_safe()})
     
     #Parent Point sub tab Relax points pp1
-    table_pp_relax_ws_totals <- reactive({
+    table_pp_relax_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_relax_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = relax_workshop_vars,
@@ -3944,84 +3929,84 @@ parentapp_shiny <- function(country, study){
     })
     output$plot_pp_relax_ws_totals <- renderPlotly({plot_pp_relax_ws_totals()})
     
-    summary_table_habits_self_care <- reactive({
+    summary_table_habits_self_care <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_self_care,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "_w_self_care")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_1on1 <- reactive({
+    summary_table_habits_1on1 <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_1on1,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_1on1")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_praise <- reactive({
+    summary_table_habits_praise <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_praise,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_praise")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_instruct <- reactive({
+    summary_table_habits_instruct <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_instruct,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_instruct")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_stress <- reactive({
+    summary_table_habits_stress <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_stress,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_stress")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_money <- reactive({
+    summary_table_habits_money <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_money,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_money")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_rules <- reactive({
+    summary_table_habits_rules <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_rules,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_rules")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_consequence <- reactive({
+    summary_table_habits_consequence <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_consequence,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_consequence")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_solve <- reactive({
+    summary_table_habits_solve <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_solve,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_solve")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_safe <- reactive({
+    summary_table_habits_safe <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_safe,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_safe")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_crisis <- reactive({
+    summary_table_habits_crisis <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_crisis,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_crisis")
       mult_summary_table_filter(summary_table_baseline_build)
     })
     
-    summary_table_habits_celebrate <- reactive({
+    summary_table_habits_celebrate <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_celebrate,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_celebrate")
@@ -4095,7 +4080,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_relax_w_celebrate <- renderPlotly({plot_pp_relax_w_celebrate()})
     
     #Parent Point sub tab Treat Yourself points pp2
-    table_pp_treat_yourself_ws_totals <- reactive({
+    table_pp_treat_yourself_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_treat_yourself_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = treat_yourself_workshop_vars,
@@ -4172,7 +4157,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_treat_yourself_w_celebrate <- renderPlotly({plot_pp_treat_yourself_w_celebrate()})
     
     # Parent Point sub tab Praise Yourself points pp3
-    table_pp_praise_yourself_ws_totals <- reactive({
+    table_pp_praise_yourself_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_praise_yourself_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = praise_yourself_workshop_vars,
@@ -4248,7 +4233,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_praise_yourself_w_celebrate <- renderPlotly({plot_pp_praise_yourself_w_celebrate()})
     
     # Parent Point sub tab Spend Time points pp4
-    table_pp_spend_time_ws_totals <- reactive({
+    table_pp_spend_time_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_spend_time_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = spend_time_workshop_vars,
@@ -4323,7 +4308,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_spend_time_w_celebrate <- renderPlotly({plot_pp_spend_time_w_celebrate()})
     
     # Parent Point sub tab Praise Teen points pp5
-    table_pp_praise_teen_ws_totals <- reactive({
+    table_pp_praise_teen_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_praise_teen_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = praise_teen_workshop_vars,
@@ -4398,7 +4383,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_praise_teen_w_celebrate <- renderPlotly({plot_pp_praise_teen_w_celebrate()})
     
     # Parent Point sub tab Instruct Positively points pp6
-    table_pp_instruct_positively_ws_totals <- reactive({
+    table_pp_instruct_positively_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_instruct_positively_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = instruct_positively_workshop_vars,
@@ -4473,7 +4458,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_instruct_positively_w_celebrate <- renderPlotly({plot_pp_instruct_positively_w_celebrate()})
     
     # Parent Point sub tab Breathe points pp7
-    table_pp_breathe_ws_totals <- reactive({
+    table_pp_breathe_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_breathe_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = breathe_workshop_vars,
@@ -4548,7 +4533,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_breathe_w_celebrate <- renderPlotly({plot_pp_breathe_w_celebrate()})
     
     # Parent Point sub tab Money points pp8
-    table_pp_money_ws_totals <- reactive({
+    table_pp_money_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_money_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = money_workshop_vars,
@@ -4623,7 +4608,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_money_w_celebrate <- renderPlotly({plot_pp_money_w_celebrate()})
     
     # Parent Point sub tab Consequence points pp9
-    table_pp_consequence_ws_totals <- reactive({
+    table_pp_consequence_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_consequence_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = consequence_workshop_vars,
@@ -4698,7 +4683,7 @@ parentapp_shiny <- function(country, study){
     output$plot_pp_consequence_w_celebrate <- renderPlotly({plot_pp_consequence_w_celebrate()})
     
     # Parent Point sub tab Safe points pp10
-    table_pp_safe_ws_totals <- reactive({
+    table_pp_safe_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_safe_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
                                               columns_to_summarise = safe_workshop_vars,
@@ -4774,7 +4759,7 @@ parentapp_shiny <- function(country, study){
     
     
     #FOURTH Tab In-week Engagement ---------------------------
-    tables_app_opens <- reactive({
+    tables_app_opens <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(),
                                                                columns_to_summarise = data_app_opens,
                                                                replace = "rp.contact.field.app_launch_count")
@@ -4809,7 +4794,7 @@ parentapp_shiny <- function(country, study){
     output$table_appopen_totals <- shiny::renderTable({(table_appopen_totals())}, striped = TRUE)
     output$plot_appopen_totals <- renderPlotly({plot_appopen_totals()})
     
-    table_appopen_mean_week <- reactive({
+    table_appopen_mean_week <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       #Average app opens per ws week
       summary_mean_appopens <- summary_table(factors = opt_factors(),
                                              summaries = "mean", columns_to_summarise = data_app_opens,
@@ -5030,7 +5015,7 @@ parentapp_shiny <- function(country, study){
     
     # HP review started per week
     # Engagement sub tab: HP -------------------------
-    summary_table_hp_totals <- reactive({
+    summary_table_hp_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(),
                                                                data = selected_data_dem(),
                                                                columns_to_summarise = data_hp_started,
@@ -5071,7 +5056,7 @@ parentapp_shiny <- function(country, study){
     
     # home practice review - user claims they had a chance to do the hp
     
-    summary_table_hp_done <- reactive({
+    summary_table_hp_done <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(),
                                                                data = selected_data_dem(),
                                                                columns_to_summarise = data_hp_done,
@@ -5096,7 +5081,7 @@ parentapp_shiny <- function(country, study){
                                  select(select_items))
       return(relative_hp_done)   
     })
-    table_perc_long <- reactive({
+    table_perc_long <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       relative_hp_done_stress <- summary_table_base_build(opt_factors = opt_factors(),
                                                                data = selected_data_dem(),
                                                                columns_to_summarise = "rp.contact.field.w_stress_hp_done",
@@ -5129,7 +5114,7 @@ parentapp_shiny <- function(country, study){
     output$plot_hp_done <- renderPlotly({plot_hp_done()})
     
     # home practice review - user notes how HP went
-    summary_table_hp_mood <- reactive({
+    summary_table_hp_mood <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(),
                                                                columns_to_summarise = data_hp_mood,
                                                                replace = "rp.contact.field.w_",
@@ -5155,7 +5140,8 @@ parentapp_shiny <- function(country, study){
         return(x)
     }
     
-    summary_challenges_setup <- reactive({
+    # TODO: does eventReactive/goButton work for pilot?
+    summary_challenges_setup <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       if (country == "Tanzania"){
         if (study == "Pilot"){
           chall_data <- selected_data_dem() %>% mutate(Org = PilotSite)
@@ -5485,7 +5471,7 @@ parentapp_shiny <- function(country, study){
     })
     
     # Baseline survey completion levels
-    table_sv1_totals <- reactive({
+    table_sv1_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_survey_completion <- selected_data_dem() %>%
         summary_table(columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", factors = opt_factors(), display = FALSE, include_margins = TRUE)
       summary_table_filter(summary_table_survey_completion)
@@ -5685,7 +5671,7 @@ parentapp_shiny <- function(country, study){
     })
     
     # Baseline survey completion levels
-    table_sv2_totals <- reactive({
+    table_sv2_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_survey_completion <- selected_data_dem() %>%
         summary_table(columns_to_summarise = "rp.contact.field.survey_final_completion_level", factors = opt_factors(), display = FALSE, include_margins = TRUE)
       summary_table_filter(summary_table_survey_completion)
@@ -5876,7 +5862,7 @@ parentapp_shiny <- function(country, study){
     
     
     #SIXTH Tab Parent Library
-    summary_table_library <- reactive({
+    summary_table_library <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_library,
                                                                replace = "rp.contact.field.click_pc_",
                                                                replace_after = "count")

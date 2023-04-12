@@ -158,38 +158,37 @@ checkbox_input <- function(inputId, country = country, study = study){
                                       "Shinyanga" = "Shinyanga",
                                       "Unknown" = "Unknown"),
                                     selected = c("Mwanza", "Mwanza 2", "Shinyanga", "Unknown")
-                 )))
+                 ),
+                 actionButton("goButton", "Submit", class = "btn-success")))
     } else if (study == "Optimisation") {
       # return(box(checkboxInput(inputId = "chk_support",
       #                          label = "Group by support",
       #                          value = TRUE),
       #            uiOutput("opt_chk_support")))
       return(column(width = 12,
-                    box(checkboxInput(inputId = "select_cluster",
-                                      label = "All clusters",
-                                      value = TRUE),
+                    box(
+                      checkboxInput(inputId = "select_cluster",
+                                    label = "All clusters",
+                                    value = TRUE),
                       textInput(inputId = "opt_cluster",
-                                  label = "Cluster",
-                                  placeholder = "Enter values separated by a comma..."),
-                      actionButton("goButton", "Submit", class = "btn-success")),
-                    fluidRow(box(width = 4,
-                                 checkboxGroupInput(inputId = "opt_support",
-                                                    label = "Support",
-                                                    c("Self-guided" = "Self-guided",
-                                                      "WhatsApp" = "WhatsApp"),
-                                                    selected = c("Self-guided", "WhatsApp"))),
-                             box(width = 4, checkboxGroupInput(inputId = "opt_skin",
-                                                               label = "Skin type",
-                                                               c("Module" = "Module",
-                                                                 "Workshop" = "Workshop"),
-                                                               selected = c("Module", "Workshop"))),
-                             box(width = 4, checkboxGroupInput(inputId = "opt_diglit",
-                                                               label = "Digital literacy",
-                                                               c("On" = "On",
-                                                                 "Off" = "Off"),
-                                                               selected = c("On", "Off")))#,
-                             #
-                    )))
+                                label = "Cluster",
+                                placeholder = "Enter values separated by a comma..."),
+                      checkboxGroupInput(inputId = "opt_support",
+                                         label = "Support",
+                                         c("Self-guided" = "Self-guided",
+                                           "WhatsApp" = "WhatsApp"),
+                                         selected = c("Self-guided", "WhatsApp")),
+                      checkboxGroupInput(inputId = "opt_skin",
+                                         label = "Skin type",
+                                         c("Module" = "Module",
+                                           "Workshop" = "Workshop"),
+                                         selected = c("Module", "Workshop")),
+                      checkboxGroupInput(inputId = "opt_diglit",
+                                         label = "Digital literacy",
+                                         c("On" = "On",
+                                           "Off" = "Off"),
+                                         selected = c("On", "Off")),
+                      actionButton("goButton", "Submit", class = "btn-success"))))
     } else {
     }
   } else if (country == "all") {

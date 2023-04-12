@@ -24,6 +24,8 @@ UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>%
 ### extract data ----------------------------------------------------------------------
 # to get user data
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
+
+#saveRDS(plhdata_org, file = "plhdata_org_snapshot_20230320.RDS")
 # plhdata_org <- plhdata_org1
 ## Data Cleaning - User Data ## --------------------------------------------------------
 ## Tidy up "Organisation" Variable:
@@ -239,13 +241,13 @@ plhdata_org_clean <- plhdata_org_clean %>%
 #saveRDS(json_data, file = "data/json_data.RDS")
 json_data <- readRDS(file = "data/json_data.RDS")
 
+data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
+                           "rp.contact.field.w_instruct_completion_level",  "rp.contact.field.w_stress_completion_level",
+                           "rp.contact.field.w_money_completion_level",  "rp.contact.field.w_rules_completion_level", #you have "safe_completion" under rules. Is this right?
+                           "rp.contact.field.w_consequence_completion_level",  "rp.contact.field.w_solve_completion_level",  "rp.contact.field.w_safe_completion_level",
+                           "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
 if (study == "Optimisation"){
   plhdata_org_clean_mod <- plhdata_org_clean %>% filter(rp.contact.field._app_skin == "modular")
-  data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
-                             "rp.contact.field.w_instruct_completion_level",  "rp.contact.field.w_stress_completion_level",
-                             "rp.contact.field.w_money_completion_level",  "rp.contact.field.w_rules_completion_level", #you have "safe_completion" under rules. Is this right?
-                             "rp.contact.field.w_consequence_completion_level",  "rp.contact.field.w_solve_completion_level",  "rp.contact.field.w_safe_completion_level",
-                             "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
   # Esmee - what is the definition of completion at the moment for workshop skin?
   # which rows.id do they have to have == true in in these to say they've completed?
   total_completed_ind <- NULL
@@ -362,11 +364,6 @@ plhdata_org_clean <- plhdata_org_clean %>%
 # Variables Set up ---------------------------------------
 
 # Tab 2 -------
-data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
-                           "rp.contact.field.w_instruct_completion_level",  "rp.contact.field.w_stress_completion_level",
-                           "rp.contact.field.w_money_completion_level",  "rp.contact.field.w_rules_completion_level", #you have "safe_completion" under rules. Is this right?
-                           "rp.contact.field.w_consequence_completion_level",  "rp.contact.field.w_solve_completion_level",  "rp.contact.field.w_safe_completion_level",
-                           "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
 completion_vars <- c("Self Care", "One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
 
 
@@ -801,6 +798,8 @@ data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey
 # TODO: add fuzzy join to get_nf_data function
 nf_data <- get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
 nf_data$campaign_id <- naming_conventions(nf_data$campaign_id, replace = "nf_")
+
+#saveRDS(nf_data, file = "nf_data_snapshot_20230320.RDS")
 
 # Notification Data ---------------------------
 #pn_summary_count <- nf_data_join %>%

@@ -645,25 +645,3 @@ data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey
 nf_data <- nf_data1 #get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
 
 nf_data$campaign_id <- naming_conventions(nf_data$campaign_id, replace = "nf_")
-
-
-#pn_summary_count <- nf_data_join %>%
-#  group_by(app_user_id, Org, rp.contact.field._app_language) %>%
-#  summarise(
-#    number_received = max(app_user_record_id),
-#    number_responded = sum(!is.na(action_id)),
-#    percentage_responded = number_responded / number_received *
-#      100
-#  )
-
-# If we were to use all of the nf_data (except the "temp_" rows)
-# nf_data_summary <- nf_data %>%
-#   filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
-#   group_by(app_user_id) %>%
-#   summarise(
-#     number_received = max(app_user_record_id),
-#     number_responded = sum(!is.na(action_id)),
-#     percentage_responded = number_responded / number_received *
-#       100
-#   )
-

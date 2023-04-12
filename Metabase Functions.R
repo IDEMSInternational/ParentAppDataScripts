@@ -170,7 +170,8 @@ checkbox_input <- function(inputId, country = country, study = study){
                                       value = TRUE),
                       textInput(inputId = "opt_cluster",
                                   label = "Cluster",
-                                  placeholder = "Enter values separated by a comma...")),
+                                  placeholder = "Enter values separated by a comma..."),
+                      actionButton("goButton", "Submit", class = "btn-success")),
                     fluidRow(box(width = 4,
                                  checkboxGroupInput(inputId = "opt_support",
                                                     label = "Support",
@@ -187,7 +188,7 @@ checkbox_input <- function(inputId, country = country, study = study){
                                                                c("On" = "On",
                                                                  "Off" = "Off"),
                                                                selected = c("On", "Off")))#,
-                             #actionButton("goButton", "Submit", class = "btn-success")
+                             #
                     )))
     } else {
     }

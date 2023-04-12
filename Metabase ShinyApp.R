@@ -3213,7 +3213,7 @@ parentapp_shiny <- function(country, study){
     }
     
     if (country == "Tanzania" & study == "Optimisation"){
-      selected_data_dem <- reactive({ #eventReactive({ifelse(input$goButton == 0, 1, input$goButton), {
+      selected_data_dem0 <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
         if(input$select_cluster){
           opt_cluster_vals <- 1:16
         } else {
@@ -3221,6 +3221,21 @@ parentapp_shiny <- function(country, study){
         }
         plhdata_checkgroup <- plhdata_org_clean %>%
           dplyr::filter(Cluster %in% c(opt_cluster_vals))
+        return(plhdata_checkgroup)
+      })
+    }
+    
+    
+    if (country == "Tanzania" & study == "Optimisation"){
+      selected_data_dem <- reactive({ #eventReactive({ifelse(input$goButton == 0, 1, input$goButton), {
+        # if(input$select_cluster){
+        #   opt_cluster_vals <- 1:16
+        # } else {
+        #   opt_cluster_vals <- extract(input$opt_cluster)
+        # }
+        # plhdata_checkgroup <- plhdata_org_clean %>%
+        #   dplyr::filter(Cluster %in% c(opt_cluster_vals))
+        plhdata_checkgroup <- selected_data_dem0()
         if (!is.null(input$opt_support)) {
           plhdata_checkgroup <- plhdata_checkgroup %>%
             dplyr::filter(Support %in% c(input$opt_support))

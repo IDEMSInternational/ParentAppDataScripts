@@ -23,72 +23,45 @@ UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>%
 
 ### extract data ----------------------------------------------------------------------
 # to get user data
-plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
-
-#saveRDS(plhdata_org, file = "plhdata_org_snapshot_20230320.RDS")
-# plhdata_org <- plhdata_org1
-## Data Cleaning - User Data ## --------------------------------------------------------
-## Tidy up "Organisation" Variable:
-# replace missing values in Organisation and rp.contact.field.organisation_code by Miss so that it is a factor level
-plhdata_org$Organisation <- forcats::as_factor(tidyr::replace_na(plhdata_org$Organisation, "Miss"))
-
-# look and Recode Factor organisation_full to just the main levels # Question: What about "null"?
-plhdata_org$rp.contact.field.organisation_code <- as_factor(replace_na(plhdata_org$rp.contact.field.organisation_code, "Miss"))
-
-# Combine Factors Organisation and rp.contact.field.organisation_code 
-plhdata_org$organisation_full <- interaction(x=list(plhdata_org$Organisation,
-                                                    plhdata_org$rp.contact.field.organisation_code), drop=TRUE)
-
-plhdata_org <- plhdata_org %>%
-  mutate(organisation_full = ifelse((rp.contact.field.organisation_code == "organisation_1") & (app_deployment_name %in% c("plh_tz", "PLH TZ")),
-                                    "ICS",
-                                    as.character(organisation_full)))
-
-# filter out ICS users from before August
-#plhdata_org <- plhdata_org %>%
-#  mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
-#                    ifelse(as.Date(createdAt) > as.Date("2022-08-01"), TRUE, FALSE))) %>%
-#  filter(valid_ics)
-# filter out users without an intel phone?
-
-# for now, filter out users not in the excel data
+plhdata_org <- get_user_filter_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC_Tracker_Tanzania,
+                                    country = country, study = study)
 
 # Create Optimisation Group Data for Optimisation Study - Tanzania
-valid_ids <- UIC_Tracker_Tanzania %>%
-  filter(complete.cases(YourParentAppCode))  %>%
-  filter(Study == "Optimisation") %>%
-  select(c(YourParentAppCode, opt_cluster, experimental_condition,
-           OnboardingDate))
-
-# user ID "75bbbdc21741f155" has an extra b in one source so it is important we still do fuzzy join
-plhdata_org_opt_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
-# get the app user IDs where we have a code from the optimisation group.
-valid_app_user_id_TZ <- (plhdata_org_opt_fuzzy %>% filter(!is.na(YourParentAppCode)))$app_user_id
-plhdata_org <- plhdata_org %>% 
-  mutate(valid_ics_1 = ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE)) %>%
-  mutate(organisation_full = ifelse(valid_ics_1, "Optimisation Study", organisation_full))
-
-plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>% dplyr::select(c(app_user_id, opt_cluster, experimental_condition, OnboardingDate))
-plhdata_org <- full_join(plhdata_org, plhdata_org_opt_fuzzy_opt_cluster, by = c("app_user_id" = "app_user_id"))
-plhdata_org <- plhdata_org %>%
-  mutate(Cluster = opt_cluster,
-         Support = ifelse(experimental_condition < 5, "Self-guided", "WhatsApp"),
-         Skin = ifelse(experimental_condition %in% c(1, 2, 5, 6), "Module", "Workshop"),
-         `Digital Literacy` = ifelse(experimental_condition %in% c(1, 3, 5, 7), "On", "Off"))
-
-# Create Pilot Group Data for Pilot Study - Tanzania
-valid_ids <- UIC_Tracker_Tanzania %>%
+if (study == "Optimisation"){
+  valid_ids <- UIC_Tracker_Tanzania %>%
+    filter(complete.cases(YourParentAppCode))  %>%
+    filter(Study == "Optimisation") %>%
+    select(c(YourParentAppCode, opt_cluster, experimental_condition,
+             OnboardingDate))
+  
+  # user ID "75bbbdc21741f155" has an extra b in one source so it is important we still do fuzzy join
+  plhdata_org_opt_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
+  # get the app user IDs where we have a code from the optimisation group.
+  valid_app_user_id_TZ <- (plhdata_org_opt_fuzzy %>% filter(!is.na(YourParentAppCode)))$app_user_id
+  plhdata_org <- plhdata_org %>% 
+    mutate(valid_ics_1 = ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE)) %>%
+    mutate(organisation_full = ifelse(valid_ics_1, "Optimisation Study", organisation_full))
+  
+  plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>% dplyr::select(c(app_user_id, opt_cluster, experimental_condition, OnboardingDate))
+  plhdata_org <- full_join(plhdata_org, plhdata_org_opt_fuzzy_opt_cluster, by = c("app_user_id" = "app_user_id"))
+  plhdata_org <- plhdata_org %>%
+    mutate(Cluster = opt_cluster,
+           Support = ifelse(experimental_condition < 5, "Self-guided", "WhatsApp"),
+           Skin = ifelse(experimental_condition %in% c(1, 2, 5, 6), "Module", "Workshop"),
+           `Digital Literacy` = ifelse(experimental_condition %in% c(1, 3, 5, 7), "On", "Off"))
+} else if (study == "Pilot") {
+  valid_ids <- UIC_Tracker_Tanzania %>%
     filter(complete.cases(YourParentAppCode))  %>%
     filter(Study == "Pilot") %>%
     select(c(YourParentAppCode, PilotSite))
   
-plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
-valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
-plhdata_org <- plhdata_org %>% 
+  plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
+  valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
+  plhdata_org <- plhdata_org %>% 
     mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
                               ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE))) %>%
     filter(valid_ics)
-plhdata_org <- plhdata_org %>%
+  plhdata_org <- plhdata_org %>%
     mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4",
                                                          "48621962b0612b7c", "d5faa072c966ea8d",
                                                          "df1088af5f3d4c87", "5b2ba92c32c6a3e2",
@@ -97,41 +70,43 @@ plhdata_org <- plhdata_org %>%
                                       "ICS",
                                       as.character(organisation_full)))
   
-# add in new row containing ICS, and app_user_id  -  08/09/22
-#fab4ne58ac03f920
-#oe5824bd19aa8c4
-#plhdata_org[(nrow(plhdata_org)+1):(nrow(plhdata_org)+2),] <- NA
-#plhdata_org$app_user_id[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("fab4ne58ac03f920", "oe5824bd19aa8c4")
-#plhdata_org$organisation_full[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("ICS", "ICS")
-#plhdata_org$app_version[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("0.0", "0.0")
+  # Create Pilot Group Data for Pilot Study - Tanzania
+  
+  # add in new row containing ICS, and app_user_id  -  08/09/22
+  #fab4ne58ac03f920
+  #oe5824bd19aa8c4
+  #plhdata_org[(nrow(plhdata_org)+1):(nrow(plhdata_org)+2),] <- NA
+  #plhdata_org$app_user_id[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("fab4ne58ac03f920", "oe5824bd19aa8c4")
+  #plhdata_org$organisation_full[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("ICS", "ICS")
+  #plhdata_org$app_version[(last(nrow(plhdata_org))-1):last(nrow(plhdata_org))] <- c("0.0", "0.0")
+  
+  # get unique cases only
+  #View(plhdata_org_ics_fuzzy %>% filter(app_user_id == "a60b902a430aaec2"))
+  plhdata_org_ics_fuzzy <- unique(plhdata_org_ics_fuzzy %>% dplyr::select(-c("YourParentAppCode")))
+  plhdata_org_pilot_site <- plhdata_org_ics_fuzzy %>% dplyr::select(c(app_user_id, PilotSite)) %>% filter(!is.na(PilotSite))
+  nrow((plhdata_org_pilot_site))
+  plhdata_org <- full_join(plhdata_org, plhdata_org_pilot_site, by = c("app_user_id" = "app_user_id"))
+}
 
-# get unique cases only
-#View(plhdata_org_ics_fuzzy %>% filter(app_user_id == "a60b902a430aaec2"))
-plhdata_org_ics_fuzzy <- unique(plhdata_org_ics_fuzzy %>% dplyr::select(-c("YourParentAppCode")))
-plhdata_org_pilot_site <- plhdata_org_ics_fuzzy %>% dplyr::select(c(app_user_id, PilotSite)) %>% filter(!is.na(PilotSite))
-nrow((plhdata_org_pilot_site))
-plhdata_org <- full_join(plhdata_org, plhdata_org_pilot_site, by = c("app_user_id" = "app_user_id"))
-
-# TO CHECK:
-#plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
-# Note: "2c5bfeb1c97cffdf" "oe5824bd19aa8c4" are in "Miss.Miss"
-plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
-                                 replace=c(`ICS` = "ICS", `Optimisation Study` = "Optimisation Study", `Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
-                                           `Miss.idems Margherita` = "Other", `Miss.IDEMS Ohad` = "Other", `Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other",  `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other",
-                                           `Miss.other` ="Other", `Miss.zlto` ="Other", `Miss.hpccc` ="Other", `Miss.seven_passes` ="Other", `Miss.Hillcrest facilitator` ="Other", `Miss.Hillcrest Facilitator ` ="Other", `Miss.a00af0c3b3887330` ="Other",
-                                           `Nontobeko.Miss` = "Nontobeko", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko",  `Nontobeko.nontobekoM` = "Nontobeko",
-                                           `Nontobeko.NontobekoM` = "Nontobeko", `Nontobeko.null` ="Nontobeko", `Miss.NontobekoM` = "Nontobeko", 
-                                           `Joy.Miss` = "Joy", `Joy.c9097349f34b364c` ="Joy", `Joy.null` ="Joy",
-                                           `Dlalanathi.Miss` = "Dlalanathi",  `Dlalanathi.null` = "Dlalanathi", `Miss.dlalanathiThandeka` = "Dlalanathi",  `Dlalanathi.dlanathiThandeka` ="Dlalanathi",
-                                           `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", 
-                                           `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba", `Miss.dlalanathi`="Dlalanathi",
-                                           `Miss.organisation_1` = "Other", `Miss.organisation_2` = "Other",`Miss.organisation_6` = "Other"))
+# For SA:
+if (country == "South Africa"){
+  plhdata_org$Org <- plyr::revalue(x=plhdata_org$organisation_full, 
+                                   replace=c(`ICS` = "ICS", `Optimisation Study` = "Optimisation Study", `Miss.Miss` =  "Other", `Miss.baba` = "Other", `Miss.w` = "Other", `Miss.idems` = "Other",  `Miss.hillcrest` = "Other", `Miss.aqujhk,jafvh` = "Other", `Miss.ParentApp_dev` = "Other", `Miss.CWBSA` = "Other",
+                                             `Miss.idems Margherita` = "Other", `Miss.IDEMS Ohad` = "Other", `Miss.983aba50330cf24c` ="Other", `Miss.sdfds`="Other",  `Miss.friend` ="Other", `Miss.myself` ="Other", `Miss.undefined` ="Other",
+                                             `Miss.other` ="Other", `Miss.zlto` ="Other", `Miss.hpccc` ="Other", `Miss.seven_passes` ="Other", `Miss.Hillcrest facilitator` ="Other", `Miss.Hillcrest Facilitator ` ="Other", `Miss.a00af0c3b3887330` ="Other",
+                                             `Nontobeko.Miss` = "Nontobeko", `Nontobeko.Nontobeko M` = "Nontobeko", `Nontobeko.bbe9ca70c78f7384` = "Nontobeko",  `Nontobeko.nontobekoM` = "Nontobeko",
+                                             `Nontobeko.NontobekoM` = "Nontobeko", `Nontobeko.null` ="Nontobeko", `Miss.NontobekoM` = "Nontobeko", 
+                                             `Joy.Miss` = "Joy", `Joy.c9097349f34b364c` ="Joy", `Joy.null` ="Joy",
+                                             `Dlalanathi.Miss` = "Dlalanathi",  `Dlalanathi.null` = "Dlalanathi", `Miss.dlalanathiThandeka` = "Dlalanathi",  `Dlalanathi.dlanathiThandeka` ="Dlalanathi",
+                                             `Dlalanathi.dlalanathThandeka` ="Dlalanathi", `Dlalanathi.dlalanathiThandeka` ="Dlalanathi", `Dlalanathi.dlalanathi` ="Dlalanathi", `Dlalanathi.dlalanithi Thandeka` ="Dlalanathi", 
+                                             `Amathuba Collective.Miss` ="Amathuba", `Miss.Amathuba Mzi` ="Amathuba", `Miss.Amathuba Mzi ` ="Amathuba", `Miss.amathuba` ="Amathuba", `Miss.dlalanathi`="Dlalanathi",
+                                             `Miss.organisation_1` = "Other", `Miss.organisation_2` = "Other",`Miss.organisation_6` = "Other"))
+  #plhdata_org_ics_fuzzy %>% filter(!is.na(YourParentAppCode)) %>% dplyr::select(organisation_full, app_user_id, YourParentAppCode)
+  # Note: "2c5bfeb1c97cffdf" "oe5824bd19aa8c4" are in "Miss.Miss"  
+}
 
 #####Create a subset for cleaned organisations ####
-# TODO: none are called Miss in "Org" due to how you defined it
-plhdata_org_clean <- plhdata_org %>%
-  filter(Org != "Other")%>%
-  mutate(Org = factor(Org))
+plhdata_org_clean <- plhdata_org # %>% filter(Org != "Other")%>% mutate(Org = factor(Org))
 
 plhdata_org_clean <- plhdata_org_clean %>%
   dplyr::mutate(rp.contact.field.user_age = as.numeric(rp.contact.field.user_age)) %>%
@@ -142,55 +117,57 @@ plhdata_org_clean <- plhdata_org_clean %>%
                                                    2023 - rp.contact.field.user_age, #todo: fix more pernamently
                                                    ifelse(rp.contact.field.user_age < 0, NA, rp.contact.field.user_age)))
 
-
 # Create subsets of the data based on valid app user ID's
-plhdata_org_clean <- plhdata_org_clean %>%
-  dplyr::filter(!is.na(app_version))
+#plhdata_org_clean <- plhdata_org_clean %>% dplyr::filter(!is.na(app_version))
 
 # add in country variable
-plhdata_org_clean <- plhdata_org_clean %>%
-  mutate(country = ifelse(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"), "South Africa",
-                          ifelse(Org %in% c("ICS", "Optimisation Study"), "Tanzania",
-                                 "Other")))
+plhdata_org_clean <- plhdata_org_clean %>% mutate(country = country)
 
-print(country)
-print(study)
+
 if (country == "Tanzania"){
   if (study == "Optimisation"){
-    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "Optimisation Study")
+    plhdata_org_clean <- plhdata_org_clean #%>% filter(Org == "Optimisation Study")
   } else {
     plhdata_org_clean <- plhdata_org_clean %>% mutate(PilotSite = replace_na(PilotSite, "Unknown"))
-    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
+#    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
   }
 } else if (country == "South Africa"){
   plhdata_org_clean <- plhdata_org_clean %>% filter(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"))
 }
 
 # Sorting Name Changes --------------------------------------------------
-old_names <- c("a_1_final", "a_2_final", "a_3_final", "a_4_final", "a_5_part_1_final", "a_5_part_2_final", "a_6_final", "a_7_part_1_final")
-new_names <- c("ppf", "ppp", "ps", "cme", "fs", "fi", "cmp", "cs")
-df_names <- data.frame(old_names, new_names)
-for (v in c("v0.16.2", "v0.16.3", "v0.16.4")){
-  for (i in 1:nrow(df_names)){
-    old_name = df_names[i,1]
-    new_name = df_names[i,2]
-    plhdata_org_clean <- plhdata_org_clean %>%
-      map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
-             .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE))
-    # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
+
+v_all <- c()
+if (length(grep("0.16.2", unique(plhdata_org_clean$app_version))) !=0) { v_all <- c(v, "0.16.2")}
+if (length(grep("0.16.3", unique(plhdata_org_clean$app_version))) !=0) { v_all <- c(v, "0.16.3")}
+if (length(grep("0.16.4", unique(plhdata_org_clean$app_version))) !=0) { v_all <- c(v, "0.16.4")}
+if (length(v_all) > 0){
+  old_names <- c("a_1_final", "a_2_final", "a_3_final", "a_4_final", "a_5_part_1_final", "a_5_part_2_final", "a_6_final", "a_7_part_1_final")
+  new_names <- c("ppf", "ppp", "ps", "cme", "fs", "fi", "cmp", "cs")
+  df_names <- data.frame(old_names, new_names)
+  for (v in v_all){
+    for (i in 1:nrow(df_names)){
+      old_name = df_names[i,1]
+      new_name = df_names[i,2]
+      plhdata_org_clean <- plhdata_org_clean %>%
+        map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
+               .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE))
+      # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
+    }
+  }
+  
+  for (v in c("v0.16.4")){ # and other versions?
+    for (i in 1:nrow(df_names)){
+      old_name = df_names[i,1]
+      new_name = df_names[i,2]
+      plhdata_org_clean <- plhdata_org_clean %>%
+        map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
+               .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE, survey = "final"))
+      # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
+    }
   }
 }
 
-for (v in c("v0.16.4")){ # and other versions?
-  for (i in 1:nrow(df_names)){
-    old_name = df_names[i,1]
-    new_name = df_names[i,2]
-    plhdata_org_clean <- plhdata_org_clean %>%
-      map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
-             .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE, survey = "final"))
-    # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
-  }
-}
 
 # We first rename the _v system into the old system of a_1 etc
 # We then rename into the new naming system, where it can be directly renamed. However, some cannot.
@@ -205,17 +182,18 @@ for (v in c("v0.16.4")){ # and other versions?
 # what to do where the question changed?
 # display differently for optimisation than for pilot if optimisation has different questions? Discuss.
 
-plhdata_org_clean <- plhdata_org_clean %>%
-  mutate(rp.contact.field.survey_welcome_ppf = ifelse(!is.na(rp.contact.field.survey_welcome_ppf), rp.contact.field.survey_welcome_ppf, rp.contact.field.survey_welcome_a_1_final),
-         rp.contact.field.survey_welcome_ppp = ifelse(!is.na(rp.contact.field.survey_welcome_ppp), rp.contact.field.survey_welcome_ppp, rp.contact.field.survey_welcome_a_2_final),
-         rp.contact.field.survey_welcome_fin_s = ifelse(!is.na(rp.contact.field.survey_welcome_fin_s), rp.contact.field.survey_welcome_fin_s, rp.contact.field.survey_welcome_a_5_part_1_final),
-         rp.contact.field.survey_welcome_fin_fi = ifelse(!is.na(rp.contact.field.survey_welcome_fin_fi), rp.contact.field.survey_welcome_fin_fi, rp.contact.field.survey_welcome_a_5_part_2_final)) %>%
-  mutate(rp.contact.field.survey_final_ppf = ifelse(!is.na(rp.contact.field.survey_final_ppf), rp.contact.field.survey_final_ppf, rp.contact.field.survey_final_a_1_final),
-         rp.contact.field.survey_final_ppp = ifelse(!is.na(rp.contact.field.survey_final_ppp), rp.contact.field.survey_final_ppp, rp.contact.field.survey_final_a_2_final),
-         rp.contact.field.survey_final_fin_s = ifelse(!is.na(rp.contact.field.survey_final_fin_s), rp.contact.field.survey_final_fin_s, rp.contact.field.survey_final_a_5_part_1_final),
-         rp.contact.field.survey_final_fin_fi = ifelse(!is.na(rp.contact.field.survey_final_fin_fi), rp.contact.field.survey_final_fin_fi, rp.contact.field.survey_final_a_5_part_2_final))
-
-
+if (!is.null(plhdata_org_clean$rp.contact.field.survey_welcome_a_1_final)){
+  plhdata_org_clean <- plhdata_org_clean %>%
+    mutate(rp.contact.field.survey_welcome_ppf = ifelse(!is.na(rp.contact.field.survey_welcome_ppf), rp.contact.field.survey_welcome_ppf, rp.contact.field.survey_welcome_a_1_final),
+           rp.contact.field.survey_welcome_ppp = ifelse(!is.na(rp.contact.field.survey_welcome_ppp), rp.contact.field.survey_welcome_ppp, rp.contact.field.survey_welcome_a_2_final),
+           rp.contact.field.survey_welcome_fin_s = ifelse(!is.na(rp.contact.field.survey_welcome_fin_s), rp.contact.field.survey_welcome_fin_s, rp.contact.field.survey_welcome_a_5_part_1_final),
+           rp.contact.field.survey_welcome_fin_fi = ifelse(!is.na(rp.contact.field.survey_welcome_fin_fi), rp.contact.field.survey_welcome_fin_fi, rp.contact.field.survey_welcome_a_5_part_2_final)) %>%
+    mutate(rp.contact.field.survey_final_ppf = ifelse(!is.na(rp.contact.field.survey_final_ppf), rp.contact.field.survey_final_ppf, rp.contact.field.survey_final_a_1_final),
+           rp.contact.field.survey_final_ppp = ifelse(!is.na(rp.contact.field.survey_final_ppp), rp.contact.field.survey_final_ppp, rp.contact.field.survey_final_a_2_final),
+           rp.contact.field.survey_final_fin_s = ifelse(!is.na(rp.contact.field.survey_final_fin_s), rp.contact.field.survey_final_fin_s, rp.contact.field.survey_final_a_5_part_1_final),
+           rp.contact.field.survey_final_fin_fi = ifelse(!is.na(rp.contact.field.survey_final_fin_fi), rp.contact.field.survey_final_fin_fi, rp.contact.field.survey_final_a_5_part_2_final))
+  
+}
 
 # todo: following not working
 #plhdata_org_clean <- plhdata_org_clean %>%
@@ -331,7 +309,7 @@ plhdata_org_clean$rp.contact.field.app_launch_count <- as.numeric(plhdata_org_cl
 
 plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
 
-plhdata_org_clean$rp.contact.field.first_app_open <- as.Date(plhdata_org_clean$rp.contact.field.first_app_open)
+# plhdata_org_clean$rp.contact.field.first_app_open <- as.Date(plhdata_org_clean$rp.contact.field.first_app_open)
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(across(starts_with("rp.contact.field.app_launch_count"), ~as.numeric(.)))
 
@@ -362,8 +340,11 @@ plhdata_org_clean <- plhdata_org_clean %>%
                                                         rp.contact.field.workshop_path)))
 
 # Variables Set up ---------------------------------------
-
-# Tab 2 -------
+data_completion_level <- c("rp.contact.field.w_self_care_completion_level", "rp.contact.field.w_1on1_completion_level",  "rp.contact.field.w_praise_completion_level",
+                           "rp.contact.field.w_instruct_completion_level",  "rp.contact.field.w_stress_completion_level",
+                           "rp.contact.field.w_money_completion_level",  "rp.contact.field.w_rules_completion_level", #you have "safe_completion" under rules. Is this right?
+                           "rp.contact.field.w_consequence_completion_level",  "rp.contact.field.w_solve_completion_level",  "rp.contact.field.w_safe_completion_level",
+                           "rp.contact.field.w_crisis_completion_level",  "rp.contact.field.w_celebrate_completion_level")
 completion_vars <- c("Self Care", "One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
 
 
@@ -452,14 +433,9 @@ data_habit_parent_points_w_celebrate <- c("rp.contact.field.parent_point_count_r
                                           "rp.contact.field.parent_point_count_praise_teen_w_celebrate", "rp.contact.field.parent_point_count_breathe_w_celebrate",
                                           "rp.contact.field.parent_point_count_money_w_celebrate", "rp.contact.field.parent_point_count_consequence_w_celebrate",
                                           "rp.contact.field.parent_point_count_safe_w_celebrate", "rp.contact.field.parent_point_count_instruct_positively_w_celebrate")
-#summary_plot_habits_all <- multiple_plot_output(columns_to_summarise = data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")
-#summary_plot_habits_self_care <- multiple_plot_output(columns_to_summarise = data_habit_parent_points_all, replace = "rp.contact.field.parent_point_count_", plot_type = "boxplot")
-#summary_plot_habits_1on1 <- multiple_plot_output(columns_to_summarise = data_habit_parent_points_w_1on1, replace = "rp.contact.field.parent_point_count_", replace_after = "w_1on1", plot_type = "boxplot")
-
 
 ##Priority 20
 #App-opens
-#Number of app opens within a workshop week for each user
 data_app_opens <- c("rp.contact.field.app_launch_count","rp.contact.field.app_launch_count_w_self_care", "rp.contact.field.app_launch_count_w_1on1",
                     "rp.contact.field.app_launch_count_w_praise","rp.contact.field.app_launch_count_w_instruct",
                     "rp.contact.field.app_launch_count_w_stress", "rp.contact.field.app_launch_count_w_money",
@@ -470,6 +446,7 @@ data_app_opens <- c("rp.contact.field.app_launch_count","rp.contact.field.app_la
 data_app_opens_neat <- c("Total", "Welcome and Self care(1)", "One-on-one time(2)", "Praise (3)", "Positive Instructions(4)",
                          "Managing Stress(5)", "Family Budget(6)","Rules(7)", "Calm Consequences(8)",  
                          "Problem Solving(9)", "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
+
 
 # Tab ?? ----------
 #Define workshop week order
@@ -550,29 +527,7 @@ safe_workshop_vars <- c( "rp.contact.field.parent_point_count_safe_w_self_care",
                          "rp.contact.field.parent_point_count_safe_w_solve", "rp.contact.field.parent_point_count_safe_w_safe",
                          "rp.contact.field.parent_point_count_safe_w_crisis","rp.contact.field.parent_point_count_safe_w_celebrate")
 
-
-data_all_weeks_pp_relax_neat <- naming_conventions(relax_workshop_vars, replace = "rp.contact.field.parent_point_count_relax_w_")
-data_all_weeks_pp_treat_yourself_neat <- naming_conventions(treat_yourself_workshop_vars, replace = "rp.contact.field.parent_point_count_treat_yourself_w_")
-data_all_weeks_pp_praise_yourself_neat <- naming_conventions(praise_yourself_workshop_vars, replace = "rp.contact.field.parent_point_count_praise_yourself_w_")
-data_all_weeks_pp_spend_time_neat <- naming_conventions(spend_time_workshop_vars, replace = "rp.contact.field.parent_point_count_spend_time_w_")
-data_all_weeks_pp_praise_teen_neat <- naming_conventions(praise_teen_workshop_vars, replace = "rp.contact.field.parent_point_count_praise_teen_w_")
-data_all_weeks_pp_instruct_positively_neat <- naming_conventions(instruct_positively_workshop_vars, replace = "rp.contact.field.parent_point_count_instruct_positively_w_")
-data_all_weeks_pp_breathe_neat <- naming_conventions(breathe_workshop_vars, replace = "rp.contact.field.parent_point_count_breathe_w_")
-data_all_weeks_pp_money_neat <- naming_conventions(money_workshop_vars, replace = "rp.contact.field.parent_point_count_money_w_")
-data_all_weeks_pp_consequence_neat <- naming_conventions(consequence_workshop_vars, replace = "rp.contact.field.parent_point_count_consequence_w_")
-data_all_weeks_pp_safe_neat <- naming_conventions(safe_workshop_vars, replace = "rp.contact.field.parent_point_count_safe_w_")
-
-
-# TODO: home practice needs to be moved into shinyapp like the other methods
 ## Home Practice ------------------------------------------------------------------
-
-# home practice labels, NB two home practices for stress workshop (breathe and talk), but separate fields only exist for done and mood, not for started, challenges or completed
-# completed field not included in analysis as it's a bit redundant (HP is completed when started, done, mood, and challenge are completed)
-
-## create neat labels for HP variables - not used because replace and replace.after are sufficent to create labels and removes need for dummy when one workshop doesn't have the value
-# hp_vars_done_mood <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress - Breathe", "Stress - Talk", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
-# hp_vars_started_chall <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
-
 data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.field.w_praise_hp_review_started",
                      "rp.contact.field.w_instruct_hp_review_started",  "rp.contact.field.w_stress_hp_review_started",
                      "rp.contact.field.w_money_hp_review_started",  "rp.contact.field.w_rules_hp_review_started",
@@ -581,13 +536,12 @@ data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.f
 
 plhdata_org_clean <- plhdata_org_clean %>%
   dplyr::mutate(rp.contact.field.w_stress_hp_done = ifelse(rp.contact.field.w_stress_hp_talk_done == "yes" & 
-                                            rp.contact.field.w_stress_hp_breathe_done == "yes",
-                                          "yes",
-                                          "no"))
+                                                             rp.contact.field.w_stress_hp_breathe_done == "yes",
+                                                           "yes",
+                                                           "no"))
 
-data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done",
-                  "rp.contact.field.w_stress_hp_talk_done", "rp.contact.field.w_stress_hp_breathe_done",
-                  "rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
+data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_stress_hp_talk_done",
+                  "rp.contact.field.w_stress_hp_breathe_done", "rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
                   "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
 
 # NB No mood 'review' for week 3 home practice (praise)
@@ -615,21 +569,6 @@ chall_ap_vars <- c("rp.contact.field.w_1on1_hp_challenge", "rp.contact.field.w_i
 data_hp_chall <- c("hp_list_challenges_1on1", "hp_list_challenges_instruct", "hp_list_challenges_stress", "hp_list_challenges_money", "hp_list_challenges_rules",
                    "hp_list_challenges_consequence", "hp_list_challenges_solve", "hp_list_challenges_safe", "hp_list_challenges_crisis")
 
-# overview table for home practice review started: number of users per home practice who reached first screen, i.e. only "true" not "false" or NA
-#data_hp_started_neat <- naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_review_started")
-#summary_table_hp_started <- multiple_table_output(plhdata_org_clean, data_hp_started) 
-#names(summary_table_hp_started) <- data_hp_started_neat
-
-#table_hp_started_long <- plyr::ldply(summary_table_hp_started) #could be the table used for teh plot to show true, false and NA for each HP review
-#if (!"true" %in% colnames(table_hp_started_long)) { table_hp_started_long$true <- 0 }
-#table_hp_started <- table_hp_started_long %>% pivot_wider(id_cols = Org, names_from = .id, values_from = c(true))
-#how to call in Rshiny: summary_table_hp_started$`1on1 hp` etc
-
-
-# home practice review - challenges selected for each workshop
-#summary_table_hp_chall <- multiple_table_output(plhdata_org_clean, data_hp_chall, replace = "hp_list_")
-# summary_table_hp_chall$___
-
 # parent library ------------------------------------------------------------------
 data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.field.click_pc_help_count",
                   "rp.contact.field.click_pc_my_tips_count", "rp.contact.field.click_pc_essential_tools_count",
@@ -638,151 +577,10 @@ data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.f
                   "rp.contact.field.click_pc_evidence_base_count", "rp.contact.field.click_pc_technical_support_count",
                   "rp.contact.field.click_pc_message_archive_count","rp.contact.field.click_pc_bereavement_count")
 
-
-
-
-#Test 2 Priority 22 (how to interpret data?)
-#Number of in-app message clicks per workshop week.Per quick start button, per workshop week 
-#Workshops
-plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
-
-
-data_weekly_workshops <- c("rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care",
-                           "hsqsclickedws1", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1",
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_praise", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_instruct",
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_stress", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_money",
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_rules", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_consequence", 
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_solve", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_safe",
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_crisis", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_celebrate",
-                           "rp.contact.field.click_hs_parent_centre_quick_start_w_self_care", "rp.contact.field.click_hs_parent_centre_quick_start_w_1on1",
-                           "rp.contact.field.click_hs_parent_points_quick_start_w_self_care", "rp.contact.field.click_hs_parent_points_quick_start_w_1on1")
-
-data_weekly_workshops_neat <- c("Self care", "In app reminders", "One-on-one time", "Praise", "Positive instructions", "Stress",
-                                "Family Budgets", "Rules", "Calm consequence", "Problem solving", "Teen safety", "Dealing with crisis",
-                                "Celebration and Next Steps", "Parent center - Self care", "Parent center - One-on-one time", "Parent points - Self care", "Parent points - One-on-one time")
-
-summary_tableweekly_workshops <- multiple_table_output(columns_to_summarise = data_weekly_workshops)
-names(summary_tableweekly_workshops) <- data_weekly_workshops_neat
-# summary_tableweekly_workshops$Stress
-
-
-#In-app reminders(Number of in-app message clicks per workshop week),Per quick start button, per workshop week  -------------------------
-# TODO: hsqsclickedws1, hsqsclickedws2 is defined twice, differently each time. Should have different names - is this intentional?
-plhdata_org_clean$hsqsclickedws1<-is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
-plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
-
-# summary_table(columns_to_summarise = hsqsclickedws1)
-# summary_table(columns_to_summarise = hsqsclickedws2)
-
-#Test 1
-#plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
-#plhdata_org_clean$hsqsclickedcountws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care)
-#plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
-# summary_table(columns_to_summarise = rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care, replace = "rp.contact.field.click_hs_")
-# user_id_print("rp.contact.field.click_hs_weekly_workshops_quick_start_count_w_self_care")
-
-# summary_table(columns_to_summarise = hsqsclickedws1)
-# summary_table(columns_to_summarise = hsqsclickedcountws1)
-# summary_table(columns_to_summarise = hsqsclickedws2)
-
-#Priority 23 
-#In-app reminders
-#Total number of in-app message clicks.By User
-#Weekly workshops
-# summary_table(columns_to_summarise = rp.contact.field.click_hs_weekly_workshops_quick_start_count, replace = "rp.contact.field.click_hs_")
-# 
-# #Parent center
-# summary_table(columns_to_summarise = rp.contact.field.click_hs_parent_centre_quick_start_count, replace = "rp.contact.field.click_hs_")
-# 
-# #Parent points
-# summary_table(columns_to_summarise = rp.contact.field.click_hs_parent_points_quick_start_count, replace = "rp.contact.field.click_hs_")
-
-
-#Priority 19
-#App-opens
-#Total number of app-opens for each user(cumulative)
-#app_open_summary <- plhdata_org_clean %>%
-#  group_by(Org) %>%
-#  summarise(sum(rp.contact.field.app_launch_count))
-# user_id_print("rp.contact.field.app_launch_count")
-
-##Priority 21
-#App-opens
-#Maximum time between app-opens - for each user.Time in full days 
-plhdata_org_clean$rp.contact.field.max_days_between_app_launches <- as.numeric(plhdata_org_clean$rp.contact.field.max_days_between_app_launches)
-# summary_table(columns_to_summarise = rp.contact.field.max_days_between_app_launches, replace = "rp.contact.field.")
-
-#Priority 36 --------------------------------------------------------------------------------
-#Emotional Check-in
-#Rate of users who respond "happy" ,"sad" & "ok"
-data_emotional_check_in <- c("rp.contact.field.w_self_care_welcome_individual_a_final", "rp.contact.field.w_1on1_welcome_individual_a_final", 
-                             "rp.contact.field.w_praise_welcome_individual_a_final", "rp.contact.field.w_instruct_welcome_individual_a_final", 
-                             "rp.contact.field.w_stress_welcome_individual_a_final", "rp.contact.field.w_money_welcome_individual_a_final", 
-                             "rp.contact.field.w_rules_welcome_individual_a_final")
-data_emotional_check_in_neat <- c("Self care", "One-on-one time", "Praise", "Positive instructions", "Managing stress", "Family budgets", "Rules")
-tables_emotional_check_in <- multiple_table_output(columns_to_summarise = data_emotional_check_in)
-names(tables_emotional_check_in) <- data_emotional_check_in_neat
-# tables_emotional_check_in$`Self care`
-
-
-# Completion rate of introductory session(Workshop 1:Selfcare) ------------------------------------------------
-# plhdata_org_clean %>%
-#   split(.$Org) %>%
-#   map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.w_self_care_completed, replace = "rp.contact.field.survey"))
-#plhdata_org_clean %>% group_by(Org) %>% select('app_user_id', "rp.contact.field.w_self_care_completed")
-#plhdata_org_clean %>% group_by(Org) %>% select('app_user_id', "rp.contact.field.w_self_care_started")
-#plhdata_org_clean %>% group_by(Org) %>% select('app_user_id', "rp.contact.field.w_1on1_started")
-
 # Completion status of baseline survey ------------------------------------------------
 # plhdata_org_clean %>%
 #   split(.$Org) %>%
 #   map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.survey_welcome_complppplheted, replace = "rp.contact.field.survey"))
-
-#Error as rp.contact.field.parent_point_count_praise_teen_w_celebrate does not exist
-#Error as Column `rp.contact.field.parent_point_count_money_w_crisis` doesn't exist.
-#NB error as Column `rp.contact.field.parent_point_count_consequence_w_money` doesn't exist.
-#the tables seems to require all values to exist at least once in order to create the table for any of the parent points in that week.
-#false: more likely issue is that R truncated some long contact field names and now cannot find them...
-# for now:  data_habit_parent_points_w_money <- data_habit_parent_points_w_money[-8]
-#NB error as Column `parent_point_count_consequence_w_rules` doesn't exist.
-# for now:  data_habit_parent_points_w_rules <- data_habit_parent_points_w_rules[-8]
-#Error as Column `rp.contact.field.parent_point_count_money_w_consequence` doesn't exist.
-
-
-#data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
-#                           "rp.contact.field.survey_welcome_a_3_final",  "rp.contact.field.survey_welcome_a_4_final",
-#                           "rp.contact.field.survey_welcome_a_5_part_1_final",  "rp.contact.field.survey_welcome_a_5_part_2_final",
-#                           "rp.contact.field.survey_welcome_a_6_final",  "rp.contact.field.survey_welcome_a_7_part_1_final",
-#                           "rp.contact.field.survey_welcome_a_7_part_2_final",  "rp.contact.field.survey_welcome_a_7_part_3_final",
-#                           "rp.contact.field.survey_welcome_a_8_final", "rp.contact.field.survey_welcome_a_9_final")
-#survey_vars <- c("Attention", "Praise", "Stress", "Shouting", "Money worries", "Summary", "Hitting", "Teen activity", "Lockdown?", "Knowledge of teen activity in non-lockdown week",
-#                 "Sexual safety talk", "Teen COVID safe")
-#summary_table_survey_past_week <- plhdata_org_clean %>%
-#  map(.x = data_survey_past_week, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
-#names(summary_table_survey_past_week) <- survey_vars
-
-
-# Descriptive Statistics ------------------------------------------------------------------------------------------
-# Gender of App Users
-#gender_table <- plhdata_org_clean %>%
-#  split(.$Org) %>%
-#  map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.user_gender))
-#names(gender_table) <- levels(plhdata_org_clean$Org)
-# gender_table$Nontobeko
-# gender_table$Amathuba
-# gender_table
-
-
-# Age of App Users
-# summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean")
-
-
-#Trials-----------------
-# plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")
-# plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_gender")
-# plhdata_org_clean %>% filter(Org == "Amathuba") %>% select('app_user_id', "rp.contact.field.user_gender")
-# mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
-
 
 # Survey - past week  ----------------------------------------------------------------------------
 r_variables_names <- readxl::read_excel("r_variables_names.xlsx")
@@ -795,29 +593,9 @@ data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey
 ##################################
 
 # download push notification data
-# TODO: add fuzzy join to get_nf_data function
-nf_data <- get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
-nf_data$campaign_id <- naming_conventions(nf_data$campaign_id, replace = "nf_")
 
-#saveRDS(nf_data, file = "nf_data_snapshot_20230320.RDS")
-
-# Notification Data ---------------------------
-#pn_summary_count <- nf_data_join %>%
-#  group_by(app_user_id, Org, rp.contact.field._app_language) %>%
-#  summarise(
-#    number_received = max(app_user_record_id),
-#    number_responded = sum(!is.na(action_id)),
-#    percentage_responded = number_responded / number_received *
-#      100
-#  )
-
-# If we were to use all of the nf_data (except the "temp_" rows)
-# nf_data_summary <- nf_data %>%
-#   filter(!grepl("temp", app_user_id)) %>% # remove the "temps"
-#   group_by(app_user_id) %>%
-#   summarise(
-#     number_received = max(app_user_record_id),
-#     number_responded = sum(!is.na(action_id)),
-#     percentage_responded = number_responded / number_received *
-#       100
-#   )
+app_id <- (UIC_Tracker_Tanzania %>% dplyr::filter(Country == country) %>% dplyr::filter(Study == study))$YourParentAppCode
+qry <- sprintf(paste0("select * from app_notification_interaction where ", "app_user_id", " in (%s)"),
+               paste0("'", rep(app_id), "'", collapse=","))
+nf_data <- get_postgres_data(site = plh_con, qry = qry)
+# nf_data$campaign_id <- naming_conventions(nf_data$campaign_id, replace = "nf_")

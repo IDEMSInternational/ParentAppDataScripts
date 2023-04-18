@@ -396,27 +396,16 @@ safe_workshop_vars <- c( "rp.contact.field.parent_point_count_safe_w_self_care",
                          "rp.contact.field.parent_point_count_safe_w_crisis","rp.contact.field.parent_point_count_safe_w_celebrate")
 
 
-data_all_weeks_pp_relax_neat <- naming_conventions(relax_workshop_vars, replace = "rp.contact.field.parent_point_count_relax_w_")
-data_all_weeks_pp_treat_yourself_neat <- naming_conventions(treat_yourself_workshop_vars, replace = "rp.contact.field.parent_point_count_treat_yourself_w_")
-data_all_weeks_pp_praise_yourself_neat <- naming_conventions(praise_yourself_workshop_vars, replace = "rp.contact.field.parent_point_count_praise_yourself_w_")
-data_all_weeks_pp_spend_time_neat <- naming_conventions(spend_time_workshop_vars, replace = "rp.contact.field.parent_point_count_spend_time_w_")
-data_all_weeks_pp_praise_teen_neat <- naming_conventions(praise_teen_workshop_vars, replace = "rp.contact.field.parent_point_count_praise_teen_w_")
-data_all_weeks_pp_instruct_positively_neat <- naming_conventions(instruct_positively_workshop_vars, replace = "rp.contact.field.parent_point_count_instruct_positively_w_")
-data_all_weeks_pp_breathe_neat <- naming_conventions(breathe_workshop_vars, replace = "rp.contact.field.parent_point_count_breathe_w_")
-data_all_weeks_pp_money_neat <- naming_conventions(money_workshop_vars, replace = "rp.contact.field.parent_point_count_money_w_")
-data_all_weeks_pp_consequence_neat <- naming_conventions(consequence_workshop_vars, replace = "rp.contact.field.parent_point_count_consequence_w_")
-data_all_weeks_pp_safe_neat <- naming_conventions(safe_workshop_vars, replace = "rp.contact.field.parent_point_count_safe_w_")
-
-
-# TODO: home practice needs to be moved into shinyapp like the other methods
-## Home Practice ------------------------------------------------------------------
-
-# home practice labels, NB two home practices for stress workshop (breathe and talk), but separate fields only exist for done and mood, not for started, challenges or completed
-# completed field not included in analysis as it's a bit redundant (HP is completed when started, done, mood, and challenge are completed)
-
-## create neat labels for HP variables - not used because replace and replace.after are sufficent to create labels and removes need for dummy when one workshop doesn't have the value
-# hp_vars_done_mood <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress - Breathe", "Stress - Talk", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
-# hp_vars_started_chall <- c("One-on-one Time", "Praise", "Positive Instructions", "Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
+# data_all_weeks_pp_relax_neat <- naming_conventions(relax_workshop_vars, replace = "rp.contact.field.parent_point_count_relax_w_")
+# data_all_weeks_pp_treat_yourself_neat <- naming_conventions(treat_yourself_workshop_vars, replace = "rp.contact.field.parent_point_count_treat_yourself_w_")
+# data_all_weeks_pp_praise_yourself_neat <- naming_conventions(praise_yourself_workshop_vars, replace = "rp.contact.field.parent_point_count_praise_yourself_w_")
+# data_all_weeks_pp_spend_time_neat <- naming_conventions(spend_time_workshop_vars, replace = "rp.contact.field.parent_point_count_spend_time_w_")
+# data_all_weeks_pp_praise_teen_neat <- naming_conventions(praise_teen_workshop_vars, replace = "rp.contact.field.parent_point_count_praise_teen_w_")
+# data_all_weeks_pp_instruct_positively_neat <- naming_conventions(instruct_positively_workshop_vars, replace = "rp.contact.field.parent_point_count_instruct_positively_w_")
+# data_all_weeks_pp_breathe_neat <- naming_conventions(breathe_workshop_vars, replace = "rp.contact.field.parent_point_count_breathe_w_")
+# data_all_weeks_pp_money_neat <- naming_conventions(money_workshop_vars, replace = "rp.contact.field.parent_point_count_money_w_")
+# data_all_weeks_pp_consequence_neat <- naming_conventions(consequence_workshop_vars, replace = "rp.contact.field.parent_point_count_consequence_w_")
+# data_all_weeks_pp_safe_neat <- naming_conventions(safe_workshop_vars, replace = "rp.contact.field.parent_point_count_safe_w_")
 
 data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.field.w_praise_hp_review_started",
                      "rp.contact.field.w_instruct_hp_review_started",  "rp.contact.field.w_stress_hp_review_started",
@@ -482,38 +471,35 @@ data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.f
                   "rp.contact.field.click_pc_evidence_base_count", "rp.contact.field.click_pc_technical_support_count",
                   "rp.contact.field.click_pc_message_archive_count","rp.contact.field.click_pc_bereavement_count")
 
-
-
-
 #Test 2 Priority 22 (how to interpret data?)
 #Number of in-app message clicks per workshop week.Per quick start button, per workshop week 
 #Workshops
-plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
-
-
-data_weekly_workshops <- c("rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care",
-                           "hsqsclickedws1", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1",
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_praise", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_instruct",
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_stress", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_money",
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_rules", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_consequence", 
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_solve", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_safe",
-                           "rp.contact.field.click_hs_weekly_workshops_quick_start_w_crisis", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_celebrate",
-                           "rp.contact.field.click_hs_parent_centre_quick_start_w_self_care", "rp.contact.field.click_hs_parent_centre_quick_start_w_1on1",
-                           "rp.contact.field.click_hs_parent_points_quick_start_w_self_care", "rp.contact.field.click_hs_parent_points_quick_start_w_1on1")
-
-data_weekly_workshops_neat <- c("Self care", "In app reminders", "One-on-one time", "Praise", "Positive instructions", "Stress",
-                                "Family Budgets", "Rules", "Calm consequence", "Problem solving", "Teen safety", "Dealing with crisis",
-                                "Celebration and Next Steps", "Parent center - Self care", "Parent center - One-on-one time", "Parent points - Self care", "Parent points - One-on-one time")
-
-summary_tableweekly_workshops <- multiple_table_output(columns_to_summarise = data_weekly_workshops)
-names(summary_tableweekly_workshops) <- data_weekly_workshops_neat
-# summary_tableweekly_workshops$Stress
+# plhdata_org_clean$hsqsclickedws1<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
+# 
+# 
+# data_weekly_workshops <- c("rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care",
+#                            "hsqsclickedws1", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1",
+#                            "rp.contact.field.click_hs_weekly_workshops_quick_start_w_praise", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_instruct",
+#                            "rp.contact.field.click_hs_weekly_workshops_quick_start_w_stress", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_money",
+#                            "rp.contact.field.click_hs_weekly_workshops_quick_start_w_rules", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_consequence", 
+#                            "rp.contact.field.click_hs_weekly_workshops_quick_start_w_solve", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_safe",
+#                            "rp.contact.field.click_hs_weekly_workshops_quick_start_w_crisis", "rp.contact.field.click_hs_weekly_workshops_quick_start_w_celebrate",
+#                            "rp.contact.field.click_hs_parent_centre_quick_start_w_self_care", "rp.contact.field.click_hs_parent_centre_quick_start_w_1on1",
+#                            "rp.contact.field.click_hs_parent_points_quick_start_w_self_care", "rp.contact.field.click_hs_parent_points_quick_start_w_1on1")
+# 
+# data_weekly_workshops_neat <- c("Self care", "In app reminders", "One-on-one time", "Praise", "Positive instructions", "Stress",
+#                                 "Family Budgets", "Rules", "Calm consequence", "Problem solving", "Teen safety", "Dealing with crisis",
+#                                 "Celebration and Next Steps", "Parent center - Self care", "Parent center - One-on-one time", "Parent points - Self care", "Parent points - One-on-one time")
+# 
+# summary_tableweekly_workshops <- multiple_table_output(columns_to_summarise = data_weekly_workshops)
+# names(summary_tableweekly_workshops) <- data_weekly_workshops_neat
+# # summary_tableweekly_workshops$Stress
 
 
 #In-app reminders(Number of in-app message clicks per workshop week),Per quick start button, per workshop week  -------------------------
 # TODO: hsqsclickedws1, hsqsclickedws2 is defined twice, differently each time. Should have different names - is this intentional?
-plhdata_org_clean$hsqsclickedws1<-is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
-plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
+# plhdata_org_clean$hsqsclickedws1<-is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_self_care)
+# plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.click_hs_weekly_workshops_quick_start_w_1on1)
 
 # summary_table(columns_to_summarise = hsqsclickedws1)
 # summary_table(columns_to_summarise = hsqsclickedws2)
@@ -553,20 +539,20 @@ plhdata_org_clean$hsqsclickedws2<-!is.na(plhdata_org_clean$rp.contact.field.clic
 ##Priority 21
 #App-opens
 #Maximum time between app-opens - for each user.Time in full days 
-plhdata_org_clean$rp.contact.field.max_days_between_app_launches <- as.numeric(plhdata_org_clean$rp.contact.field.max_days_between_app_launches)
+# plhdata_org_clean$rp.contact.field.max_days_between_app_launches <- as.numeric(plhdata_org_clean$rp.contact.field.max_days_between_app_launches)
 # summary_table(columns_to_summarise = rp.contact.field.max_days_between_app_launches, replace = "rp.contact.field.")
 
 #Priority 36 --------------------------------------------------------------------------------
 #Emotional Check-in
 #Rate of users who respond "happy" ,"sad" & "ok"
-data_emotional_check_in <- c("rp.contact.field.w_self_care_welcome_individual_a_final", "rp.contact.field.w_1on1_welcome_individual_a_final", 
-                             "rp.contact.field.w_praise_welcome_individual_a_final", "rp.contact.field.w_instruct_welcome_individual_a_final", 
-                             "rp.contact.field.w_stress_welcome_individual_a_final", "rp.contact.field.w_money_welcome_individual_a_final", 
-                             "rp.contact.field.w_rules_welcome_individual_a_final")
-data_emotional_check_in_neat <- c("Self care", "One-on-one time", "Praise", "Positive instructions", "Managing stress", "Family budgets", "Rules")
-tables_emotional_check_in <- multiple_table_output(columns_to_summarise = data_emotional_check_in)
-names(tables_emotional_check_in) <- data_emotional_check_in_neat
-# tables_emotional_check_in$`Self care`
+# data_emotional_check_in <- c("rp.contact.field.w_self_care_welcome_individual_a_final", "rp.contact.field.w_1on1_welcome_individual_a_final", 
+#                              "rp.contact.field.w_praise_welcome_individual_a_final", "rp.contact.field.w_instruct_welcome_individual_a_final", 
+#                              "rp.contact.field.w_stress_welcome_individual_a_final", "rp.contact.field.w_money_welcome_individual_a_final", 
+#                              "rp.contact.field.w_rules_welcome_individual_a_final")
+# data_emotional_check_in_neat <- c("Self care", "One-on-one time", "Praise", "Positive instructions", "Managing stress", "Family budgets", "Rules")
+# tables_emotional_check_in <- multiple_table_output(columns_to_summarise = data_emotional_check_in)
+# names(tables_emotional_check_in) <- data_emotional_check_in_neat
+# # tables_emotional_check_in$`Self care`
 
 
 # Completion rate of introductory session(Workshop 1:Selfcare) ------------------------------------------------
@@ -581,52 +567,6 @@ names(tables_emotional_check_in) <- data_emotional_check_in_neat
 # plhdata_org_clean %>%
 #   split(.$Org) %>%
 #   map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.survey_welcome_complppplheted, replace = "rp.contact.field.survey"))
-
-#Error as rp.contact.field.parent_point_count_praise_teen_w_celebrate does not exist
-#Error as Column `rp.contact.field.parent_point_count_money_w_crisis` doesn't exist.
-#NB error as Column `rp.contact.field.parent_point_count_consequence_w_money` doesn't exist.
-#the tables seems to require all values to exist at least once in order to create the table for any of the parent points in that week.
-#false: more likely issue is that R truncated some long contact field names and now cannot find them...
-# for now:  data_habit_parent_points_w_money <- data_habit_parent_points_w_money[-8]
-#NB error as Column `parent_point_count_consequence_w_rules` doesn't exist.
-# for now:  data_habit_parent_points_w_rules <- data_habit_parent_points_w_rules[-8]
-#Error as Column `rp.contact.field.parent_point_count_money_w_consequence` doesn't exist.
-
-
-#data_survey_past_week <- c("rp.contact.field.survey_welcome_a_1_final",  "rp.contact.field.survey_welcome_a_2_final",
-#                           "rp.contact.field.survey_welcome_a_3_final",  "rp.contact.field.survey_welcome_a_4_final",
-#                           "rp.contact.field.survey_welcome_a_5_part_1_final",  "rp.contact.field.survey_welcome_a_5_part_2_final",
-#                           "rp.contact.field.survey_welcome_a_6_final",  "rp.contact.field.survey_welcome_a_7_part_1_final",
-#                           "rp.contact.field.survey_welcome_a_7_part_2_final",  "rp.contact.field.survey_welcome_a_7_part_3_final",
-#                           "rp.contact.field.survey_welcome_a_8_final", "rp.contact.field.survey_welcome_a_9_final")
-#survey_vars <- c("Attention", "Praise", "Stress", "Shouting", "Money worries", "Summary", "Hitting", "Teen activity", "Lockdown?", "Knowledge of teen activity in non-lockdown week",
-#                 "Sexual safety talk", "Teen COVID safe")
-#summary_table_survey_past_week <- plhdata_org_clean %>%
-#  map(.x = data_survey_past_week, .f = ~summary_table(columns_to_summarise = .x, display = FALSE, include_margins = TRUE))
-#names(summary_table_survey_past_week) <- survey_vars
-
-
-# Descriptive Statistics ------------------------------------------------------------------------------------------
-# Gender of App Users
-#gender_table <- plhdata_org_clean %>%
-#  split(.$Org) %>%
-#  map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.user_gender))
-#names(gender_table) <- levels(plhdata_org_clean$Org)
-# gender_table$Nontobeko
-# gender_table$Amathuba
-# gender_table
-
-
-# Age of App Users
-# summary_table(columns_to_summarise = rp.contact.field.user_age, summaries = "mean")
-
-
-#Trials-----------------
-# plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_age")
-# plhdata_org_clean %>% select('app_user_id', "rp.contact.field.user_gender")
-# plhdata_org_clean %>% filter(Org == "Amathuba") %>% select('app_user_id', "rp.contact.field.user_gender")
-# mean(x=as.numeric(plhdata_org_clean$rp.contact.field.user_age), na.rm=TRUE)
-
 
 # Survey - past week  ----------------------------------------------------------------------------
 r_variables_names <- readxl::read_excel("r_variables_names.xlsx")

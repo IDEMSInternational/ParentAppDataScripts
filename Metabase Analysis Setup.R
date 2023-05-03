@@ -5,45 +5,45 @@
 ##################################
 
 country <- "Tanzania"
-study <- "Optimisation"
+study <- "Pilot"
 
 ### Set up UIC data
 
 # add in start dates for clusters
-UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>% 
-  mutate(whatsapp_start_date = if_else(opt_cluster == 1, as.Date("2022-11-27"),
-                       if_else(opt_cluster == 3, as.Date("2022-12-17"),
-                              if_else(opt_cluster == 4, as.Date("2023-01-10"),
-                                     if_else(opt_cluster == 6, as.Date("2022-11-24"),
-                                            if_else(opt_cluster == 7, as.Date("2022-11-26"),
-                                                   if_else(opt_cluster == 11, as.Date("2023-01-10"),
-                                                          if_else(opt_cluster == 13, as.Date("2022-12-24"),
-                                                                 if_else(opt_cluster == 14, as.Date("2022-12-24"),
-                                                                        as.Date(NA))))))))))
+# create a data frame with the lookup values
+lookup_df <- data.frame(opt_cluster = c(1, 3, 4, 6, 7, 11, 13, 14),
+                        whatsapp_start_date = as.Date(c("2022-11-27", "2022-12-17", "2023-01-10",
+                                                        "2022-11-24", "2022-11-26", "2023-01-10",
+                                                        "2022-12-24", "2022-12-24")))
+
+# use left_join to add the lookup values to the main data frame
+UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>%
+  left_join(lookup_df, by = "opt_cluster")
+
 
 ### extract data ----------------------------------------------------------------------
 # to get user data
-plhdata_org <- get_user_filter_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC_Tracker_Tanzania,
+plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE, UIC_Tracker = UIC_Tracker_Tanzania,
                                     country = country, study = study)
+names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")  
+
+if (nrow(plhdata_org) == 0){
+  plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE, UIC_Tracker = UIC_Tracker_Tanzania,
+                               country = country, study = "Pilot")
+  names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")
+  plhdata_org <- plhdata_org %>% mutate(across(everything(), as.numeric))
+  plhdata_org <- naniar::replace_with_na_all(plhdata_org, ~.x)
+  plhdata_org <- plhdata_org[0,]
+}
 
 # Create Optimisation Group Data for Optimisation Study - Tanzania
 if (study == "Optimisation"){
   valid_ids <- UIC_Tracker_Tanzania %>%
     filter(complete.cases(YourParentAppCode))  %>%
-    filter(Study == "Optimisation") %>%
-    select(c(YourParentAppCode, opt_cluster, experimental_condition,
-             OnboardingDate))
+    filter(Study == study) %>%
+    select(c(YourParentAppCode, opt_cluster, experimental_condition, OnboardingDate))
   
-  # user ID "75bbbdc21741f155" has an extra b in one source so it is important we still do fuzzy join
-  plhdata_org_opt_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
-  # get the app user IDs where we have a code from the optimisation group.
-  valid_app_user_id_TZ <- (plhdata_org_opt_fuzzy %>% filter(!is.na(YourParentAppCode)))$app_user_id
-  plhdata_org <- plhdata_org %>% 
-    mutate(valid_ics_1 = ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE)) %>%
-    mutate(organisation_full = ifelse(valid_ics_1, "Optimisation Study", organisation_full))
-  
-  plhdata_org_opt_fuzzy_opt_cluster <- plhdata_org_opt_fuzzy %>% dplyr::select(c(app_user_id, opt_cluster, experimental_condition, OnboardingDate))
-  plhdata_org <- full_join(plhdata_org, plhdata_org_opt_fuzzy_opt_cluster, by = c("app_user_id" = "app_user_id"))
+  plhdata_org <- full_join(plhdata_org, valid_ids, by = c("app_user_id" = "YourParentAppCode"))
   plhdata_org <- plhdata_org %>%
     mutate(Cluster = opt_cluster,
            Support = ifelse(experimental_condition < 5, "Self-guided", "WhatsApp"),
@@ -54,21 +54,22 @@ if (study == "Optimisation"){
     filter(complete.cases(YourParentAppCode))  %>%
     filter(Study == "Pilot") %>%
     select(c(YourParentAppCode, PilotSite))
+  plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
   
-  plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
-  valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
-  plhdata_org <- plhdata_org %>% 
-    mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
-                              ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE))) %>%
-    filter(valid_ics)
-  plhdata_org <- plhdata_org %>%
-    mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4",
-                                                         "48621962b0612b7c", "d5faa072c966ea8d",
-                                                         "df1088af5f3d4c87", "5b2ba92c32c6a3e2",
-                                                         "f3aff268263b1d62", "a05a0fe6cd3cb52d",
-                                                         "7f56c4c0a8a2f36f", "fab4ae58ac03f920"),
-                                      "ICS",
-                                      as.character(organisation_full)))
+  #plhdata_org_ics_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
+  # valid_app_user_id_TZ <- (plhdata_org_ics_fuzzy %>% filter(organisation_full == "ICS") %>% filter(!is.na(YourParentAppCode)))$app_user_id
+  # plhdata_org <- plhdata_org %>% 
+  #   mutate(valid_ics = ifelse(organisation_full != "ICS", TRUE,
+  #                             ifelse(app_user_id %in% valid_app_user_id_TZ, TRUE, FALSE))) %>%
+  #   filter(valid_ics)
+  # plhdata_org <- plhdata_org %>%
+  #   mutate(organisation_full = ifelse(app_user_id %in% c("2c5bfeb1c97cffdf", "0e5824bd19aae8c4",
+  #                                                        "48621962b0612b7c", "d5faa072c966ea8d",
+  #                                                        "df1088af5f3d4c87", "5b2ba92c32c6a3e2",
+  #                                                        "f3aff268263b1d62", "a05a0fe6cd3cb52d",
+  #                                                        "7f56c4c0a8a2f36f", "fab4ae58ac03f920"),
+  #                                     "ICS",
+  #                                     as.character(organisation_full)))
   
   # Create Pilot Group Data for Pilot Study - Tanzania
   
@@ -82,10 +83,10 @@ if (study == "Optimisation"){
   
   # get unique cases only
   #View(plhdata_org_ics_fuzzy %>% filter(app_user_id == "a60b902a430aaec2"))
-  plhdata_org_ics_fuzzy <- unique(plhdata_org_ics_fuzzy %>% dplyr::select(-c("YourParentAppCode")))
-  plhdata_org_pilot_site <- plhdata_org_ics_fuzzy %>% dplyr::select(c(app_user_id, PilotSite)) %>% filter(!is.na(PilotSite))
-  nrow((plhdata_org_pilot_site))
-  plhdata_org <- full_join(plhdata_org, plhdata_org_pilot_site, by = c("app_user_id" = "app_user_id"))
+  # plhdata_org_ics_fuzzy <- unique(plhdata_org_ics_fuzzy %>% dplyr::select(-c("YourParentAppCode")))
+  # plhdata_org_pilot_site <- plhdata_org_ics_fuzzy %>% dplyr::select(c(app_user_id, PilotSite)) %>% filter(!is.na(PilotSite))
+  # nrow((plhdata_org_pilot_site))
+  # plhdata_org <- full_join(plhdata_org, plhdata_org_pilot_site, by = c("app_user_id" = "app_user_id"))
 }
 
 # For SA:
@@ -127,9 +128,11 @@ plhdata_org_clean <- plhdata_org_clean %>% mutate(country = country)
 if (country == "Tanzania"){
   if (study == "Optimisation"){
     plhdata_org_clean <- plhdata_org_clean #%>% filter(Org == "Optimisation Study")
-  } else {
+  } else if (study == "Pilot") {
     plhdata_org_clean <- plhdata_org_clean %>% mutate(PilotSite = replace_na(PilotSite, "Unknown"))
 #    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
+  } else {
+    plhdata_org_clean <- plhdata_org_clean %>% mutate(Org = NA)
   }
 } else if (country == "South Africa"){
   plhdata_org_clean <- plhdata_org_clean %>% filter(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"))
@@ -137,36 +140,36 @@ if (country == "Tanzania"){
 
 # Sorting Name Changes --------------------------------------------------
 
-v_all <- c()
-if (length(grep("0.16.2", unique(plhdata_org_clean$app_version))) !=0) { v_all <- c(v, "0.16.2")}
-if (length(grep("0.16.3", unique(plhdata_org_clean$app_version))) !=0) { v_all <- c(v, "0.16.3")}
-if (length(grep("0.16.4", unique(plhdata_org_clean$app_version))) !=0) { v_all <- c(v, "0.16.4")}
-if (length(v_all) > 0){
-  old_names <- c("a_1_final", "a_2_final", "a_3_final", "a_4_final", "a_5_part_1_final", "a_5_part_2_final", "a_6_final", "a_7_part_1_final")
-  new_names <- c("ppf", "ppp", "ps", "cme", "fs", "fi", "cmp", "cs")
-  df_names <- data.frame(old_names, new_names)
-  for (v in v_all){
-    for (i in 1:nrow(df_names)){
-      old_name = df_names[i,1]
-      new_name = df_names[i,2]
-      plhdata_org_clean <- plhdata_org_clean %>%
-        map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
-               .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE))
-      # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
-    }
-  }
-  
-  for (v in c("v0.16.4")){ # and other versions?
-    for (i in 1:nrow(df_names)){
-      old_name = df_names[i,1]
-      new_name = df_names[i,2]
-      plhdata_org_clean <- plhdata_org_clean %>%
-        map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
-               .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE, survey = "final"))
-      # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
-    }
-  }
-}
+# v_all <- c()
+# if (length(grep("0.16.2", unique(plhdata_org_clean$app_version))) !=0) { v_all <- c(v_all, "0.16.2")}
+# if (length(grep("0.16.3", unique(plhdata_org_clean$app_version))) !=0) { v_all <- c(v_all, "0.16.3")}
+# if (length(grep("0.16.4", unique(plhdata_org_clean$app_version))) !=0) { v_all <- c(v_all, "0.16.4")}
+# if (length(v_all) > 0){
+#   old_names <- c("a_1_final", "a_2_final", "a_3_final", "a_4_final", "a_5_part_1_final", "a_5_part_2_final", "a_6_final", "a_7_part_1_final")
+#   new_names <- c("ppf", "ppp", "ps", "cme", "fs", "fi", "cmp", "cs")
+#   df_names <- data.frame(old_names, new_names)
+#   for (v in v_all){
+#     for (i in 1:nrow(df_names)){
+#       old_name = df_names[i,1]
+#       new_name = df_names[i,2]
+#       plhdata_org_clean <- plhdata_org_clean %>%
+#         map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
+#                .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE))
+#       # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
+#     }
+#   }
+#   
+#   for (v in c("v0.16.4")){ # and other versions?
+#     for (i in 1:nrow(df_names)){
+#       old_name = df_names[i,1]
+#       new_name = df_names[i,2]
+#       plhdata_org_clean <- plhdata_org_clean %>%
+#         map_df(.x = v, #c("v0.16.2", "v0.16.3", "v0.16.4"),
+#                .f = ~version_variables_rename(old_name = old_name, new_name = new_name, new_name_v = .x, old_system_replacement = TRUE, survey = "final"))
+#       # todo: doesn't work for v?? Should explore that. But for now, in this extra loop
+#     }
+#   }
+# }
 
 
 # We first rename the _v system into the old system of a_1 etc
@@ -322,13 +325,6 @@ plhdata_org_clean <- plhdata_org_clean %>%
 
 
 ## Data Analysis ## --------------------------------------------------------
-data_baseline_survey <- c("rp.contact.field.survey_welcome_completed", "rp.contact.field.user_gender",
-                          "rp.contact.field.user_age", "rp.contact.field.household_adults",
-                          "rp.contact.field.household_teens", "rp.contact.field.household_babies",
-                          "rp.contact.field.household_children", "rp.contact.field._app_language", "app_version", "rp.contact.field.workshop_path")
-
-
-
 #survey ------------------------------------------------------------------------------------
 
 # workshop_path edits ----------
@@ -550,9 +546,9 @@ data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_instruc
                   "rp.contact.field.w_solve_hp_mood", "rp.contact.field.w_safe_hp_mood", "rp.contact.field.w_crisis_hp_mood") 
 
 # TODO: this should work in function
-plhdata_org_clean <- add_na_variable(variable = data_hp_started)
-plhdata_org_clean <- add_na_variable(variable = data_hp_done)
-plhdata_org_clean <- add_na_variable(variable = data_hp_mood)
+# plhdata_org_clean <- add_na_variable(variable = data_hp_started)
+# plhdata_org_clean <- add_na_variable(variable = data_hp_done)
+# plhdata_org_clean <- add_na_variable(variable = data_hp_mood)
 
 challenge_vars <- c("rp.contact.field.w_1on1_hp_challenge_list", "rp.contact.field.w_instruct_hp_challenge_list",
                     "rp.contact.field.w_stress_hp_challenge_list", "rp.contact.field.w_money_hp_challenge_list",
@@ -583,8 +579,9 @@ data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.f
 #   map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.survey_welcome_complppplheted, replace = "rp.contact.field.survey"))
 
 # Survey - past week  ----------------------------------------------------------------------------
-r_variables_names <- readxl::read_excel("r_variables_names.xlsx")
+r_variables_names <- readxl::read_excel("metadata_PA.xlsx")
 data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey_past_week")
+data_baseline_survey <- r_variables_names %>% filter(location_ID == "data_baseline_survey") %>% filter(display == TRUE)
 
 ##################################
 ##################################
@@ -593,9 +590,14 @@ data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey
 ##################################
 
 # download push notification data
+if (study == "RCT"){
+  nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC_Tracker_Tanzania, filter = TRUE,
+                         study = "Pilot", country = country, app_user_id = "app_user_id")
+  nf_data <- nf_data %>% mutate(across(everything(), as.numeric))
+  nf_data <- naniar::replace_with_na_all(nf_data, ~.x)
+  nf_data <- nf_data[0,]
+} else {
+  nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC_Tracker_Tanzania, filter = TRUE,
+                         study = study, country = country, app_user_id = "app_user_id")
+}
 
-app_id <- (UIC_Tracker_Tanzania %>% dplyr::filter(Country == country) %>% dplyr::filter(Study == study))$YourParentAppCode
-qry <- sprintf(paste0("select * from app_notification_interaction where ", "app_user_id", " in (%s)"),
-               paste0("'", rep(app_id), "'", collapse=","))
-nf_data <- get_postgres_data(site = plh_con, qry = qry)
-# nf_data$campaign_id <- naming_conventions(nf_data$campaign_id, replace = "nf_")

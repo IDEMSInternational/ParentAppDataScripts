@@ -1,26 +1,46 @@
 library(shiny)
-library(shinythemes)
+#library(shinythemes)
 library(shinyjs)
 library(plotly)
 library(shinydashboard)
-library(httr)
 library(jsonlite)
 library(here)     
-library(tidyverse)
-library(yesno)
+library(ggplot2)
+library(tibble)
+library(stringr)
+library(forcats)
+library(lubridate)
+library(purrr)
+library(tidyr)
+library(dplyr)
 library(gt)
 library(readxl)
 library(postgresr)
 options(dplyr.summarise.inform = FALSE)
+options(dplyr.warning.inform = FALSE)
 country <- "Tanzania" # Tanzania, all
-study <- "Optimisation"
+study <- "Pilot"
 source("config/credentials_file.R")
 source(here("Metabase Functions.R"))
-source(here("Metabase ShinyApp 2.R"))
+source(here("Metabase ShinyApp.R"))
 parentapp_shiny(country = country, study = study)
 
-# try shinyapp 2 vs shinyapp - same time.
+# move to be like shiny 2 with the easy to read function
+
+# TODO: run shiny app. Look at output prints.
+# See time difference from nothing to "first"
+# then "first" to "last"
+# then for the observe() times (17 secs?)
+
+
+
+
+
+# 2: 14.79
+
+
 # try shinyapp 2 without the other tabs start ui stuff vs shinyapp 2
+# 26 secs vs 10 secs
 
 
 # on second tab, for "3", not "4":

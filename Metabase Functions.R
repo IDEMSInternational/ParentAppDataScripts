@@ -6,76 +6,17 @@ source(here("config/Personal Setup.R"))
 UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 UIC_Tracker_Tanzania <- rio::import(file = here("data/UIC Tracker Tanzania.xlsx"))
 
-get_postgres_data <- function (site, name = c("app_users", "app_notification_interaction"), qry = NULL){
-  name <- match.arg(name)
-  if (is.null(qry)){
-    df <- DBI::dbReadTable(conn = site, name = name)
-  } else {
-    df <- DBI::dbGetQuery(site, qry)
-  }
-  return(df)
-}
+# get_postgres_data <- function (site, name = c("app_users", "app_notification_interaction"), qry = NULL){
+#   name <- match.arg(name)
+#   if (is.null(qry)){
+#     df <- DBI::dbReadTable(conn = site, name = name)
+#   } else {
+#     df <- DBI::dbGetQuery(site, qry)
+#   }
+#   return(df)
+# }
 
 # todo: get_nf_data - update function to have qry option
-
-get_user_filter_data <- function (site, date_from, date_to = NULL, format_date = "%Y-%m-%d", 
-          tzone_date = "UTC", include_UIC_data = FALSE, merge_check = TRUE, filter = FALSE,
-          # if filter TRUE - give ctry and study
-          country = "Tanzania", study,
-          UIC_Tracker, app_user_id = "app_user_id", join_UIC = "UIC", 
-          max_dist = 5) 
-{
-  app_id <- (UIC_Tracker %>% dplyr::filter(Country == country) %>% dplyr::filter(Study == study))$YourParentAppCode
-  qry <- sprintf(paste0("select * from app_users where ", app_user_id, " in (%s)"),
-                 paste0("'", rep(app_id), "'", collapse=","))
-  df <- get_postgres_data(site = site, name = "app_users", qry = qry)
-  appdata_df <- list()
-  for (i in 1:nrow(df)) {
-    appdata_df[[i]] <- data.frame(jsonlite::fromJSON(df$contact_fields[i]))
-  }
-  appdata <- plyr::ldply(appdata_df)
-  plhdata <- dplyr::bind_cols(df, appdata)
-  if (include_UIC_data) {
-    plhdata_org_fuzzy <- fuzzyjoin::stringdist_full_join(x = plhdata, 
-                                                         y = UIC_Tracker, by = c(app_user_id = join_UIC[1]), 
-                                                         max_dist = max_dist)
-    plhdata_org_fuzzy_comp <- plhdata_org_fuzzy %>% dplyr::filter(!is.na(.data[[join_UIC]])) %>% 
-      dplyr::filter(app_user_id != .data[[join_UIC]] | 
-                      is.na(app_user_id)) %>% dplyr::select(app_user_id, 
-                                                            .data[[join_UIC]])
-    if (merge_check) {
-      if (yesno::yesno2("Fuzzy matches are:\n", paste0(capture.output(plhdata_org_fuzzy_comp), 
-                                                       collapse = "\n"), "\nDo you want to merge these changes in?") == 
-          TRUE) {
-        return_data <- plhdata_org_fuzzy
-      }
-      else {
-        warning("merging in fuzzy matches:\n", paste0(capture.output(plhdata_org_fuzzy_comp %>% 
-                                                                       dplyr::filter(stats::complete.cases(app_user_id))), 
-                                                      collapse = "\n"))
-        return_data <- plhdata_org_fuzzy
-      }
-    }
-    else {
-      return_data <- dplyr::full_join(x = plhdata, y = UIC_Tracker, 
-                                      by = c(app_user_id = join_UIC))
-    }
-  }
-  else {
-    return_data <- plhdata
-  }
-  if (!missing(date_from)) {
-    return_data <- return_data %>% dplyr::filter(as.POSIXct(date_from, 
-                                                            format = format_date, tzone = tzone_date) < as.POSIXct(return_data$createdAt, 
-                                                                                                                   format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"))
-  }
-  if (!missing(date_to)) {
-    return_data <- return_data %>% dplyr::filter(as.POSIXct(date_to, 
-                                                            format = format_date, tzone = tzone_date) > as.POSIXct(return_data$createdAt, 
-                                                                                                                   format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"))
-  }
-  return(return_data)
-}
 
 
 #######################################
@@ -95,10 +36,10 @@ add_na_variable <- function(data = plhdata_org_clean, variable){
 notification_summary <- function(data = nf_data, factors){
   numerator <- data %>%
     filter(action_id == "tap") %>%
-    group_by(across(c({{ factors }})), .drop = FALSE) %>%
+    group_by(across(all_of({{ factors }})), .drop = FALSE) %>%
     summarise(replied = n())
   denominator <- data %>%
-    group_by(across(c({{ factors }})), .drop = FALSE) %>%
+    group_by(across(all_of({{ factors }})), .drop = FALSE) %>%
     summarise(received = n())
   notifications_perc <- full_join(numerator, denominator)
   return(notifications_perc)
@@ -118,31 +59,48 @@ version_variables_rename <- function(data = plhdata_org_clean, survey = "welcome
   return(data)
 }
 
-challenge_freq <- function(data = plhdata_org_clean, group_by = "Org", var, append_var){
-  data <- add_na_variable(data = data, variable = var)
-  data <- add_na_variable(data = data, variable = append_var)
-  plh_list <- stringr::str_split(data[[var]], pattern = ", ")
-  plh_append <- data[[append_var]]
-  plh_Org <- data[[group_by]]
-  for (i in 1:length(plh_list)){
-    plh_list1 <- c(plh_list[[i]], plh_append[i])
-    plh_list2 <- as.character(plh_Org[i])
-    df <- data.frame(plh_list1, Org = plh_list2)
-    plh_list[[i]] <- df
-  }
-  plh_list <- purrr::map(.x = plh_list,
-                         .f = ~ unique(.x))
+challenge_freq <- function(data = plhdata_org_clean, group_by = "Org", var, append_var) {
+  plh_list <- data %>%
+    add_na_variable(variable = var) %>%
+    add_na_variable(variable = append_var) %>%
+    mutate(plh_list = str_split(!!sym(var), pattern = ", ")) %>%
+    mutate(plh_list1 = map2(plh_list, !!sym(append_var), ~c(.x, .y))) %>%
+    select(plh_list1, {{ group_by }}) %>%
+    unnest(plh_list1) %>%
+    filter(!plh_list1 %in% c("other_challenge", "undefined", "null"), !is.na(plh_list1))%>%
+    group_by(across(everything())) %>%
+    summarise(n = n()) %>%
+    pivot_wider(names_from = plh_list1, values_from = n, values_fill = 0) %>%
+    ungroup()
   
-  plh_list <- plyr::ldply(plh_list)
-  plh_list <- plh_list %>% group_by(plh_list1, Org) %>% summarise(n())
-  
-  plh_list <- plh_list %>%
-    dplyr::filter(!plh_list1 %in% c("other_challenge", "undefined", "null")) %>%
-    dplyr::filter(!is.na(plh_list1)) %>%
-    pivot_wider(names_from = plh_list1, values_from = `n()`) %>%
-    mutate_all(~replace(., is.na(.), 0))
   return(plh_list)
 }
+
+# challenge_freq <- function(data = plhdata_org_clean, group_by = "Org", var, append_var){
+#   data <- add_na_variable(data = data, variable = var)
+#   data <- add_na_variable(data = data, variable = append_var)
+#   plh_list <- stringr::str_split(data[[var]], pattern = ", ")
+#   plh_append <- data[[append_var]]
+#   plh_Org <- data[[group_by]]
+#   for (i in 1:length(plh_list)){
+#     plh_list1 <- c(plh_list[[i]], plh_append[i])
+#     plh_list2 <- as.character(plh_Org[i])
+#     df <- data.frame(plh_list1, Org = plh_list2)
+#     plh_list[[i]] <- df
+#   }
+#   plh_list <- purrr::map(.x = plh_list,
+#                          .f = ~ unique(.x))
+#   
+#   plh_list <- plyr::ldply(plh_list)
+#   plh_list <- plh_list %>% group_by(plh_list1, Org) %>% summarise(n())
+#   
+#   plh_list <- plh_list %>%
+#     dplyr::filter(!plh_list1 %in% c("other_challenge", "undefined", "null")) %>%
+#     dplyr::filter(!is.na(plh_list1)) %>%
+#     pivot_wider(names_from = plh_list1, values_from = `n()`) %>%
+#     mutate_all(~replace(., is.na(.), 0))
+#   return(plh_list)
+# }
 
 survey_table <- function(data = plhdata_org_clean, metadata = r_variables_names, location_ID = "survey_past_week",
                          factors = "Org", include_margins = FALSE){
@@ -150,7 +108,7 @@ survey_table <- function(data = plhdata_org_clean, metadata = r_variables_names,
   
   summary_table <- data %>%
     # take the data, and select the relevant variables
-    dplyr::select(c(factors, country, app_user_id, data_to_tabulate$metabase_ID)) %>%
+    dplyr::select(c(all_of(factors), country, app_user_id, data_to_tabulate$metabase_ID)) %>%
     tidyr::unite(col = "Org", {{ factors }}) %>%
     # rearrange the data frame
     pivot_longer(cols = -c(Org, country, app_user_id), names_to = "metabase_ID") %>%
@@ -185,7 +143,7 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
   if (country == "Tanzania"){
     if (study == "Optimisation"){
       summary_workshop_long <- summary_workshop_long %>%
-        tidyr::unite(col = "Org", {{ factors }})%>%
+        tidyr::unite(col = "Org", {{ factors }}) %>%
         filter(name != "Total")
     } else {
       summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
@@ -359,7 +317,7 @@ summary_table_base_build <- function(data = plhdata_org_clean,
   }
 }
 
-hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("sad", "ok", "happy", "NA"),
+hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad", "Ok", "Happy", "Unknown"),
                          xlab = "How did you find it?"){
   if (manipulation == "ldply"){
     plot_data <- plyr::ldply(data, `.id` = "name")
@@ -384,12 +342,13 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("sad
       plot_data <- plot_data %>% mutate(Org = PilotSite)
     }
   }
+  
   plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
   plot + geom_bar(stat = "identity", position = "dodge") +
-    scale_x_discrete(guide = guide_axis(angle = 90),
-                     limits = limits) +
     viridis::scale_fill_viridis(discrete = TRUE) +
-    labs(x = xlab, y = "Frequency")
+    labs(x = xlab, y = "Frequency") +
+    scale_x_discrete(guide = guide_axis(angle = 90),
+                     limits = limits)
 }
 
 threshhold_function <- function(data, threshhold, columns = data_completion_level, sign = "gt"){
@@ -536,14 +495,14 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
   if (summaries == "frequencies"){
     if (is.numeric(data[[columns_to_summarise]])){ # if statement not in parenttext
       data <- data %>%
-        mutate(across({{ columns_to_summarise }}, ~round(.x))) %>%
-        mutate(across({{ columns_to_summarise }}, ~as.character(.x)))
+        mutate(across(all_of({{ columns_to_summarise }}), ~round(.x))) %>%
+        mutate(across(all_of({{ columns_to_summarise }}), ~as.character(.x)))
     }
-    factors <- c(factors, columns_to_summarise)
     data <- data %>%
-      mutate(across(c( {{ factors }}), ~ replace_na(.x, "unknown")))
+      mutate(across(all_of({{ factors }}), ~ replace_na(.x, "unknown")))
+    factors <- c(factors, columns_to_summarise)
     summary_output <- data %>% 
-      group_by(across({{ factors }}), .drop = drop) %>% 
+      group_by(across(all_of({{ factors }})), .drop = drop) %>% 
       summarise(n = n(), .groups = "drop")
     if (include_perc) {
       summary_output <- summary_output %>% 
@@ -581,8 +540,8 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
       summary_output <- summary_output %>% 
         bind_rows(plyr::ldply(margin_tables)) %>%
         ungroup() %>%
-        mutate(across({{ factors }}, ~ replace_na(.x, "Total"))) %>%
-        mutate(across({{ factors }}, ~ fct_relevel(.x, "Total", after = Inf))) %>% 
+        mutate(across(all_of({{ factors }}), ~ replace_na(.x, "Total"))) %>%
+        mutate(across(all_of({{ factors }}), ~ fct_relevel(.x, "Total", after = Inf))) %>% 
         select(-c(".id"))
     }
     if (together && include_perc){
@@ -592,7 +551,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
     }
   } else if (summaries == "mmm"){
     summary_output <- data %>%
-      group_by(across({{ factors }})) %>%
+      group_by(across(all_of({{ factors }}))) %>%
       summarise(across({{ columns_to_summarise }},
                        list(mean = ~ mean(.x, na.rm = TRUE),
                             min = ~ min(.x, na.rm = TRUE),
@@ -601,7 +560,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
     
     if (include_margins && !is.null(factors)){
       corner_margin <- data %>%
-        summarise(across({{ columns_to_summarise }},
+        summarise(across(all_of({{ columns_to_summarise }}),
                          list(mean = ~ mean(.x, na.rm = TRUE),
                               min = ~ min(.x, na.rm = TRUE),
                               max = ~ max(.x, na.rm = TRUE)),
@@ -609,47 +568,47 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
       
       summary_output <- bind_rows(summary_output, corner_margin, .id = "id") %>%
         ungroup() %>%
-        mutate(across({{ factors }}, as.character)) %>%
-        mutate(across({{ factors }}, ~ifelse(id == 2, "Total", .x))) %>%
-        mutate(across({{ factors }}, ~fct_relevel(.x, "Total", after = Inf))) %>%
+        mutate(across(all_of({{ factors }}), as.character)) %>%
+        mutate(across(all_of({{ factors }}), ~ifelse(id == 2, "Total", .x))) %>%
+        mutate(across(all_of({{ factors }}), ~fct_relevel(.x, "Total", after = Inf))) %>%
         select(-c("id"))
     }
   } else {
     summary_output <- data %>%
-      group_by(across({{ factors }})) %>%
-      summarise(across({{ columns_to_summarise }},
+      group_by(across(all_of({{ factors }}))) %>%
+      summarise(across(all_of({{ columns_to_summarise }}),
                        ~ case_when(
                          summaries == "sum" ~ sum(., na.rm = na.rm),
                          summaries == "mean" ~ mean(., na.rm = na.rm))))
     if (include_margins && !is.null(factors)){
       corner_margin <- data %>%
-        summarise(across({{ columns_to_summarise }},
+        summarise(across(all_of({{ columns_to_summarise }}),
                          ~ case_when(
                            summaries == "sum" ~ sum(., na.rm = na.rm),
                            summaries == "mean" ~ mean(., na.rm = na.rm))))
       summary_output <- bind_rows(summary_output, corner_margin, .id = "id") %>%
         ungroup() %>%
-        mutate(across({{ factors }}, ~if_else(id == 2, "Total", as.character(.)))) %>%
-        mutate(across({{ factors }}, ~fct_relevel(.x, "Total", after = Inf))) %>%
+        mutate(across(all_of({{ factors }}), ~if_else(id == 2, "Total", as.character(.)))) %>%
+        mutate(across(all_of({{ factors }}), ~fct_relevel(.x, "Total", after = Inf))) %>%
         select(-id)
     }
   }
   if (include_margins && !is.null(factors)){
-    if (length(data %>% dplyr::select({{ factors }})) == 1){
+    if (length(data %>% dplyr::select(all_of({{ factors }}))) == 1){
       cell_values_levels <- data %>% pull({{ factors }}) %>% levels()
       if (include_margins){ cell_values_levels <- c(cell_values_levels, "Total") }
       summary_output <- summary_output %>%
-        dplyr::mutate(dplyr::across({{ factors }}, ~ factor(.x))) %>%
-        dplyr::mutate(dplyr::across({{ factors }}, ~ forcats::fct_relevel(.x, cell_values_levels))) %>%
+        dplyr::mutate(dplyr::across(all_of({{ factors }}), ~ factor(.x))) %>%
+        dplyr::mutate(dplyr::across(all_of({{ factors }}), ~ forcats::fct_relevel(.x, cell_values_levels))) %>%
         dplyr::arrange({{ factors }})
     }
-    if (length(data %>% dplyr::select({{ columns_to_summarise }})) == 1){
+    if (length(data %>% dplyr::select(all_of({{ columns_to_summarise }}))) == 1){
       cell_values_levels <- data %>% pull({{ columns_to_summarise }}) %>% levels()
       if (include_margins){ cell_values_levels <- c(cell_values_levels, "Total") }
       if (summaries %in% c("frequencies", "sum")){ # doesn't work for mean because we have multiple columns and rename them
         summary_output <- summary_output %>%
-          dplyr::mutate(dplyr::across({{ columns_to_summarise }}, ~ factor(.x))) %>%
-          dplyr::mutate(dplyr::across({{ columns_to_summarise }},
+          dplyr::mutate(dplyr::across(all_of({{ columns_to_summarise }}), ~ factor(.x))) %>%
+          dplyr::mutate(dplyr::across(all_of({{ columns_to_summarise }}),
                                       ~ forcats::fct_relevel(.x, cell_values_levels))) %>%
           dplyr::arrange({{ columns_to_summarise }})
       }
@@ -664,7 +623,7 @@ summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_s
                            display_table = FALSE, naming_convention = TRUE, include_perc = FALSE,
                            together = TRUE, drop = FALSE){
   summaries <- match.arg(summaries)
-  data <- data %>% dplyr::select(c({{ factors }}, {{ columns_to_summarise }}))
+  data <- data %>% dplyr::select({{ factors }}, {{ columns_to_summarise }})
   return_table <- summary_calculation(data = data,
                                       factors = c({{ factors }}),
                                       columns_to_summarise = c({{ columns_to_summarise }}),
@@ -768,4 +727,40 @@ multiple_plot_output <- function(data = plhdata_org_clean, columns_to_summarise,
   
   names(summary_plot_values) <- variable_display_names
   return(summary_plot_values)
+}
+
+
+fluid_row_box <- function(variable1, variable2 = NULL, title1 = NULL, title2 = NULL, status = "primary"){
+  if (is.null(title1)) { title1 <- naming_conventions(variable1) }
+  if (is.null(title2) && (!is.null(variable2))) { title2 <- naming_conventions(variable2) }
+  if (!is.null(variable2)){
+    fluidRow(
+      box(collapsible = TRUE,
+          solidHeader = TRUE,
+          title = title1,
+          status = status,  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = paste0("plot_", variable1), height = "240"), #generates graph
+          shiny::tableOutput(paste0("table_", variable1))  #generates table
+      ), #closes box
+      
+      box(collapsible = TRUE,
+          solidHeader = TRUE,
+          title = title2,
+          status = status,  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = paste0("plot_", variable2), height = "240"), #generates graph
+          shiny::tableOutput(paste0("table_", variable2))  #generates table
+      ))
+  } else {
+    fluidRow(
+      box(collapsible = TRUE,
+          solidHeader = TRUE,
+          title = title1,
+          status = status,  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = paste0("plot_", variable1), height = "240"), #generates graph
+          shiny::tableOutput(paste0("table_", variable1))  #generates table
+      ))
+  }
 }

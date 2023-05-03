@@ -77,7 +77,7 @@ parentapp_shiny <- function(country, study){
                       plotlyOutput(outputId = "plot_ws_format", height = "240"),
                       shiny::tableOutput("table_ws_format")
                   )), #closes box, fluid row
-                  
+                
                 fluidRow(
                   box(width = 6,
                       collapsible = TRUE,
@@ -98,7 +98,7 @@ parentapp_shiny <- function(country, study){
                       shiny::tableOutput("table_parent_gender")  #generates table
                   ) #closes box
                 ), #closes fluidRow
-
+                
                 fluidRow(
                   box(width = 6,
                       collapsible = TRUE,
@@ -142,7 +142,7 @@ parentapp_shiny <- function(country, study){
                       shiny::tableOutput("table_household_children")
                   ) #closes box
                 ), # closes fluidrow
-                  
+                
                 fluidRow(
                   box(width = 6,
                       collapsible = TRUE,
@@ -2221,18 +2221,18 @@ parentapp_shiny <- function(country, study){
                                            #background = "orange",
                                            shiny::tableOutput("table_pushn_totals")
                                        )#closes box
-                                       ), #closes fluidrow
-
-                                                fluidRow(
-                                                  box(width = 12,
-                                                      collapsible = TRUE,
-                                                      solidHeader = TRUE,
-                                                      title = "Push notification types sent",
-                                                      status = "success",
-                                                      #background = "orange",
-                                                      plotlyOutput(outputId = "plot_pushn_mean", height = "240"), #needs to be renames
-                                                      shiny::tableOutput("table_pushn_mean")
-                                                  ) #closes box
+                                     ), #closes fluidrow
+                                     
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Push notification types sent",
+                                           status = "success",
+                                           #background = "orange",
+                                           plotlyOutput(outputId = "plot_pushn_mean", height = "240"), #needs to be renames
+                                           shiny::tableOutput("table_pushn_mean")
+                                       ) #closes box
                                      ) #closes fluid row
                             ), #closes tabPanel Push Notifications
                             
@@ -2291,9 +2291,9 @@ parentapp_shiny <- function(country, study){
                                                              h5("Question for this column phrased as 'What challenge did you have?' and asked irrespective of previous answers."),
                                                              plotlyOutput(outputId = "plot_chall_1on1", height = "240"),
                                                              shiny::tableOutput("table_chall_1on1")) #closes box
-                                                         )
                                                   )
-                                              ), #closes fluid row
+                                     )
+                                     ), #closes fluid row
                                      
                                      fluidRow(box(width = 12,
                                                   collapsible = TRUE,
@@ -2557,7 +2557,7 @@ parentapp_shiny <- function(country, study){
                                            plotlyOutput(outputId = "plot_sv1_risk", height = "240"),
                                            shiny::tableOutput("table_sv1_risk")
                                        ) #closes box
-                                       ), #closes fluid row
+                                     ), #closes fluid row
                                      
                                      fluidRow(
                                        box(width = 12,
@@ -2607,53 +2607,53 @@ parentapp_shiny <- function(country, study){
                                      
                                      fluidRow(
                                        box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Days of shouting",
-                                                  status = "danger",
-                                                  h5("How many days in the past week did you shout, scream or yell at your teen? [0-7]"),
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  plotlyOutput(outputId = "plot_sv1_shout", height = "240"),
-                                                  shiny::tableOutput("table_sv1_shout")
-                                     ), #closes box
-                                     box(width = 12,
-                                         collapsible = TRUE,
-                                         solidHeader = TRUE,
-                                         title = "Days of insulting",
-                                         status = "danger",
-                                         h5("How many days in the past week did you insult your teen or call them names or stupid? [0-7]"),
-                                         style='width:100%;overflow-x: scroll;',
-                                         plotlyOutput(outputId = "plot_sv1_insult", height = "240"),
-                                         shiny::tableOutput("table_sv1_insult")
-                                     ) #closes box
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Days of shouting",
+                                           status = "danger",
+                                           h5("How many days in the past week did you shout, scream or yell at your teen? [0-7]"),
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_sv1_shout", height = "240"),
+                                           shiny::tableOutput("table_sv1_shout")
+                                       ), #closes box
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Days of insulting",
+                                           status = "danger",
+                                           h5("How many days in the past week did you insult your teen or call them names or stupid? [0-7]"),
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_sv1_insult", height = "240"),
+                                           shiny::tableOutput("table_sv1_insult")
+                                       ) #closes box
                                      ),#closes fluid row)
-                                       #, #closes box
-                                       
-                                       # box(width = 6,
-                                       #     collapsible = TRUE,
-                                       #     solidHeader = TRUE,
-                                       #     title = "Days with knowledge of teen activity",
-                                       #     status = "danger", 
-                                       #     h5("How many days in the past week did you know what your teen was doing and who they were with? [0-7] NB this question was removed for the Tanzania rollout."),
-                                       #     #h7("NB next question only asked if this one is answered with '7'"),
-                                       #     style='width:100%;overflow-x: scroll;',
-                                       #     plotlyOutput(outputId = "plot_sv1_week_teen_activity", height = "240"),
-                                       #     shiny::tableOutput("table_sv1_week_teen_activity")
-                                       #) #closes box
+                                     #, #closes box
+                                     
+                                     # box(width = 6,
+                                     #     collapsible = TRUE,
+                                     #     solidHeader = TRUE,
+                                     #     title = "Days with knowledge of teen activity",
+                                     #     status = "danger", 
+                                     #     h5("How many days in the past week did you know what your teen was doing and who they were with? [0-7] NB this question was removed for the Tanzania rollout."),
+                                     #     #h7("NB next question only asked if this one is answered with '7'"),
+                                     #     style='width:100%;overflow-x: scroll;',
+                                     #     plotlyOutput(outputId = "plot_sv1_week_teen_activity", height = "240"),
+                                     #     shiny::tableOutput("table_sv1_week_teen_activity")
+                                     #) #closes box
                                      #),#closes fluid row
                                      
                                      #fluidRow(
-                                       # box(width = 6,
-                                       #     collapsible = TRUE,
-                                       #     solidHeader = TRUE,
-                                       #     title = "Lockdown",
-                                       #     status = "danger",
-                                       #     h5("Were you in lockdown this week? [Yes/No], NB next question only asked if this one is answered with 'Yes', NB this question was removed for the Tanzania rollout."),
-                                       #     style='width:100%;overflow-x: scroll;',
-                                       #     plotlyOutput(outputId = "plot_sv1_lockdown", height = "240"),
-                                       #     shiny::tableOutput("table_sv1_lockdown")
-                                       # ), #closes box
-                                       
+                                     # box(width = 6,
+                                     #     collapsible = TRUE,
+                                     #     solidHeader = TRUE,
+                                     #     title = "Lockdown",
+                                     #     status = "danger",
+                                     #     h5("Were you in lockdown this week? [Yes/No], NB next question only asked if this one is answered with 'Yes', NB this question was removed for the Tanzania rollout."),
+                                     #     style='width:100%;overflow-x: scroll;',
+                                     #     plotlyOutput(outputId = "plot_sv1_lockdown", height = "240"),
+                                     #     shiny::tableOutput("table_sv1_lockdown")
+                                     # ), #closes box
+                                     
                                      #   box(width = 6,
                                      #       collapsible = TRUE,
                                      #       solidHeader = TRUE,
@@ -2681,14 +2681,14 @@ parentapp_shiny <- function(country, study){
                                            shiny::tableOutput("table_sv1_sex_talk")
                                        ), #closes box
                                        box(width = 12,
-                                          collapsible = TRUE,
-                                          solidHeader = TRUE,
-                                          title = "Days of sexual safety talk (last month)",
-                                          status = "danger",  
-                                          h5("Have you ever had a talk like this?"),
-                                          style='width:100%;overflow-x: scroll;',
-                                          plotlyOutput(outputId = "plot_sv1_sex_talk_ever", height = "240"),
-                                          shiny::tableOutput("table_sv1_sex_talk_ever")
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Days of sexual safety talk (last month)",
+                                           status = "danger",  
+                                           h5("Have you ever had a talk like this?"),
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_sv1_sex_talk_ever", height = "240"),
+                                           shiny::tableOutput("table_sv1_sex_talk_ever")
                                        )),
                                      
                                      fluidRow(
@@ -3177,14 +3177,17 @@ parentapp_shiny <- function(country, study){
   
   # 4. Define Server -----------------------------------------------------------------------------
   server <- function(input, output, session) {
-    
+    print("first")
+    print(Sys.time())
     # General Set Up ---------------------------------------------------
     #autoRefresh <- reactiveTimer(6 * 60 * 60 * 1000)
     
     observe({
-      #autoRefresh()
-      source(here("Metabase Analysis Setup - run offline.R"))
-      #source(here("Metabase Analysis Setup.R"))
+      #   #autoRefresh()
+      #   #source(here("Metabase Analysis Setup - run offline.R"))
+      print(Sys.time())
+      source(here("Metabase Analysis Setup.R")) # approx 17 secs # so what's the rest of the time? # How long does it take overall, 
+      print(Sys.time())
     })
     
     # if (country == "Tanzania" && study == "Optimisation"){
@@ -3253,52 +3256,52 @@ parentapp_shiny <- function(country, study){
         return(plhdata_checkgroup)
       })
     }
-
+    
     
     last_sync <- reactive({
       if (country == "Tanzania"){
         time_diff <- difftime(lubridate::now(tzone = "UTC"), as.POSIXct(selected_data_dem()$updatedAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"), units = "hours")
-      return(time_diff)
+        return(time_diff)
       }
     })
     
     #SUMMARY STATS HEADER displays (same for all tabs)
     #if (country == "Tanzania"){
-      output$myvaluebox1 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(length(last_sync()[last_sync() > 7*24]), subtitle = "not synced in last 7 days", icon = icon("user"),
-                                 color = "green")})
-      output$myvaluebox2 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(length(last_sync()[last_sync() > 14*24]), subtitle = "not synced in last 14 days", icon = icon("user"),
-                                 color = "yellow")})
-      output$myvaluebox3 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(length(last_sync()[last_sync() > 30*24]), subtitle = "not synced in last 30 days", icon = icon("user"),
-                                 color = "purple")})
-      output$myvaluebox4 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(length(last_sync()[last_sync() > 60*24]), subtitle = "not synced in last 60 days", icon = icon("user"),
-                                 color = "orange")})
-  #   } else {
-  #     output$myvaluebox1 <- shinydashboard::renderValueBox({
-  #       shinydashboard::valueBox(nrow(plhdata_org_clean), subtitle = "Enrolled", icon = icon("user"),
-  #                                color = "aqua")})
-  #     output$myvaluebox2 <- shinydashboard::renderValueBox({
-  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Amathuba")), subtitle = "Amathuba", icon = icon("user"),
-  #                                 color = "navy")})
-  #     output$myvaluebox3 <- shinydashboard::renderValueBox({
-  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Dlalanathi")), subtitle = "Dlalanathi", icon = icon("user"),
-  #                                 color = "navy")})
-  #     output$myvaluebox4 <- shinydashboard::renderValueBox({
-  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Joy")), subtitle = "Joy", icon = icon("user"),
-  #                                 color = "navy")})
-  #     output$myvaluebox5 <- shinydashboard::renderValueBox({
-  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Nontobeko")), subtitle = "Nontobeko", icon = icon("user"),
-  #                                 color = "navy")})
-  #   }
-  #   if (country == "all"){
-  #     output$myvaluebox6 <- shinydashboard::renderValueBox({
-  #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "ICS")), subtitle = "ICS", icon = icon("user"),
-  #                                 color = "navy")}) 
-  #   }
-  # }
+    output$myvaluebox1 <- shinydashboard::renderValueBox({
+      shinydashboard::valueBox(length(last_sync()[last_sync() > 7*24]), subtitle = "not synced in last 7 days", icon = icon("user"),
+                               color = "green")})
+    output$myvaluebox2 <- shinydashboard::renderValueBox({
+      shinydashboard::valueBox(length(last_sync()[last_sync() > 14*24]), subtitle = "not synced in last 14 days", icon = icon("user"),
+                               color = "yellow")})
+    output$myvaluebox3 <- shinydashboard::renderValueBox({
+      shinydashboard::valueBox(length(last_sync()[last_sync() > 30*24]), subtitle = "not synced in last 30 days", icon = icon("user"),
+                               color = "purple")})
+    output$myvaluebox4 <- shinydashboard::renderValueBox({
+      shinydashboard::valueBox(length(last_sync()[last_sync() > 60*24]), subtitle = "not synced in last 60 days", icon = icon("user"),
+                               color = "orange")})
+    #   } else {
+    #     output$myvaluebox1 <- shinydashboard::renderValueBox({
+    #       shinydashboard::valueBox(nrow(plhdata_org_clean), subtitle = "Enrolled", icon = icon("user"),
+    #                                color = "aqua")})
+    #     output$myvaluebox2 <- shinydashboard::renderValueBox({
+    #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Amathuba")), subtitle = "Amathuba", icon = icon("user"),
+    #                                 color = "navy")})
+    #     output$myvaluebox3 <- shinydashboard::renderValueBox({
+    #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Dlalanathi")), subtitle = "Dlalanathi", icon = icon("user"),
+    #                                 color = "navy")})
+    #     output$myvaluebox4 <- shinydashboard::renderValueBox({
+    #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Joy")), subtitle = "Joy", icon = icon("user"),
+    #                                 color = "navy")})
+    #     output$myvaluebox5 <- shinydashboard::renderValueBox({
+    #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "Nontobeko")), subtitle = "Nontobeko", icon = icon("user"),
+    #                                 color = "navy")})
+    #   }
+    #   if (country == "all"){
+    #     output$myvaluebox6 <- shinydashboard::renderValueBox({
+    #       shinydashboard::valueBox( nrow(plhdata_org_clean %>% filter(Org == "ICS")), subtitle = "ICS", icon = icon("user"),
+    #                                 color = "navy")}) 
+    #   }
+    # }
     
     opt_factors <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       print("2")
@@ -3325,99 +3328,101 @@ parentapp_shiny <- function(country, study){
       } else {
         opt_factors <- c("Org")
       }
-        return(opt_factors)
-      })
+      return(opt_factors)
+    })
     
-    summary_table_filter <- function(summary_workshop, add_totals = TRUE){
-      print("3")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_workshop <- summary_workshop %>% 
-            dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-            mutate(PilotSite = as.character(PilotSite))
-          if (add_totals){
-            summary_workshop <- summary_workshop %>%
-            janitor::adorn_totals(c("row", "col"))
-          }
-        } else if (study == "Optimisation"){
-          if (!is.null(input$opt_support)){
-            summary_workshop <- summary_workshop %>% 
-              dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
-              mutate(Support = as.character(Support))
-          }
-          if (!is.null(input$opt_skin)){
-            summary_workshop <- summary_workshop %>% 
-              dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
-              mutate(Skin = as.character(Skin))
-          }
-          if (!is.null(input$opt_diglit)){
-            summary_workshop <- summary_workshop %>% 
-              dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
-              mutate(`Digital Literacy` = as.character(`Digital Literacy`))
-          }
-          if (add_totals){
-            summary_workshop <- summary_workshop %>%
-              janitor::adorn_totals(c("row", "col"))
-          }
-        } else {
-          summary_workshop <- summary_workshop %>% 
-            dplyr::filter(Org %in% unique(selected_data_dem()$Org))
-        }
-      } else {
-        summary_workshop <- summary_workshop %>% 
-          dplyr::filter(Org %in% unique(selected_data_dem()$Org)) #%>%
-        #janitor::adorn_totals(c("row", "col")))
-      }
-      return(summary_workshop)
-    }
+    # summary_table_filter <- function(summary_workshop, add_totals = TRUE){
+    #   print("3")
+    #   if (country == "Tanzania"){
+    #     if (study == "Pilot"){
+    #       summary_workshop <- summary_workshop %>%
+    #         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
+    #         mutate(PilotSite = as.character(PilotSite))
+    #       if (add_totals){
+    #         summary_workshop <- summary_workshop %>%
+    #         janitor::adorn_totals(c("row", "col"))
+    #       }
+    #     } else if (study == "Optimisation"){
+    #       if (!is.null(input$opt_support)){
+    #         summary_workshop <- summary_workshop %>%
+    #           dplyr::filter(Support %in% c(selected_data_dem()$Support)) %>%
+    #           mutate(Support = as.character(Support))
+    #       }
+    #       if (!is.null(input$opt_skin)){
+    #         summary_workshop <- summary_workshop %>%
+    #           dplyr::filter(Skin %in% c(selected_data_dem()$Skin)) %>%
+    #           mutate(Skin = as.character(Skin))
+    #       }
+    #       if (!is.null(input$opt_diglit)){
+    #         summary_workshop <- summary_workshop %>%
+    #           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`)) %>%
+    #           mutate(`Digital Literacy` = as.character(`Digital Literacy`))
+    #       }
+    #       if (add_totals){
+    #         summary_workshop <- summary_workshop %>%
+    #           janitor::adorn_totals(c("row", "col"))
+    #       } else {
+    #         summary_workshop <- summary_workshop
+    #       }
+    #     } else {
+    #       summary_workshop <- summary_workshop %>%
+    #         dplyr::filter(Org %in% unique(selected_data_dem()$Org))
+    #     }
+    #   } else {
+    #     summary_workshop <- summary_workshop %>%
+    #       dplyr::filter(Org %in% unique(selected_data_dem()$Org)) #%>%
+    #     #janitor::adorn_totals(c("row", "col")))
+    #   }
+    #   return(summary_workshop)
+    # }
     
     mult_summary_table_filter <- function(summary_table = summary_table_baseline_build){
       print("4")
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          summary_table <- summary_table %>% 
-            purrr::map(.f =~.x %>%
-                         dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
-                         mutate(PilotSite = as.character(PilotSite)) %>%
-                         janitor::adorn_totals(c("row", "col")))
-        } else if (study == "Optimisation"){
-          if (!is.null(input$opt_support)){
-            summary_table <- summary_table %>% 
-              purrr::map(.f =~.x %>%
-                           dplyr::filter(Support %in% c(selected_data_dem()$Support))%>%
-                           mutate(Support = as.character(Support)))
-          }
-          if (!is.null(input$opt_skin)){
-            summary_table <- summary_table %>% 
-              purrr::map(.f =~.x %>%
-                           dplyr::filter(Skin %in% c(selected_data_dem()$Skin))%>%
-                           mutate(Skin = as.character(Skin)))
-          }
-          if (!is.null(input$opt_diglit)){
-            summary_table <- summary_table %>% 
-              purrr::map(.f =~.x %>%
-                           dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`))%>%
-                           mutate(`Digital Literacy` = as.character(`Digital Literacy`)))
-          }
-          summary_table <- summary_table %>% 
-            purrr::map(.f =~.x %>%
-                         janitor::adorn_totals(c("row", "col")))
-        } else {
-          summary_table <- summary_table %>% 
-            purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
-        }
-      } else {
-        summary_table <- summary_table %>% 
-          purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
-        #janitor::adorn_totals(c("row", "col")))
-      }
+      # if (country == "Tanzania"){
+      #   if (study == "Pilot"){
+      #     summary_table <- summary_table %>% 
+      #       purrr::map(.f =~.x %>%
+      #                    dplyr::filter(PilotSite %in% c(selected_data_dem()$PilotSite)) %>%
+      #                    mutate(PilotSite = as.character(PilotSite)) %>%
+      #                    janitor::adorn_totals(c("row", "col")))
+      #   } else if (study == "Optimisation"){
+      # if (!is.null(input$opt_support)){
+      #   summary_table <- summary_table %>% 
+      #     purrr::map(.f =~.x %>%
+      #                  dplyr::filter(Support %in% c(selected_data_dem()$Support))%>%
+      #                  mutate(Support = as.character(Support)))
+      # }
+      # if (!is.null(input$opt_skin)){
+      #   summary_table <- summary_table %>% 
+      #     purrr::map(.f =~.x %>%
+      #                  dplyr::filter(Skin %in% c(selected_data_dem()$Skin))%>%
+      #                  mutate(Skin = as.character(Skin)))
+      # }
+      # if (!is.null(input$opt_diglit)){
+      #   summary_table <- summary_table %>% 
+      #     purrr::map(.f =~.x %>%
+      #                  dplyr::filter(`Digital Literacy` %in% c(selected_data_dem()$`Digital Literacy`))%>%
+      #                  mutate(`Digital Literacy` = as.character(`Digital Literacy`)))
+      # }
+      summary_table <- summary_table %>% 
+        purrr::map(.f =~.x %>%
+                     janitor::adorn_totals(c("row", "col")))
+      #   } else {
+      #     summary_table <- summary_table %>% 
+      #       purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org)))
+      #   }
+      # } else {
+      #   summary_table <- summary_table %>% 
+      #     purrr::map(.f =~.x %>% dplyr::filter(Org %in% unique(selected_data_dem()$Org))) #%>%
+      #   #janitor::adorn_totals(c("row", "col")))
+      # }
       return(summary_table) 
     }
     
     # Demographics ---------------------------------------------------
     summary_table_baseline <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
-      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_baseline_survey)
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_baseline_survey$metabase_ID)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     table_app_launch <- reactive({}) 
@@ -3430,31 +3435,22 @@ parentapp_shiny <- function(country, study){
     output$plot_app_launch <- renderPlotly({plot_app_launch()})
     
     #Languages plot and table
-    table_language <- reactive({
-      summary_table_baseline()$` app language`
-    }) 
-    plot_language  <- reactive({
-      summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field._app_language", replace = "rp.contact.field._")
-    }) 
-    output$table_language <- shiny::renderTable({(table_language())}, striped = TRUE)
-    output$plot_language <- renderPlotly({plot_language()})
+    display_sheet_table <- function(n = "language", j = 1){
+      return(output[[paste0("table_", n)]] <-  shiny::renderTable({(summary_table_baseline()[[j]])}, striped = TRUE))
+    }
+    display_sheet_plot <- function(n = "language", j = 1){
+      return(output[[paste0("plot_", n)]] <-  renderPlotly(summary_plot(data = selected_data_dem(), columns_to_summarise = j, replace = "rp.contact.field.")))
+    } # plottype = histogram
     
-    #Workshop format plot and table
-    table_ws_format <- reactive({
-      summary_table_baseline()$`Workshop path`
-    }) 
-    plot_ws_format  <- reactive({
-      # plhdata_org_clean$rp.contact.field.workshop_path is automatically combined from plhdata_org_clean$rp.contact.field.workshop_path and .do_workshops_together
-      # we add in a "default" field from rp.contact.field.workshop_path_user_choice
-      summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.workshop_path", replace = "rp.contact.field.")
-    }) 
-    output$table_ws_format <- shiny::renderTable({(table_ws_format())}, striped = TRUE, style = "height:500px; overflow-y: scroll;overflow-x: scroll;")
-    output$plot_ws_format <- renderPlotly({plot_ws_format()})
+    # run our table_baselines and plot_baselines # TODO: in PLHr function, replace for loop with map like this.
+    map2(data_baseline_survey$display_name, data_baseline_survey$object_name, .f = ~ display_sheet_table(n = .y, j = .x))
+    map2(data_baseline_survey$metabase_ID, data_baseline_survey$object_name, .f = ~ display_sheet_plot(n = .y, j = .x))
+
+    # bit different for age
+    output$table_parent_age <- shiny::renderTable({(selected_data_dem() %>% summary_table(columns_to_summarise = rp.contact.field.user_age, factors = opt_factors(), summaries = "mmm"))}, striped = TRUE)
+    output$plot_parent_age <- renderPlotly({summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_age", replace = "rp.contact.field.", plot_type = "histogram")})
     
     #App version
-    table_app_version <- reactive({
-      summary_table_baseline()$`App version`
-    }) 
     plot_app_version  <- reactive({
       plhdata_org_clean_1 <- selected_data_dem()
       plhdata_org_clean_1 <- plhdata_org_clean_1 %>%
@@ -3465,93 +3461,8 @@ parentapp_shiny <- function(country, study){
         labs(x = "App version")
       #summary_plot(plhdata_org_clean, app_version)
     })
-    
-    hp_mood_plot(data = plhdata_org_clean, factors = "Skin", manipulation = "none")
-    
-    output$table_app_version <- shiny::renderTable({(table_app_version())}, striped = TRUE, options = list(scrollX = TRUE))
     output$plot_app_version <- renderPlotly({plot_app_version()})
-    
-    #Parent gender plot and tabled
-    table_parent_gender <- reactive({
-      summary_table_baseline()$`User gender`
-    }) 
-    plot_parent_gender  <- reactive({
-      summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_gender", replace = "rp.contact.field.", plot_type = "histogram")
-    }) 
-    output$table_parent_gender <- shiny::renderTable({(table_parent_gender())}, striped = TRUE)
-    output$plot_parent_gender <- renderPlotly({plot_parent_gender()})
-    
-    #Parent age plot and table
-    table_parent_age <- reactive({
-      table_parent_age <- selected_data_dem() %>% summary_table(columns_to_summarise = rp.contact.field.user_age, factors = opt_factors(), summaries = "mmm")
-      return(table_parent_age)
-    }) 
-    ##previously, but with new contact field summarise(`mean age`=(mean(rp.contact.field.user_gender, na.rm = TRUE)))
-    plot_parent_age <- reactive({
-      summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.user_age", replace = "rp.contact.field.", plot_type = "histogram")
-    })
-    output$table_parent_age <- shiny::renderTable({(table_parent_age())}, striped = TRUE)
-    output$plot_parent_age <- renderPlotly({plot_parent_age()})
-    
-    #Adults in household plot and table
-    table_household_adults <- reactive({
-      summary_table_baseline()$`Household adults`
-    }) 
-    plot_household_adults  <- reactive({
-      summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.household_adults", replace = "rp.contact.field.", plot_type = "histogram")
-      #plhdata_org_clean_1 <- plhdata_org_clean %>% filter(Org %in% c((input$OrgDem)))
-      #summary_plot(plhdata_org_clean_1, rp.contact.field.household_adults)
-    })
-    output$table_household_adults <- shiny::renderTable({( table_household_adults())}, striped = TRUE)
-    output$plot_household_adults <- renderPlotly({plot_household_adults()})
-    
-    #Teens in household plot and table
-    table_household_teens <- reactive({
-      summary_table_baseline()$`Household teens`
-    }) 
-    plot_household_teens  <- reactive({
-      summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.household_teens", replace = "rp.contact.field.", plot_type = "histogram")
-    })
-    output$table_household_teens <- shiny::renderTable({( table_household_teens())}, striped = TRUE)
-    output$plot_household_teens <- renderPlotly({plot_household_teens()})
-    
-    #Children in household plot and table
-    table_household_children <- reactive({
-      summary_table_baseline()$`Household children`
-    }) 
-    plot_household_children  <- reactive({
-      summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.household_children", replace = "rp.contact.field.", plot_type = "histogram")
-    })
-    output$table_household_children <- shiny::renderTable({( table_household_children())}, striped = TRUE)
-    output$plot_household_children <- renderPlotly({plot_household_children()})
-    
-    #Babies in household plot and table
-    table_household_babies <- reactive({
-      summary_table_baseline()$`Household babies`
-    }) 
-    plot_household_babies  <- reactive({
-      summary_plot(data = selected_data_dem(), columns_to_summarise = "rp.contact.field.household_babies", replace = "rp.contact.field.", plot_type = "histogram")
-    })
-    output$table_household_babies <- shiny::renderTable({( table_household_babies())}, striped = TRUE)
-    output$plot_household_babies <- renderPlotly({plot_household_babies()})
-    
-    ### Former format with testdata
-    # table_child_type <- reactive({
-    #   testdata %>% 
-    #     group_by(challenging_type) %>% summarise(n())
-    # }) #closes child behaviour table
-    # 
-    # plot_child_type  <- reactive({
-    #   ggplot(testdata, aes(x = challenging_type)) +
-    #     geom_histogram(stat = "count") +
-    #     viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-    #     labs(x = "child behaviour", y = "Count") +
-    #     theme_classic() +
-    #     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-    # }) #closes child behaviour plot
-    # 
-    # output$table_child_type <- shiny::renderTable({(table_child_type())}, striped = TRUE)
-    # output$plot_child_type <- renderPlotly({plot_child_type()})
+
     
     #SECOND Tab Workshop Engagement Data
     
@@ -3562,7 +3473,7 @@ parentapp_shiny <- function(country, study){
                                                                replace_after = "_completion_level")
       summary_table_baseline_build <- summary_table_baseline_build %>%
         purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     #Table of averages
@@ -3576,7 +3487,6 @@ parentapp_shiny <- function(country, study){
                                                      replace_after = "_completion_level",
                                                      summaries = "mean",
                                                      factors = opt_factors())
-      summary_mean_completion_level <- summary_table_filter(summary_mean_completion_level, add_totals = FALSE)
       
       means_total <- NULL
       for (i in 1:length(summary_mean_completion_level)){
@@ -3725,9 +3635,9 @@ parentapp_shiny <- function(country, study){
           summary_table_completion_level[[i]]$`100` <- 0
         }
       }
-     select_items <- c(opt_factors(), "started", "perc_completed")
-     
-     relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
+      select_items <- c(opt_factors(), "started", "perc_completed")
+      
+      relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
                                         mutate(started = Total - `0` - `NA`,
                                                perc_completed = `100`/started*100) %>%
                                         select(select_items))
@@ -3798,36 +3708,36 @@ parentapp_shiny <- function(country, study){
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_all,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "_completion_level")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     #Table of averages
     table_pp_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_total_habits <- summary_table(data = selected_data_dem(),
-                                           columns_to_summarise = data_habit_parent_points_all,
-                                           replace = "rp.contact.field.parent_point_count_",
-                                           summaries = "sum",
-                                           factors = opt_factors())
-      summary_table_filter(summary_total_habits)
+                                            columns_to_summarise = data_habit_parent_points_all,
+                                            replace = "rp.contact.field.parent_point_count_",
+                                            summaries = "sum",
+                                            factors = opt_factors())
+      summary_total_habits %>% janitor::adorn_totals(c("row", "col"))
     })
     plot_pp_totals  <- reactive({
       summary_mean_completion_level_long <- pivot_longer(table_pp_totals(), cols = !opt_factors(), names_to = "Parent Points", values_to = "Value") %>%
         filter(`Parent Points` != "Total")
-        if (country == "Tanzania"){
-          if (study == "Optimisation"){
-            summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
-              tidyr::unite(col = "Org", opt_factors())
-            # no not to string
-          } else {
-            summary_mean_completion_level_long <- summary_mean_completion_level_long %>% mutate(Org = opt_factors())
-          }
+      if (country == "Tanzania"){
+        if (study == "Optimisation"){
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+            tidyr::unite(col = "Org", opt_factors())
+          # no not to string
         } else {
-          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>% mutate(Org = opt_factors())
         }
-        ggplot(summary_mean_completion_level_long, aes(x = Org, y = Value, fill = `Parent Points`)) + 
-          geom_bar(stat = "identity", position = "fill") +
-          viridis::scale_fill_viridis(discrete = TRUE) +
-          labs(x = "Organisation", title = "Proportion of parent points given in each category within an organisation")
+      } else {
+        summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
+      }
+      ggplot(summary_mean_completion_level_long, aes(x = Org, y = Value, fill = `Parent Points`)) + 
+        geom_bar(stat = "identity", position = "fill") +
+        viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "Organisation", title = "Proportion of parent points given in each category within an organisation")
     }) 
     output$table_pp_totals <- shiny::renderTable({(table_pp_totals())}, striped = TRUE, caption = "Total parent points for each category split by organisation")
     output$plot_pp_totals <- renderPlotly({plot_pp_totals()})
@@ -3839,7 +3749,7 @@ parentapp_shiny <- function(country, study){
                                            replace = "rp.contact.field.parent_point_count_",
                                            summaries = "mean",
                                            factors = opt_factors())
-      summary_table_filter(summary_mean_habits)
+      summary_mean_habits %>% janitor::adorn_totals(c("row", "col"))
     }) 
     plot_pp_means  <- reactive({
       summary_mean_completion_level_long <- pivot_longer(table_pp_means(), cols = !opt_factors(), names_to = "Parent Points", values_to = "Value") %>%
@@ -3935,7 +3845,7 @@ parentapp_shiny <- function(country, study){
                                               columns_to_summarise = relax_workshop_vars,
                                               summaries = c("mean"),
                                               replace = "rp.contact.field.parent_point_count_relax_w_")
-      summary_table_filter(summary_relax_workshop)
+      summary_relax_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     output$table_pp_relax_ws_totals <- shiny::renderTable({table_pp_relax_ws_totals()})
     plot_pp_relax_ws_totals <- reactive({
@@ -3947,84 +3857,84 @@ parentapp_shiny <- function(country, study){
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_self_care,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "_w_self_care")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_1on1 <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_1on1,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_1on1")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_praise <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_praise,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_praise")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_instruct <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_instruct,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_instruct")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_stress <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_stress,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_stress")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_money <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_money,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_money")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_rules <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_rules,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_rules")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_consequence <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_consequence,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_consequence")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_solve <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_solve,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_solve")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_safe <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_safe,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_safe")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_crisis <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_crisis,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_crisis")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     summary_table_habits_celebrate <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_habit_parent_points_w_celebrate,
                                                                replace = "rp.contact.field.parent_point_count_",
                                                                replace_after = "w_celebrate")
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     table_pp_relax_w_self_care <- reactive({
@@ -4096,11 +4006,11 @@ parentapp_shiny <- function(country, study){
     #Parent Point sub tab Treat Yourself points pp2
     table_pp_treat_yourself_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_treat_yourself_workshop <- summary_table(data = selected_data_dem(),
-                                              factors = opt_factors(),
-                                              columns_to_summarise = treat_yourself_workshop_vars,
-                                              summaries = c("mean"),
-                                              replace = "rp.contact.field.parent_point_count_treat_yourself_w_")
-      summary_table_filter(summary_treat_yourself_workshop)
+                                                       factors = opt_factors(),
+                                                       columns_to_summarise = treat_yourself_workshop_vars,
+                                                       summaries = c("mean"),
+                                                       replace = "rp.contact.field.parent_point_count_treat_yourself_w_")
+      summary_treat_yourself_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     
     plot_pp_treat_yourself_ws_totals <- reactive({
@@ -4173,11 +4083,11 @@ parentapp_shiny <- function(country, study){
     # Parent Point sub tab Praise Yourself points pp3
     table_pp_praise_yourself_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_praise_yourself_workshop <- summary_table(data = selected_data_dem(),
-                                              factors = opt_factors(),
-                                              columns_to_summarise = praise_yourself_workshop_vars,
-                                              summaries = c("mean"),
-                                              replace = "rp.contact.field.parent_point_count_praise_yourself_w_")
-      summary_table_filter(summary_praise_yourself_workshop)
+                                                        factors = opt_factors(),
+                                                        columns_to_summarise = praise_yourself_workshop_vars,
+                                                        summaries = c("mean"),
+                                                        replace = "rp.contact.field.parent_point_count_praise_yourself_w_")
+      summary_praise_yourself_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     
     plot_pp_praise_yourself_ws_totals <- reactive({
@@ -4249,11 +4159,11 @@ parentapp_shiny <- function(country, study){
     # Parent Point sub tab Spend Time points pp4
     table_pp_spend_time_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_spend_time_workshop <- summary_table(data = selected_data_dem(),
-                                              factors = opt_factors(),
-                                              columns_to_summarise = spend_time_workshop_vars,
-                                              summaries = c("mean"),
-                                              replace = "rp.contact.field.parent_point_count_spend_time_w_")
-      summary_table_filter(summary_spend_time_workshop)
+                                                   factors = opt_factors(),
+                                                   columns_to_summarise = spend_time_workshop_vars,
+                                                   summaries = c("mean"),
+                                                   replace = "rp.contact.field.parent_point_count_spend_time_w_")
+      summary_spend_time_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     plot_pp_spend_time_ws_totals <- reactive({
       plot_totals_function(table_pp_spend_time_ws_totals(), factors = opt_factors())
@@ -4324,11 +4234,11 @@ parentapp_shiny <- function(country, study){
     # Parent Point sub tab Praise Teen points pp5
     table_pp_praise_teen_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_praise_teen_workshop <- summary_table(data = selected_data_dem(),
-                                              factors = opt_factors(),
-                                              columns_to_summarise = praise_teen_workshop_vars,
-                                              summaries = c("mean"),
-                                              replace = "rp.contact.field.parent_point_count_praise_teen_w_")
-      summary_table_filter(summary_praise_teen_workshop)
+                                                    factors = opt_factors(),
+                                                    columns_to_summarise = praise_teen_workshop_vars,
+                                                    summaries = c("mean"),
+                                                    replace = "rp.contact.field.parent_point_count_praise_teen_w_")
+      summary_praise_teen_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     plot_pp_praise_teen_ws_totals <- reactive({
       plot_totals_function(table_pp_praise_teen_ws_totals(), factors = opt_factors())
@@ -4399,11 +4309,11 @@ parentapp_shiny <- function(country, study){
     # Parent Point sub tab Instruct Positively points pp6
     table_pp_instruct_positively_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_instruct_positively_workshop <- summary_table(data = selected_data_dem(),
-                                              factors = opt_factors(),
-                                              columns_to_summarise = instruct_positively_workshop_vars,
-                                              summaries = c("mean"),
-                                              replace = "rp.contact.field.parent_point_count_instruct_positively_w_")
-      summary_table_filter(summary_instruct_positively_workshop)
+                                                            factors = opt_factors(),
+                                                            columns_to_summarise = instruct_positively_workshop_vars,
+                                                            summaries = c("mean"),
+                                                            replace = "rp.contact.field.parent_point_count_instruct_positively_w_")
+      summary_instruct_positively_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     plot_pp_instruct_positively_ws_totals <- reactive({
       plot_totals_function(table_pp_instruct_positively_ws_totals(), factors = opt_factors())
@@ -4474,11 +4384,11 @@ parentapp_shiny <- function(country, study){
     # Parent Point sub tab Breathe points pp7
     table_pp_breathe_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_breathe_workshop <- summary_table(data = selected_data_dem(),
-                                              factors = opt_factors(),
-                                              columns_to_summarise = breathe_workshop_vars,
-                                              summaries = c("mean"),
-                                              replace = "rp.contact.field.parent_point_count_breathe_w_")
-      summary_table_filter(summary_breathe_workshop)
+                                                factors = opt_factors(),
+                                                columns_to_summarise = breathe_workshop_vars,
+                                                summaries = c("mean"),
+                                                replace = "rp.contact.field.parent_point_count_breathe_w_")
+      summary_breathe_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     plot_pp_breathe_ws_totals <- reactive({
       plot_totals_function(table_pp_breathe_ws_totals(), factors = opt_factors())
@@ -4553,7 +4463,7 @@ parentapp_shiny <- function(country, study){
                                               columns_to_summarise = money_workshop_vars,
                                               summaries = c("mean"),
                                               replace = "rp.contact.field.parent_point_count_money_w_")
-      summary_table_filter(summary_money_workshop)
+      summary_money_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     plot_pp_money_ws_totals <- reactive({
       plot_totals_function(table_pp_money_ws_totals(), factors = opt_factors())
@@ -4624,11 +4534,11 @@ parentapp_shiny <- function(country, study){
     # Parent Point sub tab Consequence points pp9
     table_pp_consequence_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_consequence_workshop <- summary_table(data = selected_data_dem(),
-                                              factors = opt_factors(),
-                                              columns_to_summarise = consequence_workshop_vars,
-                                              summaries = c("mean"),
-                                              replace = "rp.contact.field.parent_point_count_consequence_w_")
-      summary_table_filter(summary_consequence_workshop)
+                                                    factors = opt_factors(),
+                                                    columns_to_summarise = consequence_workshop_vars,
+                                                    summaries = c("mean"),
+                                                    replace = "rp.contact.field.parent_point_count_consequence_w_")
+      summary_consequence_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     plot_pp_consequence_ws_totals <- reactive({
       plot_totals_function(table_pp_consequence_ws_totals(), factors = opt_factors())
@@ -4699,11 +4609,11 @@ parentapp_shiny <- function(country, study){
     # Parent Point sub tab Safe points pp10
     table_pp_safe_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_safe_workshop <- summary_table(data = selected_data_dem(),
-                                              factors = opt_factors(),
-                                              columns_to_summarise = safe_workshop_vars,
-                                              summaries = c("mean"),
-                                              replace = "rp.contact.field.parent_point_count_safe_w_")
-      summary_table_filter(summary_safe_workshop)
+                                             factors = opt_factors(),
+                                             columns_to_summarise = safe_workshop_vars,
+                                             summaries = c("mean"),
+                                             replace = "rp.contact.field.parent_point_count_safe_w_")
+      summary_safe_workshop %>% janitor::adorn_totals(c("row", "col"))
     })
     plot_pp_safe_ws_totals <- reactive({
       plot_totals_function(table_pp_safe_ws_totals(), factors = opt_factors())
@@ -4781,7 +4691,7 @@ parentapp_shiny <- function(country, study){
       summary_table_baseline_build <- summary_table_baseline_build %>%
         purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
       
-      mult_summary_table_filter(summary_table = summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     # summary app opens table
@@ -4804,7 +4714,7 @@ parentapp_shiny <- function(country, study){
       v <- as.numeric(as.character(plot_fn$data$name))
       plot_fn + labs(x = "App opens", y = "Frequency") + scale_y_continuous(limits = c(0, plot_fn$data$value)) +
         scale_x_discrete(limits = c(min(v, na.rm = TRUE):max(v, na.rm = TRUE)))
-      }) 
+    }) 
     output$table_appopen_totals <- shiny::renderTable({(table_appopen_totals())}, striped = TRUE)
     output$plot_appopen_totals <- renderPlotly({plot_appopen_totals()})
     
@@ -4814,7 +4724,7 @@ parentapp_shiny <- function(country, study){
                                              summaries = "mean", columns_to_summarise = data_app_opens,
                                              replace = "rp.contact.field.app_launch_count_w_")
       summary_mean_appopens <- rename(summary_mean_appopens, "Total" = `Rp.contact.field.app launch count`)
-      summary_table_filter(summary_mean_appopens)
+      summary_mean_appopens %>% janitor::adorn_totals(c("row", "col"))
     }) 
     plot_appopen_mean_week <- reactive({
       plot_fn <- plot_totals_function(table_appopen_mean_week(), opt_factors())
@@ -5001,7 +4911,7 @@ parentapp_shiny <- function(country, study){
       notification_summary(nf_data_join(), factors = c(opt_factors(), "campaign_id")) %>%
         mutate(`Notifications responded to` = paste0(round(replied / received * 100, 1), "% (", replied, "/", received, ")")) %>%
         dplyr::select(-c("replied", "received"))
-      })
+    })
     plot_pushn_mean <- reactive({
       notif <- notification_summary(nf_data_join(), factors = c(opt_factors(), "campaign_id")) %>%
         mutate(perc_received = replied/received)
@@ -5035,33 +4945,29 @@ parentapp_shiny <- function(country, study){
                                                                columns_to_summarise = data_hp_started,
                                                                replace = "rp.contact.field.w_",
                                                                replace_after = "_hp_review_started")
-      summary_table_baseline_build <- summary_table_baseline_build %>%
-        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0))) %>%
+        purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     relative_hp_started <- reactive({
-      summary_table_hp_totals <- summary_table_hp_totals()
-      for (i in 1:length(summary_table_hp_totals)){
-        if (!"True" %in% colnames(summary_table_hp_totals[[i]])) {
-          summary_table_hp_totals$True <- 0
-        }
-      }
-      select_items <- c(opt_factors(), "True")
-      
-      relative_hp_started <- imap(summary_table_hp_totals, ~.x %>%
-                                    select(select_items))
+      relative_hp_started <- summary_table_hp_totals() %>%
+        purrr::map(~.x %>% mutate_all(~replace(., is.na(.), 0)) %>%
+                     dplyr::select(opt_factors(), True))
       return(relative_hp_started)   
     })
     table_hp_started <- reactive({
-      table_hp_started <- plyr::ldply(relative_hp_started()) %>%
-        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = true)
-      return(table_hp_started)
+      relative_hp_started() %>%
+        list_rbind(names_to = "id") %>%
+        dplyr::select(id, opt_factors(), True) %>%
+        pivot_wider(names_from = id, values_from = True) %>%
+        dplyr::rename_all(~gsub("_", ".", .))
     })
     plot_hp_started  <- reactive({
       relative_hp_started <- imap(relative_hp_started(), ~.x %>%
-                                    rename(value = true))
-      hp_mood_plot(relative_hp_started, opt_factors(), manipulation = "ldply", limits =  c("Praise", "Instruct", "Stress", "Money", "Rules", "Consequence", "Solve", "Safe", "Crisis"),
+                                    rename(value = True))
+      hp_mood_plot(relative_hp_started, opt_factors(), manipulation = "ldply",
+                   limits =  c("Praise", "Instruct", "Stress", "Money", "Rules", "Consequence", "Solve", "Safe", "Crisis"),
                    xlab = "Workshop week")
     }) 
     output$table_hp_started <- shiny::renderTable({(table_hp_started())}, striped = TRUE)
@@ -5075,9 +4981,9 @@ parentapp_shiny <- function(country, study){
                                                                columns_to_summarise = data_hp_done,
                                                                replace = "rp.contact.field.w_",
                                                                replace_after = "_hp_done")
-      summary_table_baseline_build <- summary_table_baseline_build %>%
-        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0))) %>%
+        purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     relative_hp_done <- reactive({
@@ -5096,13 +5002,13 @@ parentapp_shiny <- function(country, study){
     })
     table_perc_long <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       relative_hp_done_stress <- summary_table_base_build(opt_factors = opt_factors(),
-                                                               data = selected_data_dem(),
-                                                               columns_to_summarise = "rp.contact.field.w_stress_hp_done",
-                                                               replace = "rp.contact.field.w_",
-                                                               replace_after = "_hp_done")
+                                                          data = selected_data_dem(),
+                                                          columns_to_summarise = "rp.contact.field.w_stress_hp_done",
+                                                          replace = "rp.contact.field.w_",
+                                                          replace_after = "_hp_done")
       relative_hp_done_stress <- relative_hp_done_stress %>%
         purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
-      relative_hp_done_stress <- mult_summary_table_filter(relative_hp_done_stress)
+      relative_hp_done_stress <- relative_hp_done_stress %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
       
       relative_hp_done_stress <- plyr::ldply(relative_hp_done_stress)
       hp_started_long <- plyr::ldply(relative_hp_started())
@@ -5110,7 +5016,7 @@ parentapp_shiny <- function(country, study){
       
       hp_done_long <- full_join(relative_hp_done_stress, hp_done_long)
       table_perc_long <- full_join(hp_started_long, hp_done_long) %>%
-        mutate(perc_complete = yes/true)
+        mutate(perc_complete = Yes/True)
       return(table_perc_long)
     })
     table_hp_done <- reactive({
@@ -5132,9 +5038,9 @@ parentapp_shiny <- function(country, study){
                                                                columns_to_summarise = data_hp_mood,
                                                                replace = "rp.contact.field.w_",
                                                                replace_after = "_mood")
-      summary_table_baseline_build <- summary_table_baseline_build %>%
-        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>%
+        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0))) %>%
+        purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     #HP 2 One on One (NB no HP for WS 1)
@@ -5149,85 +5055,27 @@ parentapp_shiny <- function(country, study){
     output$plot_mood_1on1 <- renderPlotly({plot_mood_1on1()})
     
     change_rname <- function(x){
-        names(x) <- opt_factors()
-        return(x)
+      names(x) <- opt_factors()
+      return(x)
     }
     
     # TODO: does eventReactive/goButton work for pilot?
-    summary_challenges_setup <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
-      if (country == "Tanzania"){
-        if (study == "Pilot"){
-          chall_data <- selected_data_dem() %>% mutate(Org = PilotSite)
-        } else {
-          if (!is.null(input$opt_support)){
-            if (!is.null(input$opt_skin)){
-              if (!is.null(input$opt_diglit)){
-                chall_data <- selected_data_dem() %>% mutate(Org = paste(Support, Skin, `Digital Literacy`))
-              } else {
-                chall_data <- selected_data_dem() %>% mutate(Org = paste(Support, Skin))
-              }
-            } else {
-              if (!is.null(input$opt_diglit)){
-                chall_data <- selected_data_dem() %>% mutate(Org = paste(Support, `Digital Literacy`))
-              } else {
-                chall_data <- selected_data_dem() %>% mutate(Org = Support)
-              }
-            }
-          } else {
-            if (!is.null(input$opt_skin)){
-              if (!is.null(input$opt_diglit)){
-                chall_data <- selected_data_dem() %>% mutate(Org = paste(Skin, `Digital Literacy`))
-              } else {
-                chall_data <- selected_data_dem() %>% mutate(Org = Skin)
-              }
-            } else {
-              if (!is.null(input$opt_diglit)){
-                chall_data <- selected_data_dem() %>% mutate(Org = `Digital Literacy`)
-              } else {
-              }
-            }
-          }
-        }
-        } else {
-          chall_data <- selected_data_dem()
-        }
-      
-        chall_table <- map2(challenge_vars, chall_ap_vars, ~ challenge_freq(data = chall_data,
-                                                                            group_by = "Org",
-                                                                            var = .x,
-                                                                            append_var = .y))
-        names(chall_table) <- naming_conventions(challenge_vars, replace = "rp.contact.field.w_", replace_after = "_hp_challenge_list")
-        return(chall_table)
-    })
-    
     summary_challenges <- reactive({
-        if (study == "Optimisation" & country == "Tanzania"){
-          new_org_cols <- summary_challenges_setup() %>%
-            purrr::map(.f =~ data.frame(stringr::str_split(.x$Org, pattern = " ", simplify = TRUE))) %>%
-            purrr::map(., change_rname)
-          chall_table <- summary_challenges_setup() %>% purrr::map(.f =~ .x %>% dplyr::select(-c("Org")))
-          chall_table_bind <- purrr::map2(new_org_cols, chall_table, 
-                                          .f =~ cbind(.x, .y))
-          chall_table <- chall_table_bind
-        } else {
-          chall_table <- summary_challenges_setup()
-        }
-        return(chall_table)
-      })
+      chall_table <- map2(challenge_vars, chall_ap_vars, ~ challenge_freq(data = selected_data_dem(),
+                                                                          group_by = opt_factors(),
+                                                                          var = .x,
+                                                                          append_var = .y))
+      names(chall_table) <- naming_conventions(challenge_vars, replace = "rp.contact.field.w_", replace_after = "_hp_challenge_list")
+      return(chall_table)
+    })
     
     table_chall_1on1 <- reactive({
       summary_challenges()$`1on1`
     })
     plot_chall_1on1 <- reactive({
-      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`1on1`, cols = !Org)
-      ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
-        geom_bar(stat = "identity", position = "dodge") +
-        # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        scale_x_discrete(guide = guide_axis(angle = 90)) +
-        viridis::scale_fill_viridis(discrete = TRUE)
+      hp_mood_plot(data = summary_challenges()$`1on1`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
     })
-    output$table_chall_1on1 <- shiny::renderTable({(table_chall_1on1())}, striped = TRUE,
-                                                  caption = "1 = I don’t have enough time; 2 = My teen does not want to spend time with me; 3 = My teen only wants to watch TV or play on his/her phone; 4 = My teen wants to do things that are not safe or that cost money; 5 = My teen wants to do things that I cannot physically do; 6 = My teen chose a competitive activity. I won and s/he got angry.; 7 = I struggled to end the one-on-one time; 8 = All my children want one-on-one time with me at the same time")
+    output$table_chall_1on1 <- shiny::renderTable({(table_chall_1on1())}, striped = TRUE, caption = "1 = I don’t have enough time; 2 = My teen does not want to spend time with me; 3 = My teen only wants to watch TV or play on his/her phone; 4 = My teen wants to do things that are not safe or that cost money; 5 = My teen wants to do things that I cannot physically do; 6 = My teen chose a competitive activity. I won and s/he got angry.; 7 = I struggled to end the one-on-one time; 8 = All my children want one-on-one time with me at the same time")
     output$plot_chall_1on1 <- renderPlotly({plot_chall_1on1()})
     
     #HP 3 Praise (no review/ mood and no challenges)
@@ -5264,12 +5112,9 @@ parentapp_shiny <- function(country, study){
     table_chall_instruct <- reactive({
       summary_challenges()$`Instruct`
     })
-    plot_chall_instruct <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Instruct`, cols = !Org)
-    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
-      geom_bar(stat = "identity", position = "dodge") +
-      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-      scale_x_discrete(guide = guide_axis(angle = 90)) +
-      viridis::scale_fill_viridis(discrete = TRUE)})
+    plot_chall_instruct <- reactive({ 
+      hp_mood_plot(data = summary_challenges()$`Instruct`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
     output$table_chall_instruct <- shiny::renderTable({(table_chall_instruct())}, striped = TRUE,
                                                       caption = "1 = My teenager did not want to follow the instruction; 2 = I did not find time to spend one-on-one time with my teen; 3 = I gave a negative instead of a positive instruction; 4 = I shouted at my teen when they behaved negatively, instead of giving them a positive instruction for what they should do")
     output$plot_chall_instruct <- renderPlotly({plot_chall_instruct()})
@@ -5289,12 +5134,9 @@ parentapp_shiny <- function(country, study){
     table_chall_stress_br <- reactive({
       summary_challenges()$`Stress`
     })
-    plot_chall_stress_br <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Stress`, cols = !Org)
-    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
-      geom_bar(stat = "identity", position = "dodge") +
-      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-      scale_x_discrete(guide = guide_axis(angle = 90)) +
-      viridis::scale_fill_viridis(discrete = TRUE)})
+    plot_chall_stress_br <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Stress`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
     output$table_chall_stress_br <- shiny::renderTable({(table_chall_stress_br())}, striped = TRUE,
                                                        caption = "1 = I was afraid my teen would think I was weak; 2 = I felt uncomfortable about naming specific difficult feelings; 3 = My teen felt uncomfortable when I shared my feelings; 4 = When I shared my feelings, my teen asked many questions, which made me uncomfortable; 5 = I was too stressed or angry to try sharing my feelings – I prefer to be alone when I feel like that")
     output$plot_chall_stress_br <- renderPlotly({plot_chall_stress_br()})
@@ -5326,7 +5168,7 @@ parentapp_shiny <- function(country, study){
     plot_mood_money <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Money hp`)})
     output$table_mood_money <- shiny::renderTable({(table_mood_money())}, striped = TRUE)
     output$plot_mood_money <- renderPlotly({plot_mood_money()})
-
+    
     table_mood_rules <- reactive({summary_table_hp_mood()$`Rules hp` })
     plot_mood_rules <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Rules hp`)})
     output$table_mood_rules <- shiny::renderTable({(table_mood_rules())}, striped = TRUE)
@@ -5335,12 +5177,9 @@ parentapp_shiny <- function(country, study){
     table_chall_money <- reactive({
       summary_challenges()$`Money`
     })
-    plot_chall_money <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Money`, cols = !Org)
-    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
-      geom_bar(stat = "identity", position = "dodge") +
-      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-      scale_x_discrete(guide = guide_axis(angle = 90)) +
-      viridis::scale_fill_viridis(discrete = TRUE)})
+    plot_chall_money <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Money`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
     output$table_chall_money <- shiny::renderTable({(table_chall_money())}, striped = TRUE,
                                                    caption = "1 = I did not want to tell my family how much I earn; 2 = When budgeting, we could not agree on what should fall under needs and what should fall under wants; 3 = I did not understand what to do; 4 = My teen did not want to do the budgeting with me")
     output$plot_chall_money <- renderPlotly({plot_chall_money()})
@@ -5359,12 +5198,9 @@ parentapp_shiny <- function(country, study){
     table_chall_rule <- reactive({
       summary_challenges()$`Rules`
     })
-    plot_chall_rule <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Rules`, cols = !Org)
-    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
-      geom_bar(stat = "identity", position = "dodge") +
-      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-      scale_x_discrete(guide = guide_axis(angle = 90)) +
-      viridis::scale_fill_viridis(discrete = TRUE)})
+    plot_chall_rule <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Rules`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
     output$table_chall_rule <- shiny::renderTable({(table_chall_rule())}, striped = TRUE,
                                                   caption = "1 = My teen and I could not agree on a rule; 2 = My teen felt it was unfair that they have to follow the rule while I don’t have to follow it; 3 = I felt uncomfortable, because I feel that I should be the one establishing the rule, not my teen; 4 = My partner felt uncomfortable, because they feel that they should be the one establishing the rule, not the teen; 5 = When we tried to set a rule, we got into an argument; 6 = We were not able to stick to the rule")
     output$plot_chall_rule <- renderPlotly({plot_chall_rule()})
@@ -5387,12 +5223,9 @@ parentapp_shiny <- function(country, study){
     table_chall_consequence <- reactive({
       summary_challenges()$`Consequence`
     })
-    plot_chall_consequence <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Consequence`, cols = !Org)
-    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
-      geom_bar(stat = "identity", position = "dodge") +
-      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-      scale_x_discrete(guide = guide_axis(angle = 90)) +
-      viridis::scale_fill_viridis(discrete = TRUE)})
+    plot_chall_consequence <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Consequence`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
     output$table_chall_consequence <- shiny::renderTable({(table_chall_consequence())}, striped = TRUE,
                                                          caption = "1 = I got very angry when my teen broke the rule; 2 = My teen got very angry with me after I gave the consequence; 3 = I introduced the consequence without first discussing it with my teen; 4 = I forgot to follow through with the consequence; 5 = Even with the consequence, my teen still does not follow the rule; 6 = We only created a negative consequence, not a positive consequence; 7 = My teen suggested being hit as a negative consequence")
     output$plot_chall_consequence <- renderPlotly({plot_chall_consequence()})
@@ -5411,12 +5244,9 @@ parentapp_shiny <- function(country, study){
     table_chall_solve <- reactive({
       summary_challenges()$`Solve`
     })
-    plot_chall_solve <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Solve`, cols = !Org)
-    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
-      geom_bar(stat = "identity", position = "dodge") +
-      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-      scale_x_discrete(guide = guide_axis(angle = 90)) +
-      viridis::scale_fill_viridis(discrete = TRUE)})
+    plot_chall_solve <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Solve`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
     output$table_chall_solve <- shiny::renderTable({(table_chall_solve())}, striped = TRUE,
                                                    caption = "1 = I forgot the steps of problem solving; 2 = I started with the solutions right away; 3 = We could not agree on a solution to try out and we got into an argument; 4 = I got angry when the problem came up and I forgot to use the problem-solving steps; 5 = My teen got angry and did not want to talk about the problem")
     output$plot_chall_solve <- renderPlotly({plot_chall_solve()})
@@ -5435,12 +5265,9 @@ parentapp_shiny <- function(country, study){
     table_chall_safe <- reactive({
       summary_challenges()$`Safe`
     })
-    plot_chall_safe <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Safe`, cols = !Org)
-    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
-      geom_bar(stat = "identity", position = "dodge") +
-      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-      scale_x_discrete(guide = guide_axis(angle = 90)) +
-      viridis::scale_fill_viridis(discrete = TRUE)})
+    plot_chall_safe <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Safe`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
     output$table_chall_safe <- shiny::renderTable({(table_chall_safe())}, striped = TRUE,
                                                   caption = "1 = My teen and I disagreed on which areas and online activities were unsafe; 2 = My teen identified the house of someone I trust as unsafe. I was shocked and did not know what to do; 3 = My teen insisted that the bar (or another place I don’t feel is safe) is safe for them to visit. I don’t know how to convince my teen; 4 = As an adult, I feel responsible to protect - but when I told my teen what is safe and what is not, my teen got angry; 5 = It was hard to identify support resources available in my community, because I don’t know my community so well / there are few services available; 6 = I don’t know much about technology, so I don’t know how to talk about it with my teen")
     output$plot_chall_safe <- renderPlotly({plot_chall_safe()})
@@ -5459,12 +5286,9 @@ parentapp_shiny <- function(country, study){
     table_chall_crisis <- reactive({
       summary_challenges()$`Crisis`
     })
-    plot_chall_crisis <- reactive({      chall_table_l <- pivot_longer(data = summary_challenges_setup()$`Crisis`, cols = !Org)
-    ggplot(chall_table_l, aes(x = name, y = value, fill = Org)) +
-      geom_bar(stat = "identity", position = "dodge") +
-      # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-      scale_x_discrete(guide = guide_axis(angle = 90)) +
-      viridis::scale_fill_viridis(discrete = TRUE)})
+    plot_chall_crisis <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Crisis`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
     output$table_chall_crisis <- shiny::renderTable({(table_chall_crisis())}, striped = TRUE,
                                                     caption = "1 = My teen told me that something serious happened to them and I did not know how to handle it; 2 = The conversation made me very uncomfortable because I was reminded of a negative experience I had; 3 = One of us did not feel comfortable")
     output$plot_chall_crisis <- renderPlotly({plot_chall_crisis()})
@@ -5472,7 +5296,7 @@ parentapp_shiny <- function(country, study){
     #FIFTH Tab Surveys
     summary_table_survey_past_week <- reactive({
       #if (study == "Optimisation"){ # and for TZ
-        summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_initial_1")
+      summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_initial_1")
       #} else {
       #  summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_past_week")
       #}
@@ -5487,7 +5311,7 @@ parentapp_shiny <- function(country, study){
     table_sv1_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_survey_completion <- selected_data_dem() %>%
         summary_table(columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", factors = opt_factors(), display = FALSE, include_margins = TRUE)
-      summary_table_filter(summary_table_survey_completion)
+      summary_table_survey_completion %>% janitor::adorn_totals(c("row", "col"))
       #summary_table_survey_completion %>%
       #  purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
       #summary_table_survey_completion <- summary_table_survey_completion %>%
@@ -5515,7 +5339,7 @@ parentapp_shiny <- function(country, study){
     plot_sv1_praise  <- reactive({
       hp_mood_plot(data = summary_table_survey_past_week()$`Positive parenting (praise)`, factors = "Org", limits = NULL, xlab = "")})
     output$plot_sv1_praise <- renderPlotly({plot_sv1_praise()})
-
+    
     # sv1_stress a_3
     table_sv1_stress <- reactive({summary_table_survey_past_week()$`Parenting stress`}) 
     output$table_sv1_stress <- shiny::renderTable({(table_sv1_stress())}, striped = TRUE,
@@ -5534,7 +5358,7 @@ parentapp_shiny <- function(country, study){
     
     table_sv1_insult <- reactive({summary_table_survey_past_week()$`Child maltreatment (emotional, insult)`}) 
     output$table_sv1_insult <- shiny::renderTable({(table_sv1_insult())}, striped = TRUE,
-                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
+                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     plot_sv1_insult  <- reactive({
       hp_mood_plot(data = summary_table_survey_past_week()$`Child maltreatment (emotional, insult)`, factors = "Org", limits = NULL, xlab = "")})
     output$plot_sv1_insult <- renderPlotly({plot_sv1_insult()})
@@ -5565,7 +5389,7 @@ parentapp_shiny <- function(country, study){
     
     table_sv1_push <- reactive({summary_table_survey_past_week()$`Child maltreatment (physical, push)`}) 
     output$table_sv1_push <- shiny::renderTable({(table_sv1_push())}, striped = TRUE,
-                                                   caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
+                                                caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     plot_sv1_push  <- reactive({
       hp_mood_plot(data = summary_table_survey_past_week()$`Child maltreatment (physical, push)`, factors = "Org", limits = NULL, xlab = "")})
     output$plot_sv1_push <- renderPlotly({plot_sv1_push()})
@@ -5607,7 +5431,7 @@ parentapp_shiny <- function(country, study){
     
     table_sv1_sex_talk_ever <- reactive({summary_table_survey_past_week()$`Parental Communication about Sexual Abuse Prevention (ever)`})
     output$table_sv1_sex_talk_ever <- shiny::renderTable({(table_sv1_sex_talk_ever())}, striped = TRUE,
-                                                    caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
+                                                         caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
     plot_sv1_sex_talk_ever  <- reactive({
       hp_mood_plot(data = summary_table_survey_past_week()$`Parental Communication about Sexual Abuse Prevention (ever)`, factors = "Org", limits = NULL, xlab = "")})
     output$plot_sv1_sex_talk_ever <- renderPlotly({plot_sv1_sex_talk_ever()})
@@ -5687,7 +5511,7 @@ parentapp_shiny <- function(country, study){
     table_sv2_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_survey_completion <- selected_data_dem() %>%
         summary_table(columns_to_summarise = "rp.contact.field.survey_final_completion_level", factors = opt_factors(), display = FALSE, include_margins = TRUE)
-      summary_table_filter(summary_table_survey_completion)
+      summary_table_survey_completion %>% janitor::adorn_totals(c("row", "col"))
       #summary_table_survey_completion %>%
       #  purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
       #summary_table_survey_completion <- summary_table_survey_completion %>%
@@ -5881,7 +5705,7 @@ parentapp_shiny <- function(country, study){
                                                                replace_after = "count")
       data_library_neat <- naming_conventions(names(summary_table_library), replace = "Rp.contact.field.click hs")
       names(summary_table_baseline_build) <- data_library_neat
-      mult_summary_table_filter(summary_table_baseline_build)
+      summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
     #average clicks on parent library (mean per org)
@@ -5892,13 +5716,11 @@ parentapp_shiny <- function(country, study){
         mutate(across(data_library, ~as.numeric(.x)))
       
       summary_mean_library_data <- summary_table(data = table_library_data,
-                                                     columns_to_summarise = data_library,
-                                                     replace = "rp.contact.field.click_",
-                                                     replace_after = "_count",
-                                                     summaries = "mean",
-                                                     factors = opt_factors())
-      summary_mean_library_data <- summary_table_filter(summary_mean_library_data, add_totals = FALSE)
-      
+                                                 columns_to_summarise = data_library,
+                                                 replace = "rp.contact.field.click_",
+                                                 replace_after = "_count",
+                                                 summaries = "mean",
+                                                 factors = opt_factors())
       means_total <- NULL
       for (i in 1:length(summary_mean_library_data)){
         if(is.numeric(summary_mean_library_data[[i]])){
@@ -5996,7 +5818,7 @@ parentapp_shiny <- function(country, study){
       plhdata_group_ids <- selected_data_dem() %>% select(c('app_user_id', "opt_cluster", "createdAt", all_of(data_completion_level)))
       plhdata_group_ids_group_1 <- threshhold_function(data = plhdata_group_ids, threshhold = 0)
       plhdata_group_ids_group_1 <- plhdata_group_ids_group_1 %>%
-        mutate(engagement_total = self_care_started + 1on1_started + praise_started + 
+        mutate(engagement_total = self_care_started + `1on1_started` + praise_started + 
                  instruct_started + stress_started + money_started + rules_started + consequence_started + 
                  solve_started + safe_started + crisis_started + celebrate_started)
       #View(plhdata_group_ids_group_1)
@@ -6014,14 +5836,14 @@ parentapp_shiny <- function(country, study){
                                                        ifelse(prop_complete <= 1, "high",
                                                               "else"))))) %>%
         dplyr::select(-c(diff_in_days, curr_date, prop_complete))
-
+      
       return(plhdata_group_ids_group_1)
     })
     
     engagement_download <- reactive({
-      plhdata_group_ids_group_1 <- download_data_start() %>% dplyr::select(-c(self_care_started, 1on1_started, praise_started, 
-                                                             instruct_started, stress_started, money_started, rules_started, consequence_started, 
-                                                             solve_started, safe_started, crisis_started, celebrate_started))
+      plhdata_group_ids_group_1 <- download_data_start() %>% dplyr::select(-c(self_care_started, `1on1_started`, praise_started, 
+                                                                              instruct_started, stress_started, money_started, rules_started, consequence_started, 
+                                                                              solve_started, safe_started, crisis_started, celebrate_started))
       names(plhdata_group_ids_group_1) <- naming_conventions(names(plhdata_group_ids_group_1), replace = "rp.contact.field.w_")
       plhdata_group_ids_group_1 <- plhdata_group_ids_group_1 %>%
         dplyr::select(c("App user id", "Opt cluster", "Engagement total", "Week number", "Engagement level",
@@ -6037,30 +5859,30 @@ parentapp_shiny <- function(country, study){
     
     summary_download <- reactive({
       plhdata_group_ids_group_1 <- download_data_start() %>%
-          mutate(not_sync_7d = ifelse(hours_since_sync >= 7*24, 1, 0),
-                 not_sync_14d = ifelse(hours_since_sync >= 14*24, 1, 0),
-                 not_sync_21d = ifelse(hours_since_sync >= 21*24, 1, 0),
-                 not_sync_30d = ifelse(hours_since_sync >= 30*24, 1, 0)) %>%
-          group_by(opt_cluster) %>%
-          summarise(`Average engagement total` = mean(engagement_total, na.rm = TRUE),
-                    `Week number (?)` = mean(week_number, na.rm = TRUE),
-                    `Total participants` = n(),
-                    `Not synced in last 7 days` = sum(not_sync_7d, na.rm = TRUE), 
-                    `Not synced in last 14 days` = sum(not_sync_14d, na.rm = TRUE), 
-                    `Not synced in last 21 days` = sum(not_sync_21d, na.rm = TRUE), 
-                    `Not synced in last 30 days` = sum(not_sync_30d, na.rm = TRUE)
-          )
-        started_vars <- c("self_care_started", "1on1_started", "praise_started", "instruct_started", "stress_started", 
-                          "money_started", "rules_started", "consequence_started", "solve_started", "safe_started", "crisis_started", "celebrate_started")
-        df_list <- download_data_start() %>%
-          map2(.x = started_vars, .y = data_completion_level,
-               .f = ~eng_summary_vars(data = download_data_start(), started = .x, completion = .y))
-        for (i in 1:length(df_list)){
-          plhdata_group_ids_group_1 <- merge(plhdata_group_ids_group_1, df_list[[i]])
-        }
-        plhdata_group_ids_group_1 <- plhdata_group_ids_group_1 %>%
-          mutate(across(where(is.numeric), ~round(.x, digits = 1)))
-        return(plhdata_group_ids_group_1)
+        mutate(not_sync_7d = ifelse(hours_since_sync >= 7*24, 1, 0),
+               not_sync_14d = ifelse(hours_since_sync >= 14*24, 1, 0),
+               not_sync_21d = ifelse(hours_since_sync >= 21*24, 1, 0),
+               not_sync_30d = ifelse(hours_since_sync >= 30*24, 1, 0)) %>%
+        group_by(opt_cluster) %>%
+        summarise(`Average engagement total` = mean(engagement_total, na.rm = TRUE),
+                  `Week number (?)` = mean(week_number, na.rm = TRUE),
+                  `Total participants` = n(),
+                  `Not synced in last 7 days` = sum(not_sync_7d, na.rm = TRUE), 
+                  `Not synced in last 14 days` = sum(not_sync_14d, na.rm = TRUE), 
+                  `Not synced in last 21 days` = sum(not_sync_21d, na.rm = TRUE), 
+                  `Not synced in last 30 days` = sum(not_sync_30d, na.rm = TRUE)
+        )
+      started_vars <- c("self_care_started", "1on1_started", "praise_started", "instruct_started", "stress_started", 
+                        "money_started", "rules_started", "consequence_started", "solve_started", "safe_started", "crisis_started", "celebrate_started")
+      df_list <- download_data_start() %>%
+        map2(.x = started_vars, .y = data_completion_level,
+             .f = ~eng_summary_vars(data = download_data_start(), started = .x, completion = .y))
+      for (i in 1:length(df_list)){
+        plhdata_group_ids_group_1 <- merge(plhdata_group_ids_group_1, df_list[[i]])
+      }
+      plhdata_group_ids_group_1 <- plhdata_group_ids_group_1 %>%
+        mutate(across(where(is.numeric), ~round(.x, digits = 1)))
+      return(plhdata_group_ids_group_1)
     })
     
     
@@ -6114,7 +5936,8 @@ parentapp_shiny <- function(country, study){
         write.csv(datasetInput(), file, row.names = FALSE)
       }
     )
-    
+    print("last")
+    print(Sys.time())
   } #close server
   shinyApp(ui = ui, server = server)
 } # close function

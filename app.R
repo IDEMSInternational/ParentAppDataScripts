@@ -23,7 +23,10 @@ study <- "Pilot"
 source("config/credentials_file.R")
 source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))
+source(here("Metabase Pre-Shiny Setup.R"))
 parentapp_shiny(country = country, study = study)
+
+# Please use `all_of(var)` (or `any_of(var)`) instead of `.data[[var]]`
 
 # move to be like shiny 2 with the easy to read function
 

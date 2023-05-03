@@ -488,9 +488,9 @@ naming_conventions <- function(x, replace, replace_after, rename = TRUE) {
 }
 
 summary_calculation <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise, summaries = c("frequencies", "mean", "mmm", "sum"), # mmm = mean, min, max. For some of parenttext, summaries == mmm                                include_country_margins, country_factor,
-                                 together = FALSE, include_margins = FALSE, na.rm = TRUE, drop = FALSE,
-                                 include_country_margins = FALSE, country_factor = FALSE,
-                                 include_perc = FALSE){ # include_perc = TRUE for parenttext
+                                together = FALSE, include_margins = FALSE, na.rm = TRUE, drop = FALSE,
+                                include_country_margins = FALSE, country_factor = FALSE,
+                                include_perc = FALSE){ # include_perc = TRUE for parenttext
   summaries <- match.arg(summaries)
   if (summaries == "frequencies"){
     if (is.numeric(data[[columns_to_summarise]])){ # if statement not in parenttext
@@ -618,10 +618,10 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
 }
 
 summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise = NULL, summaries = c("frequencies", "mean", "mmm", "sum"), # todo: did have factors = Org before.
-                           replace = "rp.contact.field.", replace_after = NULL, include_margins = FALSE, wider_table = TRUE, 
-                           include_country_margins = TRUE, country_factor = "country", na.rm = TRUE,
-                           display_table = FALSE, naming_convention = TRUE, include_perc = FALSE,
-                           together = TRUE, drop = FALSE){
+                          replace = "rp.contact.field.", replace_after = NULL, include_margins = FALSE, wider_table = TRUE, 
+                          include_country_margins = TRUE, country_factor = "country", na.rm = TRUE,
+                          display_table = FALSE, naming_convention = TRUE, include_perc = FALSE,
+                          together = TRUE, drop = FALSE){
   summaries <- match.arg(summaries)
   data <- data %>% dplyr::select({{ factors }}, {{ columns_to_summarise }})
   return_table <- summary_calculation(data = data,

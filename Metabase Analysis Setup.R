@@ -337,14 +337,14 @@ plhdata_org_clean <- plhdata_org_clean %>%
 
 ##Priority 20
 #App-opens
-data_app_opens <- c("rp.contact.field.app_launch_count","rp.contact.field.app_launch_count_w_self_care", "rp.contact.field.app_launch_count_w_1on1",
+data_app_opens <- c("","", "",
                     "rp.contact.field.app_launch_count_w_praise","rp.contact.field.app_launch_count_w_instruct",
                     "rp.contact.field.app_launch_count_w_stress", "rp.contact.field.app_launch_count_w_money",
                     "rp.contact.field.app_launch_count_w_rules", "rp.contact.field.app_launch_count_w_consequence",
                     "rp.contact.field.app_launch_count_w_solve", "rp.contact.field.app_launch_count_w_safe",
                     "rp.contact.field.app_launch_count_w_crisis", "rp.contact.field.app_launch_count_w_celebrate")
 
-data_app_opens_neat <- c("Total", "Welcome and Self care(1)", "One-on-one time(2)", "Praise (3)", "Positive Instructions(4)",
+data_app_opens_neat <- c("", "", "", "Praise (3)", "Positive Instructions(4)",
                          "Managing Stress(5)", "Family Budget(6)","Rules(7)", "Calm Consequences(8)",  
                          "Problem Solving(9)", "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
 
@@ -477,6 +477,8 @@ data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.f
                   "rp.contact.field.click_pc_relax_and_activities_count", "rp.contact.field.click_pc_support_contacts_count",
                   "rp.contact.field.click_pc_evidence_base_count", "rp.contact.field.click_pc_technical_support_count",
                   "rp.contact.field.click_pc_message_archive_count","rp.contact.field.click_pc_bereavement_count")
+
+# Down to data_library
 
 # Completion status of baseline survey ------------------------------------------------
 # plhdata_org_clean %>%

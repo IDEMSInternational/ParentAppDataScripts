@@ -6,19 +6,6 @@ source(here("config/Personal Setup.R"))
 UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 UIC_Tracker_Tanzania <- rio::import(file = here("data/UIC Tracker Tanzania.xlsx"))
 
-# get_postgres_data <- function (site, name = c("app_users", "app_notification_interaction"), qry = NULL){
-#   name <- match.arg(name)
-#   if (is.null(qry)){
-#     df <- DBI::dbReadTable(conn = site, name = name)
-#   } else {
-#     df <- DBI::dbGetQuery(site, qry)
-#   }
-#   return(df)
-# }
-
-# todo: get_nf_data - update function to have qry option
-
-
 #######################################
 # Specific to ParentApp --------------------------------------------------
 #######################################

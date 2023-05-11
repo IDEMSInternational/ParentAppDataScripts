@@ -3683,7 +3683,7 @@ parentapp_shiny <- function(country, study){
     map2(data_habit_parent_points_data$display_name, data_habit_parent_points_data$object_name, .f = ~ pp_completion_table(n = .y, j = .x))
     map2(data_habit_parent_points_data$metabase_ID, data_habit_parent_points_data$object_name, .f = ~ pp_completion_plot(n = .y, j = .x))
     
-    #Parent Point sub tab Relax points pp1
+    #Parent Point sub tab Relax points pp1 ----------------------------------------------------------
     table_pp_relax_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_relax_workshop <- summary_table(data = selected_data_dem(),
                                               factors = opt_factors(),
@@ -3697,14 +3697,6 @@ parentapp_shiny <- function(country, study){
       plot_totals_function(table_pp_relax_ws_totals(), factors = opt_factors())
     })
     output$plot_pp_relax_ws_totals <- renderPlotly({plot_pp_relax_ws_totals()})
-    
-    # summary_table_habits <- function(i){
-    #   summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = paste0(data_habit_parent_points_all, i),
-    #                                                            replace = "rp.contact.field.parent_point_count_",
-    #                                                            replace_after = i)
-    #   summary_table_baseline_build <- summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
-    #   return(summary_table_baseline_build)
-    # }
     
     summary_table_habits_relax <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(),
@@ -3823,6 +3815,8 @@ parentapp_shiny <- function(country, study){
     #   print(i)
     #   map2(paste0(data_habit_parent_points_data$metabase_ID, i), paste0(data_habit_parent_points_data$object_name, i), .f = ~ pp_plot_self_care(n = .y, j = .x))
     # }
+    
+    # Treat Yourself Tab ----------------------------------------------------------------------------
     #Parent Point sub tab Treat Yourself points pp2
     table_pp_treat_yourself_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_treat_yourself_workshop <- summary_table(data = selected_data_dem(),
@@ -4219,7 +4213,7 @@ parentapp_shiny <- function(country, study){
     # Home Practice tab 4.3
     #NB no home practice for worshops 1 and 12 (welcome and celebration)
     
-    # HP review started per week
+    #### HP review started per week ############################################################
     # Engagement sub tab: HP -------------------------
     summary_table_hp_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(),
@@ -4341,7 +4335,7 @@ parentapp_shiny <- function(country, study){
       return(x)
     }
     
-    # TODO: does eventReactive/goButton work for pilot?
+    # Summary Challenges
     summary_challenges <- reactive({
       chall_table <- map2(challenge_vars, chall_ap_vars, ~ challenge_freq(data = selected_data_dem(),
                                                                           group_by = opt_factors(),
@@ -4351,14 +4345,78 @@ parentapp_shiny <- function(country, study){
       return(chall_table)
     })
     
-    table_chall_1on1 <- reactive({
-      summary_challenges()$`1on1`
-    })
+    table_chall_1on1 <- reactive({ summary_challenges()$`1on1` })
     plot_chall_1on1 <- reactive({
       hp_mood_plot(data = summary_challenges()$`1on1`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
     })
     output$table_chall_1on1 <- shiny::renderTable({(table_chall_1on1())}, striped = TRUE, caption = "1 = I don’t have enough time; 2 = My teen does not want to spend time with me; 3 = My teen only wants to watch TV or play on his/her phone; 4 = My teen wants to do things that are not safe or that cost money; 5 = My teen wants to do things that I cannot physically do; 6 = My teen chose a competitive activity. I won and s/he got angry.; 7 = I struggled to end the one-on-one time; 8 = All my children want one-on-one time with me at the same time")
     output$plot_chall_1on1 <- renderPlotly({plot_chall_1on1()})
+    
+    table_chall_instruct <- reactive({ summary_challenges()$`Instruct`})
+    plot_chall_instruct <- reactive({ 
+      hp_mood_plot(data = summary_challenges()$`Instruct`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
+    output$table_chall_instruct <- shiny::renderTable({(table_chall_instruct())}, striped = TRUE,
+                                                      caption = "1 = My teenager did not want to follow the instruction; 2 = I did not find time to spend one-on-one time with my teen; 3 = I gave a negative instead of a positive instruction; 4 = I shouted at my teen when they behaved negatively, instead of giving them a positive instruction for what they should do")
+    output$plot_chall_instruct <- renderPlotly({plot_chall_instruct()})
+    
+    table_chall_stress_br <- reactive({summary_challenges()$`Stress`})
+    plot_chall_stress_br <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Stress`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
+    output$table_chall_stress_br <- shiny::renderTable({(table_chall_stress_br())}, striped = TRUE,
+                                                       caption = "1 = I was afraid my teen would think I was weak; 2 = I felt uncomfortable about naming specific difficult feelings; 3 = My teen felt uncomfortable when I shared my feelings; 4 = When I shared my feelings, my teen asked many questions, which made me uncomfortable; 5 = I was too stressed or angry to try sharing my feelings – I prefer to be alone when I feel like that")
+    output$plot_chall_stress_br <- renderPlotly({plot_chall_stress_br()})
+    
+    table_chall_money <- reactive({summary_challenges()$`Money`})
+    plot_chall_money <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Money`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
+    output$table_chall_money <- shiny::renderTable({(table_chall_money())}, striped = TRUE,
+                                                   caption = "1 = I did not want to tell my family how much I earn; 2 = When budgeting, we could not agree on what should fall under needs and what should fall under wants; 3 = I did not understand what to do; 4 = My teen did not want to do the budgeting with me")
+    output$plot_chall_money <- renderPlotly({plot_chall_money()})
+    
+    table_chall_rule <- reactive({summary_challenges()$`Rules`})
+    plot_chall_rule <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Rules`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
+    output$table_chall_rule <- shiny::renderTable({(table_chall_rule())}, striped = TRUE,
+                                                  caption = "1 = My teen and I could not agree on a rule; 2 = My teen felt it was unfair that they have to follow the rule while I don’t have to follow it; 3 = I felt uncomfortable, because I feel that I should be the one establishing the rule, not my teen; 4 = My partner felt uncomfortable, because they feel that they should be the one establishing the rule, not the teen; 5 = When we tried to set a rule, we got into an argument; 6 = We were not able to stick to the rule")
+    output$plot_chall_rule <- renderPlotly({plot_chall_rule()})
+    
+    table_chall_consequence <- reactive({summary_challenges()$`Consequence`})
+    plot_chall_consequence <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Consequence`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
+    output$table_chall_consequence <- shiny::renderTable({(table_chall_consequence())}, striped = TRUE,
+                                                         caption = "1 = I got very angry when my teen broke the rule; 2 = My teen got very angry with me after I gave the consequence; 3 = I introduced the consequence without first discussing it with my teen; 4 = I forgot to follow through with the consequence; 5 = Even with the consequence, my teen still does not follow the rule; 6 = We only created a negative consequence, not a positive consequence; 7 = My teen suggested being hit as a negative consequence")
+    output$plot_chall_consequence <- renderPlotly({plot_chall_consequence()})
+    
+    table_chall_solve <- reactive({summary_challenges()$`Solve`})
+    plot_chall_solve <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Solve`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
+    output$table_chall_solve <- shiny::renderTable({(table_chall_solve())}, striped = TRUE,
+                                                   caption = "1 = I forgot the steps of problem solving; 2 = I started with the solutions right away; 3 = We could not agree on a solution to try out and we got into an argument; 4 = I got angry when the problem came up and I forgot to use the problem-solving steps; 5 = My teen got angry and did not want to talk about the problem")
+    output$plot_chall_solve <- renderPlotly({plot_chall_solve()})
+    
+    table_chall_safe <- reactive({summary_challenges()$`Safe`})
+    plot_chall_safe <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Safe`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
+    output$table_chall_safe <- shiny::renderTable({(table_chall_safe())}, striped = TRUE,
+                                                  caption = "1 = My teen and I disagreed on which areas and online activities were unsafe; 2 = My teen identified the house of someone I trust as unsafe. I was shocked and did not know what to do; 3 = My teen insisted that the bar (or another place I don’t feel is safe) is safe for them to visit. I don’t know how to convince my teen; 4 = As an adult, I feel responsible to protect - but when I told my teen what is safe and what is not, my teen got angry; 5 = It was hard to identify support resources available in my community, because I don’t know my community so well / there are few services available; 6 = I don’t know much about technology, so I don’t know how to talk about it with my teen")
+    output$plot_chall_safe <- renderPlotly({plot_chall_safe()})
+    
+    
+    table_chall_crisis <- reactive({ summary_challenges()$`Crisis` })
+    plot_chall_crisis <- reactive({
+      hp_mood_plot(data = summary_challenges()$`Crisis`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
+    })
+    output$table_chall_crisis <- shiny::renderTable({(table_chall_crisis())}, striped = TRUE,
+                                                    caption = "1 = My teen told me that something serious happened to them and I did not know how to handle it; 2 = The conversation made me very uncomfortable because I was reminded of a negative experience I had; 3 = One of us did not feel comfortable")
+    output$plot_chall_crisis <- renderPlotly({plot_chall_crisis()})
+    
     
     #HP 3 Praise (no review/ mood and no challenges)
     table_hpdone_praise <- reactive({summary_table_hp_done()$`Praise hp` })
@@ -4391,15 +4449,6 @@ parentapp_shiny <- function(country, study){
     output$table_mood_instruct <- shiny::renderTable({(table_mood_instruct())}, striped = TRUE)
     output$plot_mood_instruct <- renderPlotly({plot_mood_instruct()})
     
-    table_chall_instruct <- reactive({
-      summary_challenges()$`Instruct`
-    })
-    plot_chall_instruct <- reactive({ 
-      hp_mood_plot(data = summary_challenges()$`Instruct`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_instruct <- shiny::renderTable({(table_chall_instruct())}, striped = TRUE,
-                                                      caption = "1 = My teenager did not want to follow the instruction; 2 = I did not find time to spend one-on-one time with my teen; 3 = I gave a negative instead of a positive instruction; 4 = I shouted at my teen when they behaved negatively, instead of giving them a positive instruction for what they should do")
-    output$plot_chall_instruct <- renderPlotly({plot_chall_instruct()})
     
     #HP 5.1 Stress - Breathe
     table_hpdone_stress_br <- reactive({summary_table_hp_done()$`Stress hp breathe` })
@@ -4413,15 +4462,6 @@ parentapp_shiny <- function(country, study){
     output$plot_mood_stress_br <- renderPlotly({plot_mood_stress_br()})
     
     # TODO: for summary_table_hp_chall add filter options
-    table_chall_stress_br <- reactive({
-      summary_challenges()$`Stress`
-    })
-    plot_chall_stress_br <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Stress`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_stress_br <- shiny::renderTable({(table_chall_stress_br())}, striped = TRUE,
-                                                       caption = "1 = I was afraid my teen would think I was weak; 2 = I felt uncomfortable about naming specific difficult feelings; 3 = My teen felt uncomfortable when I shared my feelings; 4 = When I shared my feelings, my teen asked many questions, which made me uncomfortable; 5 = I was too stressed or angry to try sharing my feelings – I prefer to be alone when I feel like that")
-    output$plot_chall_stress_br <- renderPlotly({plot_chall_stress_br()})
     
     #HP 5.2 Stress - Talk
     table_hpdone_stress_tk <- reactive({summary_table_hp_done()$`Stress hp talk` })
@@ -4456,15 +4496,6 @@ parentapp_shiny <- function(country, study){
     output$table_mood_rules <- shiny::renderTable({(table_mood_rules())}, striped = TRUE)
     output$plot_mood_rules <- renderPlotly({plot_mood_rules()})
     
-    table_chall_money <- reactive({
-      summary_challenges()$`Money`
-    })
-    plot_chall_money <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Money`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_money <- shiny::renderTable({(table_chall_money())}, striped = TRUE,
-                                                   caption = "1 = I did not want to tell my family how much I earn; 2 = When budgeting, we could not agree on what should fall under needs and what should fall under wants; 3 = I did not understand what to do; 4 = My teen did not want to do the budgeting with me")
-    output$plot_chall_money <- renderPlotly({plot_chall_money()})
     
     #HP 7 Rules
     table_hpdone_rule <- reactive({summary_table_hp_done()$`Rules hp` })
@@ -4477,15 +4508,6 @@ parentapp_shiny <- function(country, study){
     output$table_mood_rule <- shiny::renderTable({(table_mood_rule())}, striped = TRUE)
     output$plot_mood_rule <- renderPlotly({plot_mood_rule()})
     
-    table_chall_rule <- reactive({
-      summary_challenges()$`Rules`
-    })
-    plot_chall_rule <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Rules`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_rule <- shiny::renderTable({(table_chall_rule())}, striped = TRUE,
-                                                  caption = "1 = My teen and I could not agree on a rule; 2 = My teen felt it was unfair that they have to follow the rule while I don’t have to follow it; 3 = I felt uncomfortable, because I feel that I should be the one establishing the rule, not my teen; 4 = My partner felt uncomfortable, because they feel that they should be the one establishing the rule, not the teen; 5 = When we tried to set a rule, we got into an argument; 6 = We were not able to stick to the rule")
-    output$plot_chall_rule <- renderPlotly({plot_chall_rule()})
     
     #HP 8 Calm Cons
     table_hpdone_consequence <- reactive({summary_table_hp_done()$`Consequence hp` })
@@ -4502,15 +4524,6 @@ parentapp_shiny <- function(country, study){
     output$table_mood_consequence <- shiny::renderTable({(table_mood_consequence())}, striped = TRUE)
     output$plot_mood_consequence <- renderPlotly({plot_mood_consequence()})
     
-    table_chall_consequence <- reactive({
-      summary_challenges()$`Consequence`
-    })
-    plot_chall_consequence <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Consequence`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_consequence <- shiny::renderTable({(table_chall_consequence())}, striped = TRUE,
-                                                         caption = "1 = I got very angry when my teen broke the rule; 2 = My teen got very angry with me after I gave the consequence; 3 = I introduced the consequence without first discussing it with my teen; 4 = I forgot to follow through with the consequence; 5 = Even with the consequence, my teen still does not follow the rule; 6 = We only created a negative consequence, not a positive consequence; 7 = My teen suggested being hit as a negative consequence")
-    output$plot_chall_consequence <- renderPlotly({plot_chall_consequence()})
     
     #HP 9 Pr Solve
     table_hpdone_solve <- reactive({summary_table_hp_done()$`Solve hp` })
@@ -4523,15 +4536,6 @@ parentapp_shiny <- function(country, study){
     output$table_mood_solve <- shiny::renderTable({(table_mood_solve())}, striped = TRUE)
     output$plot_mood_solve <- renderPlotly({plot_mood_solve()})
     
-    table_chall_solve <- reactive({
-      summary_challenges()$`Solve`
-    })
-    plot_chall_solve <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Solve`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_solve <- shiny::renderTable({(table_chall_solve())}, striped = TRUE,
-                                                   caption = "1 = I forgot the steps of problem solving; 2 = I started with the solutions right away; 3 = We could not agree on a solution to try out and we got into an argument; 4 = I got angry when the problem came up and I forgot to use the problem-solving steps; 5 = My teen got angry and did not want to talk about the problem")
-    output$plot_chall_solve <- renderPlotly({plot_chall_solve()})
     
     #HP 10 Teen Safe
     table_hpdone_safe <- reactive({summary_table_hp_done()$`Safe hp` })
@@ -4544,15 +4548,7 @@ parentapp_shiny <- function(country, study){
     output$table_mood_safe <- shiny::renderTable({(table_mood_safe())}, striped = TRUE)
     output$plot_mood_safe <- renderPlotly({plot_mood_safe()})
     
-    table_chall_safe <- reactive({
-      summary_challenges()$`Safe`
-    })
-    plot_chall_safe <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Safe`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_safe <- shiny::renderTable({(table_chall_safe())}, striped = TRUE,
-                                                  caption = "1 = My teen and I disagreed on which areas and online activities were unsafe; 2 = My teen identified the house of someone I trust as unsafe. I was shocked and did not know what to do; 3 = My teen insisted that the bar (or another place I don’t feel is safe) is safe for them to visit. I don’t know how to convince my teen; 4 = As an adult, I feel responsible to protect - but when I told my teen what is safe and what is not, my teen got angry; 5 = It was hard to identify support resources available in my community, because I don’t know my community so well / there are few services available; 6 = I don’t know much about technology, so I don’t know how to talk about it with my teen")
-    output$plot_chall_safe <- renderPlotly({plot_chall_safe()})
+
     
     #HP 11 D w Crisis
     table_hpdone_crisis <- reactive({summary_table_hp_done()$`Crisis hp`})
@@ -4565,15 +4561,6 @@ parentapp_shiny <- function(country, study){
     output$table_mood_crisis <- shiny::renderTable({(table_mood_crisis())}, striped = TRUE)
     output$plot_mood_crisis <- renderPlotly({plot_mood_crisis()})
     
-    table_chall_crisis <- reactive({
-      summary_challenges()$`Crisis`
-    })
-    plot_chall_crisis <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Crisis`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_crisis <- shiny::renderTable({(table_chall_crisis())}, striped = TRUE,
-                                                    caption = "1 = My teen told me that something serious happened to them and I did not know how to handle it; 2 = The conversation made me very uncomfortable because I was reminded of a negative experience I had; 3 = One of us did not feel comfortable")
-    output$plot_chall_crisis <- renderPlotly({plot_chall_crisis()})
     
     #FIFTH Tab Surveys
     summary_table_survey_past_week <- reactive({
@@ -4875,34 +4862,7 @@ parentapp_shiny <- function(country, study){
     plot_sv2_push  <- reactive({
       hp_mood_plot(data = summary_table_survey_last_week()$`Child maltreatment (physical, push)`, factors = "Org", limits = NULL, xlab = "")})
     output$plot_sv2_push <- renderPlotly({plot_sv2_push()})
-    
-    # sv2_week_teen_activity a_7 p1
-    # table_sv2_week_teen_activity <- reactive({
-    #   summary_table_survey_last_week()$`Teen activity`  }) 
-    # plot_sv2_week_teen_activity  <- reactive({
-    #   summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_7_part_1_final", replace = "rp.contact.field.")})
-    # output$table_sv2_week_teen_activity <- shiny::renderTable({(table_sv2_week_teen_activity())}, striped = TRUE,
-    #                                                           caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    # output$plot_sv2_week_teen_activity <- renderPlotly({plot_sv2_week_teen_activity()})
-    # 
-    # sv2_lockdown a_7 p2
-    # table_sv2_lockdown <- reactive({
-    #   summary_table_survey_last_week()$`Lockdown?`  }) 
-    # plot_sv2_lockdown  <- reactive({
-    #   summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_7_part_2_final", replace = "rp.contact.field.")})
-    # output$table_sv2_lockdown <- shiny::renderTable({(table_sv2_lockdown())}, striped = TRUE,
-    #                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    # output$plot_sv2_lockdown <- renderPlotly({plot_sv2_lockdown()})
-    
-    # sv2_reg_teen_activity a_7 p3
-    # table_sv2_reg_teen_activity <- reactive({
-    #   summary_table_survey_last_week()$`Knowledge of teen activity in non-lockdown week`  }) 
-    # plot_sv2_reg_teen_activity  <- reactive({
-    #   summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_7_part_3_final", replace = "rp.contact.field.")}) 
-    # output$table_sv2_reg_teen_activity <- shiny::renderTable({(table_sv2_reg_teen_activity())}, striped = TRUE,
-    #                                                          caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    # output$plot_sv2_reg_teen_activity <- renderPlotly({plot_sv2_reg_teen_activity()})
-    
+
     # sv2_sex_talk a_8
     table_sv2_sex_talk <- reactive({summary_table_survey_last_week()$`Parental Communication about Sexual Abuse Prevention (month)`})
     output$table_sv2_sex_talk <- shiny::renderTable({(table_sv2_sex_talk())}, striped = TRUE,

@@ -51,69 +51,11 @@ parentapp_shiny <- function(country, study){
                   )#closes box
                 ), #closes fluid row
                 
-                fluidRow(
-                  box(width = 6,
-                      collapsible = TRUE,
-                      solidHeader = TRUE,
-                      title = "Language",
-                      status = "primary",  
-                      style='width:100%;overflow-x: scroll;',
-                      plotlyOutput(outputId = "plot_language", height = "240"), #generates graph
-                      shiny::tableOutput("table_language")  #generates table
-                  ), #closes box
-                  
-                  box(width = 6,
-                      collapsible = TRUE,
-                      solidHeader = TRUE,
-                      title = "Workshop format",
-                      status = "primary",  
-                      style='width:100%;overflow-x: scroll;',
-                      plotlyOutput(outputId = "plot_ws_format", height = "240"),
-                      shiny::tableOutput("table_ws_format")
-                  )), #closes box, fluid row
+                fluid_row_box(variable1 = "language", variable2 = "ws_format",
+                              title1 = "Language", title2 = "Workshop format"),
                 
-                fluidRow(
-                  box(width = 6,
-                      collapsible = TRUE,
-                      solidHeader = TRUE,
-                      title = "App version",
-                      status = "primary", # primary, success, info, warning, danger
-                      style='width:100%;overflow-x: scroll;',
-                      plotlyOutput(outputId = "plot_app_version", height = "240"),
-                      shiny::tableOutput("table_app_version")
-                  ), #closes box
-                  box(width = 6,
-                      collapsible = TRUE,
-                      solidHeader = TRUE,
-                      title = "Parent gender",
-                      status = "primary",  
-                      style='width:100%;overflow-x: scroll;',
-                      plotlyOutput(outputId = "plot_parent_gender", height = "240"), #generates graph
-                      shiny::tableOutput("table_parent_gender")  #generates table
-                  ) #closes box
-                ), #closes fluidRow
-                
-                fluidRow(
-                  box(width = 6,
-                      collapsible = TRUE,
-                      solidHeader = TRUE,
-                      title = "Parent age",
-                      status = "primary",  
-                      style='width:100%;overflow-x: scroll;',
-                      plotlyOutput(outputId = "plot_parent_age", height = "240"),
-                      shiny::tableOutput("table_parent_age")
-                  ), #closes box
-                  
-                  box(width = 6,
-                      collapsible = TRUE,
-                      solidHeader = TRUE,
-                      title = "Adults in household",
-                      status = "primary",  
-                      style='width:100%;overflow-x: scroll;',
-                      plotlyOutput(outputId = "plot_household_adults", height = "240"),
-                      shiny::tableOutput("table_household_adults")
-                  ) #closes box
-                ), #closes fluidRow
+                fluid_row_box(variable1 = "app_version", variable2 = "parent_gender",
+                              title1 = "App version", title2 = "Parent gender"),
                 
                 fluidRow(
                   box(width = 6,
@@ -160,6 +102,8 @@ parentapp_shiny <- function(country, study){
       source(here("Metabase Analysis Setup.R")) # approx 17 secs # so what's the rest of the time? # How long does it take overall, 
     })
     
+    # This is about the cluster checkbox and input being enabled/disabled
+    # to specify which cluster
     # If Checkbox  
     if (country == "Tanzania" & study == "Optimisation"){
       observe({

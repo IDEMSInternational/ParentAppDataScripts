@@ -5,6 +5,11 @@ source(here("config/Personal Setup.R"))
 #Get data from excel
 UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 UIC_Tracker_Tanzania <- rio::import(file = here("data/UIC Tracker Tanzania.xlsx"))
+UIC_Tracker_RCT <- rio::import(file = here("data/UIC Tracker RCT.xlsx"))
+UIC_Tracker_RCT$Country <- "Tanzania"
+UIC_Tracker_RCT <- UIC_Tracker_RCT %>%
+  mutate(Study = ifelse(Condition == "Intervention", "RCT", "WASH"))
+UIC_Tracker_RCT$YourParentAppCode <- UIC_Tracker_RCT$Code
 
 #######################################
 # Specific to ParentApp --------------------------------------------------
@@ -132,8 +137,12 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
       summary_workshop_long <- summary_workshop_long %>%
         tidyr::unite(col = "Org", {{ factors }}) %>%
         filter(name != "Total")
-    } else {
+    } else if (study == "Pilot") {
       summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
+    } else if (study == "RCT") {
+      summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
+    } else {
+      stop("Undefined Study Type")
     }
   } else {
     summary_workshop_long <- summary_workshop_long %>% filter(name != "Total")
@@ -177,6 +186,15 @@ checkbox_input <- function(inputId, country = country, study = study){
                                     selected = c("Mwanza", "Mwanza 2", "Shinyanga", "Unknown")
                  ),
                  actionButton("goButton", "Submit", class = "btn-success")))
+    } else if (study == "RCT") {
+      return(box(width = 12,
+                      checkboxInput(inputId = "select_cluster",
+                                    label = "All clusters",
+                                    value = TRUE),
+                      textInput(inputId = "opt_cluster",
+                                label = "Cluster",
+                                placeholder = "Enter values separated by a comma..."),
+                      actionButton("goButton", "Submit", class = "btn-success")))
     } else if (study == "Optimisation") {
       # return(box(checkboxInput(inputId = "chk_support",
       #                          label = "Group by support",
@@ -289,6 +307,12 @@ summary_table_base_build <- function(data = plhdata_org_clean,
                                    replace = replace,
                                    replace_after = replace_after,
                                    factors = opt_factors)) #))
+    } else if (study == "RCT"){
+      return(multiple_table_output(data = data,
+                                   columns_to_summarise = columns_to_summarise,
+                                   replace = replace,
+                                   replace_after = replace_after,
+                                   factors = opt_factors)) #))
     } else {
       return(multiple_table_output(data = data,
                                    columns_to_summarise = columns_to_summarise,
@@ -325,8 +349,12 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad
     if (study == "Optimisation"){
       plot_data <- plot_data %>%
         tidyr::unite(col = "Org", {{ factors }})
-    } else {
+    } else if (study == "Pilot"){
       plot_data <- plot_data %>% mutate(Org = PilotSite)
+    } else if (study == "RCT"){
+      plot_data <- plot_data %>% mutate(Org = ClusterName)
+    } else {
+      stop("Undefined study type")
     }
   }
   
@@ -749,5 +777,76 @@ fluid_row_box <- function(variable1, variable2 = NULL, title1 = NULL, title2 = N
           plotlyOutput(outputId = paste0("plot_", variable1), height = "240"), #generates graph
           shiny::tableOutput(paste0("table_", variable1))  #generates table
       ))
+  }
+}
+
+demographics_fluid_row <- function(study){
+  if (study == "RCT"){
+    return(fluidRow(
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Parent age",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_parent_age", height = "240"),
+          shiny::tableOutput("table_parent_age")
+      ) #closes box
+    ))
+  } else {
+    return(fluidRow(
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Adults in household",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_household_adults", height = "240"),
+          shiny::tableOutput("table_household_adults")
+      ), #closes box
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Teens in household",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_household_teens", height = "240"),
+          shiny::tableOutput("table_household_teens")
+      ) #closes box
+    ), #closes fluidRow
+    
+    fluidRow(
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Children in household",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_household_children", height = "240"),
+          shiny::tableOutput("table_household_children")
+      ), #closes box
+      
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Babies in household",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_household_babies", height = "240"),
+          shiny::tableOutput("table_household_babies")
+      ) #closes box
+    ), # closes fluidrow
+    fluidRow(
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Parent age",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_parent_age", height = "240"),
+          shiny::tableOutput("table_parent_age")
+      ) #closes box
+    )
+    )
   }
 }

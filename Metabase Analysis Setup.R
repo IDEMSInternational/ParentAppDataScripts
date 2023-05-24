@@ -23,7 +23,16 @@ UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>%
 
 ### extract data ----------------------------------------------------------------------
 # to get user data
-plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE, UIC_Tracker = UIC_Tracker_Tanzania,
+
+if (study %in% c("Optimisation", "Pilot")){
+  UIC_Tracker_Use = UIC_Tracker_Tanzania
+} else {
+  UIC_Tracker_Use = UIC_Tracker_RCT
+}
+
+
+plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
+                             UIC_Tracker = UIC_Tracker_Use,
                                     country = country, study = study)
 names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")  
 
@@ -87,6 +96,12 @@ if (study == "Optimisation"){
   # plhdata_org_pilot_site <- plhdata_org_ics_fuzzy %>% dplyr::select(c(app_user_id, PilotSite)) %>% filter(!is.na(PilotSite))
   # nrow((plhdata_org_pilot_site))
   # plhdata_org <- full_join(plhdata_org, plhdata_org_pilot_site, by = c("app_user_id" = "app_user_id"))
+} else if (study == "RCT") {
+  valid_ids <- UIC_Tracker_Use %>%
+    filter(complete.cases(YourParentAppCode))  %>%
+    filter(Study == "RCT") %>%
+    select(c(YourParentAppCode, Ward, ClusterName))
+  plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 }
 
 # For SA:
@@ -109,14 +124,15 @@ if (country == "South Africa"){
 #####Create a subset for cleaned organisations ####
 plhdata_org_clean <- plhdata_org # %>% filter(Org != "Other")%>% mutate(Org = factor(Org))
 
-plhdata_org_clean <- plhdata_org_clean %>%
-  dplyr::mutate(rp.contact.field.user_age = as.numeric(rp.contact.field.user_age)) %>%
-  dplyr::mutate(rp.contact.field.user_age = replace(rp.contact.field.user_age,
-                                                    rp.contact.field.user_age %in% c(-29, 2, 1794, 5655),
-                                                    NA)) %>%
-  dplyr::mutate(rp.contact.field.user_age = ifelse(rp.contact.field.user_age > 1960,
-                                                   2023 - rp.contact.field.user_age, #todo: fix more pernamently
-                                                   ifelse(rp.contact.field.user_age < 0, NA, rp.contact.field.user_age)))
+# RCT TODO HERE
+# plhdata_org_clean <- plhdata_org_clean %>%
+#   dplyr::mutate(rp.contact.field.user_age = as.numeric(rp.contact.field.user_age)) %>%
+#   dplyr::mutate(rp.contact.field.user_age = replace(rp.contact.field.user_age,
+#                                                     rp.contact.field.user_age %in% c(-29, 2, 1794, 5655),
+#                                                     NA)) %>%
+#   dplyr::mutate(rp.contact.field.user_age = ifelse(rp.contact.field.user_age > 1960,
+#                                                    2023 - rp.contact.field.user_age, #todo: fix more pernamently
+#                                                    ifelse(rp.contact.field.user_age < 0, NA, rp.contact.field.user_age)))
 
 # Create subsets of the data based on valid app user ID's
 #plhdata_org_clean <- plhdata_org_clean %>% dplyr::filter(!is.na(app_version))
@@ -287,25 +303,27 @@ if (study == "Optimisation"){
 
 
 # More cleaning
+# RCT TODO here
+
 # TODO: Add here any to make numeric. check with Esmee about w_self_care_diff_started_completed stored
-plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level)
-plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
-plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
-plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_clean$rp.contact.field.household_teens)
-plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_clean$rp.contact.field.household_babies)
-plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
-plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
+#plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level)
+#plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
+# plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
+# plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_clean$rp.contact.field.household_teens)
+# plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_clean$rp.contact.field.household_babies)
+# plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
+# plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
+#plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
+#plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
 
 plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.numeric(plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care)
 
-plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(across(ends_with("_completion_level"), ~as.numeric(.)))
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(across(starts_with("rp.contact.field.parent_point"), ~as.numeric(.)))
 plhdata_org_clean$rp.contact.field.app_launch_count <- as.numeric(plhdata_org_clean$rp.contact.field.app_launch_count)
 
-plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
 
 # plhdata_org_clean$rp.contact.field.first_app_open <- as.Date(plhdata_org_clean$rp.contact.field.first_app_open)
 plhdata_org_clean <- plhdata_org_clean %>%
@@ -337,14 +355,14 @@ plhdata_org_clean <- plhdata_org_clean %>%
 
 ##Priority 20
 #App-opens
-data_app_opens <- c("","", "",
+data_app_opens <- c("rp.contact.field.app_launch_count","rp.contact.field.app_launch_count_w_1on1", "rp.contact.field.app_launch_count_w_self_care",
                     "rp.contact.field.app_launch_count_w_praise","rp.contact.field.app_launch_count_w_instruct",
                     "rp.contact.field.app_launch_count_w_stress", "rp.contact.field.app_launch_count_w_money",
                     "rp.contact.field.app_launch_count_w_rules", "rp.contact.field.app_launch_count_w_consequence",
                     "rp.contact.field.app_launch_count_w_solve", "rp.contact.field.app_launch_count_w_safe",
                     "rp.contact.field.app_launch_count_w_crisis", "rp.contact.field.app_launch_count_w_celebrate")
 
-data_app_opens_neat <- c("", "", "", "Praise (3)", "Positive Instructions(4)",
+data_app_opens_neat <- c("Overall", "1on1 (2)", "Self Care (1)", "Praise (3)", "Positive Instructions(4)",
                          "Managing Stress(5)", "Family Budget(6)","Rules(7)", "Calm Consequences(8)",  
                          "Problem Solving(9)", "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
 
@@ -435,15 +453,16 @@ data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.f
                      "rp.contact.field.w_consequence_hp_review_started",  "rp.contact.field.w_solve_hp_review_started",  "rp.contact.field.w_safe_hp_review_started",
                      "rp.contact.field.w_crisis_hp_review_started")
 
-plhdata_org_clean <- plhdata_org_clean %>%
-  dplyr::mutate(rp.contact.field.w_stress_hp_done = ifelse(rp.contact.field.w_stress_hp_talk_done == "yes" & 
-                                                             rp.contact.field.w_stress_hp_breathe_done == "yes",
-                                                           "yes",
-                                                           "no"))
+# RCT TODO
+# plhdata_org_clean <- plhdata_org_clean %>%
+#   dplyr::mutate(rp.contact.field.w_stress_hp_done = ifelse(rp.contact.field.w_stress_hp_talk_done == "yes" & 
+#                                                              rp.contact.field.w_stress_hp_breathe_done == "yes",
+#                                                            "yes",
+#                                                            "no"))
 
-data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_stress_hp_talk_done",
-                  "rp.contact.field.w_stress_hp_breathe_done", "rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
-                  "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
+# data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_stress_hp_talk_done",
+#                   "rp.contact.field.w_stress_hp_breathe_done", "rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
+#                   "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
 
 # NB No mood 'review' for week 3 home practice (praise)
 data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_instruct_hp_mood", "rp.contact.field.w_stress_hp_breathe_mood", "rp.contact.field.w_stress_hp_talk_mood",
@@ -492,14 +511,6 @@ data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.f
 ##################################
 
 # download push notification data
-if (study == "RCT"){
-  nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC_Tracker_Tanzania, filter = TRUE,
-                         study = "Pilot", country = country, app_user_id = "app_user_id")
-  nf_data <- nf_data %>% mutate(across(everything(), as.numeric))
-  nf_data <- naniar::replace_with_na_all(nf_data, ~.x)
-  nf_data <- nf_data[0,]
-} else {
-  nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC_Tracker_Tanzania, filter = TRUE,
+  nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC_Tracker_Use, filter = TRUE,
                          study = study, country = country, app_user_id = "app_user_id")
-}
 

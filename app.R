@@ -19,10 +19,11 @@ library(postgresr)
 options(dplyr.summarise.inform = FALSE)
 options(dplyr.warning.inform = FALSE)
 country <- "Tanzania" # Tanzania, all
-study <- "Pilot" # Optimisation, RCT
+study <- "RCT" # Optimisation, RCT
 source("config/credentials_file.R")
 source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))
+#source(here("Metabase ShinyApp Demo.R"))
 source(here("Metabase Pre-Shiny Setup.R"))
 parentapp_shiny(country = country, study = study)
 

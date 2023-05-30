@@ -5,7 +5,7 @@
 ##################################
 
 country <- "Tanzania"
-study <- "Pilot"
+study <- "RCT"
 
 ### Set up UIC data
 
@@ -32,9 +32,11 @@ if (study %in% c("Optimisation", "Pilot")){
 
 
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
-                             UIC_Tracker = UIC_Tracker_Use,
-                                    country = country, study = study)
+                              UIC_Tracker = UIC_Tracker_Use,
+                                     country = country, study = study)
 names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")  
+
+#plhdata_org <- readRDS("plhdata_org_RCT_20230525.RDS")
 
 if (nrow(plhdata_org) == 0){
   plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE, UIC_Tracker = UIC_Tracker_Tanzania,
@@ -148,7 +150,7 @@ if (country == "Tanzania"){
     plhdata_org_clean <- plhdata_org_clean %>% mutate(PilotSite = replace_na(PilotSite, "Unknown"))
 #    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
   } else {
-    plhdata_org_clean <- plhdata_org_clean %>% mutate(Org = NA)
+    plhdata_org_clean <- plhdata_org_clean %>% mutate(ClusterName = replace_na(ClusterName, "Unknown"))
   }
 } else if (country == "South Africa"){
   plhdata_org_clean <- plhdata_org_clean %>% filter(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"))
@@ -230,16 +232,16 @@ if (!is.null(plhdata_org_clean$rp.contact.field.survey_welcome_a_1_final)){
 #plhdata_org_clean$rp.contact.field.survey_welcome_ps_v0.16.2[281:290]
 
 # Tidying up for together/individual and modular/workshop skins
-#json_data <- NULL
-#for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
+# json_data <- NULL
+# for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
 #  # which variables to select?
 #  json_data[[i]] <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
-#}
-#saveRDS(json_data, file = "data/json_data.RDS")
+# }
+# saveRDS(json_data, file = "data/json_data.RDS")
 json_data <- readRDS(file = "data/json_data.RDS")
 
-if (study == "Optimisation"){
-  plhdata_org_clean_mod <- plhdata_org_clean %>% filter(rp.contact.field._app_skin == "modular")
+if (study %in% c("Optimisation", "RCT")){
+  plhdata_org_clean_mod <- plhdata_org_clean %>% filter(rp.contact.field._app_skin %in% c("modular", "default"))
   # Esmee - what is the definition of completion at the moment for workshop skin?
   # which rows.id do they have to have == true in in these to say they've completed?
   total_completed_ind <- NULL
@@ -257,14 +259,16 @@ if (study == "Optimisation"){
     json_data_i_tog <- json_data_i %>% filter(rows.together == TRUE)
     completed_rows_tog <- paste0("rp.contact.field.", json_data_i_tog$rows.completed_field)
     
-    plhdata_org_clean_mod_inds <- plhdata_org_clean_mod %>%
+    plhdata_org_clean_mod_inds <- add_na_variable(plhdata_org_clean_mod, completed_rows_ind)
+    plhdata_org_clean_mod_inds <- plhdata_org_clean_mod_inds %>%
       filter(rp.contact.field.workshop_path != "together") %>%
       dplyr::select(completed_rows_ind) %>%
       dplyr::mutate(across(everything(), ~as.numeric(as.logical(.)))) 
     plhdata_org_clean_mod_inds <- plhdata_org_clean_mod_inds %>%
       dplyr::mutate(total_completed := rowSums(., na.rm = TRUE)/length(.) * 100)
     
-    plhdata_org_clean_mod_tog <- plhdata_org_clean_mod %>%
+    plhdata_org_clean_mod_tog <- add_na_variable(plhdata_org_clean_mod, completed_rows_tog)
+    plhdata_org_clean_mod_tog <- plhdata_org_clean_mod_tog %>%
       filter(rp.contact.field.workshop_path == "together") %>%
       dplyr::select(completed_rows_tog) %>%
       dplyr::mutate(across(everything(), ~as.numeric(as.logical(.))))
@@ -305,16 +309,16 @@ if (study == "Optimisation"){
 # More cleaning
 # RCT TODO here
 
-# TODO: Add here any to make numeric. check with Esmee about w_self_care_diff_started_completed stored
-#plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level)
-#plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
-# plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
-# plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_clean$rp.contact.field.household_teens)
-# plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_clean$rp.contact.field.household_babies)
-# plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
-# plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
-#plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
-#plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
+if (study != "RCT"){
+  plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level)
+  plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
+  plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
+  plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_clean$rp.contact.field.household_teens)
+  plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_clean$rp.contact.field.household_babies)
+  plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
+  plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
+  plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
+}
 
 plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.numeric(plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care)
 

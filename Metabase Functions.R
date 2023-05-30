@@ -519,6 +519,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
     summary_output <- data %>% 
       group_by(across(all_of({{ factors }})), .drop = drop) %>% 
       summarise(n = n(), .groups = "drop")
+    return(summary_output)
     if (include_perc) {
       summary_output <- summary_output %>% 
         mutate(perc = n / sum(n) * 100)
@@ -653,7 +654,9 @@ summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_s
   if (display_table){
     return_table_names <- naming_conventions(colnames(return_table), replace = replace, replace_after = replace_after)
     if (summaries == "frequencies"){
-      return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n)
+      return_table <- return_table %>%
+        arrange(match(.data[[columns_to_summarise]], levels(factor(.data[[columns_to_summarise]])))) %>%
+        pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n, names_prefix = "")
     }
     return_table <- gt(as_tibble(return_table)) %>%
       tab_header(title = paste(return_table_names[1], "by", return_table_names[2])) %>%
@@ -687,7 +690,10 @@ summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_s
           return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = values_from, names_prefix = "")
         }
       } else if (include_perc == FALSE && wider_table){
-        return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n, names_prefix = "")
+        return_table <- return_table %>%
+          arrange(match(.data[[columns_to_summarise]], levels(factor(.data[[columns_to_summarise]])))) %>%
+          pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n, names_prefix = "")
+        if ("100" %in% names(return_table)) return_table <- return_table %>% relocate(`100`, .after = last_col())
       }
     }
   }

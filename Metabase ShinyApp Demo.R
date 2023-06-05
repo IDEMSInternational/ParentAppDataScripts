@@ -18,7 +18,6 @@ parentapp_shiny <- function(country, study){
         shinydashboard::valueBoxOutput("myvaluebox3", width=3),
         shinydashboard::valueBoxOutput("myvaluebox4", width=3)
       ),
-      fluidRow(checkbox_input(inputId = "Dem", country = country, study = study)), #closes fluidRow
       tabItems(
         # First tab content layout
         tabItem(tabName = "demographics",
@@ -101,58 +100,10 @@ parentapp_shiny <- function(country, study){
     observe({
       source(here("Metabase Analysis Setup.R")) # approx 17 secs # so what's the rest of the time? # How long does it take overall, 
     })
-    
-    # This is about the cluster checkbox and input being enabled/disabled
-    # to specify which cluster
-    # If Checkbox  
-    if (country == "Tanzania" & study == "Optimisation"){
-      observe({
-        if(input$select_cluster){
-          shinyjs::disable("opt_cluster")
-        } else {
-          shinyjs::enable("opt_cluster")
-        }
-      })
-    }
 
-    if (country == "Tanzania" & study == "Optimisation"){
-      selected_data_dem <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
-        if(input$select_cluster){
-          opt_cluster_vals <- 1:16
-        } else {
-          opt_cluster_vals <- extract(input$opt_cluster)
-        }
-        plhdata_checkgroup <- plhdata_org_clean %>%
-          dplyr::filter(Cluster %in% c(opt_cluster_vals))
-        if (!is.null(input$opt_support)) {
-          plhdata_checkgroup <- plhdata_checkgroup %>%
-            dplyr::filter(Support %in% c(input$opt_support))
-        }
-        if (!is.null(input$opt_skin)) {
-          plhdata_checkgroup <- plhdata_checkgroup %>%
-            dplyr::filter(Skin %in% c(input$opt_skin))
-        }
-        if (!is.null(input$opt_diglit)) {
-          plhdata_checkgroup <- plhdata_checkgroup %>%
-            dplyr::filter(`Digital Literacy` %in% c(input$opt_diglit))
-        }
-        return(plhdata_checkgroup)
-      })
-    } else {
-      selected_data_dem <- reactive({
-        if (country == "Tanzania"){
-          if (study == "Pilot"){
-            plhdata_checkgroup <- plhdata_org_clean %>%
-              dplyr::filter(PilotSite %in% c(input$OrgDem))
-          } else {
-            plhdata_checkgroup <- plhdata_org_clean
-          }
-        } else {
-          plhdata_checkgroup <- plhdata_org_clean %>% dplyr::filter(Org %in% c((input$OrgDem)))
-        }
-        return(plhdata_checkgroup)
-      })
-    }
+    selected_data_dem <- reactive({
+        plhdata_org_clean
+    })
     
     last_sync <- reactive({
       if (country == "Tanzania"){
@@ -176,35 +127,21 @@ parentapp_shiny <- function(country, study){
       shinydashboard::valueBox(length(last_sync()[last_sync() > 60*24]), subtitle = "not synced in last 60 days", icon = icon("user"),
                                color = "orange")})
     
-    opt_factors <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+    opt_factors <- reactive({
       if (country == "Tanzania"){
         if (study == "Pilot"){
           opt_factors <- c("PilotSite")
         } else if (study == "Optimisation"){
-          opt_factors <- c()
-          if (!is.null(input$opt_support)){
-            opt_factors <- c(opt_factors, "Support")
-          }
-          if (!is.null(input$opt_skin)){
-            opt_factors <- c(opt_factors, "Skin")
-          }
-          if (!is.null(input$opt_diglit)){
-            opt_factors <- c(opt_factors, "Digital Literacy")
-          }
-          if (length(opt_factors) == 0){
-            opt_factors <- c("Org")
-          }
-        } else {
-          opt_factors <- c("Org")
+            opt_factors <- c("Support", "Skin", "Digital Literacy")
+        } else if (study == "RCT"){
+          opt_factors = "ClusterName"
         }
-      } else {
-        opt_factors <- c("Org")
       }
       return(opt_factors)
     })
     
     # Demographics ---------------------------------------------------
-    summary_table_baseline <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+    summary_table_baseline <- reactive({
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_baseline_survey$metabase_ID)
       summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })

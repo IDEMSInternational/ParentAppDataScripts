@@ -19,7 +19,7 @@ library(postgresr)
 options(dplyr.summarise.inform = FALSE)
 options(dplyr.warning.inform = FALSE)
 country <- "Tanzania" # Tanzania, all
-study <- "RCT" # Optimisation, RCT
+study <- "Pilot" # Optimisation, RCT
 source("config/credentials_file.R")
 source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))

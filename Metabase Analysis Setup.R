@@ -5,7 +5,7 @@
 ##################################
 
 country <- "Tanzania"
-study <- "RCT"
+study <- "Pilot"
 
 ### Set up UIC data
 

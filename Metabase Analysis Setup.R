@@ -30,7 +30,6 @@ if (study %in% c("Optimisation", "Pilot")){
   UIC_Tracker_Use = UIC_Tracker_RCT
 }
 
-
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
                               UIC_Tracker = UIC_Tracker_Use,
                                      country = country, study = study)
@@ -102,7 +101,7 @@ if (study == "Optimisation"){
   valid_ids <- UIC_Tracker_Use %>%
     filter(complete.cases(YourParentAppCode))  %>%
     filter(Study == "RCT") %>%
-    select(c(YourParentAppCode, Ward, ClusterName))
+    select(c(YourParentAppCode, Ward, ClusterName, OnboardingDateShort))
   plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 }
 
@@ -254,6 +253,9 @@ if (study %in% c("Optimisation", "RCT")){
     # rows.id, rows.individual, rows.together, rows.completed_field
     json_data_i <- json_data_i %>% dplyr::select(c(rows.id, rows.individual, rows.together, rows.completed_field)) %>%
       filter(!rows.id %in% c("home_practice", "hp_review"))
+    if (i == "self_care" && study == "RCT") {
+      json_data_i$rows.individual[which(json_data_i$rows.completed_field %in% c("task_gp_w_self_care_welcome_individual_completed", "task_gp_w_self_care_survey_completed"))] <- FALSE
+    }
     json_data_i_ind <- json_data_i %>% filter(rows.individual == TRUE)
     completed_rows_ind <- paste0("rp.contact.field.", json_data_i_ind$rows.completed_field)
     json_data_i_tog <- json_data_i %>% filter(rows.together == TRUE)

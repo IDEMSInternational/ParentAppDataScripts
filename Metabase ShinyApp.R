@@ -49,7 +49,19 @@ parentapp_shiny <- function(country, study){
                   box(width = 12,
                       collapsible = TRUE,
                       solidHeader = TRUE,
-                      title = "App first downloaded and opened",
+                      title = "App first downloaded",
+                      status = "primary",  
+                      #background = "orange",
+                      plotlyOutput(outputId = "plot_app_downloaded", height = "240"),
+                      shiny::tableOutput("table_app_downloaded")
+                  )#closes box
+                ), #closes fluid row
+                
+                fluidRow(
+                  box(width = 12,
+                      collapsible = TRUE,
+                      solidHeader = TRUE,
+                      title = "App last synced",
                       status = "primary",  
                       #background = "orange",
                       plotlyOutput(outputId = "plot_app_launch", height = "240"),
@@ -64,8 +76,8 @@ parentapp_shiny <- function(country, study){
                       title = "Language",
                       status = "primary",  
                       style='width:100%;overflow-x: scroll;',
-                      plotlyOutput(outputId = "plot_language", height = "240"), #generates graph
-                      shiny::tableOutput("table_language")  #generates table
+                      plotlyOutput(outputId = "plot_app_language", height = "240"), #generates graph
+                      shiny::tableOutput("table_app_language")  #generates table
                   ), #closes box
                   
                   box(width = 6,
@@ -130,7 +142,19 @@ parentapp_shiny <- function(country, study){
                                        box(width = 12,
                                            collapsible = TRUE,
                                            solidHeader = TRUE,
-                                           title = "Average workshop completion",
+                                           title = "Number of users who have started a workshop",
+                                           status = "info",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_ws_started", height = "240"),
+                                           shiny::tableOutput("table_ws_started")
+                                       )#closes box
+                                     ), #closes fluid row
+                                     
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Average workshop completion level",
                                            status = "info",  
                                            style='width:100%;overflow-x: scroll;',
                                            plotlyOutput(outputId = "plot_ws_totals", height = "240"),
@@ -138,6 +162,20 @@ parentapp_shiny <- function(country, study){
                                        )#closes box
                                      ), #closes fluid row
                                      
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Percentage of starters who completed a workshop",
+                                           status = "info",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_ws_rel_completed", height = "240"),
+                                           shiny::tableOutput("table_ws_rel_completed")
+                                       )#closes box
+                                     ) #closes fluid row
+                            ), # closes Overview tabPanel
+                            
+                            tabPanel("Additional Insights",
                                      fluidRow(
                                        box(width = 6,
                                            collapsible = TRUE,
@@ -280,33 +318,6 @@ parentapp_shiny <- function(country, study){
                                            plotlyOutput(outputId = "plot_w_celebrate", height = "240"),
                                            shiny::tableOutput("table_w_celebrate")
                                        ) #closes box
-                                     ) #closes fluid row
-                            ), # closes Overview tabPanel
-                            
-                            tabPanel("Additional Insights",
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Number of users who have started a workshop",
-                                           status = "info",  
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_ws_started", height = "240"),
-                                           shiny::tableOutput("table_ws_started")
-                                       )#closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Percentage of starters who completed a workshop",
-                                           status = "info",  
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_ws_rel_completed", height = "240"),
-                                           shiny::tableOutput("table_ws_rel_completed")
-                                       )#closes box
                                      ) #closes fluid row
                             ) # closes Additional Insights
                 ) #closes tabsetPanel for workshop
@@ -3216,16 +3227,16 @@ parentapp_shiny <- function(country, study){
     #SUMMARY STATS HEADER displays (same for all tabs)
     #if (country == "Tanzania"){
     output$myvaluebox1 <- shinydashboard::renderValueBox({
-      shinydashboard::valueBox(length(last_sync()[last_sync() > 7*24]), subtitle = "not synced in last 7 days", icon = icon("user"),
+      shinydashboard::valueBox(length(last_sync()[last_sync() > 7*24]), subtitle = "not synced in more than 7 days", icon = icon("user"),
                                color = "green")})
     output$myvaluebox2 <- shinydashboard::renderValueBox({
-      shinydashboard::valueBox(length(last_sync()[last_sync() > 14*24]), subtitle = "not synced in last 14 days", icon = icon("user"),
+      shinydashboard::valueBox(length(last_sync()[last_sync() > 14*24]), subtitle = "not synced in more than 14 days", icon = icon("user"),
                                color = "yellow")})
     output$myvaluebox3 <- shinydashboard::renderValueBox({
-      shinydashboard::valueBox(length(last_sync()[last_sync() > 30*24]), subtitle = "not synced in last 30 days", icon = icon("user"),
+      shinydashboard::valueBox(length(last_sync()[last_sync() > 30*24]), subtitle = "not synced in more than 30 days", icon = icon("user"),
                                color = "purple")})
     output$myvaluebox4 <- shinydashboard::renderValueBox({
-      shinydashboard::valueBox(length(last_sync()[last_sync() > 60*24]), subtitle = "not synced in last 60 days", icon = icon("user"),
+      shinydashboard::valueBox(length(last_sync()[last_sync() > 60*24]), subtitle = "not synced in more than 60 days", icon = icon("user"),
                                color = "orange")})
     #   } else {
     #     output$myvaluebox1 <- shinydashboard::renderValueBox({
@@ -3371,18 +3382,24 @@ parentapp_shiny <- function(country, study){
     
     # Demographics ---------------------------------------------------
     summary_table_baseline <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
-      print(selected_data_dem()$ClusterName)
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_baseline_survey$metabase_ID)
       summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
+
+    plot_app_downloaded  <- reactive({ # last sync
+      ggplot(data = selected_data_dem(), aes(x = as.POSIXct(createdAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"))) +
+        geom_freqpoly(bins = 30) +
+        labs(x = "Created Profile (createdAt)", y = "Count")
+    }) 
+    output$plot_app_downloaded <- renderPlotly({plot_app_downloaded()})
     
-    table_app_launch <- reactive({}) 
+    #table_app_launch <- reactive({}) 
     plot_app_launch  <- reactive({ # last sync
       ggplot(data = selected_data_dem(), aes(x = as.POSIXct(updatedAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"))) +
         geom_freqpoly(bins = 30) +
         labs(x = "Last sync (updatedAt)", y = "Count")
     }) 
-    output$table_app_launch <- shiny::renderTable({(table_app_launch())}, striped = TRUE)
+    #output$table_app_launch <- shiny::renderTable({(table_app_launch())}, striped = TRUE)
     output$plot_app_launch <- renderPlotly({plot_app_launch()})
     
     #Overview and Demographics plot and table
@@ -3428,62 +3445,6 @@ parentapp_shiny <- function(country, study){
       summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
-    #Table of averages
-    table_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
-      #mean average completion level per org
-      # Percentage of users who completed a workshop out of those who started it
-      # nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level == 100)) / nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_started == "true"))
-      summary_mean_completion_level <- summary_table(data = selected_data_dem(),
-                                                     columns_to_summarise = data_completion_level,
-                                                     replace = "rp.contact.field.w_",
-                                                     replace_after = "_completion_level",
-                                                     summaries = "mean",
-                                                     factors = opt_factors())
-      
-      means_total <- NULL
-      for (i in 1:length(summary_mean_completion_level)){
-        if(is.numeric(summary_mean_completion_level[[i]])){
-          means_total[i] <- round(mean(summary_mean_completion_level[[i]], na.rm = TRUE), 1)
-        } else {
-          means_total[i] <- NA
-        }
-      }
-      means_total <- data.frame(t(plyr::ldply(means_total)))
-      names(means_total) <- names(summary_mean_completion_level)
-      j <- 1
-      for (i in 1:length(means_total)){
-        if (is.na(means_total[[i]])){
-          if (j == 1) {
-            means_total[[i]][length(means_total[[i]])] <- "Total"
-            j <- j + 1
-          } else {
-            means_total[[i]][length(means_total[[i]])] <- "-"
-          }
-        }
-      }
-      rbind(summary_mean_completion_level, means_total)
-    }) 
-    
-    plot_ws_totals  <- reactive({
-      hp_mood_plot(data = table_ws_totals(), factors = opt_factors(), 
-                   limits = week_order, xlab = NULL, manipulation = "longer")
-    }) 
-    output$table_ws_totals <- shiny::renderTable({(table_ws_totals())}, striped = TRUE)
-    output$plot_ws_totals <- renderPlotly({plot_ws_totals()})
-    
-    #Workshop plot and table
-    ws_completion_table <- function(n, j = 1){
-      return(output[[paste0("table_", n)]] <-  shiny::renderTable({(summary_table_completion_level()[[j]])}, striped = TRUE))
-    }
-    ws_completion_plot <- function(n, j = 1){
-      return(output[[paste0("plot_", n)]] <-  renderPlotly(summary_plot(data = selected_data_dem(), columns_to_summarise = j, replace = "rp.contact.field.w_")))
-    } # plottype = histogram
-    
-    # run our table_baselines and plot_baselines # TODO: in PLHr function, replace for loop with map like this.
-    map2(data_completion_level_data$display_name, data_completion_level_data$object_name, .f = ~ ws_completion_table(n = .y, j = .x))
-    map2(data_completion_level_data$metabase_ID, data_completion_level_data$object_name, .f = ~ ws_completion_plot(n = .y, j = .x))
-    
-    #Workshop engagement sub tab: additional insights -------------------------
     relative_perc_completed <- reactive({
       summary_table_completion_level <- summary_table_completion_level()
       for (i in 1:length(summary_table_completion_level)){
@@ -3491,17 +3452,20 @@ parentapp_shiny <- function(country, study){
           summary_table_completion_level[[i]]$`100` <- 0
         }
       }
-      select_items <- c(opt_factors(), "started", "perc_completed")
+      select_items <- c(opt_factors(), "n_started", "perc_started", "n_completed", "perc_completed")
       
       relative_perc_completed <- imap(summary_table_completion_level, ~.x %>%
-                                        mutate(started = Total - `0` - `NA`,
-                                               perc_completed = `100`/started*100) %>%
+                                        mutate(n_started = Total - `0` - `NA`,
+                                               perc_started = round(n_started/Total * 100, 1),
+                                               perc_completed = round(`100`/n_started*100, 1),
+                                               n_completed = `100`) %>%
                                         select(select_items))
       return(relative_perc_completed)   
     })
     table_ws_started <- reactive({
       table_ws_started <- plyr::ldply(relative_perc_completed()) %>%
-        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = started)
+        mutate(perc_started = paste0(n_started, " (", perc_started, "%)")) %>%
+        pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = perc_started)
       return(table_ws_started)
     })
     plot_ws_started  <- reactive({
@@ -3511,7 +3475,7 @@ parentapp_shiny <- function(country, study){
           summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
             tidyr::unite(col = "Org", opt_factors())
         } else if (study == "Pilot"){
-            summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
+          summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
             filter(PilotSite != "Total") %>% mutate(Org = PilotSite)
         } else if (study == "RCT"){
           summary_mean_completion_level_long <- summary_mean_completion_level_long %>%
@@ -3521,7 +3485,7 @@ parentapp_shiny <- function(country, study){
         summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
       
-      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = started, fill = Org))
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = `.id`, y = n_started, fill = Org))
       plot + geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
         viridis::scale_fill_viridis(discrete = TRUE) +
@@ -3532,6 +3496,7 @@ parentapp_shiny <- function(country, study){
     
     table_ws_rel_completed <- reactive({
       table_perc_completed <- plyr::ldply(relative_perc_completed()) %>%
+        mutate(perc_completed = paste0(n_completed, " (", perc_completed, "%)")) %>%
         pivot_wider(id_cols = opt_factors(), names_from = .id, values_from = perc_completed)
       return(table_perc_completed)
     })
@@ -3557,6 +3522,39 @@ parentapp_shiny <- function(country, study){
     }) 
     output$table_ws_rel_completed <- shiny::renderTable({(table_ws_rel_completed())}, striped = TRUE)
     output$plot_ws_rel_completed <- renderPlotly({plot_ws_rel_completed()})
+    
+    table_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+      #mean average completion level per org
+      # Percentage of users who completed a workshop out of those who started it
+      # nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_completion_level == 100)) / nrow(plhdata_org_clean %>% filter(rp.contact.field.w_money_started == "true"))
+      summary_mean_completion_level <- summary_table(data = selected_data_dem(),
+                                                     columns_to_summarise = data_completion_level,
+                                                     replace = "rp.contact.field.w_",
+                                                     replace_after = "_completion_level",
+                                                     summaries = "mean",
+                                                     factors = opt_factors(),
+                                                     include_margins = TRUE)
+    }) 
+    
+    plot_ws_totals  <- reactive({
+      hp_mood_plot(data = table_ws_totals(), factors = opt_factors(), 
+                   limits = week_order, xlab = NULL, manipulation = "longer")
+    }) 
+    output$table_ws_totals <- shiny::renderTable({(table_ws_totals())}, striped = TRUE)
+    output$plot_ws_totals <- renderPlotly({plot_ws_totals()})
+    
+    # Additional Insights - Enaggement ------------------
+    #Workshop plot and table
+    ws_completion_table <- function(n, j = 1){
+      return(output[[paste0("table_", n)]] <-  shiny::renderTable({(summary_table_completion_level()[[j]])}, striped = TRUE))
+    }
+    ws_completion_plot <- function(n, j = 1){
+      return(output[[paste0("plot_", n)]] <-  renderPlotly(summary_plot(data = selected_data_dem(), columns_to_summarise = j, replace = "rp.contact.field.w_")))
+    } # plottype = histogram
+    
+    # run our table_baselines and plot_baselines # TODO: in PLHr function, replace for loop with map like this.
+    map2(data_completion_level_data$display_name, data_completion_level_data$object_name, .f = ~ ws_completion_table(n = .y, j = .x))
+    map2(data_completion_level_data$metabase_ID, data_completion_level_data$object_name, .f = ~ ws_completion_plot(n = .y, j = .x))
     
     # Parent Points Tab -----------------------------------------------
     values <- reactiveValues(total = 0)

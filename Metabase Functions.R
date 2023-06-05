@@ -502,7 +502,7 @@ naming_conventions <- function(x, replace, replace_after, rename = TRUE) {
   x
 }
 
-summary_calculation <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise, summaries = c("frequencies", "mean", "mmm", "sum"), # mmm = mean, min, max. For some of parenttext, summaries == mmm                                include_country_margins, country_factor,
+summary_calculation <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise, summaries = c("frequencies", "mean", "mean_n", "mmm", "sum"), # mmm = mean, min, max. For some of parenttext, summaries == mmm                                include_country_margins, country_factor,
                                 together = FALSE, include_margins = FALSE, na.rm = TRUE, drop = FALSE,
                                 include_country_margins = FALSE, country_factor = FALSE,
                                 include_perc = FALSE){ # include_perc = TRUE for parenttext
@@ -589,6 +589,21 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
         mutate(across(all_of({{ factors }}), ~fct_relevel(.x, "Total", after = Inf))) %>%
         select(-c("id"))
     }
+  } else if (summaries == "mean_n") {
+    summary_output <- data %>%
+      group_by(across(all_of({{ factors }}))) %>%
+      summarise(across(all_of({{ columns_to_summarise }}),
+                       ~paste0(round(mean(., na.rm = na.rm), 1), " (", n(), ")")))
+    if (include_margins && !is.null(factors)){
+      corner_margin <- data %>%
+        summarise(across(all_of({{ columns_to_summarise }}),
+                         ~paste0(round(mean(., na.rm = na.rm), 1), " (", n(), ")")))
+      summary_output <- bind_rows(summary_output, corner_margin, .id = "id") %>%
+        ungroup() %>%
+        mutate(across(all_of({{ factors }}), ~if_else(id == 2, "Total", as.character(.)))) %>%
+        mutate(across(all_of({{ factors }}), ~fct_relevel(.x, "Total", after = Inf))) %>%
+        select(-id)
+    }
   } else {
     summary_output <- data %>%
       group_by(across(all_of({{ factors }}))) %>%
@@ -633,7 +648,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
   return(summary_output)
 }
 
-summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise = NULL, summaries = c("frequencies", "mean", "mmm", "sum"), # todo: did have factors = Org before.
+summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise = NULL, summaries = c("frequencies", "mean", "mean_n", "mmm", "sum"), # todo: did have factors = Org before.
                           replace = "rp.contact.field.", replace_after = NULL, include_margins = FALSE, wider_table = TRUE, 
                           include_country_margins = TRUE, country_factor = "country", na.rm = TRUE,
                           display_table = FALSE, naming_convention = TRUE, include_perc = FALSE,
@@ -788,17 +803,7 @@ fluid_row_box <- function(variable1, variable2 = NULL, title1 = NULL, title2 = N
 
 demographics_fluid_row <- function(study){
   if (study == "RCT"){
-    return(fluidRow(
-      box(width = 6,
-          collapsible = TRUE,
-          solidHeader = TRUE,
-          title = "Parent age",
-          status = "primary",  
-          style='width:100%;overflow-x: scroll;',
-          plotlyOutput(outputId = "plot_parent_age", height = "240"),
-          shiny::tableOutput("table_parent_age")
-      ) #closes box
-    ))
+    return()
   } else {
     return(fluidRow(
       box(width = 6,

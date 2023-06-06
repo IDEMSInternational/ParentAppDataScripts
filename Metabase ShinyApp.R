@@ -3957,10 +3957,10 @@ parentapp_shiny <- function(country, study){
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(),
                                                                data = selected_data_dem(),
                                                                columns_to_summarise = data_app_opens,
-                                                               replace = "rp.contact.field.app_launch_count")
+                                                               replace = "rp.contact.field.app_launch_count",
+                                                               retain_names_for_refactor = TRUE)
       names(summary_table_baseline_build) <- data_app_opens_neat
-      summary_table_baseline_build <- summary_table_baseline_build %>%
-        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
+      print(summary_table_baseline_build[[1]])
       summary_table_baseline_build %>% purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
     })
     
@@ -3977,6 +3977,7 @@ parentapp_shiny <- function(country, study){
     
     #App Opens tab 4.1
     table_appopen_totals <- reactive({
+      print(tables_app_opens()$`Overall`)
       tables_app_opens()$`Overall`
     }) 
     plot_appopen_totals <- reactive({

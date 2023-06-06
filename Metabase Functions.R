@@ -294,7 +294,8 @@ summary_table_base_build <- function(data = plhdata_org_clean,
                                      replace = "rp.contact.field.",
                                      replace_after = NULL,
                                      opt_factors = c("Support", "Skin", "Digital Literacy"),
-                                     include_perc = FALSE){
+                                     include_perc = FALSE,
+                                     retain_names_for_refactor = FALSE){
   if (country == "Tanzania"){
     if (study == "Pilot"){
       return(multiple_table_output(data = data,
@@ -314,7 +315,8 @@ summary_table_base_build <- function(data = plhdata_org_clean,
                                    replace = replace,
                                    replace_after = replace_after,
                                    factors = opt_factors,
-                                   include_perc = include_perc)) #))
+                                   include_perc = include_perc,
+                                   retain_names_for_refactor = retain_names_for_refactor)) #))
     } else {
       return(multiple_table_output(data = data,
                                    columns_to_summarise = columns_to_summarise,
@@ -747,7 +749,7 @@ summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_
 }
 
 multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE, factors = "Org", include_margins = FALSE,
-                                  include_perc = FALSE){
+                                  include_perc = FALSE, retain_names_for_refactor = FALSE){
   # run: add_na_variable here with warning 
   data <- add_na_variable(data = data, variable = columns_to_summarise)
   
@@ -761,7 +763,8 @@ multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise
                                                        summaries = summaries,
                                                        factors = factors,
                                                        na.rm = na.rm,
-                                                       include_perc = include_perc))
+                                                       include_perc = include_perc,
+                                                       retain_names_for_refactor = retain_names_for_refactor))
   
   names(summary_table_values) <- variable_display_names
   return(summary_table_values)

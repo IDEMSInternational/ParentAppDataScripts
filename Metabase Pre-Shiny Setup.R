@@ -3,7 +3,12 @@ data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey
 data_baseline_survey <- r_variables_names %>%
   filter(location_ID == "data_baseline_survey") %>%
   filter(display == TRUE)
+data_baseline_survey$display_name[which(data_baseline_survey$display_name == "app language")] <- " app language"
 data_baseline_survey$object_name[which(data_baseline_survey$object_name == "language")] <- "app_language"
+
+if (study == "RCT"){
+  # filter to just RCT_display == TRUE
+}
   # TODO, we want a "display RCT option for RCT ones only.
 data_completion_level_data <- r_variables_names %>% filter(location_ID == "data_completion_level") %>% filter(display == TRUE)
 data_completion_level <- data_completion_level_data$metabase_ID

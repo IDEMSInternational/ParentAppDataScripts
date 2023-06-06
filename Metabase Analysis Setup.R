@@ -5,7 +5,7 @@
 ##################################
 
 country <- "Tanzania"
-study <- "Pilot"
+study <- "RCT"
 
 ### Set up UIC data
 
@@ -27,7 +27,7 @@ UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>%
 if (study %in% c("Optimisation", "Pilot")){
   UIC_Tracker_Use = UIC_Tracker_Tanzania
 } else {
-  UIC_Tracker_Use = UIC_Tracker_RCT
+  UIC_Tracker_Use <- UIC_Tracker_RCT[!duplicated(UIC_Tracker_RCT$Code), ]
 }
 
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
@@ -214,6 +214,10 @@ if (!is.null(plhdata_org_clean$rp.contact.field.survey_welcome_a_1_final)){
            rp.contact.field.survey_final_fin_fi = ifelse(!is.na(rp.contact.field.survey_final_fin_fi), rp.contact.field.survey_final_fin_fi, rp.contact.field.survey_final_a_5_part_2_final))
   
 }
+
+plhdata_org_clean <- plhdata_org_clean %>%
+  mutate(rp.contact.field.user_gender = ifelse(is.na(rp.contact.field.user_gender), "undefined",
+                                               rp.contact.field.user_gender))
 
 # todo: following not working
 #plhdata_org_clean <- plhdata_org_clean %>%

@@ -5,19 +5,11 @@ source(here("config/Personal Setup.R"))
 #Get data from excel
 UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 UIC_Tracker_Tanzania <- rio::import(file = here("data/UIC Tracker Tanzania.xlsx"))
-
-# get_postgres_data <- function (site, name = c("app_users", "app_notification_interaction"), qry = NULL){
-#   name <- match.arg(name)
-#   if (is.null(qry)){
-#     df <- DBI::dbReadTable(conn = site, name = name)
-#   } else {
-#     df <- DBI::dbGetQuery(site, qry)
-#   }
-#   return(df)
-# }
-
-# todo: get_nf_data - update function to have qry option
-
+UIC_Tracker_RCT <- rio::import(file = here("data/UIC Tracker RCT.xlsx"))
+UIC_Tracker_RCT$Country <- "Tanzania"
+UIC_Tracker_RCT <- UIC_Tracker_RCT %>%
+  mutate(Study = ifelse(Condition == "Intervention", "RCT", "WASH"))
+UIC_Tracker_RCT$YourParentAppCode <- UIC_Tracker_RCT$Code
 
 #######################################
 # Specific to ParentApp --------------------------------------------------
@@ -145,8 +137,12 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
       summary_workshop_long <- summary_workshop_long %>%
         tidyr::unite(col = "Org", {{ factors }}) %>%
         filter(name != "Total")
-    } else {
+    } else if (study == "Pilot") {
       summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
+    } else if (study == "RCT") {
+      summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
+    } else {
+      stop("Undefined Study Type")
     }
   } else {
     summary_workshop_long <- summary_workshop_long %>% filter(name != "Total")
@@ -190,6 +186,15 @@ checkbox_input <- function(inputId, country = country, study = study){
                                     selected = c("Mwanza", "Mwanza 2", "Shinyanga", "Unknown")
                  ),
                  actionButton("goButton", "Submit", class = "btn-success")))
+    } else if (study == "RCT") {
+      return(box(width = 12,
+                      checkboxInput(inputId = "select_cluster",
+                                    label = "All clusters",
+                                    value = TRUE),
+                      textInput(inputId = "opt_cluster",
+                                label = "Cluster",
+                                placeholder = "Enter values separated by a comma..."),
+                      actionButton("goButton", "Submit", class = "btn-success")))
     } else if (study == "Optimisation") {
       # return(box(checkboxInput(inputId = "chk_support",
       #                          label = "Group by support",
@@ -288,7 +293,9 @@ summary_table_base_build <- function(data = plhdata_org_clean,
                                      columns_to_summarise = data_baseline_survey,
                                      replace = "rp.contact.field.",
                                      replace_after = NULL,
-                                     opt_factors = c("Support", "Skin", "Digital Literacy")){
+                                     opt_factors = c("Support", "Skin", "Digital Literacy"),
+                                     include_perc = FALSE,
+                                     retain_names_for_refactor = FALSE){
   if (country == "Tanzania"){
     if (study == "Pilot"){
       return(multiple_table_output(data = data,
@@ -302,6 +309,14 @@ summary_table_base_build <- function(data = plhdata_org_clean,
                                    replace = replace,
                                    replace_after = replace_after,
                                    factors = opt_factors)) #))
+    } else if (study == "RCT"){
+      return(multiple_table_output(data = data,
+                                   columns_to_summarise = columns_to_summarise,
+                                   replace = replace,
+                                   replace_after = replace_after,
+                                   factors = opt_factors,
+                                   include_perc = include_perc,
+                                   retain_names_for_refactor = retain_names_for_refactor)) #))
     } else {
       return(multiple_table_output(data = data,
                                    columns_to_summarise = columns_to_summarise,
@@ -338,8 +353,12 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad
     if (study == "Optimisation"){
       plot_data <- plot_data %>%
         tidyr::unite(col = "Org", {{ factors }})
-    } else {
+    } else if (study == "Pilot"){
       plot_data <- plot_data %>% mutate(Org = PilotSite)
+    } else if (study == "RCT"){
+      plot_data <- plot_data %>% mutate(Org = ClusterName)
+    } else {
+      stop("Undefined study type")
     }
   }
   
@@ -487,10 +506,10 @@ naming_conventions <- function(x, replace, replace_after, rename = TRUE) {
   x
 }
 
-summary_calculation <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise, summaries = c("frequencies", "mean", "mmm", "sum"), # mmm = mean, min, max. For some of parenttext, summaries == mmm                                include_country_margins, country_factor,
-                                 together = FALSE, include_margins = FALSE, na.rm = TRUE, drop = FALSE,
-                                 include_country_margins = FALSE, country_factor = FALSE,
-                                 include_perc = FALSE){ # include_perc = TRUE for parenttext
+summary_calculation <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise, summaries = c("frequencies", "mean", "mean_n", "mmm", "sum"), # mmm = mean, min, max. For some of parenttext, summaries == mmm                                include_country_margins, country_factor,
+                                together = FALSE, include_margins = FALSE, na.rm = TRUE, drop = FALSE,
+                                include_country_margins = FALSE, country_factor = FALSE,
+                                include_perc = FALSE){ # include_perc = TRUE for parenttext
   summaries <- match.arg(summaries)
   if (summaries == "frequencies"){
     if (is.numeric(data[[columns_to_summarise]])){ # if statement not in parenttext
@@ -500,31 +519,18 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
     }
     data <- data %>%
       mutate(across(all_of({{ factors }}), ~ replace_na(.x, "unknown")))
+    factors1 <- factors
     factors <- c(factors, columns_to_summarise)
     summary_output <- data %>% 
       group_by(across(all_of({{ factors }})), .drop = drop) %>% 
       summarise(n = n(), .groups = "drop")
     if (include_perc) {
       summary_output <- summary_output %>% 
+        group_by(across(all_of({{ factors1 }})), .drop = drop) %>% 
         mutate(perc = n / sum(n) * 100)
     }
-    if (include_margins && !is.null(factors)){
-      # if (include_country_margins){
-      #   summary_output_country <- data %>%
-      #     group_by(across(c({{ columns_to_summarise }}, {{ country_factor }})), .drop = FALSE) %>%
-      #     summarise(n = n())
-      #   corner_margin_country <- data %>%
-      #     group_by(across(c({{ country_factor }})), .drop = FALSE) %>%
-      #     summarise(n = n())
-      #   names(summary_output_country)[length(summary_output_country)-1] <- names(summary_output)[length(summary_output)-1]
-      #   names(corner_margin_country)[length(corner_margin_country)-1] <- names(summary_output)[length(summary_output)-1]
-      #   #summary_output_country <- dplyr::rename(summary_output_country, Org = {{ country_factor }}) #"{{ factors }}" := {{ country_factor }})
-      #   #corner_margin_country <- dplyr::rename(corner_margin_country, Org = {{ country_factor }}) #"{{ factors }}" := {{ country_factor }})
-      # } else {
-      #   summary_output_country <- NULL
-      #   corner_margin_country <- NULL
-      # }
-      # summary_output <- bind_rows(summary_output, cts_margin, ftr_margin, corner_margin, summary_output_country, corner_margin_country, .id = "id")
+    if (include_margins){
+      if (!is.null(factors)){
       margin_tables <- list()
       power_sets <- rje::powerSet(factors)
       power_sets_outer <- power_sets[-(c(length(power_sets)))]
@@ -543,12 +549,14 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
         mutate(across(all_of({{ factors }}), ~ replace_na(.x, "Total"))) %>%
         mutate(across(all_of({{ factors }}), ~ fct_relevel(.x, "Total", after = Inf))) %>% 
         select(-c(".id"))
+      }
     }
     if (together && include_perc){
       summary_output <- summary_output %>%
         mutate("Count (%)" := str_c(`n`, ' (', round(`perc`, 2), ")")) %>%
         dplyr::select(-c(n, perc))
     }
+    return(summary_output)
   } else if (summaries == "mmm"){
     summary_output <- data %>%
       group_by(across(all_of({{ factors }}))) %>%
@@ -572,6 +580,21 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
         mutate(across(all_of({{ factors }}), ~ifelse(id == 2, "Total", .x))) %>%
         mutate(across(all_of({{ factors }}), ~fct_relevel(.x, "Total", after = Inf))) %>%
         select(-c("id"))
+    }
+  } else if (summaries == "mean_n") {
+    summary_output <- data %>%
+      group_by(across(all_of({{ factors }}))) %>%
+      summarise(across(all_of({{ columns_to_summarise }}),
+                       ~paste0(round(mean(., na.rm = na.rm), 1), " (", n(), ")")))
+    if (include_margins && !is.null(factors)){
+      corner_margin <- data %>%
+        summarise(across(all_of({{ columns_to_summarise }}),
+                         ~paste0(round(mean(., na.rm = na.rm), 1), " (", n(), ")")))
+      summary_output <- bind_rows(summary_output, corner_margin, .id = "id") %>%
+        ungroup() %>%
+        mutate(across(all_of({{ factors }}), ~if_else(id == 2, "Total", as.character(.)))) %>%
+        mutate(across(all_of({{ factors }}), ~fct_relevel(.x, "Total", after = Inf))) %>%
+        select(-id)
     }
   } else {
     summary_output <- data %>%
@@ -617,11 +640,11 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
   return(summary_output)
 }
 
-summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise = NULL, summaries = c("frequencies", "mean", "mmm", "sum"), # todo: did have factors = Org before.
-                           replace = "rp.contact.field.", replace_after = NULL, include_margins = FALSE, wider_table = TRUE, 
-                           include_country_margins = TRUE, country_factor = "country", na.rm = TRUE,
-                           display_table = FALSE, naming_convention = TRUE, include_perc = FALSE,
-                           together = TRUE, drop = FALSE){
+summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_summarise = NULL, summaries = c("frequencies", "mean", "mean_n", "mmm", "sum"), # todo: did have factors = Org before.
+                          replace = "rp.contact.field.", replace_after = NULL, include_margins = FALSE, wider_table = TRUE, 
+                          include_country_margins = TRUE, country_factor = "country", na.rm = TRUE,
+                          display_table = FALSE, naming_convention = TRUE, include_perc = FALSE,
+                          together = TRUE, drop = FALSE, retain_names_for_refactor = FALSE){
   summaries <- match.arg(summaries)
   data <- data %>% dplyr::select({{ factors }}, {{ columns_to_summarise }})
   return_table <- summary_calculation(data = data,
@@ -638,7 +661,9 @@ summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_s
   if (display_table){
     return_table_names <- naming_conventions(colnames(return_table), replace = replace, replace_after = replace_after)
     if (summaries == "frequencies"){
-      return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n)
+      return_table <- return_table %>%
+        arrange(match(.data[[columns_to_summarise]], levels(factor(.data[[columns_to_summarise]])))) %>%
+        pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n, names_prefix = "")
     }
     return_table <- gt(as_tibble(return_table)) %>%
       tab_header(title = paste(return_table_names[1], "by", return_table_names[2])) %>%
@@ -672,7 +697,17 @@ summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_s
           return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = values_from, names_prefix = "")
         }
       } else if (include_perc == FALSE && wider_table){
-        return_table <- return_table %>% pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n, names_prefix = "")
+        if (retain_names_for_refactor){
+          return_table <- return_table %>%
+            arrange(match(return_table[[columns_to_summarise]], levels(factor(data[[columns_to_summarise]])))) %>%
+            #mutate(!!columns_to_summarise := as.character(fct_relevel(.data[[columns_to_summarise]], levels(factor(.data[[columns_to_summarise]])))))
+            pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n, names_prefix = "", values_fill = 0)
+        } else {
+          return_table <- return_table %>%
+            arrange(match(.data[[columns_to_summarise]], levels(factor(.data[[columns_to_summarise]])))) %>%
+            pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n, names_prefix = "", values_fill = 0)
+        }
+        if ("100" %in% names(return_table)) return_table <- return_table %>% relocate(`100`, .after = last_col())
       }
     }
   }
@@ -683,25 +718,38 @@ summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_s
 }
 
 summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_convention = TRUE, replace = "rp.contact.field.",
-                         replace_after = NULL,
-                         plot_type = c("histogram", "boxplot")) {	
-  plot_type <- match.arg(plot_type)
-  x_axis_label = naming_conventions(colnames(data%>%select(.data[[columns_to_summarise]])), replace = replace, replace_after = replace_after)	
+                         replace_after = NULL, group = NULL,
+                         plot_type = c("histogram", "boxplot")) {
   
-  return_plot <- ggplot(data) +	
-    viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +	
-    labs(x = x_axis_label, y = "Count") +	
-    theme_classic()	
-  
-  if(plot_type == "histogram"){
-    return_plot <- return_plot + geom_bar(data = data, aes(x = .data[[columns_to_summarise]]))
+  if (!columns_to_summarise %in% names(data)){
+    return(ggplot(data))
   } else {
-    return_plot <- return_plot + geom_boxplot(data = data, aes(y = .data[[columns_to_summarise]]))
+    plot_type <- match.arg(plot_type)
+    x_axis_label = naming_conventions(colnames(data%>%select(.data[[columns_to_summarise]])), replace = replace, replace_after = replace_after)	
+    
+    return_plot <- ggplot(data) +	
+      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +	
+      labs(x = x_axis_label, y = "Count") +	
+      theme_classic()	
+    
+    if(plot_type == "histogram"){
+      return_plot <- return_plot + geom_bar(data = data, aes(x = .data[[columns_to_summarise]]))
+    } else {
+      if (!is.null(group)){
+        return_plot <- return_plot + geom_boxplot(data = data, aes(y = .data[[columns_to_summarise]],
+                                                                   x = .data[[group]],
+                                                                   fill = .data[[group]])) +
+          theme(legend.position = "none")
+      } else {
+        return_plot <- return_plot + geom_boxplot(data = data, aes(y = .data[[columns_to_summarise]]))
+      }
+    }
+    return(return_plot)	
   }
-  return(return_plot)	
 }
 
-multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE, factors = "Org", include_margins = FALSE){
+multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = "frequencies", na.rm = TRUE, factors = "Org", include_margins = FALSE,
+                                  include_perc = FALSE, retain_names_for_refactor = FALSE){
   # run: add_na_variable here with warning 
   data <- add_na_variable(data = data, variable = columns_to_summarise)
   
@@ -714,7 +762,9 @@ multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise
                                                        include_margins = include_margins,
                                                        summaries = summaries,
                                                        factors = factors,
-                                                       na.rm = na.rm))
+                                                       na.rm = na.rm,
+                                                       include_perc = include_perc,
+                                                       retain_names_for_refactor = retain_names_for_refactor))
   
   names(summary_table_values) <- variable_display_names
   return(summary_table_values)
@@ -762,5 +812,66 @@ fluid_row_box <- function(variable1, variable2 = NULL, title1 = NULL, title2 = N
           plotlyOutput(outputId = paste0("plot_", variable1), height = "240"), #generates graph
           shiny::tableOutput(paste0("table_", variable1))  #generates table
       ))
+  }
+}
+
+demographics_fluid_row <- function(study){
+  if (study == "RCT"){
+    return()
+  } else {
+    return(fluidRow(
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Adults in household",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_household_adults", height = "240"),
+          shiny::tableOutput("table_household_adults")
+      ), #closes box
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Teens in household",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_household_teens", height = "240"),
+          shiny::tableOutput("table_household_teens")
+      ) #closes box
+    ), #closes fluidRow
+    
+    fluidRow(
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Children in household",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_household_children", height = "240"),
+          shiny::tableOutput("table_household_children")
+      ), #closes box
+      
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Babies in household",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_household_babies", height = "240"),
+          shiny::tableOutput("table_household_babies")
+      ) #closes box
+    ), # closes fluidrow
+    fluidRow(
+      box(width = 6,
+          collapsible = TRUE,
+          solidHeader = TRUE,
+          title = "Parent age",
+          status = "primary",  
+          style='width:100%;overflow-x: scroll;',
+          plotlyOutput(outputId = "plot_parent_age", height = "240"),
+          shiny::tableOutput("table_parent_age")
+      ) #closes box
+    )
+    )
   }
 }

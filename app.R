@@ -19,11 +19,15 @@ library(postgresr)
 options(dplyr.summarise.inform = FALSE)
 options(dplyr.warning.inform = FALSE)
 country <- "Tanzania" # Tanzania, all
-study <- "Pilot"
+study <- "RCT" # Optimisation, RCT
 source("config/credentials_file.R")
 source(here("Metabase Functions.R"))
 source(here("Metabase ShinyApp.R"))
+#source(here("Metabase ShinyApp Demo.R"))
+source(here("Metabase Pre-Shiny Setup.R"))
 parentapp_shiny(country = country, study = study)
+
+# Please use `all_of(var)` (or `any_of(var)`) instead of `.data[[var]]`
 
 # move to be like shiny 2 with the easy to read function
 

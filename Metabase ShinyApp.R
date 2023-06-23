@@ -3203,7 +3203,7 @@ parentapp_shiny <- function(country, study){
               if(input$select_cluster){
                 opt_cluster_vals <- unique(UIC_Tracker_Use$ClusterName)
               } else {
-                opt_cluster_vals <- input$opt_cluster
+                opt_cluster_vals <- extract(input$opt_cluster, as.numeric = FALSE)
               }
               plhdata_checkgroup <- plhdata_org_clean %>%
                  dplyr::filter(ClusterName %in% c(opt_cluster_vals))

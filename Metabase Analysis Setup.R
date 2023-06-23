@@ -5,7 +5,7 @@
 ##################################
 
 country <- "Tanzania"
-study <- "RCT"
+study <- "WASH"
 
 ### Set up UIC data
 
@@ -103,7 +103,15 @@ if (study == "Optimisation"){
     filter(Study == "RCT") %>%
     select(c(YourParentAppCode, Ward, ClusterName, OnboardingDateShort))
   plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
+} else if (study == "WASH") {
+  valid_ids <- UIC_Tracker_Use %>%
+    filter(complete.cases(YourParentAppCode))  %>%
+    filter(Study == "WASH") %>%
+    select(c(YourParentAppCode, Ward, ClusterName, OnboardingDateShort))
+  plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 }
+
+plhdata_org <- plhdata_org %>% filter(ClusterName != "https://wa.me/qr/5KAUP4HXZHGXP1")
 
 # For SA:
 if (country == "South Africa"){
@@ -257,7 +265,7 @@ if (study %in% c("Optimisation", "RCT")){
     # rows.id, rows.individual, rows.together, rows.completed_field
     json_data_i <- json_data_i %>% dplyr::select(c(rows.id, rows.individual, rows.together, rows.completed_field)) %>%
       filter(!rows.id %in% c("home_practice", "hp_review"))
-    if (i == "self_care" && study == "RCT") {
+    if (i == "self_care" && study %in% c("RCT", "WASH")) {
       json_data_i$rows.individual[which(json_data_i$rows.completed_field %in% c("task_gp_w_self_care_welcome_individual_completed", "task_gp_w_self_care_survey_completed"))] <- FALSE
     }
     json_data_i_ind <- json_data_i %>% filter(rows.individual == TRUE)
@@ -316,6 +324,7 @@ if (study %in% c("Optimisation", "RCT")){
 # RCT TODO here
 
 if (study != "RCT"){
+  if (study != "WASH"){
   plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level)
   plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
   plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
@@ -324,10 +333,12 @@ if (study != "RCT"){
   plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
   plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
   plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
+  }
 }
 
-plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.numeric(plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care)
-
+if (study != "WASH"){
+  plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care <- as.numeric(plhdata_org_clean$rp.contact.field.parent_point_count_relax_w_self_care)
+}
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(across(ends_with("_completion_level"), ~as.numeric(.)))
 plhdata_org_clean <- plhdata_org_clean %>%
@@ -343,6 +354,8 @@ plhdata_org_clean <- plhdata_org_clean %>%
 ## Data Analysis ## --------------------------------------------------------
 
 # workshop_path edits ----------
+plhdata_org_clean <- add_na_variable(plhdata_org_clean, c("rp.contact.field.workshop_path_user_choice",
+                                                          "rp.contact.field.workshop_path"))
 plhdata_org_clean <- plhdata_org_clean %>%
   mutate(rp.contact.field.workshop_path = ifelse(is.na(rp.contact.field.workshop_path_user_choice),
                                                  rp.contact.field.workshop_path,
@@ -521,6 +534,9 @@ data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.f
 ##################################
 
 # download push notification data
+if (study != "WASH"){
   nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC_Tracker_Use, filter = TRUE,
-                         study = study, country = country, app_user_id = "app_user_id")
+                         study = study, country = country, app_user_id = "app_user_id")  
+}
+
 

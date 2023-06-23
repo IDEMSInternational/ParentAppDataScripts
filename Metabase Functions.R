@@ -139,7 +139,7 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
         filter(name != "Total")
     } else if (study == "Pilot") {
       summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
-    } else if (study == "RCT") {
+    } else if (study %in% c("RCT", "WASH")) {
       summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
     } else {
       stop("Undefined Study Type")
@@ -156,10 +156,11 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
 #######################################
 # Shiny / ParentApp functions --------------------------------------------------
 #######################################
-extract <- function(text) {
+extract <- function(text, as.numeric = TRUE) {
   text <- gsub(" ", "", text)
   split <- strsplit(text, ",", fixed = FALSE)[[1]]
-  as.numeric(split)
+  if (as.numeric) return(as.numeric(split))
+  else return(split)
 }
 
 checkbox_input <- function(inputId, country = country, study = study){
@@ -186,7 +187,7 @@ checkbox_input <- function(inputId, country = country, study = study){
                                     selected = c("Mwanza", "Mwanza 2", "Shinyanga", "Unknown")
                  ),
                  actionButton("goButton", "Submit", class = "btn-success")))
-    } else if (study == "RCT") {
+    } else if (study %in% c("RCT", "WASH")) {
       return(box(width = 12,
                       checkboxInput(inputId = "select_cluster",
                                     label = "All clusters",
@@ -309,7 +310,7 @@ summary_table_base_build <- function(data = plhdata_org_clean,
                                    replace = replace,
                                    replace_after = replace_after,
                                    factors = opt_factors)) #))
-    } else if (study == "RCT"){
+    } else if (study %in% c("RCT", "WASH")){
       return(multiple_table_output(data = data,
                                    columns_to_summarise = columns_to_summarise,
                                    replace = replace,
@@ -355,7 +356,7 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad
         tidyr::unite(col = "Org", {{ factors }})
     } else if (study == "Pilot"){
       plot_data <- plot_data %>% mutate(Org = PilotSite)
-    } else if (study == "RCT"){
+    } else if (study %in% c("RCT", "WASH")){
       plot_data <- plot_data %>% mutate(Org = ClusterName)
     } else {
       stop("Undefined study type")
@@ -816,7 +817,7 @@ fluid_row_box <- function(variable1, variable2 = NULL, title1 = NULL, title2 = N
 }
 
 demographics_fluid_row <- function(study){
-  if (study == "RCT"){
+  if (study %in% c("RCT", "WASH")){
     return()
   } else {
     return(fluidRow(

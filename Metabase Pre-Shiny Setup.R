@@ -12,6 +12,7 @@ if (study == "RCT"){
   # TODO, we want a "display RCT option for RCT ones only.
 data_completion_level_data <- r_variables_names %>% filter(location_ID == "data_completion_level") %>% filter(display == TRUE)
 data_completion_level <- data_completion_level_data$metabase_ID
+data_completion_level_names <- data_completion_level_data$display_name
 data_habit_parent_points_data <- r_variables_names %>% filter(location_ID == "data_habit_parent_points_all") %>% filter(display == TRUE)
 data_habit_parent_points_all <- data_habit_parent_points_data$metabase_ID
 

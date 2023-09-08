@@ -5,7 +5,8 @@ source(here("config/Personal Setup.R"))
 #Get data from excel
 UIC.Tracker <- rio::import(file = here("data/UIC Tracker.xlsx"), which = "UIC Tracker 211014")
 UIC_Tracker_Tanzania <- rio::import(file = here("data/UIC Tracker Tanzania.xlsx"))
-UIC_Tracker_RCT <- rio::import(file = here("data/UIC Tracker RCT.xlsx"))
+UIC_Tracker_RCT <- rio::import(file = here("data/UIC Tracker RCT.xlsx"),
+                               sheet = "ParentApp Tanzania")
 UIC_Tracker_RCT$Country <- "Tanzania"
 UIC_Tracker_RCT <- UIC_Tracker_RCT %>%
   mutate(Study = ifelse(Condition == "Intervention", "RCT", "WASH"))
@@ -157,7 +158,11 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
 # Shiny / ParentApp functions --------------------------------------------------
 #######################################
 extract <- function(text, as.numeric = TRUE) {
-  text <- gsub(" ", "", text)
+  text <- gsub(", ", ",", text)
+  
+  #text <- gsub(" ", "", text) # was this, now above for non numeric (rct).
+  #works in numeric still?
+  
   split <- strsplit(text, ",", fixed = FALSE)[[1]]
   if (as.numeric) return(as.numeric(split))
   else return(split)
@@ -334,7 +339,7 @@ summary_table_base_build <- function(data = plhdata_org_clean,
 }
 
 hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad", "Ok", "Happy", "Unknown"),
-                         xlab = "How did you find it?"){
+                         xlab = "How did you find it?", fill = TRUE){
   if (manipulation == "ldply"){
     plot_data <- plyr::ldply(data, `.id` = "name")
   } else if (manipulation == "longer"){
@@ -350,20 +355,24 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad
     plot_data <- data
   }
   
-  if (country == "Tanzania"){
-    if (study == "Optimisation"){
-      plot_data <- plot_data %>%
-        tidyr::unite(col = "Org", {{ factors }})
-    } else if (study == "Pilot"){
-      plot_data <- plot_data %>% mutate(Org = PilotSite)
-    } else if (study %in% c("RCT", "WASH")){
-      plot_data <- plot_data %>% mutate(Org = ClusterName)
-    } else {
-      stop("Undefined study type")
+
+  if (fill) {
+    if (country == "Tanzania"){
+      if (study == "Optimisation"){
+        plot_data <- plot_data %>%
+          tidyr::unite(col = "Org", {{ factors }})
+      } else if (study == "Pilot"){
+        plot_data <- plot_data %>% mutate(Org = PilotSite)
+      } else if (study %in% c("RCT", "WASH")){
+        plot_data <- plot_data %>% mutate(Org = ClusterName)
+      } else {
+        stop("Undefined study type")
+      }
     }
+    plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
+  } else {
+    plot <- ggplot(plot_data, aes(x = name, y = value))
   }
-  
-  plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
   plot + geom_bar(stat = "identity", position = "dodge") +
     viridis::scale_fill_viridis(discrete = TRUE) +
     labs(x = xlab, y = "Frequency") +
@@ -390,10 +399,10 @@ threshhold_function <- function(data, threshhold, columns = data_completion_leve
              praise_started = ifelse(rp.contact.field.w_praise_completion_level > threshhold, 1, 0),
              instruct_started = ifelse(rp.contact.field.w_instruct_completion_level > threshhold, 1, 0),
              stress_started = ifelse(rp.contact.field.w_stress_completion_level > threshhold, 1, 0),
+             solve_started = ifelse(rp.contact.field.w_solve_completion_level > threshhold, 1, 0),
              money_started = ifelse(rp.contact.field.w_money_completion_level > threshhold, 1, 0),
              rules_started = ifelse(rp.contact.field.w_rules_completion_level > threshhold, 1, 0),
              consequence_started = ifelse(rp.contact.field.w_consequence_completion_level > threshhold, 1, 0),
-             solve_started = ifelse(rp.contact.field.w_solve_completion_level > threshhold, 1, 0),
              safe_started = ifelse(rp.contact.field.w_safe_completion_level > threshhold, 1, 0),
              crisis_started = ifelse(rp.contact.field.w_crisis_completion_level > threshhold, 1, 0),
              celebrate_started = ifelse(rp.contact.field.w_celebrate_completion_level > threshhold, 1, 0))
@@ -404,10 +413,10 @@ threshhold_function <- function(data, threshhold, columns = data_completion_leve
              praise_started = ifelse(rp.contact.field.w_praise_completion_level < threshhold, 1, 0),
              instruct_started = ifelse(rp.contact.field.w_instruct_completion_level < threshhold, 1, 0),
              stress_started = ifelse(rp.contact.field.w_stress_completion_level < threshhold, 1, 0),
+             solve_started = ifelse(rp.contact.field.w_solve_completion_level < threshhold, 1, 0),
              money_started = ifelse(rp.contact.field.w_money_completion_level < threshhold, 1, 0),
              rules_started = ifelse(rp.contact.field.w_rules_completion_level < threshhold, 1, 0),
              consequence_started = ifelse(rp.contact.field.w_consequence_completion_level < threshhold, 1, 0),
-             solve_started = ifelse(rp.contact.field.w_solve_completion_level < threshhold, 1, 0),
              safe_started = ifelse(rp.contact.field.w_safe_completion_level < threshhold, 1, 0),
              crisis_started = ifelse(rp.contact.field.w_crisis_completion_level < threshhold, 1, 0),
              celebrate_started = ifelse(rp.contact.field.w_celebrate_completion_level < threshhold, 1, 0))

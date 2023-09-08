@@ -5,7 +5,7 @@
 ##################################
 
 country <- "Tanzania"
-study <- "WASH"
+study <- "RCT"
 
 ### Set up UIC data
 
@@ -25,9 +25,31 @@ UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>%
 # to get user data
 
 if (study %in% c("Optimisation", "Pilot")){
-  UIC_Tracker_Use = UIC_Tracker_Tanzania
+  UIC_Tracker_Use <- UIC_Tracker_Tanzania
 } else {
   UIC_Tracker_Use <- UIC_Tracker_RCT[!duplicated(UIC_Tracker_RCT$Code), ]
+  UIC_Tracker_Use$ClusterName <- toupper(UIC_Tracker_Use$ClusterName)
+}
+if (study == "RCT"){
+  UIC_onboarding_dates <- readxl::read_excel("data/UIC_onboarding_dates.xlsx")
+  UIC_onboarding_dates <- UIC_onboarding_dates %>%
+    mutate(date_onboard = lubridate::as_date(`Date of onboarding`),
+           date_data_bundle = lubridate::as_date(`Date first data bundle received`),
+           date_first_chat = lubridate::as_date(`Date of first WhatsApp Live Chat`),
+           `Cluster name` = toupper(`Cluster name`))
+  
+  # do based on first live chat
+  UIC_onboarding_dates <- UIC_onboarding_dates %>% dplyr::select(c(ClusterNumber = `Cluster number`, date_first_chat))
+  
+  UIC_Tracker_Use_cn <- UIC_Tracker_Use %>%
+    dplyr::filter(Study == "RCT") %>%
+    dplyr::mutate(ClusterName = toupper(ClusterName)) %>%
+    dplyr::select(ClusterName, ClusterNumber)
+  UIC_Tracker_Use_cn <- unique(UIC_Tracker_Use_cn)
+  UIC_onboarding_dates <- full_join(UIC_Tracker_Use_cn, UIC_onboarding_dates, by = "ClusterNumber")  %>% dplyr::select(-"ClusterNumber") %>%
+    dplyr::filter(!is.na(ClusterName)) %>%
+    mutate(`Weeks completed` = as.integer(floor(as.numeric(Sys.Date() - date_first_chat)/7))) %>%
+    dplyr::select(-c("date_first_chat"))
 }
 
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
@@ -101,6 +123,7 @@ if (study == "Optimisation"){
   valid_ids <- UIC_Tracker_Use %>%
     filter(complete.cases(YourParentAppCode))  %>%
     filter(Study == "RCT") %>%
+    mutate(ClusterName = toupper(ClusterName)) %>%
     select(c(YourParentAppCode, Ward, ClusterName, OnboardingDateShort))
   plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 } else if (study == "WASH") {
@@ -133,6 +156,9 @@ if (country == "South Africa"){
 #####Create a subset for cleaned organisations ####
 plhdata_org_clean <- plhdata_org # %>% filter(Org != "Other")%>% mutate(Org = factor(Org))
 
+if ("ClusterName" %in% names(plhdata_org_clean)) {
+  plhdata_org_clean$ClusterName <- toupper(plhdata_org_clean$ClusterName)
+}
 # RCT TODO HERE
 # plhdata_org_clean <- plhdata_org_clean %>%
 #   dplyr::mutate(rp.contact.field.user_age = as.numeric(rp.contact.field.user_age)) %>%
@@ -244,10 +270,10 @@ plhdata_org_clean <- plhdata_org_clean %>%
 
 # Tidying up for together/individual and modular/workshop skins
 # json_data <- NULL
-# for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
-#  # which variables to select?
-#  json_data[[i]] <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
-# }
+#  for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
+#   # which variables to select?
+#   json_data[[i]] <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
+#  }
 # saveRDS(json_data, file = "data/json_data.RDS")
 json_data <- readRDS(file = "data/json_data.RDS")
 
@@ -258,7 +284,7 @@ if (study %in% c("Optimisation", "RCT")){
   total_completed_ind <- NULL
   total_completed_tog <- NULL
   j = 0
-  for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
+  for (i in c("self_care", "1on1", "praise", "instruct", "stress", "solve", "money", "rules", "consequence", "safe", "crisis", "celebrate")){
     # which variables to select?
     
     json_data_i <- json_data[[i]]
@@ -267,6 +293,9 @@ if (study %in% c("Optimisation", "RCT")){
       filter(!rows.id %in% c("home_practice", "hp_review"))
     if (i == "self_care" && study %in% c("RCT", "WASH")) {
       json_data_i$rows.individual[which(json_data_i$rows.completed_field %in% c("task_gp_w_self_care_welcome_individual_completed", "task_gp_w_self_care_survey_completed"))] <- FALSE
+    }
+    if (i == "celebrate" && study %in% c("RCT", "WASH")) {
+      json_data_i$rows.individual[which(json_data_i$rows.completed_field %in% c("task_gp_w_celebrate_survey_activity_completed"))] <- FALSE
     }
     json_data_i_ind <- json_data_i %>% filter(rows.individual == TRUE)
     completed_rows_ind <- paste0("rp.contact.field.", json_data_i_ind$rows.completed_field)
@@ -306,14 +335,35 @@ if (study %in% c("Optimisation", "RCT")){
                                                     rp.contact.field.w_praise_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_praise_completion_level.mod, rp.contact.field.w_praise_completion_level),
                                                     rp.contact.field.w_instruct_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_instruct_completion_level.mod, rp.contact.field.w_instruct_completion_level),
                                                     rp.contact.field.w_stress_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_stress_completion_level.mod, rp.contact.field.w_stress_completion_level),
+                                                    rp.contact.field.w_solve_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_solve_completion_level.mod, rp.contact.field.w_solve_completion_level),
                                                     rp.contact.field.w_money_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_money_completion_level.mod, rp.contact.field.w_money_completion_level),
                                                     rp.contact.field.w_rules_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_rules_completion_level.mod, rp.contact.field.w_rules_completion_level),
                                                     rp.contact.field.w_consequence_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_consequence_completion_level.mod, rp.contact.field.w_consequence_completion_level),
-                                                    rp.contact.field.w_solve_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_solve_completion_level.mod, rp.contact.field.w_solve_completion_level),
                                                     rp.contact.field.w_safe_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_safe_completion_level.mod, rp.contact.field.w_safe_completion_level),
                                                     rp.contact.field.w_crisis_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_crisis_completion_level.mod, rp.contact.field.w_crisis_completion_level),
                                                     rp.contact.field.w_celebrate_completion_level = ifelse(rp.contact.field._app_skin == "modular", rp.contact.field.w_celebrate_completion_level.mod, rp.contact.field.w_celebrate_completion_level))
 }
+
+# and for our new modules
+var_names <- names(plhdata_org_clean)
+completion_var <- NULL
+new_modules <- c("learn", "svp", "grief", "srh")
+for (module_name in new_modules){
+  selected_var <- var_names[grep(paste0("^", "rp.contact.field.task_gp_w_", module_name, ".*"), var_names)]
+  selected_var <- selected_var[grep("_completed$", selected_var)]
+  selected_var_x <- plhdata_org_clean %>% dplyr::select(all_of(c("app_user_id", selected_var)))
+  selected_var_x <- selected_var_x %>%
+    dplyr::mutate(across(selected_var, ~as.numeric(as.logical(.)))) %>%
+    dplyr::select(-c(paste0("rp.contact.field.task_gp_w_", module_name, "_home_practice_completed")))
+  completion_var[[which(new_modules == module_name)]] <- selected_var_x %>%
+    dplyr::mutate("rp.contact.field.w_{module_name}_completion_level" := rowSums(.[2:length(selected_var_x)], na.rm = TRUE)/length(.[2:length(selected_var_x)]) * 100) %>%
+    dplyr::select("app_user_id", paste0("rp.contact.field.w_", module_name, "_completion_level"))
+}
+completion_var <- full_join(full_join(full_join(completion_var[[1]], completion_var[[2]]), completion_var[[3]]), completion_var[[4]])
+plhdata_org_clean <- full_join(plhdata_org_clean, completion_var)
+
+new_modules_completion_level <- c("rp.contact.field.w_learn_completion_level", "rp.contact.field.w_svp_completion_level", 
+                                  "rp.contact.field.w_grief_completion_level", "rp.contact.field.w_srh_completion_level")
 
 #head(plhdata_org_clean$rp.contact.field._app_skin)
 #head(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)
@@ -362,7 +412,6 @@ plhdata_org_clean <- plhdata_org_clean %>%
                                                  ifelse(rp.contact.field.workshop_path_user_choice == "false",
                                                         "default",
                                                         rp.contact.field.workshop_path)))
-
 # Variables Set up ---------------------------------------
 #completion_vars <- c("Self Care", "One-on-one Time", "Praise", "Positive Instructions", "Managing Stress", "Family Budgets", "Rules", "Calm Consequences", "Problem Solving", "Teen Safety", "Dealing with Crisis","Celebration & Next Steps")
 # TODO: add summary plot completion level in
@@ -380,100 +429,122 @@ plhdata_org_clean <- plhdata_org_clean %>%
 #App-opens
 data_app_opens <- c("rp.contact.field.app_launch_count","rp.contact.field.app_launch_count_w_1on1", "rp.contact.field.app_launch_count_w_self_care",
                     "rp.contact.field.app_launch_count_w_praise","rp.contact.field.app_launch_count_w_instruct",
-                    "rp.contact.field.app_launch_count_w_stress", "rp.contact.field.app_launch_count_w_money",
+                    "rp.contact.field.app_launch_count_w_stress", "rp.contact.field.app_launch_count_w_solve",
+                    "rp.contact.field.app_launch_count_w_money",
                     "rp.contact.field.app_launch_count_w_rules", "rp.contact.field.app_launch_count_w_consequence",
-                    "rp.contact.field.app_launch_count_w_solve", "rp.contact.field.app_launch_count_w_safe",
+                    "rp.contact.field.app_launch_count_w_safe",
                     "rp.contact.field.app_launch_count_w_crisis", "rp.contact.field.app_launch_count_w_celebrate")
 
-data_app_opens_neat <- c("Overall", "1on1 (2)", "Self Care (1)", "Praise (3)", "Positive Instructions(4)",
-                         "Managing Stress(5)", "Family Budget(6)","Rules(7)", "Calm Consequences(8)",  
-                         "Problem Solving(9)", "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
-
+if (study == "RCT"){
+  data_app_opens_neat <- c("Overall", "1on1 (2)", "Self Care (1)", "Praise (3)", "Positive Instructions(4)",
+                           "Managing Stress(5)", "Family Budget(6)","Rules(7)", "Calm Consequences(8)",  
+                           "Problem Solving(9)", "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
+} else {
+  data_app_opens_neat <- c("Overall", "1on1 (2)", "Self Care (1)", "Praise (3)", "Positive Instructions(4)",
+                           "Managing Stress(5)", "Problem Solving(6)", "Family Budget(7)","Rules(8)", "Calm Consequences(9)",  
+                           "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
+}
 
 # Tab ?? ----------
 #Define workshop week order
-week_order <- c("Self care", "1on1", "Praise", "Instruct", "Stress", "Money", "Rules", "Consequence", "Solve", "Safe",
-                "Crisis", "Celebrate" )
+# if (study == "RCT"){
+  week_order <- c("Self care", "1on1", "Praise", "Instruct", "Stress", "Solve", "Money", "Rules", "Consequence", "Safe",
+                  "Crisis", "Celebrate" )
+# } else {
+#   week_order <- c("Self care", "1on1", "Praise", "Instruct", "Stress", "Money", "Rules", "Consequence", "Solve", "Safe",
+#                   "Crisis", "Celebrate" ) 
+# }
 
 #Each habit across workshop weeks
 #relax points in each week
 relax_workshop_vars <- c( "rp.contact.field.parent_point_count_relax_w_self_care", "rp.contact.field.parent_point_count_relax_w_1on1",
                           "rp.contact.field.parent_point_count_relax_w_praise", "rp.contact.field.parent_point_count_relax_w_instruct",
-                          "rp.contact.field.parent_point_count_relax_w_stress", "rp.contact.field.parent_point_count_relax_w_money",
+                          "rp.contact.field.parent_point_count_relax_w_stress", "rp.contact.field.parent_point_count_relax_w_solve", 
+                          "rp.contact.field.parent_point_count_relax_w_money",
                           "rp.contact.field.parent_point_count_relax_w_rules", "rp.contact.field.parent_point_count_relax_w_consequence",
-                          "rp.contact.field.parent_point_count_relax_w_solve", "rp.contact.field.parent_point_count_relax_w_safe",
+                          "rp.contact.field.parent_point_count_relax_w_safe",
                           "rp.contact.field.parent_point_count_relax_w_crisis","rp.contact.field.parent_point_count_relax_w_celebrate")
 # treat_yourself points in each week
 treat_yourself_workshop_vars <- c( "rp.contact.field.parent_point_count_treat_yourself_w_self_care", "rp.contact.field.parent_point_count_treat_yourself_w_1on1",
                                    "rp.contact.field.parent_point_count_treat_yourself_w_praise", "rp.contact.field.parent_point_count_treat_yourself_w_instruct",
-                                   "rp.contact.field.parent_point_count_treat_yourself_w_stress", "rp.contact.field.parent_point_count_treat_yourself_w_money",
+                                   "rp.contact.field.parent_point_count_treat_yourself_w_stress", "rp.contact.field.parent_point_count_treat_yourself_w_solve", 
+                                   "rp.contact.field.parent_point_count_treat_yourself_w_money",
                                    "rp.contact.field.parent_point_count_treat_yourself_w_rules", "rp.contact.field.parent_point_count_treat_yourself_w_consequence",
-                                   "rp.contact.field.parent_point_count_treat_yourself_w_solve", "rp.contact.field.parent_point_count_treat_yourself_w_safe",
+                                   "rp.contact.field.parent_point_count_treat_yourself_w_safe",
                                    "rp.contact.field.parent_point_count_treat_yourself_w_crisis","rp.contact.field.parent_point_count_treat_yourself_w_celebrate")
 # praise_yourself points in each week
 praise_yourself_workshop_vars <- c( "rp.contact.field.parent_point_count_praise_yourself_w_self_care", "rp.contact.field.parent_point_count_praise_yourself_w_1on1",
                                     "rp.contact.field.parent_point_count_praise_yourself_w_praise", "rp.contact.field.parent_point_count_praise_yourself_w_instruct",
-                                    "rp.contact.field.parent_point_count_praise_yourself_w_stress", "rp.contact.field.parent_point_count_praise_yourself_w_money",
+                                    "rp.contact.field.parent_point_count_praise_yourself_w_stress", "rp.contact.field.parent_point_count_praise_yourself_w_solve", 
+                                    "rp.contact.field.parent_point_count_praise_yourself_w_money",
                                     "rp.contact.field.parent_point_count_praise_yourself_w_rules", "rp.contact.field.parent_point_count_praise_yourself_w_consequence",
-                                    "rp.contact.field.parent_point_count_praise_yourself_w_solve", "rp.contact.field.parent_point_count_praise_yourself_w_safe",
+                                    "rp.contact.field.parent_point_count_praise_yourself_w_safe",
                                     "rp.contact.field.parent_point_count_praise_yourself_w_crisis","rp.contact.field.parent_point_count_praise_yourself_w_celebrate")
 # spend_time points in each week
 spend_time_workshop_vars <- c( "rp.contact.field.parent_point_count_spend_time_w_self_care", "rp.contact.field.parent_point_count_spend_time_w_1on1",
                                "rp.contact.field.parent_point_count_spend_time_w_praise", "rp.contact.field.parent_point_count_spend_time_w_instruct",
-                               "rp.contact.field.parent_point_count_spend_time_w_stress", "rp.contact.field.parent_point_count_spend_time_w_money",
+                               "rp.contact.field.parent_point_count_spend_time_w_stress", "rp.contact.field.parent_point_count_spend_time_w_solve", 
+                               "rp.contact.field.parent_point_count_spend_time_w_money",
                                "rp.contact.field.parent_point_count_spend_time_w_rules", "rp.contact.field.parent_point_count_spend_time_w_consequence",
-                               "rp.contact.field.parent_point_count_spend_time_w_solve", "rp.contact.field.parent_point_count_spend_time_w_safe",
+                               "rp.contact.field.parent_point_count_spend_time_w_safe",
                                "rp.contact.field.parent_point_count_spend_time_w_crisis","rp.contact.field.parent_point_count_spend_time_w_celebrate")
 # praise_teen in each week
 praise_teen_workshop_vars <- c( "rp.contact.field.parent_point_count_praise_teen_w_self_care", "rp.contact.field.parent_point_count_praise_teen_w_1on1",
                                 "rp.contact.field.parent_point_count_praise_teen_w_praise", "rp.contact.field.parent_point_count_praise_teen_w_instruct",
-                                "rp.contact.field.parent_point_count_praise_teen_w_stress", "rp.contact.field.parent_point_count_praise_teen_w_money",
+                                "rp.contact.field.parent_point_count_praise_teen_w_stress","rp.contact.field.parent_point_count_praise_teen_w_solve", 
+                                "rp.contact.field.parent_point_count_praise_teen_w_money",
                                 "rp.contact.field.parent_point_count_praise_teen_w_rules", "rp.contact.field.parent_point_count_praise_teen_w_consequence",
-                                "rp.contact.field.parent_point_count_praise_teen_w_solve", "rp.contact.field.parent_point_count_praise_teen_w_safe",
+                                "rp.contact.field.parent_point_count_praise_teen_w_safe",
                                 "rp.contact.field.parent_point_count_praise_teen_w_crisis","rp.contact.field.parent_point_count_praise_teen_w_celebrate")
 # instruct_positively points in each week
 instruct_positively_workshop_vars <- c( "rp.contact.field.parent_point_count_instruct_positively_w_self_care", "rp.contact.field.parent_point_count_instruct_positively_w_1on1",
                                         "rp.contact.field.parent_point_count_instruct_positively_w_praise", "rp.contact.field.parent_point_count_instruct_positively_w_instruct",
-                                        "rp.contact.field.parent_point_count_instruct_positively_w_stress", "rp.contact.field.parent_point_count_instruct_positively_w_money",
+                                        "rp.contact.field.parent_point_count_instruct_positively_w_stress", "rp.contact.field.parent_point_count_instruct_positively_w_solve", 
+                                        "rp.contact.field.parent_point_count_instruct_positively_w_money",
                                         "rp.contact.field.parent_point_count_instruct_positively_w_rules", "rp.contact.field.parent_point_count_instruct_positively_w_consequence",
-                                        "rp.contact.field.parent_point_count_instruct_positively_w_solve", "rp.contact.field.parent_point_count_instruct_positively_w_safe",
+                                        "rp.contact.field.parent_point_count_instruct_positively_w_safe",
                                         "rp.contact.field.parent_point_count_instruct_positively_w_crisis","rp.contact.field.parent_point_count_instruct_positively_w_celebrate")
 # breathe points in each week
 breathe_workshop_vars <- c( "rp.contact.field.parent_point_count_breathe_w_self_care", "rp.contact.field.parent_point_count_breathe_w_1on1",
                             "rp.contact.field.parent_point_count_breathe_w_praise", "rp.contact.field.parent_point_count_breathe_w_instruct",
-                            "rp.contact.field.parent_point_count_breathe_w_stress", "rp.contact.field.parent_point_count_breathe_w_money",
+                            "rp.contact.field.parent_point_count_breathe_w_stress", "rp.contact.field.parent_point_count_breathe_w_solve",
+                            "rp.contact.field.parent_point_count_breathe_w_money",
                             "rp.contact.field.parent_point_count_breathe_w_rules", "rp.contact.field.parent_point_count_breathe_w_consequence",
-                            "rp.contact.field.parent_point_count_breathe_w_solve", "rp.contact.field.parent_point_count_breathe_w_safe",
+                             "rp.contact.field.parent_point_count_breathe_w_safe",
                             "rp.contact.field.parent_point_count_breathe_w_crisis","rp.contact.field.parent_point_count_breathe_w_celebrate")
 # money points in each week
 money_workshop_vars <- c( "rp.contact.field.parent_point_count_money_w_self_care", "rp.contact.field.parent_point_count_money_w_1on1",
                           "rp.contact.field.parent_point_count_money_w_praise", "rp.contact.field.parent_point_count_money_w_instruct",
-                          "rp.contact.field.parent_point_count_money_w_stress", "rp.contact.field.parent_point_count_money_w_money",
+                          "rp.contact.field.parent_point_count_money_w_stress", "rp.contact.field.parent_point_count_money_w_solve",
+                          "rp.contact.field.parent_point_count_money_w_money",
                           "rp.contact.field.parent_point_count_money_w_rules", #"rp.contact.field.parent_point_count_money_w_consequence",
-                          "rp.contact.field.parent_point_count_money_w_solve", "rp.contact.field.parent_point_count_money_w_safe",
+                          "rp.contact.field.parent_point_count_money_w_safe",
                           #"rp.contact.field.parent_point_count_money_w_crisis",
                           "rp.contact.field.parent_point_count_money_w_celebrate")
 # consequence points in each week
 consequence_workshop_vars <- c( "rp.contact.field.parent_point_count_consequence_w_self_care", "rp.contact.field.parent_point_count_consequence_w_1on1",
                                 "rp.contact.field.parent_point_count_consequence_w_praise", "rp.contact.field.parent_point_count_consequence_w_instruct",
-                                "rp.contact.field.parent_point_count_consequence_w_stress", "rp.contact.field.parent_point_count_consequence_w_money",
+                                "rp.contact.field.parent_point_count_consequence_w_stress", "rp.contact.field.parent_point_count_consequence_w_solve", 
+                                "rp.contact.field.parent_point_count_consequence_w_money",
                                 #"rp.contact.field.parent_point_count_consequence_w_rules", "rp.contact.field.parent_point_count_consequence_w_crisis",
                                 "rp.contact.field.parent_point_count_consequence_w_consequence",
-                                "rp.contact.field.parent_point_count_consequence_w_solve", "rp.contact.field.parent_point_count_consequence_w_safe",
+                                "rp.contact.field.parent_point_count_consequence_w_safe",
                                 "rp.contact.field.parent_point_count_consequence_w_celebrate")
 # safe points in each week
 safe_workshop_vars <- c( "rp.contact.field.parent_point_count_safe_w_self_care", "rp.contact.field.parent_point_count_safe_w_1on1",
                          "rp.contact.field.parent_point_count_safe_w_praise", "rp.contact.field.parent_point_count_safe_w_instruct",
-                         "rp.contact.field.parent_point_count_safe_w_stress", "rp.contact.field.parent_point_count_safe_w_money",
+                         "rp.contact.field.parent_point_count_safe_w_stress", "rp.contact.field.parent_point_count_safe_w_solve", 
+                         "rp.contact.field.parent_point_count_safe_w_money",
                          "rp.contact.field.parent_point_count_safe_w_rules", "rp.contact.field.parent_point_count_safe_w_consequence",
-                         "rp.contact.field.parent_point_count_safe_w_solve", "rp.contact.field.parent_point_count_safe_w_safe",
+                         "rp.contact.field.parent_point_count_safe_w_safe",
                          "rp.contact.field.parent_point_count_safe_w_crisis","rp.contact.field.parent_point_count_safe_w_celebrate")
 
 ## Home Practice ------------------------------------------------------------------
 data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.field.w_praise_hp_review_started",
                      "rp.contact.field.w_instruct_hp_review_started",  "rp.contact.field.w_stress_hp_review_started",
+                     "rp.contact.field.w_solve_hp_review_started", 
                      "rp.contact.field.w_money_hp_review_started",  "rp.contact.field.w_rules_hp_review_started",
-                     "rp.contact.field.w_consequence_hp_review_started",  "rp.contact.field.w_solve_hp_review_started",  "rp.contact.field.w_safe_hp_review_started",
+                     "rp.contact.field.w_consequence_hp_review_started",   "rp.contact.field.w_safe_hp_review_started",
                      "rp.contact.field.w_crisis_hp_review_started")
 
 # RCT TODO
@@ -483,14 +554,14 @@ data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",  "rp.contact.f
 #                                                            "yes",
 #                                                            "no"))
 
-# data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_stress_hp_talk_done",
-#                   "rp.contact.field.w_stress_hp_breathe_done", "rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
-#                   "rp.contact.field.w_solve_hp_done", "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
+data_hp_done <- c("rp.contact.field.w_1on1_hp_done", "rp.contact.field.w_praise_hp_done", "rp.contact.field.w_instruct_hp_done", "rp.contact.field.w_stress_hp_talk_done", "rp.contact.field.w_solve_hp_done",
+                  "rp.contact.field.w_stress_hp_breathe_done","rp.contact.field.w_money_hp_done", "rp.contact.field.w_rules_hp_done", "rp.contact.field.w_consequence_hp_done",
+                  "rp.contact.field.w_safe_hp_done", "rp.contact.field.w_crisis_hp_done")
 
 # NB No mood 'review' for week 3 home practice (praise)
 data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_instruct_hp_mood", "rp.contact.field.w_stress_hp_breathe_mood", "rp.contact.field.w_stress_hp_talk_mood",
-                  "rp.contact.field.w_money_hp_mood", "rp.contact.field.w_rules_hp_mood", "rp.contact.field.w_consequence_hp_mood",
-                  "rp.contact.field.w_solve_hp_mood", "rp.contact.field.w_safe_hp_mood", "rp.contact.field.w_crisis_hp_mood") 
+                  "rp.contact.field.w_solve_hp_mood", "rp.contact.field.w_money_hp_mood", "rp.contact.field.w_rules_hp_mood", "rp.contact.field.w_consequence_hp_mood",
+                  "rp.contact.field.w_safe_hp_mood", "rp.contact.field.w_crisis_hp_mood") 
 
 # TODO: this should work in function
 # plhdata_org_clean <- add_na_variable(variable = data_hp_started)
@@ -498,19 +569,19 @@ data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_instruc
 # plhdata_org_clean <- add_na_variable(variable = data_hp_mood)
 
 challenge_vars <- c("rp.contact.field.w_1on1_hp_challenge_list", "rp.contact.field.w_instruct_hp_challenge_list",
-                    "rp.contact.field.w_stress_hp_challenge_list", "rp.contact.field.w_money_hp_challenge_list",
+                    "rp.contact.field.w_stress_hp_challenge_list",  "rp.contact.field.w_solve_hp_challenge_list", "rp.contact.field.w_money_hp_challenge_list",
                     "rp.contact.field.w_rules_hp_challenge_list", "rp.contact.field.w_consequence_hp_challenge_list", 
-                    "rp.contact.field.w_solve_hp_challenge_list", "rp.contact.field.w_safe_hp_challenge_list", 
+                   "rp.contact.field.w_safe_hp_challenge_list", 
                     "rp.contact.field.w_crisis_hp_challenge_list")
 chall_ap_vars <- c("rp.contact.field.w_1on1_hp_challenge", "rp.contact.field.w_instruct_hp_challenge",
-                   "rp.contact.field.w_stress_hp_challenge", "rp.contact.field.w_money_hp_challenge",
+                   "rp.contact.field.w_stress_hp_challenge", "rp.contact.field.w_solve_hp_challenge", "rp.contact.field.w_money_hp_challenge",
                    "rp.contact.field.w_rules_hp_challenge", "rp.contact.field.w_consequence_hp_challenge", 
-                   "rp.contact.field.w_solve_hp_challenge", "rp.contact.field.w_safe_hp_challenge", 
+                   "rp.contact.field.w_safe_hp_challenge", 
                    "rp.contact.field.w_crisis_hp_challenge")
 
 # NB No challenge for week 3 home practice (praise)
-data_hp_chall <- c("hp_list_challenges_1on1", "hp_list_challenges_instruct", "hp_list_challenges_stress", "hp_list_challenges_money", "hp_list_challenges_rules",
-                   "hp_list_challenges_consequence", "hp_list_challenges_solve", "hp_list_challenges_safe", "hp_list_challenges_crisis")
+data_hp_chall <- c("hp_list_challenges_1on1", "hp_list_challenges_instruct", "hp_list_challenges_stress", "hp_list_challenges_solve", "hp_list_challenges_money", "hp_list_challenges_rules",
+                   "hp_list_challenges_consequence", "hp_list_challenges_safe", "hp_list_challenges_crisis")
 
 # parent library ------------------------------------------------------------------
 data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.field.click_pc_help_count",

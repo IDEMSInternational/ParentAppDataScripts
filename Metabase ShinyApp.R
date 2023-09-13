@@ -3643,7 +3643,7 @@ parentapp_shiny <- function(country, study){
         pivot_wider(id_cols = opt_factors(), names_from = Workshop, values_from = perc_started)
       if (study == "RCT"){
         table_ws_started <- full_join(UIC_onboarding_dates, table_ws_started, multiple = "all")
-        table_ws_started$`Weeks completed`[length(table_ws_started$`Weeks completed`)] <- mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE)
+        # table_ws_started$`Weeks completed`[length(table_ws_started$`Weeks completed`)] <- mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE)
       }
       return(table_ws_started)
     })
@@ -3680,7 +3680,7 @@ parentapp_shiny <- function(country, study){
         pivot_wider(id_cols = opt_factors(), names_from = Workshop, values_from = perc_completed)
       if (study == "RCT"){
         table_perc_completed <- full_join(UIC_onboarding_dates, table_perc_completed, multiple = "all")
-        table_perc_completed$`Weeks completed`[length(table_perc_completed$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
+        # table_perc_completed$`Weeks completed`[length(table_perc_completed$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
       }
       return(table_perc_completed)
     })
@@ -3721,7 +3721,7 @@ parentapp_shiny <- function(country, study){
                                                      include_margins = TRUE)
       if (study == "RCT"){
         summary_mean_completion_level <- full_join(UIC_onboarding_dates, summary_mean_completion_level, multiple = "all")
-        summary_mean_completion_level$`Weeks completed`[length(summary_mean_completion_level$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
+        # summary_mean_completion_level$`Weeks completed`[length(summary_mean_completion_level$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
       }
     })
     
@@ -3798,7 +3798,7 @@ parentapp_shiny <- function(country, study){
       # this should be done elsewhere - adding the week # into the plhdata.
       if (study == "RCT"){
         additional_table_ws_started <- full_join(UIC_onboarding_dates, additional_table_ws_started, multiple = "all")
-        additional_table_ws_started$`Weeks completed`[length(additional_table_ws_started$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
+        # additional_table_ws_started$`Weeks completed`[length(additional_table_ws_started$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
       }
       return(additional_table_ws_started)
     })
@@ -3835,7 +3835,7 @@ parentapp_shiny <- function(country, study){
         pivot_wider(id_cols = opt_factors(), names_from = Workshop, values_from = perc_completed)
       if (study == "RCT"){
         table_perc_completed <- full_join(UIC_onboarding_dates, table_perc_completed, multiple = "all")
-        table_perc_completed$`Weeks completed`[length(table_perc_completed$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
+        # table_perc_completed$`Weeks completed`[length(table_perc_completed$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
       }
       return(table_perc_completed)
     })

@@ -5,7 +5,7 @@
 ##################################
 
 country <- "Tanzania"
-study <- "RCT"
+study <- "WASH"
 
 ### Set up UIC data
 
@@ -17,8 +17,8 @@ lookup_df <- data.frame(opt_cluster = c(1, 3, 4, 6, 7, 11, 13, 14),
                                                         "2022-12-24", "2022-12-24")))
 
 # use left_join to add the lookup values to the main data frame
-UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>%
-  left_join(lookup_df, by = "opt_cluster")
+#UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>%
+#  left_join(lookup_df, by = "opt_cluster")
 
 
 ### extract data ----------------------------------------------------------------------
@@ -33,13 +33,13 @@ if (study %in% c("Optimisation", "Pilot")){
 if (study == "RCT"){
   UIC_onboarding_dates <- readxl::read_excel("data/UIC_onboarding_dates.xlsx")
   UIC_onboarding_dates <- UIC_onboarding_dates %>%
-    mutate(date_onboard = lubridate::as_date(`Date of onboarding`),
-           date_data_bundle = lubridate::as_date(`Date first data bundle received`),
-           date_first_chat = lubridate::as_date(`Date of first WhatsApp Live Chat`),
+    mutate(date_first_chat = lubridate::as_date(`Date of onboarding`),
+           #date_data_bundle = lubridate::as_date(`Date first data bundle received`),
+           #date_first_chat = lubridate::as_date(`Date of first WhatsApp Live Chat`),
            `Cluster name` = toupper(`Cluster name`))
   
   # do based on first live chat
-  UIC_onboarding_dates <- UIC_onboarding_dates %>% dplyr::select(c(ClusterNumber = `Cluster number`, date_first_chat))
+  UIC_onboarding_dates <- UIC_onboarding_dates %>% dplyr::select(c(ClusterNumber = `Cluster Number`, date_first_chat))
   
   UIC_Tracker_Use_cn <- UIC_Tracker_Use %>%
     dplyr::filter(Study == "RCT") %>%
@@ -345,25 +345,27 @@ if (study %in% c("Optimisation", "RCT")){
 }
 
 # and for our new modules
-var_names <- names(plhdata_org_clean)
-completion_var <- NULL
-new_modules <- c("learn", "svp", "grief", "srh")
-for (module_name in new_modules){
-  selected_var <- var_names[grep(paste0("^", "rp.contact.field.task_gp_w_", module_name, ".*"), var_names)]
-  selected_var <- selected_var[grep("_completed$", selected_var)]
-  selected_var_x <- plhdata_org_clean %>% dplyr::select(all_of(c("app_user_id", selected_var)))
-  selected_var_x <- selected_var_x %>%
-    dplyr::mutate(across(selected_var, ~as.numeric(as.logical(.)))) %>%
-    dplyr::select(-c(paste0("rp.contact.field.task_gp_w_", module_name, "_home_practice_completed")))
-  completion_var[[which(new_modules == module_name)]] <- selected_var_x %>%
-    dplyr::mutate("rp.contact.field.w_{module_name}_completion_level" := rowSums(.[2:length(selected_var_x)], na.rm = TRUE)/length(.[2:length(selected_var_x)]) * 100) %>%
-    dplyr::select("app_user_id", paste0("rp.contact.field.w_", module_name, "_completion_level"))
+if (study == "RCT"){
+  var_names <- names(plhdata_org_clean)
+  completion_var <- NULL
+  new_modules <- c("learn", "svp", "grief", "srh")
+  for (module_name in new_modules){
+    selected_var <- var_names[grep(paste0("^", "rp.contact.field.task_gp_w_", module_name, ".*"), var_names)]
+    selected_var <- selected_var[grep("_completed$", selected_var)]
+    selected_var_x <- plhdata_org_clean %>% dplyr::select(all_of(c("app_user_id", selected_var)))
+    selected_var_x <- selected_var_x %>%
+      dplyr::mutate(across(selected_var, ~as.numeric(as.logical(.)))) %>%
+      dplyr::select(-c(paste0("rp.contact.field.task_gp_w_", module_name, "_home_practice_completed")))
+    completion_var[[which(new_modules == module_name)]] <- selected_var_x %>%
+      dplyr::mutate("rp.contact.field.w_{module_name}_completion_level" := rowSums(.[2:length(selected_var_x)], na.rm = TRUE)/length(.[2:length(selected_var_x)]) * 100) %>%
+      dplyr::select("app_user_id", paste0("rp.contact.field.w_", module_name, "_completion_level"))
+  }
+  completion_var <- full_join(full_join(full_join(completion_var[[1]], completion_var[[2]]), completion_var[[3]]), completion_var[[4]])
+  plhdata_org_clean <- full_join(plhdata_org_clean, completion_var)
+  
+  new_modules_completion_level <- c("rp.contact.field.w_learn_completion_level", "rp.contact.field.w_svp_completion_level", 
+                                    "rp.contact.field.w_grief_completion_level", "rp.contact.field.w_srh_completion_level")
 }
-completion_var <- full_join(full_join(full_join(completion_var[[1]], completion_var[[2]]), completion_var[[3]]), completion_var[[4]])
-plhdata_org_clean <- full_join(plhdata_org_clean, completion_var)
-
-new_modules_completion_level <- c("rp.contact.field.w_learn_completion_level", "rp.contact.field.w_svp_completion_level", 
-                                  "rp.contact.field.w_grief_completion_level", "rp.contact.field.w_srh_completion_level")
 
 #head(plhdata_org_clean$rp.contact.field._app_skin)
 #head(plhdata_org_clean$rp.contact.field.w_self_care_completion_level)

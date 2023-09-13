@@ -23,14 +23,20 @@ study <- "WASH" # Optimisation, RCT, WASH, Pilot
 source("config/credentials_file.R")
 source(here("Metabase Functions.R"))
 if (study == "WASH"){
-  source(here("Metabase ShinyApp WASH.R"))
+  module_info <- read.csv("modules_info.csv")
+  source("Metabase Analysis Setup.R")
+  source("serifat_functions.R")
+  source("serifat_main.R")
+  source("serifat_shinyapp.R")
+  #source(here("Metabase ShinyApp WASH.R"))
+  shinyApp(ui = ui, server = server)
 } else {
   source(here("Metabase ShinyApp.R"))
-
+  source(here("Metabase Pre-Shiny Setup.R"))
+  parentapp_shiny(country = country, study = study)
 }
 #source(here("Metabase ShinyApp Demo.R"))
-source(here("Metabase Pre-Shiny Setup.R"))
-parentapp_shiny(country = country, study = study)
+
 
 # Please use `all_of(var)` (or `any_of(var)`) instead of `.data[[var]]`
 

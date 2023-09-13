@@ -9,7 +9,7 @@ UIC_Tracker_RCT <- rio::import(file = here("data/UIC Tracker RCT.xlsx"),
                                sheet = "ParentApp Tanzania")
 UIC_Tracker_RCT$Country <- "Tanzania"
 UIC_Tracker_RCT <- UIC_Tracker_RCT %>%
-  mutate(Study = ifelse(Condition == "Intervention", "RCT", "WASH"))
+  dplyr::mutate(Study = ifelse(Condition == "Intervention", "RCT", "WASH"))
 UIC_Tracker_RCT$YourParentAppCode <- UIC_Tracker_RCT$Code
 
 #######################################

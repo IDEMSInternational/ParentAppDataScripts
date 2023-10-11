@@ -1,3 +1,11 @@
+
+
+
+# TODO: 
+# redefine data_hp_started to use rp.contact.field.task_gp_w_1on1_hp_review_completed instead of rp.contact.field.w_1on1_hp_review_started
+
+
+
 r_variables_names <- readxl::read_excel("shiny_metadata.xlsx")
 data_survey_past_week_all <- r_variables_names %>% filter(location_ID == "survey_past_week")
 data_baseline_survey <- r_variables_names %>%

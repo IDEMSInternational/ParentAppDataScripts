@@ -5,7 +5,9 @@
 ##################################
 
 country <- "Tanzania"
-study <- "WASH"
+study <- "RCT"
+
+additional_week_order <- c("Srh", "Svp", "Grief", "Learn")
 
 ### Set up UIC data
 
@@ -33,9 +35,10 @@ if (study %in% c("Optimisation", "Pilot")){
 if (study == "RCT"){
   UIC_onboarding_dates <- readxl::read_excel("data/UIC_onboarding_dates.xlsx")
   UIC_onboarding_dates <- UIC_onboarding_dates %>%
-    mutate(date_first_chat = lubridate::as_date(`Date of onboarding`),
+    mutate(#date_first_chat = lubridate::as_date(`Date of onboarding`),
            #date_data_bundle = lubridate::as_date(`Date first data bundle received`),
-           #date_first_chat = lubridate::as_date(`Date of first WhatsApp Live Chat`),
+           date_first_chat = lubridate::as_date(`Date of first WhatsApp Live Chat`) - 6,
+           # `Date of first WhatsApp Live Chat` is day SEVEN
            `Cluster name` = toupper(`Cluster name`))
   
   # do based on first live chat
@@ -46,16 +49,50 @@ if (study == "RCT"){
     dplyr::mutate(ClusterName = toupper(ClusterName)) %>%
     dplyr::select(ClusterName, ClusterNumber)
   UIC_Tracker_Use_cn <- unique(UIC_Tracker_Use_cn)
+  UIC_Tracker_Use_cn$ClusterNumber <- as.numeric(UIC_Tracker_Use_cn$ClusterNumber)
   UIC_onboarding_dates <- full_join(UIC_Tracker_Use_cn, UIC_onboarding_dates, by = "ClusterNumber")  %>% dplyr::select(-"ClusterNumber") %>%
     dplyr::filter(!is.na(ClusterName)) %>%
     mutate(`Weeks completed` = as.integer(floor(as.numeric(Sys.Date() - date_first_chat)/7))) %>%
     dplyr::select(-c("date_first_chat"))
 }
 
+
+if (study == "RCT"){
+  x <- which(UIC_Tracker_Use$YourParentAppCode == "a4085690410bCa24")
+  UIC_Tracker_Use$YourParentAppCode[x] <- "a4085690410bca24"
+}
+
+if (study == "WASH"){
+  x <- which(UIC_Tracker_Use$YourParentAppCode == "428918439401398")
+  UIC_Tracker_Use$YourParentAppCode[x] <- "0428918439401398"
+  y <- which(UIC_Tracker_Use$YourParentAppCode == "0c1d200d9caf6096")
+  UIC_Tracker_Use$YourParentAppCode[y] <- "0c1d200d9eaf6096"
+  z <- which(UIC_Tracker_Use$YourParentAppCode == "187C0a36b7c1803c")
+  UIC_Tracker_Use$YourParentAppCode[z] <- "187c0a36b7c1803c"
+}
+
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
                               UIC_Tracker = UIC_Tracker_Use,
                                      country = country, study = study)
 names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")  
+
+
+#plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = FALSE)
+
+plhdata_org$app_user_id
+
+# app_deployment_name == early_family_math
+
+# plhdata_org_efm <- plhdata_org %>%
+#   filter(app_deployment_name == "early_family_math")
+# View(plhdata_org_efm)
+# 
+# plhdata_org_efm 
+# 
+# plhdata_org_efm1 <- plhdata_org_efm[,colSums(is.na(plhdata_org_efm))<nrow(plhdata_org_efm)]
+# names(plhdata_org_efm1) <- gsub(x = names(plhdata_org_efm1), pattern = "\\-", replacement = ".")  
+
+
 
 #plhdata_org <- readRDS("plhdata_org_RCT_20230525.RDS")
 
@@ -599,6 +636,11 @@ data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.f
 # plhdata_org_clean %>%
 #   split(.$Org) %>%
 #   map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.survey_welcome_complppplheted, replace = "rp.contact.field.survey"))
+
+plhdata_org_clean1 <- plhdata_org_clean %>% dplyr::filter(is.na(app_user_id))
+if (nrow(plhdata_org_clean1)>1) stop("NA app user ID. Check YourParentAppCode is correct.")
+
+plhdata_org_clean <- plhdata_org_clean %>% dplyr::filter(app_user_id != "2d0badbfbfe07360")
 
 ##################################
 ##################################

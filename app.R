@@ -16,20 +16,24 @@ library(dplyr)
 library(gt)
 library(readxl)
 library(postgresr)
+library(ggthemes)
 options(dplyr.summarise.inform = FALSE)
 options(dplyr.warning.inform = FALSE)
 country <- "Tanzania" # Tanzania, all
-study <- "WASH" # Optimisation, RCT, WASH, Pilot
+study <- "RCT" # Optimisation, RCT, WASH, Pilot
 source("config/credentials_file.R")
 source(here("Metabase Functions.R"))
 if (study == "WASH"){
-  module_info <- read.csv("modules_info.csv")
   source("Metabase Analysis Setup.R")
   source("serifat_functions.R")
+  source("serifat_wash_setup.R")
   source("serifat_main.R")
   source("serifat_shinyapp.R")
-  #source(here("Metabase ShinyApp WASH.R"))
   shinyApp(ui = ui, server = server)
+  
+  #source(here("Metabase ShinyApp.R"))
+  #source(here("Metabase Pre-Shiny Setup.R"))
+  #parentapp_shiny(country = country, study = study)
 } else {
   source(here("Metabase ShinyApp.R"))
   source(here("Metabase Pre-Shiny Setup.R"))

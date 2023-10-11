@@ -127,7 +127,7 @@ survey_table <- function(data = plhdata_org_clean, metadata = r_variables_names,
   return(summary_table_wider)
 }
 
-plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
+plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors, fill_colour = "#78D473"){
   summary_workshop_long <- data %>%
     pivot_longer(cols = !factors) %>%
     mutate(name = fct_relevel(name, week_order)) %>%  # set the order of variables
@@ -139,9 +139,9 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
         tidyr::unite(col = "Org", {{ factors }}) %>%
         filter(name != "Total")
     } else if (study == "Pilot") {
-      summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
+      summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name == "Total")
     } else if (study %in% c("RCT", "WASH")) {
-      summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name != "Total")
+      summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name == "Total")
     } else {
       stop("Undefined Study Type")
     }
@@ -149,9 +149,9 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors){
     summary_workshop_long <- summary_workshop_long %>% filter(name != "Total")
   }
   
-  return(ggplot(summary_workshop_long, aes(x = name, y = value, colour = Org, shape = Org, group = Org)) +
-           geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-           geom_line() + labs(x = "Workshop week", y = "Number of points"))
+  return(ggplot(summary_workshop_long, aes(x = name, y = value)) + #, colour = Org, shape = Org, group = Org)) +
+           geom_point(colour = fill_colour) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+           geom_line(colour = fill_colour) + labs(x = "Workshop week", y = "Number of points"))
 }
 
 #######################################
@@ -339,7 +339,7 @@ summary_table_base_build <- function(data = plhdata_org_clean,
 }
 
 hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad", "Ok", "Happy", "Unknown"),
-                         xlab = "How did you find it?", fill = TRUE){
+                         xlab = "How did you find it?", fill = TRUE, fill_colour = "grey"){
   if (manipulation == "ldply"){
     plot_data <- plyr::ldply(data, `.id` = "name")
   } else if (manipulation == "longer"){
@@ -354,8 +354,6 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad
   } else {
     plot_data <- data
   }
-  
-
   if (fill) {
     if (country == "Tanzania"){
       if (study == "Optimisation"){
@@ -364,16 +362,18 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad
       } else if (study == "Pilot"){
         plot_data <- plot_data %>% mutate(Org = PilotSite)
       } else if (study %in% c("RCT", "WASH")){
-        plot_data <- plot_data %>% mutate(Org = ClusterName)
+        #plot_data <- plot_data %>% mutate(Org = ClusterName)
       } else {
         stop("Undefined study type")
       }
     }
-    plot <- ggplot(plot_data, aes(x = name, y = value, fill = Org))
+    plot <- ggplot(plot_data, aes(x = name, y = value)) +
+      geom_bar(stat = "identity", position = "dodge")
   } else {
-    plot <- ggplot(plot_data, aes(x = name, y = value))
+    plot <- ggplot(plot_data, aes(x = name, y = value)) +
+      geom_bar(stat = "identity", position = "dodge", fill = fill_colour)
   }
-  plot + geom_bar(stat = "identity", position = "dodge") +
+  plot +
     viridis::scale_fill_viridis(discrete = TRUE) +
     labs(x = xlab, y = "Frequency") +
     scale_x_discrete(guide = guide_axis(angle = 90),
@@ -729,13 +729,15 @@ summary_table <- function(data = plhdata_org_clean, factors = NULL, columns_to_s
 
 summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_convention = TRUE, replace = "rp.contact.field.",
                          replace_after = NULL, group = NULL,
+                         fill_colour = NULL,
+                         values = c("numeric", "percentage"),
                          plot_type = c("histogram", "boxplot")) {
-  
+  values <- match.arg(values)
   if (!columns_to_summarise %in% names(data)){
     return(ggplot(data))
   } else {
     plot_type <- match.arg(plot_type)
-    x_axis_label = naming_conventions(colnames(data%>%select(.data[[columns_to_summarise]])), replace = replace, replace_after = replace_after)	
+    x_axis_label = naming_conventions(colnames(data %>% select(.data[[columns_to_summarise]])), replace = replace, replace_after = replace_after)	
     
     return_plot <- ggplot(data) +	
       viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +	
@@ -743,7 +745,27 @@ summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_
       theme_classic()	
     
     if(plot_type == "histogram"){
-      return_plot <- return_plot + geom_bar(data = data, aes(x = .data[[columns_to_summarise]]))
+      if (values == "numeric"){
+        if (!is.null(fill_colour)){
+          return_plot <- return_plot + geom_bar(data = data, aes(x = .data[[columns_to_summarise]]),
+                                                fill = fill_colour)
+        } else {
+          return_plot <- return_plot + geom_bar(data = data, aes(x = .data[[columns_to_summarise]]))          
+        }
+      } else {
+        if (!is.null(fill_colour)){
+          return_plot <- return_plot + 
+            geom_bar(data = data, aes(x = .data[[columns_to_summarise]],
+                                      y = `..count..`/sum(`..count..`)),
+                     fill = fill_colour) +
+            scale_y_continuous(labels = scales::label_percent(), limits = c(0, 1))
+        } else {
+          return_plot <- return_plot + 
+            geom_bar(data = data, aes(x = .data[[columns_to_summarise]],
+                                      y = `..count..`/sum(`..count..`))) +
+            scale_y_continuous(labels = scales::label_percent(), limits = c(0, 1))
+          }
+      }
     } else {
       if (!is.null(group)){
         return_plot <- return_plot + geom_boxplot(data = data, aes(y = .data[[columns_to_summarise]],

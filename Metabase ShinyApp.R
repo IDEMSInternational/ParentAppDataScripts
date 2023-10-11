@@ -12,7 +12,6 @@ parentapp_shiny <- function(country, study){
         menuItem("Additional Modules", tabName = "additionalinfo", icon = icon("plus")),
         menuItem("Parent Points", tabName = "parentpoints", icon = icon("star")),
         menuItem("In-week Engagement", tabName = "xtraengagement", icon = icon("user-check")),
-        menuItem("Surveys", tabName = "surveys", icon = icon("question")),
         menuItem("Parent Library", tabName = "library", icon = icon("book-reader")),
         menuItem("Download", tabName = "download", icon = icon("download"))
       )), #closes sidebarMenu and dashboardSidebar
@@ -76,22 +75,22 @@ parentapp_shiny <- function(country, study){
                   box(width = 6,
                       collapsible = TRUE,
                       solidHeader = TRUE,
+                      title = "Last Sync by Week",
+                      status = "primary",  
+                      style='width:100%;overflow-x: scroll;',
+                      plotlyOutput(outputId = "plot_engagement_weeks", height = "240"), #generates graph
+                      shiny::tableOutput("table_engagement_weeks")  #generates table
+                  ), #closes box
+                  box(width = 6,
+                      collapsible = TRUE,
+                      solidHeader = TRUE,
                       title = "Language",
                       status = "primary",  
                       style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_app_language", height = "240"), #generates graph
                       shiny::tableOutput("table_app_language")  #generates table
-                  ), #closes box
-                  
-                  box(width = 6,
-                      collapsible = TRUE,
-                      solidHeader = TRUE,
-                      title = "Workshop format",
-                      status = "primary",  
-                      style='width:100%;overflow-x: scroll;',
-                      plotlyOutput(outputId = "plot_ws_format", height = "240"),
-                      shiny::tableOutput("table_ws_format")
-                  )), #closes box, fluid row
+                  ) #closes box
+                ), #closes box, fluid row
                 
                 fluidRow(
                   box(width = 6,
@@ -101,8 +100,7 @@ parentapp_shiny <- function(country, study){
                       status = "primary", # primary, success, info, warning, danger
                       style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_app_version", height = "240"),
-                      shiny::tableOutput("table_app_version")
-                  ), #closes box
+                      shiny::tableOutput("table_app_version")),
                   box(width = 6,
                       collapsible = TRUE,
                       solidHeader = TRUE,
@@ -111,7 +109,7 @@ parentapp_shiny <- function(country, study){
                       style='width:100%;overflow-x: scroll;',
                       plotlyOutput(outputId = "plot_parent_gender", height = "240"), #generates graph
                       shiny::tableOutput("table_parent_gender")  #generates table
-                  ) #closes box
+                      ) #closes box
                 ), #closes fluidRow
                 
                 demographics_fluid_row(study = study)
@@ -362,6 +360,18 @@ parentapp_shiny <- function(country, study){
                                        box(width = 12,
                                            collapsible = TRUE,
                                            solidHeader = TRUE,
+                                           title = "User Engagement (in last X days) for those who accessed the additional content",
+                                           status = "info",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "plot_engagement_additional_content", height = "240"),
+                                           shiny::tableOutput("table_engagement_additional_content")
+                                       )#closes box
+                                     ), #closes fluid row
+                                     
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
                                            title = "Number of users who have started a workshop",
                                            status = "info",  
                                            style='width:100%;overflow-x: scroll;',
@@ -440,7 +450,9 @@ parentapp_shiny <- function(country, study){
                                            shiny::tableOutput("table_w_srh")
                                        ) #closes box
                                      ) #closes fluid row
-                            ) # closes Additional Insights
+                            ), # closes Additional Insights
+                            tabPanel("Activities"
+                            )
                 ) #closes tabsetPanel for additional insights
         ), #closes tabItem
         
@@ -2316,18 +2328,6 @@ parentapp_shiny <- function(country, study){
                             ), #closes tabPanel Push Notifications
                             
                             tabPanel("Home Practice",
-                                     # fluidRow(
-                                     #   box(width = 12,
-                                     #       collapsible = TRUE,
-                                     #       solidHeader = TRUE,
-                                     #       title = "Number of users starting each home practice (currently not collected)",
-                                     #       status = "success",  
-                                     #       #background = "orange",
-                                     #       plotlyOutput(outputId = "plot_homep_start", height = "240"),
-                                     #       shiny::tableOutput("table_homep_start")
-                                     #   ) #closes box
-                                     # ), #closes fluidrow
-                                     
                                      fluidRow(
                                        box(width = 12,
                                            collapsible = TRUE,
@@ -2339,6 +2339,7 @@ parentapp_shiny <- function(country, study){
                                            shiny::tableOutput("table_hp_started")
                                        )#closes box
                                      ), #closes fluid row  
+                                     
                                      fluidRow(
                                        box(width = 12,
                                            collapsible = TRUE,
@@ -2349,751 +2350,10 @@ parentapp_shiny <- function(country, study){
                                            plotlyOutput(outputId = "plot_hp_done", height = "240"),
                                            shiny::tableOutput("table_hp_done")
                                        )#closes box
-                                     ), #closes fluid row  
-                                     
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 2: One-on-One Time",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             h5("Question for this column phrased as 'Did you have a chance to do this?'"),
-                                                             plotlyOutput(outputId = "plot_hpdone_1on1", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_1on1")), #closes box
-                                                         box(width = "50%",  
-                                                             h5("Question for this column only asked if completion question answered with 'Yes'; phrased as 'How did it go?'"),
-                                                             plotlyOutput(outputId = "plot_mood_1on1", height = "240"),
-                                                             shiny::tableOutput("table_mood_1on1")), #closes box
-                                                         box(width = "100%", 
-                                                             h5("Question for this column phrased as 'What challenge did you have?' and asked irrespective of previous answers."),
-                                                             plotlyOutput(outputId = "plot_chall_1on1", height = "240"),
-                                                             shiny::tableOutput("table_chall_1on1")) #closes box
-                                                  )
-                                     )
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 3: Praise",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             h5("Question for this column phrased as 'Did you have a chance to do this?'"),
-                                                             plotlyOutput(outputId = "plot_hpdone_praise", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_praise"))
-                                                  )
-                                     )
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 4: Positive Instructions",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             plotlyOutput(outputId = "plot_hpdone_instruct", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_instruct")), #closes box
-                                                         box(width = "50%",  
-                                                             plotlyOutput(outputId = "plot_mood_instruct", height = "240"),
-                                                             shiny::tableOutput("table_mood_instruct")), #closes box
-                                                         box(width = "100%", 
-                                                             plotlyOutput(outputId = "plot_chall_instruct", height = "240"),
-                                                             shiny::tableOutput("table_chall_instruct")) #closes box
-                                                  ))), #closes fluid row
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 5: Managing Stress (breathe)",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             plotlyOutput(outputId = "plot_hpdone_stress_br", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_stress_br")), #closes box
-                                                         box(width = "50%",  
-                                                             plotlyOutput(outputId = "plot_mood_stress_br", height = "240"),
-                                                             shiny::tableOutput("table_mood_stress_br")), #closes box
-                                                         box(width = "100%", 
-                                                             plotlyOutput(outputId = "plot_chall_stress_br", height = "240"),
-                                                             shiny::tableOutput("table_chall_stress_br")) #closes box
-                                                  ))), #closes fluid row
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 5: Managing Stress (talk)",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             plotlyOutput(outputId = "plot_hpdone_stress_tk", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_stress_tk")), #closes box
-                                                         box(width = "50%",  
-                                                             plotlyOutput(outputId = "plot_mood_stress_tk", height = "240"),
-                                                             shiny::tableOutput("table_mood_stress_tk")), #closes box
-                                                         box(width = "100%", 
-                                                             plotlyOutput(outputId = "plot_chall_stress_tk", height = "240"),
-                                                             shiny::tableOutput("table_chall_stress_tk")) #closes box
-                                                  ))), #closes fluid row
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 6: Problem Solving",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             plotlyOutput(outputId = "plot_hpdone_solve", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_solve")), #closes box
-                                                         box(width = "50%",  
-                                                             plotlyOutput(outputId = "plot_mood_solve", height = "240"),
-                                                             shiny::tableOutput("table_mood_solve")), #closes box
-                                                         box(width = "100%", 
-                                                             plotlyOutput(outputId = "plot_chall_solve", height = "240"),
-                                                             shiny::tableOutput("table_chall_solve")) #closes box
-                                                  ))), #closes fluid row
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 7: Budgets",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             plotlyOutput(outputId = "plot_hpdone_money", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_money")), #closes box
-                                                         box(width = "50%",  
-                                                             plotlyOutput(outputId = "plot_mood_money", height = "240"),
-                                                             shiny::tableOutput("table_mood_money")), #closes box
-                                                         box(width = "100%", 
-                                                             plotlyOutput(outputId = "plot_chall_money", height = "240"),
-                                                             shiny::tableOutput("table_chall_money")) #closes box
-                                                  ))), #closes fluid row
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 8: Rules",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             plotlyOutput(outputId = "plot_hpdone_rules", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_rules")), #closes box
-                                                         box(width = "50%",  
-                                                             plotlyOutput(outputId = "plot_mood_rules", height = "240"),
-                                                             shiny::tableOutput("table_mood_rules")), #closes box
-                                                         box(width = "100%", 
-                                                             plotlyOutput(outputId = "plot_chall_rules", height = "240"),
-                                                             shiny::tableOutput("table_chall_rules")) #closes box
-                                                  ))), #closes fluid row
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,title = "Home Practice Week 9: Calm Consequences",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             plotlyOutput(outputId = "plot_hpdone_consequence", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_consequence")), #closes box
-                                                         box(width = "50%",  
-                                                             plotlyOutput(outputId = "plot_mood_consequence", height = "240"),
-                                                             shiny::tableOutput("table_mood_consequence")), #closes box
-                                                         box(width = "100%", 
-                                                             plotlyOutput(outputId = "plot_chall_consequence", height = "240"),
-                                                             shiny::tableOutput("table_chall_consequence")) #closes box
-                                                  ))), #closes fluid row
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 10: Teen Safety",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             plotlyOutput(outputId = "plot_hpdone_safe", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_safe")), #closes box
-                                                         box(width = "50%",  
-                                                             plotlyOutput(outputId = "plot_mood_safe", height = "240"),
-                                                             shiny::tableOutput("table_mood_safe")), #closes box
-                                                         box(width = "100%", 
-                                                             plotlyOutput(outputId = "plot_chall_safe", height = "240"),
-                                                             shiny::tableOutput("table_chall_safe")) #closes box
-                                                  ))), #closes fluid row
-                                     fluidRow(box(width = 12,
-                                                  collapsible = TRUE,
-                                                  solidHeader = TRUE,
-                                                  title = "Home Practice Week 11: Dealing with Crisis",
-                                                  status = "success",
-                                                  style='width:100%;overflow-x: scroll;',
-                                                  column(width = 12,
-                                                         box(width = "50%", 
-                                                             plotlyOutput(outputId = "plot_hpdone_crisis", height = "240"),
-                                                             shiny::tableOutput("table_hpdone_crisis")), #closes box
-                                                         box(width = "50%",  
-                                                             plotlyOutput(outputId = "plot_mood_crisis", height = "240"),
-                                                             shiny::tableOutput("table_mood_crisis")), #closes box
-                                                         box(width = "100%", 
-                                                             plotlyOutput(outputId = "plot_chall_crisis", height = "240"),
-                                                             shiny::tableOutput("table_chall_crisis")) #closes box
-                                                  ))) #closes fluid row
-                            ), #closes tabPanel Home practice
-                            
-                            tabPanel("Quick Start Buttons",
-                                     
-                            ), #closes tabPanel Quick Start Buttons
-                            
-                            tabPanel("Time Spent",
-                                     
-                            ) #closes tabPanel Time spent
+                                     ) #closes fluid row  
                 ) #closes tabset panel for In-week engagement
+                )
         ), # closes fourth tabItem
-        
-        #FIFTH tab content
-        tabItem(tabName = "surveys",
-                
-                fluidRow(
-                  column(12, align = "centre",
-                         # splitLayout gets two boxes side by side.
-                         # in this case, it is just the header (h2), and an icon
-                         # we want 80% of the width to be the header (h2) and 20% the icon (hence cellWidths = ...)
-                         box(splitLayout(h2("Surveys"), icon("question", "fa-6x"),
-                                         cellArgs = list(style = "vertical-align: top"),
-                                         cellWidths = c("80%", "20%")),
-                             width = 15,
-                             title = NULL,
-                             collapsible = FALSE,
-                             solidHeader = TRUE,
-                             background = "red",
-                             height = "95px")
-                  ) #closes box
-                ), #closes fluid row
-                
-                tabsetPanel(type = "tabs",
-                            tabPanel("Baseline survey",
-                                     
-                                     #fluidRow(checkbox_input(inputId = "SV1", country = country)), #closes fluidRow
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Baseline survey completion",
-                                           status = "danger", 
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_sv1_totals", height = "240"),
-                                           shiny::tableOutput("table_sv1_totals")
-                                       )#closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of attention",
-                                           status = "danger",  
-                                           h5("How many days in the past week were you able to do something fun together with your teen?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_attention", height = "240"),
-                                           shiny::tableOutput("table_sv1_attention")
-                                       ), #closes box
-                                       
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of praise",
-                                           status = "danger",
-                                           h5("How many days in the past week have you praised your teen? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_praise", height = "240"),
-                                           shiny::tableOutput("table_sv1_praise")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of stress",
-                                           status = "danger",  
-                                           h5("How many days in the past week did you feel very stressed as a parent/caregiver? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_stress", height = "240"),
-                                           shiny::tableOutput("table_sv1_stress")
-                                       ),
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of Teen Risk behaviour",
-                                           status = "danger", 
-                                           h5("How many times in the past month has your teen walked home alone, taken a lift with someone they don’t know or hung out in a place that made you worried for their safety?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_risk", height = "240"),
-                                           shiny::tableOutput("table_sv1_risk")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of money worries",
-                                           status = "danger",  
-                                           h5("How many days in the past week have you worried or felt anxious about money? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_money", height = "240"),
-                                           shiny::tableOutput("table_sv1_money")
-                                       ), #closes box
-                                       
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days out of food money (last month)",
-                                           status = "danger",  
-                                           h5("How many days in the past month (30 days) did you run out of money to pay for food? [0-30]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_food_money", height = "240"),
-                                           shiny::tableOutput("table_sv1_food_money")
-                                       ) #closes box
-                                     ),#closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of hitting",
-                                           status = "danger", 
-                                           h5("How many times in the past week did you physically discipline your teen by hitting, spanking, or slapping with your hand or and object like a stick or belt?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_hitting", height = "240"),
-                                           shiny::tableOutput("table_sv1_hitting")
-                                       ),
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of pushing",
-                                           status = "danger", 
-                                           h5("How many times in the past week did you discipline your teen with a push or grab?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_push", height = "240"),
-                                           shiny::tableOutput("table_sv1_push")
-                                       )),
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of shouting",
-                                           status = "danger",
-                                           h5("How many days in the past week did you shout, scream or yell at your teen? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_shout", height = "240"),
-                                           shiny::tableOutput("table_sv1_shout")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of insulting",
-                                           status = "danger",
-                                           h5("How many days in the past week did you insult your teen or call them names or stupid? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_insult", height = "240"),
-                                           shiny::tableOutput("table_sv1_insult")
-                                       ) #closes box
-                                     ),#closes fluid row)
-                                     #, #closes box
-                                     
-                                     # box(width = 6,
-                                     #     collapsible = TRUE,
-                                     #     solidHeader = TRUE,
-                                     #     title = "Days with knowledge of teen activity",
-                                     #     status = "danger", 
-                                     #     h5("How many days in the past week did you know what your teen was doing and who they were with? [0-7] NB this question was removed for the Tanzania rollout."),
-                                     #     #h7("NB next question only asked if this one is answered with '7'"),
-                                     #     style='width:100%;overflow-x: scroll;',
-                                     #     plotlyOutput(outputId = "plot_sv1_week_teen_activity", height = "240"),
-                                     #     shiny::tableOutput("table_sv1_week_teen_activity")
-                                     #) #closes box
-                                     #),#closes fluid row
-                                     
-                                     #fluidRow(
-                                     # box(width = 6,
-                                     #     collapsible = TRUE,
-                                     #     solidHeader = TRUE,
-                                     #     title = "Lockdown",
-                                     #     status = "danger",
-                                     #     h5("Were you in lockdown this week? [Yes/No], NB next question only asked if this one is answered with 'Yes', NB this question was removed for the Tanzania rollout."),
-                                     #     style='width:100%;overflow-x: scroll;',
-                                     #     plotlyOutput(outputId = "plot_sv1_lockdown", height = "240"),
-                                     #     shiny::tableOutput("table_sv1_lockdown")
-                                     # ), #closes box
-                                     
-                                     #   box(width = 6,
-                                     #       collapsible = TRUE,
-                                     #       solidHeader = TRUE,
-                                     #       title = "Non-lockdown knowledge of teen activity",
-                                     #       status = "danger",
-                                     #       h5("How many days in a typical non-lockdown week do you know what your teen is doing and who they are with? [0-7],
-                                     #                          NB this question is only asked if the parent said they had knowledge 7/7 days and then indicated that it was a lockdown week,
-                                     #                          NB this question was removed for the Tanzania rollout."),
-                                     #       style='width:100%;overflow-x: scroll;',
-                                     #       plotlyOutput(outputId = "plot_sv1_reg_teen_activity", height = "240"),
-                                     #       shiny::tableOutput("table_sv1_reg_teen_activity")
-                                     #   ) #closes box
-                                     # ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of sexual safety talk (last month)",
-                                           status = "danger",  
-                                           h5("In the past month, did you talk with your teen about keeping safe from sexual violence online or offline? This could be about going out with friends or about the websites and apps they use.
-                                                              How many days have you had a talk like this?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_sex_talk", height = "240"),
-                                           shiny::tableOutput("table_sv1_sex_talk")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of sexual safety talk (last month)",
-                                           status = "danger",  
-                                           h5("Have you ever had a talk like this?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_sex_talk_ever", height = "240"),
-                                           shiny::tableOutput("table_sv1_sex_talk_ever")
-                                       )),
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days teen seeing people",
-                                           status = "danger",  
-                                           h5("How many days in the past week did your teen go out with friends you don’t know?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_supervision_people", height = "240"),
-                                           shiny::tableOutput("table_sv1_supervision_people")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days teen out",
-                                           status = "danger",  
-                                           h5("How many days in the past week did your teen not let you know where they were going?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_supervision_place", height = "240"),
-                                           shiny::tableOutput("table_sv1_supervision_place")
-                                       )),
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days teen out late",
-                                           status = "danger",  
-                                           h5("How many days in the past week did your teen stay out in the evening past the time that they are supposed to be home?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_supervision_time", height = "240"),
-                                           shiny::tableOutput("table_sv1_supervision_time")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days depressed",
-                                           status = "danger",  
-                                           h5("How many days in the past week have you felt depressed?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_depression_depressed", height = "240"),
-                                           shiny::tableOutput("table_sv1_depression_depressed")
-                                       )),
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days effort",
-                                           status = "danger",  
-                                           h5("How many days in the past week have you felt that everything you did was an effort?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_depression_effort", height = "240"),
-                                           shiny::tableOutput("table_sv1_depression_effort")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days hopeful",
-                                           status = "danger",  
-                                           h5("How many days in the past week have you felt hopeful for the future?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv1_depression_hopeful", height = "240"),
-                                           shiny::tableOutput("table_sv1_depression_hopeful")
-                                       ))
-                            ), #closes baseline tab panel
-                            
-                            
-                            tabPanel("Endline survey",
-                                     #fluidRow(checkbox_input(inputId = "SV2", country = country)), #closes fluidRow
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Endline survey completion",
-                                           status = "danger", 
-                                           #background = "orange",
-                                           plotlyOutput(outputId = "plot_sv2_totals", height = "240"),
-                                           shiny::tableOutput("table_sv2_totals")
-                                       )#closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of attention",
-                                           status = "danger",  
-                                           h5("How many days in the past week were you able to do something fun together with your teen?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_attention", height = "240"),
-                                           shiny::tableOutput("table_sv2_attention")
-                                       ), #closes box
-                                       
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of praise",
-                                           status = "danger",
-                                           h5("How many days in the past week have you praised your teen? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_praise", height = "240"),
-                                           shiny::tableOutput("table_sv2_praise")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of stress",
-                                           status = "danger",  
-                                           h5("How many days in the past week did you feel very stressed as a parent/caregiver? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_stress", height = "240"),
-                                           shiny::tableOutput("table_sv2_stress")
-                                       ),
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of Teen Risk behaviour",
-                                           status = "danger", 
-                                           h5("How many times in the past month has your teen walked home alone, taken a lift with someone they don’t know or hung out in a place that made you worried for their safety?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_risk", height = "240"),
-                                           shiny::tableOutput("table_sv2_risk")
-                                       ) #closes box
-                                     ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of money worries",
-                                           status = "danger",  
-                                           h5("How many days in the past week have you worried or felt anxious about money? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_money", height = "240"),
-                                           shiny::tableOutput("table_sv2_money")
-                                       ), #closes box
-                                       
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days out of food money (last month)",
-                                           status = "danger",  
-                                           h5("How many days in the past month (30 days) did you run out of money to pay for food? [0-30]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_food_money", height = "240"),
-                                           shiny::tableOutput("table_sv2_food_money")
-                                       ) #closes box
-                                     ),#closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of hitting",
-                                           status = "danger", 
-                                           h5("How many times in the past week did you physically discipline your teen by hitting, spanking, or slapping with your hand or and object like a stick or belt?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_hitting", height = "240"),
-                                           shiny::tableOutput("table_sv2_hitting")
-                                       ),
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of pushing",
-                                           status = "danger", 
-                                           h5("How many times in the past week did you discipline your teen with a push or grab?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_push", height = "240"),
-                                           shiny::tableOutput("table_sv2_push")
-                                       )),
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of shouting",
-                                           status = "danger",
-                                           h5("How many days in the past week did you shout, scream or yell at your teen? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_shout", height = "240"),
-                                           shiny::tableOutput("table_sv2_shout")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of insulting",
-                                           status = "danger",
-                                           h5("How many days in the past week did you insult your teen or call them names or stupid? [0-7]"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_insult", height = "240"),
-                                           shiny::tableOutput("table_sv2_insult")
-                                       ) #closes box
-                                     ),#closes fluid row)
-                                     #, #closes box
-                                     
-                                     # box(width = 6,
-                                     #     collapsible = TRUE,
-                                     #     solidHeader = TRUE,
-                                     #     title = "Days with knowledge of teen activity",
-                                     #     status = "danger", 
-                                     #     h5("How many days in the past week did you know what your teen was doing and who they were with? [0-7] NB this question was removed for the Tanzania rollout."),
-                                     #     #h7("NB next question only asked if this one is answered with '7'"),
-                                     #     style='width:100%;overflow-x: scroll;',
-                                     #     plotlyOutput(outputId = "plot_sv2_week_teen_activity", height = "240"),
-                                     #     shiny::tableOutput("table_sv2_week_teen_activity")
-                                     #) #closes box
-                                     #),#closes fluid row
-                                     
-                                     #fluidRow(
-                                     # box(width = 6,
-                                     #     collapsible = TRUE,
-                                     #     solidHeader = TRUE,
-                                     #     title = "Lockdown",
-                                     #     status = "danger",
-                                     #     h5("Were you in lockdown this week? [Yes/No], NB next question only asked if this one is answered with 'Yes', NB this question was removed for the Tanzania rollout."),
-                                     #     style='width:100%;overflow-x: scroll;',
-                                     #     plotlyOutput(outputId = "plot_sv2_lockdown", height = "240"),
-                                     #     shiny::tableOutput("table_sv2_lockdown")
-                                     # ), #closes box
-                                     
-                                     #   box(width = 6,
-                                     #       collapsible = TRUE,
-                                     #       solidHeader = TRUE,
-                                     #       title = "Non-lockdown knowledge of teen activity",
-                                     #       status = "danger",
-                                     #       h5("How many days in a typical non-lockdown week do you know what your teen is doing and who they are with? [0-7],
-                                     #                          NB this question is only asked if the parent said they had knowledge 7/7 days and then indicated that it was a lockdown week,
-                                     #                          NB this question was removed for the Tanzania rollout."),
-                                     #       style='width:100%;overflow-x: scroll;',
-                                     #       plotlyOutput(outputId = "plot_sv2_reg_teen_activity", height = "240"),
-                                     #       shiny::tableOutput("table_sv2_reg_teen_activity")
-                                     #   ) #closes box
-                                     # ), #closes fluid row
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of sexual safety talk (last month)",
-                                           status = "danger",  
-                                           h5("In the past month, did you talk with your teen about keeping safe from sexual violence online or offline? This could be about going out with friends or about the websites and apps they use.
-                                                              How many days have you had a talk like this?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_sex_talk", height = "240"),
-                                           shiny::tableOutput("table_sv2_sex_talk")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days of sexual safety talk (last month)",
-                                           status = "danger",  
-                                           h5("Have you ever had a talk like this?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_sex_talk_ever", height = "240"),
-                                           shiny::tableOutput("table_sv2_sex_talk_ever")
-                                       )),
-                                     
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days teen seeing people",
-                                           status = "danger",  
-                                           h5("How many days in the past week did your teen go out with friends you don’t know?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_supervision_people", height = "240"),
-                                           shiny::tableOutput("table_sv2_supervision_people")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days teen out",
-                                           status = "danger",  
-                                           h5("How many days in the past week did your teen not let you know where they were going?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_supervision_place", height = "240"),
-                                           shiny::tableOutput("table_sv2_supervision_place")
-                                       )),
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days teen out late",
-                                           status = "danger",  
-                                           h5("How many days in the past week did your teen stay out in the evening past the time that they are supposed to be home?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_supervision_time", height = "240"),
-                                           shiny::tableOutput("table_sv2_supervision_time")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days depressed",
-                                           status = "danger",  
-                                           h5("How many days in the past week have you felt depressed?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_depression_depressed", height = "240"),
-                                           shiny::tableOutput("table_sv2_depression_depressed")
-                                       )),
-                                     fluidRow(
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days effort",
-                                           status = "danger",  
-                                           h5("How many days in the past week have you felt that everything you did was an effort?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_depression_effort", height = "240"),
-                                           shiny::tableOutput("table_sv2_depression_effort")
-                                       ), #closes box
-                                       box(width = 12,
-                                           collapsible = TRUE,
-                                           solidHeader = TRUE,
-                                           title = "Days hopeful",
-                                           status = "danger",  
-                                           h5("How many days in the past week have you felt hopeful for the future?"),
-                                           style='width:100%;overflow-x: scroll;',
-                                           plotlyOutput(outputId = "plot_sv2_depression_hopeful", height = "240"),
-                                           shiny::tableOutput("table_sv2_depression_hopeful")
-                                       ))
-                            ) #closes midline tab panel
-                )), # closes tabset panel and fifth tabItem 
         
         # SIXTH tab content
         tabItem(tabName = "library",
@@ -3354,19 +2614,19 @@ parentapp_shiny <- function(country, study){
       }
     })
     
-    last_sync_upto12weeks <- reactive({
-      if (country == "Tanzania"){
-        our_data <- selected_data_dem() %>% filter(`Weeks completed` <= 12)
-        time_diff <- difftime(lubridate::now(tzone = "UTC"), as.POSIXct(selected_data_dem()$updatedAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"), units = "hours")
-        last_sync_cat <- ifelse(is.na(time_diff), "5",
-                                ifelse(time_diff > 60*24, "4",
-                                       ifelse(time_diff > 30*24, "3",
-                                              ifelse(time_diff > 14*24, "2",
-                                                     ifelse(time_diff > 7*24, "1", "0")))))
-        return(last_sync_cat)
-      }
-    })
-    
+    # last_sync_upto12weeks <- reactive({
+    #   if (country == "Tanzania"){
+    #     our_data <- selected_data_dem() %>% filter(`Weeks completed` <= 12)
+    #     time_diff <- difftime(lubridate::now(tzone = "UTC"), as.POSIXct(selected_data_dem()$updatedAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"), units = "hours")
+    #     last_sync_cat <- ifelse(is.na(time_diff), "5",
+    #                             ifelse(time_diff > 60*24, "4",
+    #                                    ifelse(time_diff > 30*24, "3",
+    #                                           ifelse(time_diff > 14*24, "2",
+    #                                                  ifelse(time_diff > 7*24, "1", "0")))))
+    #     return(last_sync_cat)
+    #   }
+    # })
+    # 
     #SUMMARY STATS HEADER displays (same for all tabs)
     #if (country == "Tanzania"){
     output$total_n <- shinydashboard::renderValueBox({
@@ -3376,16 +2636,16 @@ parentapp_shiny <- function(country, study){
       shinydashboard::valueBox(nrow(selected_data_dem() %>% filter(createdAt > as.Date(lubridate::now(tzone = "UTC")) - 7)), subtitle = "trial users joined in last 7 days", icon = icon("clock"),
                                color = "yellow")})
       output$myvaluebox1 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(length(last_sync_cat()[last_sync_cat() == "1"]), subtitle = "not synced in more than 7 days", icon = icon("user"),
+        shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced 7-13 days ago")), subtitle = "Last synced 7-13 days ago", icon = icon("user"),
                                  color = "green")})
       output$myvaluebox2 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(length(last_sync_cat()[last_sync_cat() == "2"]), subtitle = "not synced in more than 14 days", icon = icon("user"),
+        shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced 14-29 days ago")), subtitle = "Last synced 14-29 days ago", icon = icon("user"),
                                  color = "fuchsia")})
       output$myvaluebox3 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(length(last_sync_cat()[last_sync_cat() == "3"]), subtitle = "not synced in more than 30 days", icon = icon("user"),
+        shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced 30-59 days ago")), subtitle = "Last synced 30-59 days ago", icon = icon("user"),
                                  color = "purple")})
       output$myvaluebox4 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(length(last_sync_cat()[last_sync_cat() == "4"]), subtitle = "not synced in more than 60 days", icon = icon("user"),
+        shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced over 60 days ago")), subtitle = "not synced in over 60 days", icon = icon("user"),
                                  color = "orange")})
 
     #   } else {
@@ -3564,15 +2824,17 @@ parentapp_shiny <- function(country, study){
       return(output[[paste0("table_", n)]] <- shiny::renderTable({(summary_table_baseline()[[j]])}, striped = TRUE))
     }
     display_sheet_plot <- function(n = "language", j = 1){
-      return(output[[paste0("plot_", n)]] <-  renderPlotly(summary_plot(data = selected_data_dem(), columns_to_summarise = j, replace = "rp.contact.field.")))
-    } # plottype = histogram
+      return(output[[paste0("plot_", n)]] <-  renderPlotly(summary_plot(data = selected_data_dem(),
+                                                                        columns_to_summarise = j,
+                                                                        replace = "rp.contact.field.",
+                                                                        values = "percentage",
+                                                                        fill_colour = "#4882BE")) # shades of blue
+    )} # plottype = histogram
     
     # run our table_baselines and plot_baselines # TODO: in PLHr function, replace for loop with map like this.
     map2(data_baseline_survey$display_name, data_baseline_survey$object_name, .f = ~ display_sheet_table(n = .y, j = .x))
     map2(data_baseline_survey$metabase_ID, data_baseline_survey$object_name, .f = ~ display_sheet_plot(n = .y, j = .x))
-    
-    
-    map2(data_baseline_survey$display_name, data_baseline_survey$object_name, .f = ~ display_sheet_table(n = .y, j = .x))
+    # map2(data_baseline_survey$display_name, data_baseline_survey$object_name, .f = ~ display_sheet_table(n = .y, j = .x))
     
     
     # bit different for age
@@ -3582,16 +2844,64 @@ parentapp_shiny <- function(country, study){
     
     #App version
     plot_app_version  <- reactive({
-      plhdata_org_clean_1 <- selected_data_dem()
-      #plhdata_org_clean_1 <- plhdata_org_clean_1 %>% tidyr::unite(col = "Org", opt_factors())
-      ggplot(plhdata_org_clean_1, aes(x = app_version)) + #, fill = Org)) # removing fill by ClusterName
-        geom_bar(position = "dodge") +
-        viridis::scale_fill_viridis(discrete = TRUE) +
-        labs(x = "App version")
+      summary_plot(data = selected_data_dem(),
+                   columns_to_summarise = "app_version",
+                   replace = "rp.contact.field.",
+                   values = "percentage",
+                   fill_colour = "#4882BE")
       #summary_plot(plhdata_org_clean, app_version)
     })
     output$plot_app_version <- renderPlotly({plot_app_version()})
     
+    # this one is used in additional content and in demographics
+    data_engagement_weeks_all <- reactive({
+      last_sync_data <- selected_data_dem() %>%
+        mutate(group_since_sync = last_sync_cat()) %>%
+        mutate(last_sync_cat = ifelse(group_since_sync == "4", "Last synced over 60 days ago",
+                                      ifelse(group_since_sync == "3", "Last synced 30-59 days ago",
+                                             ifelse(group_since_sync == "2", "Last synced 14-29 days ago",
+                                                    ifelse(group_since_sync == "1", "Last synced 7-13 days ago", "0"))))) %>%
+        mutate(last_sync_cat = fct_relevel(last_sync_cat, c("Last synced 7-13 days ago", "Last synced 14-29 days ago", "Last synced 30-59 days ago", "Last synced over 60 days ago"))) %>%
+        dplyr::select(c(ClusterName, last_sync_cat, rp.contact.field.post_rct_access))
+      return(last_sync_data)
+    })
+    
+    data_engagement_weeks <- reactive({
+      UIC_onboarding_dates_1_14 <- UIC_onboarding_dates %>% filter(`Weeks completed` <= 14) %>% pull(ClusterName)
+      last_sync_data <- data_engagement_weeks_all() %>%
+        mutate(Week = ifelse(ClusterName %in% UIC_onboarding_dates_1_14, "1-14", "15+"))
+      
+      last_sync_data_1 <- last_sync_data %>%
+        group_by(Week, last_sync_cat) %>%
+        summarise(last_sync = n()) %>%
+        filter(last_sync_cat != 0)
+      # last_sync_data_2 <- last_sync_data %>%
+      #   group_by(Week) %>%
+      #   summarise(last_sync = n()) %>%
+      #   mutate(last_sync_cat = "Total")
+      last_sync_data_3 <- last_sync_data %>%
+        group_by(last_sync_cat) %>%
+        summarise(last_sync = n()) %>%
+        filter(last_sync_cat != 0) %>%
+        mutate(Week = "Total")
+      
+      last_sync_data <- bind_rows(last_sync_data_1, last_sync_data_3)
+      return(last_sync_data)
+    })
+    
+    plot_engagement_weeks  <- reactive({
+      ggplot(data_engagement_weeks(), aes(x = last_sync_cat, y = last_sync, fill = Week)) +
+        geom_bar(stat = "identity", position = "dodge") +
+        scale_fill_brewer(palette = "Blues", direction = -1) +
+        scale_x_discrete(labels = c("7 days", "14 days", "30 days", "60 days", "Total")) +
+        labs(x = "Last sync", y = "Frequency")
+      })
+    output$plot_engagement_weeks <- renderPlotly({plot_engagement_weeks()})
+    
+    table_engagement_weeks  <- reactive({
+      data_engagement_weeks() %>% pivot_wider(id_cols = "last_sync_cat", names_from = Week, values_from = last_sync, values_fill = 0)
+    })
+    output$table_engagement_weeks <- shiny::renderTable({table_engagement_weeks()}, striped = TRUE)
     
     #SECOND Tab Workshop Engagement Data
     
@@ -3664,11 +2974,11 @@ parentapp_shiny <- function(country, study){
         summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
       
-      plot <- ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = n_started))#, fill = Org)) # removing fill by ClusterName
-      plot + geom_bar(stat = "identity", position = "dodge") +
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = perc_started))#, fill = Org)) # removing fill by ClusterName
+      plot + geom_bar(stat = "identity", position = "dodge", fill = "#AAE8E7") +
         scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
-        viridis::scale_fill_viridis(discrete = TRUE) +
-        labs(x = "Workshop")
+        #viridis::scale_fill_viridis(discrete = TRUE) +
+        labs(x = "Workshop", y = "Started (%)")
     }) 
     output$table_ws_started <- shiny::renderTable({(table_ws_started())}, striped = TRUE)
     output$plot_ws_started <- renderPlotly({plot_ws_started()})
@@ -3699,10 +3009,10 @@ parentapp_shiny <- function(country, study){
         summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
       plot <- ggplot(summary_mean_completion_level_long, aes(x = `Workshop`, y = perc_completed))#, fill = Org)) # removing fill by ClusterName
-      plot + geom_bar(stat = "identity", position = "dodge") +
+      plot + geom_bar(stat = "identity", position = "dodge", fill = "#AAE8E7") +
         scale_x_discrete(guide = guide_axis(angle = 90), limits = week_order) +
         viridis::scale_fill_viridis(discrete = TRUE)+
-        labs(x = "Workshop")
+        labs(x = "Workshop", y = "Completed (%)")
     }) 
     output$table_ws_rel_completed <- shiny::renderTable({(table_ws_rel_completed())}, striped = TRUE)
     output$plot_ws_rel_completed <- renderPlotly({plot_ws_rel_completed()})
@@ -3732,10 +3042,13 @@ parentapp_shiny <- function(country, study){
         table_ws_totals <- table_ws_totals() 
       }
       hp_mood_plot(data = table_ws_totals, factors = opt_factors(), 
-                   limits = week_order, xlab = NULL, manipulation = "longer", fill = FALSE)
+                   limits = week_order, xlab = NULL, manipulation = "longer", fill = FALSE,
+                   fill_colour = "#AAE8E7")
     }) 
     output$table_ws_totals <- shiny::renderTable({(table_ws_totals())}, striped = TRUE)
     output$plot_ws_totals <- renderPlotly({plot_ws_totals()})
+    
+    #fill = "#19D1CD"
     
     # Additional Insights - Enaggement ------------------
     #Workshop plot and table
@@ -3743,7 +3056,10 @@ parentapp_shiny <- function(country, study){
       return(output[[paste0("table_", n)]] <-  shiny::renderTable({(summary_table_completion_level()[[j]])}, striped = TRUE))
     }
     ws_completion_plot <- function(n, j = 1){
-      return(output[[paste0("plot_", n)]] <-  renderPlotly(summary_plot(data = workshop_engagement_cut(), columns_to_summarise = j, replace = "rp.contact.field.w_")))
+      return(output[[paste0("plot_", n)]] <-  renderPlotly(summary_plot(data = workshop_engagement_cut(),
+                                                                        columns_to_summarise = j,
+                                                                        replace = "rp.contact.field.w_",
+                                                                        fill_colour = "#AAE8E7")))
     } # plottype = histogram
     
     # run our table_baselines and plot_baselines # TODO: in PLHr function, replace for loop with map like this.
@@ -3752,8 +3068,29 @@ parentapp_shiny <- function(country, study){
     
     
     # New additional insights tab ---------------------------------------------
+    data_engagement_additional_content <- reactive({
+      engagement <- data_engagement_weeks_all() %>%
+        filter(rp.contact.field.post_rct_access == "true") %>%
+        group_by(last_sync_cat) %>%
+        summarise(last_sync = n()) %>%
+        filter(last_sync_cat != 0)
+      return(engagement)
+    })
+    output$table_engagement_additional_content <- shiny::renderTable({data_engagement_additional_content()}, striped = TRUE)
+    plot_engagement_additional_content  <- reactive({
+      ggplot(data_engagement_additional_content(), aes(x = last_sync_cat, y = last_sync)) +
+        geom_bar(stat = "identity", position = "dodge", fill = "#AAE8E7") +
+        scale_x_discrete(labels = c("7 days", "14 days", "30 days", "60 days")) +
+        labs(x = "Last sync", y = "Frequency")
+    })
+    output$plot_engagement_additional_content <- renderPlotly({plot_engagement_additional_content()})
+    
+    accessed_new_content <- reactive({
+      selected_data_dem() %>% filter(rp.contact.field.post_rct_access == "true")
+      })
+
     additional_engagement_cut <- reactive({
-      data <- selected_data_dem() %>%
+      data <- accessed_new_content() %>%
         mutate(across(all_of(new_modules_completion_level),
                       ~cut(.x, breaks = c(0, 1, 40, 80, 99, 100), include_lowest = TRUE,
                            labels = c("0", "1-40", "41-80", "81-99", "100")))) %>%
@@ -3797,7 +3134,8 @@ parentapp_shiny <- function(country, study){
       
       # this should be done elsewhere - adding the week # into the plhdata.
       if (study == "RCT"){
-        additional_table_ws_started <- full_join(UIC_onboarding_dates, additional_table_ws_started, multiple = "all")
+        additional_table_ws_started <- full_join(UIC_onboarding_dates, additional_table_ws_started, multiple = "all") %>%
+          dplyr::select(c("ClusterName", "Weeks completed", "Srh", "Svp", "Grief", "Learn"))
         # additional_table_ws_started$`Weeks completed`[length(additional_table_ws_started$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
       }
       return(additional_table_ws_started)
@@ -3819,11 +3157,11 @@ parentapp_shiny <- function(country, study){
         summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(Org != "Total")
       }
       
-      plot <- ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = n_started))#, fill = Org)) # removing fill by ClusterName
-      plot + geom_bar(stat = "identity", position = "dodge") +
-        scale_x_discrete(guide = guide_axis(angle = 90)) +
+      plot <- ggplot(summary_mean_completion_level_long, aes(x = Workshop, y = perc_started))#, fill = Org)) # removing fill by ClusterName
+      plot + geom_bar(stat = "identity", position = "dodge", fill = "#AAE8E7") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = additional_week_order) +
         viridis::scale_fill_viridis(discrete = TRUE) +
-        labs(x = "Workshop")
+        labs(x = "Workshop", y = "Started (%)")
     }) 
     output$additional_table_ws_started <- shiny::renderTable({(additional_table_ws_started())}, striped = TRUE)
     output$additional_plot_ws_started <- renderPlotly({additional_plot_ws_started()})
@@ -3834,7 +3172,8 @@ parentapp_shiny <- function(country, study){
         mutate(perc_completed = paste0(n_completed, " (", perc_completed, "%)")) %>%
         pivot_wider(id_cols = opt_factors(), names_from = Workshop, values_from = perc_completed)
       if (study == "RCT"){
-        table_perc_completed <- full_join(UIC_onboarding_dates, table_perc_completed, multiple = "all")
+        table_perc_completed <- full_join(UIC_onboarding_dates, table_perc_completed, multiple = "all")  %>%
+          dplyr::select(c("ClusterName", "Weeks completed", "Srh", "Svp", "Grief", "Learn"))
         # table_perc_completed$`Weeks completed`[length(table_perc_completed$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
       }
       return(table_perc_completed)
@@ -3843,17 +3182,17 @@ parentapp_shiny <- function(country, study){
       summary_mean_completion_level_long <- additional_relative_perc_completed()
       summary_mean_completion_level_long <- summary_mean_completion_level_long %>% filter(ClusterName == "Total")# %>% mutate(Org = ClusterName)
       plot <- ggplot(summary_mean_completion_level_long, aes(x = `Workshop`, y = perc_completed))#, fill = Org)) # removing fill by ClusterName
-      plot + geom_bar(stat = "identity", position = "dodge") +
-        scale_x_discrete(guide = guide_axis(angle = 90)) +
+      plot + geom_bar(stat = "identity", position = "dodge", fill = "#AAE8E7") +
+        scale_x_discrete(guide = guide_axis(angle = 90), limits = additional_week_order) +
         viridis::scale_fill_viridis(discrete = TRUE)+
-        labs(x = "Workshop")
+        labs(x = "Workshop", y = "Completed (%)")
     }) 
     output$additional_table_ws_rel_completed <- shiny::renderTable({(additional_table_ws_rel_completed())}, striped = TRUE)
     output$additional_plot_ws_rel_completed <- renderPlotly({additional_plot_ws_rel_completed()})
     
     # Completion Level
     additional_table_ws_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
-      summary_mean_completion_level <- summary_table(data = selected_data_dem(),
+      summary_mean_completion_level <- summary_table(data = accessed_new_content(),
                                                      columns_to_summarise = new_modules_completion_level,
                                                      replace = "rp.contact.field.w_",
                                                      replace_after = "_completion_level",
@@ -3861,7 +3200,8 @@ parentapp_shiny <- function(country, study){
                                                      factors = opt_factors(),
                                                      include_margins = TRUE)
       if (study == "RCT"){
-      summary_mean_completion_level <- full_join(UIC_onboarding_dates, summary_mean_completion_level, multiple = "all")
+      summary_mean_completion_level <- full_join(UIC_onboarding_dates, summary_mean_completion_level, multiple = "all") %>%
+        dplyr::select(c("ClusterName", "Weeks completed", "Srh", "Svp", "Grief", "Learn"))
       #summary_mean_completion_level$`Weeks completed`[length(summary_mean_completion_level$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
       }
     })
@@ -3869,7 +3209,8 @@ parentapp_shiny <- function(country, study){
     additional_plot_ws_totals  <- reactive({
       additional_table_ws_totals <- additional_table_ws_totals() %>% filter(ClusterName == "Total")  %>% dplyr::select(-c("Weeks completed"))
       hp_mood_plot(data = additional_table_ws_totals, factors = opt_factors(), 
-                   limits = NULL, xlab = NULL, manipulation = "longer", fill = FALSE)
+                   limits = additional_week_order, xlab = NULL, manipulation = "longer", fill = FALSE,
+                   fill_colour = "#AAE8E7")
     }) 
     output$additional_table_ws_totals <- shiny::renderTable({(additional_table_ws_totals())}, striped = TRUE)
     output$additional_plot_ws_totals <- renderPlotly({additional_plot_ws_totals()})
@@ -3879,11 +3220,11 @@ parentapp_shiny <- function(country, study){
       return(output[[paste0("table_", n)]] <-  shiny::renderTable({(additional_summary_table_completion_level()[[j]])}, striped = TRUE))
     }
     additional_ws_completion_plot <- function(n, j = 1){
-      return(output[[paste0("plot_", n)]] <-  renderPlotly(summary_plot(data = additional_engagement_cut(), columns_to_summarise = j, replace = "rp.contact.field.w_")))
+      return(output[[paste0("plot_", n)]] <-  renderPlotly(summary_plot(data = additional_engagement_cut(), columns_to_summarise = j, replace = "rp.contact.field.w_", fill_colour = "#AAE8E7")))
     } # plottype = histogram
     
     # run our table_baselines and plot_baselines # TODO: in PLHr function, replace for loop with map like this.
-    map2(c("Learn", "Svp", "Grief", "Srh"), c("w_learn", "w_svp", "w_grief", "w_srh"), .f = ~ additional_ws_completion_table(n = .y, j = .x))
+    map2(c("Srh", "Svp", "Grief", "Learn"), c("w_srh", "w_svp", "w_grief", "w_learn"), .f = ~ additional_ws_completion_table(n = .y, j = .x))
     map2(c("rp.contact.field.w_learn_completion_level", "rp.contact.field.w_svp_completion_level", "rp.contact.field.w_grief_completion_level", "rp.contact.field.w_srh_completion_level"), c("w_learn", "w_svp", "w_grief", "w_srh"), .f = ~ additional_ws_completion_plot(n = .y, j = .x))
     
     # Parent Points Tab -----------------------------------------------
@@ -4468,7 +3809,7 @@ parentapp_shiny <- function(country, study){
         }
       }
       plot <- ggplot(notif, aes(x = campaign_id, y = perc_received)) #, fill = Org)) # removing fill by ClusterName
-      plot + geom_bar(stat = "identity", position = "dodge") +
+      plot + geom_bar(stat = "identity", position = "dodge", fill = "#78D473") +
         scale_x_discrete(guide = guide_axis(angle = 90)) +
         viridis::scale_fill_viridis(discrete = TRUE) +
         labs(x = "Campaign ID", y = "Percentage responded")
@@ -4511,7 +3852,7 @@ parentapp_shiny <- function(country, study){
                                     rename(value = True))
       hp_mood_plot(relative_hp_started, opt_factors(), manipulation = "ldply",
                    limits =  c("Praise", "Instruct", "Stress", "Solve", "Money", "Rules", "Consequence", "Safe", "Crisis"),
-                   xlab = "Workshop week")
+                   xlab = "Workshop week", fill = FALSE, fill_colour = "#78D473")
     }) 
     output$table_hp_started <- shiny::renderTable({(table_hp_started())}, striped = TRUE)
     output$plot_hp_started <- renderPlotly({plot_hp_started()})
@@ -4533,15 +3874,13 @@ parentapp_shiny <- function(country, study){
       summary_table_hp_done <- summary_table_hp_done()
       for (i in 1:length(summary_table_hp_done)){
         if (!"Yes" %in% colnames(summary_table_hp_done[[i]])) {
-          summary_table_hp_done$Yes <- 0
+          summary_table_hp_done[[i]]$Yes <- 0
         }
       }
-      
       select_items <- c(opt_factors(), "Yes")
-      
       relative_hp_done <- imap(summary_table_hp_done, ~.x %>%
                                  select(select_items))
-      return(relative_hp_done)   
+      return(relative_hp_done)
     })
     table_perc_long <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       relative_hp_done_stress <- summary_table_base_build(opt_factors = opt_factors(),
@@ -4568,645 +3907,14 @@ parentapp_shiny <- function(country, study){
       return(table_hp_done)
     })
     plot_hp_done  <- reactive({
-      summary_mean_completion_level_long <- table_perc_long() %>% rename(value = perc_complete) %>% rename(name = `.id`)
+      summary_mean_completion_level_long <- table_perc_long() %>%
+        filter(ClusterName == "Total") %>% rename(value = perc_complete) %>% rename(name = `.id`)
       hp_mood_plot(summary_mean_completion_level_long, opt_factors(), manipulation = "none", limits = c("1on1", "Praise", "Instruct", "Stress", "Solve", "Money", "Rules", "Consequence", "Safe", "Crisis"),
-                   xlab = "Workshop week")
+                   xlab = "Workshop week", fill = FALSE, fill_colour = "#78D473")
     }) 
     output$table_hp_done <- shiny::renderTable({(table_hp_done())}, striped = TRUE)
     output$plot_hp_done <- renderPlotly({plot_hp_done()})
-    
-    # home practice review - user notes how HP went
-    summary_table_hp_mood <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
-      summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(),
-                                                               columns_to_summarise = data_hp_mood,
-                                                               replace = "rp.contact.field.w_",
-                                                               replace_after = "_hp_mood")
-      summary_table_baseline_build %>%
-        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0))) %>%
-        purrr::map(.f =~.x %>% janitor::adorn_totals(c("row", "col")))
-    })
-    
-    #HP 2 One on One (NB no HP for WS 1)
-    table_hpdone_1on1 <- reactive({summary_table_hp_done()$`1on1` })
-    plot_hpdone_1on1 <- reactive({})
-    output$table_hpdone_1on1 <- shiny::renderTable({(table_hpdone_1on1())}, striped = TRUE)
-    output$plot_hpdone_1on1 <- renderPlotly({plot_hpdone_1on1()})
-    
-    table_mood_1on1 <- reactive({summary_table_hp_mood()$`1on1`})
-    plot_mood_1on1 <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`1on1`)})
-    output$table_mood_1on1 <- shiny::renderTable({(table_mood_1on1())}, striped = TRUE)
-    output$plot_mood_1on1 <- renderPlotly({plot_mood_1on1()})
-    
-    change_rname <- function(x){
-      names(x) <- opt_factors()
-      return(x)
-    }
-    
-    # Summary Challenges
-    summary_challenges <- reactive({
-      chall_table <- map2(challenge_vars, chall_ap_vars, ~ challenge_freq(data = selected_data_dem(),
-                                                                          group_by = opt_factors(),
-                                                                          var = .x,
-                                                                          append_var = .y))
-      names(chall_table) <- naming_conventions(challenge_vars, replace = "rp.contact.field.w_", replace_after = "_hp_challenge_list")
-      return(chall_table)
-    })
-    
-    table_chall_1on1 <- reactive({ summary_challenges()$`1on1` })
-    plot_chall_1on1 <- reactive({
-      hp_mood_plot(data = summary_challenges()$`1on1`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_1on1 <- shiny::renderTable({(table_chall_1on1())}, striped = TRUE, caption = "1 = I don’t have enough time; 2 = My teen does not want to spend time with me; 3 = My teen only wants to watch TV or play on his/her phone; 4 = My teen wants to do things that are not safe or that cost money; 5 = My teen wants to do things that I cannot physically do; 6 = My teen chose a competitive activity. I won and s/he got angry.; 7 = I struggled to end the one-on-one time; 8 = All my children want one-on-one time with me at the same time")
-    output$plot_chall_1on1 <- renderPlotly({plot_chall_1on1()})
-    
-    table_chall_instruct <- reactive({ summary_challenges()$`Instruct`})
-    plot_chall_instruct <- reactive({ 
-      hp_mood_plot(data = summary_challenges()$`Instruct`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_instruct <- shiny::renderTable({(table_chall_instruct())}, striped = TRUE,
-                                                      caption = "1 = My teenager did not want to follow the instruction; 2 = I did not find time to spend one-on-one time with my teen; 3 = I gave a negative instead of a positive instruction; 4 = I shouted at my teen when they behaved negatively, instead of giving them a positive instruction for what they should do")
-    output$plot_chall_instruct <- renderPlotly({plot_chall_instruct()})
-    
-    table_chall_stress_br <- reactive({summary_challenges()$`Stress`})
-    plot_chall_stress_br <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Stress`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_stress_br <- shiny::renderTable({(table_chall_stress_br())}, striped = TRUE,
-                                                       caption = "1 = I was afraid my teen would think I was weak; 2 = I felt uncomfortable about naming specific difficult feelings; 3 = My teen felt uncomfortable when I shared my feelings; 4 = When I shared my feelings, my teen asked many questions, which made me uncomfortable; 5 = I was too stressed or angry to try sharing my feelings – I prefer to be alone when I feel like that")
-    output$plot_chall_stress_br <- renderPlotly({plot_chall_stress_br()})
-    
-    table_chall_money <- reactive({summary_challenges()$`Money`})
-    plot_chall_money <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Money`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_money <- shiny::renderTable({(table_chall_money())}, striped = TRUE,
-                                                   caption = "1 = I did not want to tell my family how much I earn; 2 = When budgeting, we could not agree on what should fall under needs and what should fall under wants; 3 = I did not understand what to do; 4 = My teen did not want to do the budgeting with me")
-    output$plot_chall_money <- renderPlotly({plot_chall_money()})
-    
-    table_chall_rule <- reactive({summary_challenges()$`Rules`})
-    plot_chall_rule <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Rules`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_rule <- shiny::renderTable({(table_chall_rule())}, striped = TRUE,
-                                                  caption = "1 = My teen and I could not agree on a rule; 2 = My teen felt it was unfair that they have to follow the rule while I don’t have to follow it; 3 = I felt uncomfortable, because I feel that I should be the one establishing the rule, not my teen; 4 = My partner felt uncomfortable, because they feel that they should be the one establishing the rule, not the teen; 5 = When we tried to set a rule, we got into an argument; 6 = We were not able to stick to the rule")
-    output$plot_chall_rule <- renderPlotly({plot_chall_rule()})
-    
-    table_chall_consequence <- reactive({summary_challenges()$`Consequence`})
-    plot_chall_consequence <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Consequence`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_consequence <- shiny::renderTable({(table_chall_consequence())}, striped = TRUE,
-                                                         caption = "1 = I got very angry when my teen broke the rule; 2 = My teen got very angry with me after I gave the consequence; 3 = I introduced the consequence without first discussing it with my teen; 4 = I forgot to follow through with the consequence; 5 = Even with the consequence, my teen still does not follow the rule; 6 = We only created a negative consequence, not a positive consequence; 7 = My teen suggested being hit as a negative consequence")
-    output$plot_chall_consequence <- renderPlotly({plot_chall_consequence()})
-    
-    table_chall_solve <- reactive({summary_challenges()$`Solve`})
-    plot_chall_solve <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Solve`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_solve <- shiny::renderTable({(table_chall_solve())}, striped = TRUE,
-                                                   caption = "1 = I forgot the steps of problem solving; 2 = I started with the solutions right away; 3 = We could not agree on a solution to try out and we got into an argument; 4 = I got angry when the problem came up and I forgot to use the problem-solving steps; 5 = My teen got angry and did not want to talk about the problem")
-    output$plot_chall_solve <- renderPlotly({plot_chall_solve()})
-    
-    table_chall_safe <- reactive({summary_challenges()$`Safe`})
-    plot_chall_safe <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Safe`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_safe <- shiny::renderTable({(table_chall_safe())}, striped = TRUE,
-                                                  caption = "1 = My teen and I disagreed on which areas and online activities were unsafe; 2 = My teen identified the house of someone I trust as unsafe. I was shocked and did not know what to do; 3 = My teen insisted that the bar (or another place I don’t feel is safe) is safe for them to visit. I don’t know how to convince my teen; 4 = As an adult, I feel responsible to protect - but when I told my teen what is safe and what is not, my teen got angry; 5 = It was hard to identify support resources available in my community, because I don’t know my community so well / there are few services available; 6 = I don’t know much about technology, so I don’t know how to talk about it with my teen")
-    output$plot_chall_safe <- renderPlotly({plot_chall_safe()})
-    
-    
-    table_chall_crisis <- reactive({ summary_challenges()$`Crisis` })
-    plot_chall_crisis <- reactive({
-      hp_mood_plot(data = summary_challenges()$`Crisis`, factors = opt_factors(), limits = NULL, xlab = "Challenge")
-    })
-    output$table_chall_crisis <- shiny::renderTable({(table_chall_crisis())}, striped = TRUE,
-                                                    caption = "1 = My teen told me that something serious happened to them and I did not know how to handle it; 2 = The conversation made me very uncomfortable because I was reminded of a negative experience I had; 3 = One of us did not feel comfortable")
-    output$plot_chall_crisis <- renderPlotly({plot_chall_crisis()})
-    
-    
-    #HP 3 Praise (no review/ mood and no challenges)
-    table_hpdone_praise <- reactive({summary_table_hp_done()$`Praise` })
-    plot_hpdone_praise <- reactive({})
-    output$table_hpdone_praise <- shiny::renderTable({(table_hpdone_praise())}, striped = TRUE)
-    output$plot_hpdone_praise <- renderPlotly({plot_hpdone_praise()})
-    
-    table_mood_praise <- reactive({})
-    plot_mood_praise <- reactive({})
-    #plot_mood_praise <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`praise`)})
-    
-    output$table_mood_praise <- shiny::renderTable({(table_mood_praise())}, striped = TRUE)
-    output$plot_mood_praise <- renderPlotly({plot_mood_praise()})
-    
-    table_chall_praise <- reactive({
-    })
-    plot_chall_praise <- reactive({})
-    output$table_chall_praise <- shiny::renderTable({(table_chall_praise())}, striped = TRUE)
-    # caption
-    output$plot_chall_praise <- renderPlotly({plot_chall_praise()})
-    
-    #HP 4 Pos Instr
-    table_hpdone_instruct <- reactive({summary_table_hp_done()$`Instruct` })
-    plot_hpdone_instruct <- reactive({})
-    output$table_hpdone_instruct <- shiny::renderTable({(table_hpdone_instruct())}, striped = TRUE)
-    output$plot_hpdone_instruct <- renderPlotly({plot_hpdone_instruct()})
-    
-    table_mood_instruct <- reactive({summary_table_hp_mood()$`Instruct`  })
-    plot_mood_instruct <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Instruct`)})
-    output$table_mood_instruct <- shiny::renderTable({(table_mood_instruct())}, striped = TRUE)
-    output$plot_mood_instruct <- renderPlotly({plot_mood_instruct()})
-    
-    
-    #HP 5.1 Stress - Breathe
-    table_hpdone_stress_br <- reactive({summary_table_hp_done()$`Stress hp breathe` })
-    plot_hpdone_stress_br <- reactive({})
-    output$table_hpdone_stress_br <- shiny::renderTable({(table_hpdone_stress_br())}, striped = TRUE)
-    output$plot_hpdone_stress_br <- renderPlotly({plot_hpdone_stress_br()})
-    
-    table_mood_stress_br <- reactive({summary_table_hp_mood()$`Stress hp breathe` })
-    plot_mood_stress_br <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Stress hp breathe`)})
-    output$table_mood_stress_br <- shiny::renderTable({(table_mood_stress_br())}, striped = TRUE)
-    output$plot_mood_stress_br <- renderPlotly({plot_mood_stress_br()})
-    
-    # TODO: for summary_table_hp_chall add filter options
-    
-    #HP 5.2 Stress - Talk
-    table_hpdone_stress_tk <- reactive({summary_table_hp_done()$`Stress hp talk` })
-    plot_hpdone_stress_tk <- reactive({})
-    output$table_hpdone_stress_tk <- shiny::renderTable({(table_hpdone_stress_tk())}, striped = TRUE)
-    output$plot_hpdone_stress_tk <- renderPlotly({plot_hpdone_stress_tk()})
-    
-    table_mood_stress_tk <- reactive({summary_table_hp_mood()$`Stress hp talk` })
-    plot_mood_stress_tk <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Stress hp talk`)})
-    output$table_mood_stress_tk <- shiny::renderTable({(table_mood_stress_tk())}, striped = TRUE)
-    output$plot_mood_stress_tk <- renderPlotly({plot_mood_stress_tk()})
-    
-    # table_chall_stress_tk <- reactive({summary_table_hp_chall$`Challenges 1on1` })
-    # plot_chall_stress_tk <- reactive({})
-    # output$table_chall_stress_tk <- shiny::renderTable({(table_chall_stress_tk())}, striped = TRUE)
-    #       #caption = "1 = ; 2 = ; 3 = ; 4 =; 3 = ; 5 = ; 6 = ; 7 = ; 8 = ")
-    # output$plot_chall_stress_tk <- renderPlotly({plot_chall_stress_tk()})
-    
-    #HP 6 Fam Budg
-    table_hpdone_money <- reactive({summary_table_hp_done()$`Money` })
-    plot_hpdone_money <- reactive({})
-    output$table_hpdone_money <- shiny::renderTable({(table_hpdone_money())}, striped = TRUE)
-    output$plot_hpdone_money <- renderPlotly({plot_hpdone_money()})
-    
-    table_mood_money <- reactive({summary_table_hp_mood()$`Money` })
-    plot_mood_money <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Money`)})
-    output$table_mood_money <- shiny::renderTable({(table_mood_money())}, striped = TRUE)
-    output$plot_mood_money <- renderPlotly({plot_mood_money()})
-    
-    table_mood_rules <- reactive({summary_table_hp_mood()$`Rules` })
-    plot_mood_rules <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Rules`)})
-    output$table_mood_rules <- shiny::renderTable({(table_mood_rules())}, striped = TRUE)
-    output$plot_mood_rules <- renderPlotly({plot_mood_rules()})
-    
-    
-    #HP 7 Rules
-    table_hpdone_rule <- reactive({summary_table_hp_done()$`Rules` })
-    plot_hpdone_rule <- reactive({})
-    output$table_hpdone_rule <- shiny::renderTable({(table_hpdone_rule())}, striped = TRUE)
-    output$plot_hpdone_rule <- renderPlotly({plot_hpdone_rule()})
-    
-    table_mood_rule <- reactive({summary_table_hp_mood()$`Rules` })
-    plot_mood_rule <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Rules`)})
-    output$table_mood_rule <- shiny::renderTable({(table_mood_rule())}, striped = TRUE)
-    output$plot_mood_rule <- renderPlotly({plot_mood_rule()})
-    
-    
-    #HP 8 Calm Cons
-    table_hpdone_consequence <- reactive({summary_table_hp_done()$`Consequence` })
-    plot_hpdone_consequence <- reactive({})
-    output$table_hpdone_consequence <- shiny::renderTable({(table_hpdone_consequence())}, striped = TRUE)
-    output$plot_hpdone_consequence <- renderPlotly({plot_hpdone_consequence()})
-    
-    table_mood_consequence <- reactive({
-      challenge_freq(var = "rp.contact.field.w_consequence_hp_challenge_list",
-                     group_by = opt_factors(),
-                     append_var = "rp.contact.field.w_consequence_hp_challenge")
-    })
-    plot_mood_consequence <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Consequence`)})
-    output$table_mood_consequence <- shiny::renderTable({(table_mood_consequence())}, striped = TRUE)
-    output$plot_mood_consequence <- renderPlotly({plot_mood_consequence()})
-    
-    
-    #HP 9 Pr Solve
-    table_hpdone_solve <- reactive({summary_table_hp_done()$`Solve` })
-    plot_hpdone_solve <- reactive({})
-    output$table_hpdone_solve <- shiny::renderTable({(table_hpdone_solve())}, striped = TRUE)
-    output$plot_hpdone_solve <- renderPlotly({plot_hpdone_solve()})
-    
-    table_mood_solve <- reactive({summary_table_hp_mood()$`Solve` })
-    plot_mood_solve <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Solve`)})
-    output$table_mood_solve <- shiny::renderTable({(table_mood_solve())}, striped = TRUE)
-    output$plot_mood_solve <- renderPlotly({plot_mood_solve()})
-    
-    
-    #HP 10 Teen Safe
-    table_hpdone_safe <- reactive({summary_table_hp_done()$`Safe` })
-    plot_hpdone_safe <- reactive({})
-    output$table_hpdone_safe <- shiny::renderTable({(table_hpdone_safe())}, striped = TRUE)
-    output$plot_hpdone_safe <- renderPlotly({plot_hpdone_safe()})
-    
-    table_mood_safe <- reactive({summary_table_hp_mood()$`Safe` })
-    plot_mood_safe <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Safe`)})
-    output$table_mood_safe <- shiny::renderTable({(table_mood_safe())}, striped = TRUE)
-    output$plot_mood_safe <- renderPlotly({plot_mood_safe()})
-    
-    
-    
-    #HP 11 D w Crisis
-    table_hpdone_crisis <- reactive({summary_table_hp_done()$`Crisis`})
-    plot_hpdone_crisis <- reactive({})
-    output$table_hpdone_crisis <- shiny::renderTable({(table_hpdone_crisis())}, striped = TRUE)
-    output$plot_hpdone_crisis <- renderPlotly({plot_hpdone_crisis()})
-    
-    table_mood_crisis <- reactive({summary_table_hp_mood()$`Crisis`})
-    plot_mood_crisis <- reactive({hp_mood_plot(factors = opt_factors(), data =summary_table_hp_mood()$`Crisis`)})
-    output$table_mood_crisis <- shiny::renderTable({(table_mood_crisis())}, striped = TRUE)
-    output$plot_mood_crisis <- renderPlotly({plot_mood_crisis()})
-    
-    
-    #FIFTH Tab Surveys
-    summary_table_survey_past_week <- reactive({
-      #if (study == "Optimisation"){ # and for TZ
-      summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_initial_1")
-      #} else {
-      #  summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_past_week")
-      #}
-      summary_table_baseline_build %>%
-        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
-      #mult_summary_table_filter(summary_table_baseline_build)
-      #summary_table_baseline_build %>%
-      #  purrr::map(.f =~.x %>% filter(~!Org %in% c("Tanzania", "South Africa", "South_Africa")))
-    })
-    
-    # Baseline survey completion levels
-    table_sv1_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
-      summary_table_survey_completion <- selected_data_dem() %>%
-        summary_table(columns_to_summarise = "rp.contact.field.survey_welcome_and_setup_completion_level", factors = opt_factors(), display = FALSE, include_margins = TRUE)
-      summary_table_survey_completion %>% janitor::adorn_totals(c("row", "col"))
-      #summary_table_survey_completion %>%
-      #  purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
-      #summary_table_survey_completion <- summary_table_survey_completion %>%
-      #  dplyr::filter(Org %in% unique(selected_data_dem()$Org))
-      #summary_table_survey_completion
-    })
-    plot_sv1_totals <- reactive({
-      hp_mood_plot(data = table_sv1_totals(), factors = opt_factors(), manipulation = "longer", limits = NULL, xlab = "Survey completion")
-    }) 
-    output$table_sv1_totals <- shiny::renderTable({(table_sv1_totals())}, striped = TRUE)
-    output$plot_sv1_totals <- renderPlotly({plot_sv1_totals()})
-    
-    # sv1_attention a_1
-    table_sv1_attention <- reactive({summary_table_survey_past_week()$`Positive parenting (fun)`}) 
-    output$table_sv1_attention <- shiny::renderTable({(table_sv1_attention())}, striped = TRUE,
-                                                     caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_attention  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Positive parenting (fun)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_attention <- renderPlotly({plot_sv1_attention()})
-    
-    # sv1_praise
-    table_sv1_praise <- reactive({summary_table_survey_past_week()$`Positive parenting (praise)`}) 
-    output$table_sv1_praise <- shiny::renderTable({(table_sv1_praise())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_praise  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Positive parenting (praise)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_praise <- renderPlotly({plot_sv1_praise()})
-    
-    # sv1_stress a_3
-    table_sv1_stress <- reactive({summary_table_survey_past_week()$`Parenting stress`}) 
-    output$table_sv1_stress <- shiny::renderTable({(table_sv1_stress())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_stress  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Parenting stress`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_stress <- renderPlotly({plot_sv1_stress()})
-    
-    # sv1_shout a_4
-    table_sv1_shout <- reactive({summary_table_survey_past_week()$`Child maltreatment (emotional, shout)`}) 
-    output$table_sv1_shout <- shiny::renderTable({(table_sv1_shout())}, striped = TRUE,
-                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_shout  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Child maltreatment (emotional, shout)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_shout <- renderPlotly({plot_sv1_shout()})
-    
-    table_sv1_insult <- reactive({summary_table_survey_past_week()$`Child maltreatment (emotional, insult)`}) 
-    output$table_sv1_insult <- shiny::renderTable({(table_sv1_insult())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_insult  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Child maltreatment (emotional, insult)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_insult <- renderPlotly({plot_sv1_insult()})
-    
-    # sv1_money a_5 p1
-    table_sv1_money <- reactive({summary_table_survey_past_week()$`Finance (stress)`}) 
-    output$table_sv1_money <- shiny::renderTable({(table_sv1_money())}, striped = TRUE,
-                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_money  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Finance (stress)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_money <- renderPlotly({plot_sv1_money()})
-    
-    # sv1_food_money a_5 
-    table_sv1_food_money <- reactive({summary_table_survey_past_week()$`Finance (food insecurity)`}) 
-    output$table_sv1_food_money <- shiny::renderTable({(table_sv1_food_money())}, striped = TRUE,
-                                                      caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_food_money  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Finance (food insecurity)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_food_money <- renderPlotly({plot_sv1_food_money()})
-    
-    # sv1_hitting a_6
-    table_sv1_hitting <- reactive({summary_table_survey_past_week()$`Child maltreatment (physical, hit)`}) 
-    output$table_sv1_hitting <- shiny::renderTable({(table_sv1_hitting())}, striped = TRUE,
-                                                   caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_hitting  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Child maltreatment (physical, hit)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_hitting <- renderPlotly({plot_sv1_hitting()})
-    
-    table_sv1_push <- reactive({summary_table_survey_past_week()$`Child maltreatment (physical, push)`}) 
-    output$table_sv1_push <- shiny::renderTable({(table_sv1_push())}, striped = TRUE,
-                                                caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_push  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Child maltreatment (physical, push)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_push <- renderPlotly({plot_sv1_push()})
-    
-    # sv1_week_teen_activity a_7 p1
-    # table_sv1_week_teen_activity <- reactive({
-    #   summary_table_survey_past_week()$`Teen activity`  }) 
-    # plot_sv1_week_teen_activity  <- reactive({
-    #   summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_7_part_1_final", replace = "rp.contact.field.")})
-    # output$table_sv1_week_teen_activity <- shiny::renderTable({(table_sv1_week_teen_activity())}, striped = TRUE,
-    #                                                           caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    # output$plot_sv1_week_teen_activity <- renderPlotly({plot_sv1_week_teen_activity()})
-    # 
-    # sv1_lockdown a_7 p2
-    # table_sv1_lockdown <- reactive({
-    #   summary_table_survey_past_week()$`Lockdown?`  }) 
-    # plot_sv1_lockdown  <- reactive({
-    #   summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_7_part_2_final", replace = "rp.contact.field.")})
-    # output$table_sv1_lockdown <- shiny::renderTable({(table_sv1_lockdown())}, striped = TRUE,
-    #                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    # output$plot_sv1_lockdown <- renderPlotly({plot_sv1_lockdown()})
-    
-    # sv1_reg_teen_activity a_7 p3
-    # table_sv1_reg_teen_activity <- reactive({
-    #   summary_table_survey_past_week()$`Knowledge of teen activity in non-lockdown week`  }) 
-    # plot_sv1_reg_teen_activity  <- reactive({
-    #   summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_7_part_3_final", replace = "rp.contact.field.")}) 
-    # output$table_sv1_reg_teen_activity <- shiny::renderTable({(table_sv1_reg_teen_activity())}, striped = TRUE,
-    #                                                          caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    # output$plot_sv1_reg_teen_activity <- renderPlotly({plot_sv1_reg_teen_activity()})
-    
-    # sv1_sex_talk a_8
-    table_sv1_sex_talk <- reactive({summary_table_survey_past_week()$`Parental Communication about Sexual Abuse Prevention (month)`})
-    output$table_sv1_sex_talk <- shiny::renderTable({(table_sv1_sex_talk())}, striped = TRUE,
-                                                    caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_sex_talk  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Parental Communication about Sexual Abuse Prevention (month)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_sex_talk <- renderPlotly({plot_sv1_sex_talk()})
-    
-    table_sv1_sex_talk_ever <- reactive({summary_table_survey_past_week()$`Parental Communication about Sexual Abuse Prevention (ever)`})
-    output$table_sv1_sex_talk_ever <- shiny::renderTable({(table_sv1_sex_talk_ever())}, striped = TRUE,
-                                                         caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_sex_talk_ever  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Parental Communication about Sexual Abuse Prevention (ever)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_sex_talk_ever <- renderPlotly({plot_sv1_sex_talk_ever()})
-    
-    # depression
-    table_sv1_depression_depressed <- reactive({summary_table_survey_past_week()$`Parental depression (depressed)`}) 
-    output$table_sv1_depression_depressed <- shiny::renderTable({(table_sv1_depression_depressed())}, striped = TRUE,
-                                                                caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_depression_depressed  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Parental depression (depressed)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_depression_depressed <- renderPlotly({plot_sv1_depression_depressed()})
-    
-    table_sv1_depression_effort <- reactive({summary_table_survey_past_week()$`Parental depression (effort)`}) 
-    output$table_sv1_depression_effort <- shiny::renderTable({(table_sv1_depression_effort())}, striped = TRUE,
-                                                             caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_depression_effort  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Parental depression (effort)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_depression_effort <- renderPlotly({plot_sv1_depression_effort()})
-    
-    table_sv1_depression_hopeful <- reactive({summary_table_survey_past_week()$`Parental depression (hopeful)`}) 
-    output$table_sv1_depression_hopeful <- shiny::renderTable({(table_sv1_depression_hopeful())}, striped = TRUE,
-                                                              caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_depression_hopeful  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Parental depression (hopeful)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_depression_hopeful <- renderPlotly({plot_sv1_depression_hopeful()})
-    
-    # supervision
-    table_sv1_supervision_people <- reactive({summary_table_survey_past_week()$`Parental supervision (people)`}) 
-    output$table_sv1_supervision_people <- shiny::renderTable({(table_sv1_supervision_people())}, striped = TRUE,
-                                                              caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_supervision_people  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Parental supervision (people)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_supervision_people <- renderPlotly({plot_sv1_supervision_people()})
-    
-    table_sv1_supervision_place <- reactive({summary_table_survey_past_week()$`Parental supervision (place)`}) 
-    output$table_sv1_supervision_place <- shiny::renderTable({(table_sv1_supervision_place())}, striped = TRUE,
-                                                             caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_supervision_place  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Parental supervision (place)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_supervision_place <- renderPlotly({plot_sv1_supervision_place()})
-    
-    table_sv1_supervision_time <- reactive({summary_table_survey_past_week()$`Parental supervision (time)`}) 
-    output$table_sv1_supervision_time <- shiny::renderTable({(table_sv1_supervision_time())}, striped = TRUE,
-                                                            caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_supervision_time  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$`Parental supervision (time)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_supervision_time <- renderPlotly({plot_sv1_supervision_time()})
-    # sv1_covid_safe a_9
-    # table_sv1_covid_safe <- reactive({
-    #   summary_table_survey_past_week()$`Teen COVID safe`  }) 
-    # plot_sv1_covid_safe  <- reactive({
-    #   summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_9_final", replace = "rp.contact.field.")})
-    # output$table_sv1_covid_safe <- shiny::renderTable({(table_sv1_covid_safe())}, striped = TRUE,
-    #                                                   caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    # output$plot_sv1_covid_safe <- renderPlotly({plot_sv1_covid_safe()})
-    table_sv1_risk <- reactive({summary_table_survey_past_week()$Risk}) 
-    output$table_sv1_risk <- shiny::renderTable({(table_sv1_risk())}, striped = TRUE,
-                                                caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv1_risk  <- reactive({
-      hp_mood_plot(data = summary_table_survey_past_week()$Risk, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv1_risk <- renderPlotly({plot_sv1_risk()})
-    
-    # Final pilot survey 
-    # rp.contact.field.survey_final_completion_level # is it this variable?
-    ##
-    summary_table_survey_last_week <- reactive({
-      summary_table_baseline_build <- survey_table(data = selected_data_dem(), factors = opt_factors(), location_ID = "survey_final_1")
-      # if pilot, this should be "survey_final", but then the boxes need to change too. 
-      summary_table_baseline_build %>%
-        purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
-      #mult_summary_table_filter(summary_table_baseline_build)
-      #summary_table_baseline_build %>%
-      #  purrr::map(.f =~.x %>% filter(~!Org %in% c("Tanzania", "South Africa", "South_Africa")))
-    })
-    
-    # Baseline survey completion levels
-    table_sv2_totals <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
-      summary_table_survey_completion <- selected_data_dem() %>%
-        summary_table(columns_to_summarise = "rp.contact.field.survey_final_completion_level", factors = opt_factors(), display = FALSE, include_margins = TRUE)
-      summary_table_survey_completion %>% janitor::adorn_totals(c("row", "col"))
-      #summary_table_survey_completion %>%
-      #  purrr::map(.f =~.x %>% mutate_all(~replace(., is.na(.), 0)))
-      #summary_table_survey_completion <- summary_table_survey_completion %>%
-      #  dplyr::filter(Org %in% unique(selected_data_dem()$Org))
-      #summary_table_survey_completion
-    })
-    plot_sv2_totals <- reactive({
-      hp_mood_plot(data = table_sv2_totals(), factors = opt_factors(), manipulation = "longer", limits = NULL, xlab = "Survey completion")
-    }) 
-    output$table_sv2_totals <- shiny::renderTable({(table_sv2_totals())}, striped = TRUE)
-    output$plot_sv2_totals <- renderPlotly({plot_sv2_totals()})
-    
-    # sv2_attention a_1
-    table_sv2_attention <- reactive({summary_table_survey_last_week()$`Positive parenting (fun)`}) 
-    output$table_sv2_attention <- shiny::renderTable({(table_sv2_attention())}, striped = TRUE,
-                                                     caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_attention  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Positive parenting (fun)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_attention <- renderPlotly({plot_sv2_attention()})
-    
-    # sv2_praise
-    table_sv2_praise <- reactive({summary_table_survey_last_week()$`Positive parenting (praise)`}) 
-    output$table_sv2_praise <- shiny::renderTable({(table_sv2_praise())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_praise  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Positive parenting (praise)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_praise <- renderPlotly({plot_sv2_praise()})
-    
-    # sv2_stress a_3
-    table_sv2_stress <- reactive({summary_table_survey_last_week()$`Parenting stress`}) 
-    output$table_sv2_stress <- shiny::renderTable({(table_sv2_stress())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_stress  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Parenting stress`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_stress <- renderPlotly({plot_sv2_stress()})
-    
-    # sv2_shout a_4
-    table_sv2_shout <- reactive({summary_table_survey_last_week()$`Child maltreatment (emotional, shout)`}) 
-    output$table_sv2_shout <- shiny::renderTable({(table_sv2_shout())}, striped = TRUE,
-                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_shout  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Child maltreatment (emotional, shout)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_shout <- renderPlotly({plot_sv2_shout()})
-    
-    table_sv2_insult <- reactive({summary_table_survey_last_week()$`Child maltreatment (emotional, insult)`}) 
-    output$table_sv2_insult <- shiny::renderTable({(table_sv2_insult())}, striped = TRUE,
-                                                  caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_insult  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Child maltreatment (emotional, insult)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_insult <- renderPlotly({plot_sv2_insult()})
-    
-    # sv2_money a_5 p1
-    table_sv2_money <- reactive({summary_table_survey_last_week()$`Finance (stress)`}) 
-    output$table_sv2_money <- shiny::renderTable({(table_sv2_money())}, striped = TRUE,
-                                                 caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_money  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Finance (stress)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_money <- renderPlotly({plot_sv2_money()})
-    
-    # sv2_food_money a_5 
-    table_sv2_food_money <- reactive({summary_table_survey_last_week()$`Finance (food insecurity)`}) 
-    output$table_sv2_food_money <- shiny::renderTable({(table_sv2_food_money())}, striped = TRUE,
-                                                      caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_food_money  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Finance (food insecurity)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_food_money <- renderPlotly({plot_sv2_food_money()})
-    
-    # sv2_hitting a_6
-    table_sv2_hitting <- reactive({summary_table_survey_last_week()$`Child maltreatment (physical, hit)`}) 
-    output$table_sv2_hitting <- shiny::renderTable({(table_sv2_hitting())}, striped = TRUE,
-                                                   caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_hitting  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Child maltreatment (physical, hit)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_hitting <- renderPlotly({plot_sv2_hitting()})
-    
-    table_sv2_push <- reactive({summary_table_survey_last_week()$`Child maltreatment (physical, push)`}) 
-    output$table_sv2_push <- shiny::renderTable({(table_sv2_push())}, striped = TRUE,
-                                                caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_push  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Child maltreatment (physical, push)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_push <- renderPlotly({plot_sv2_push()})
-    
-    # sv2_sex_talk a_8
-    table_sv2_sex_talk <- reactive({summary_table_survey_last_week()$`Parental Communication about Sexual Abuse Prevention (month)`})
-    output$table_sv2_sex_talk <- shiny::renderTable({(table_sv2_sex_talk())}, striped = TRUE,
-                                                    caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_sex_talk  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Parental Communication about Sexual Abuse Prevention (month)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_sex_talk <- renderPlotly({plot_sv2_sex_talk()})
-    
-    table_sv2_sex_talk_ever <- reactive({summary_table_survey_last_week()$`Parental Communication about Sexual Abuse Prevention (ever)`})
-    output$table_sv2_sex_talk_ever <- shiny::renderTable({(table_sv2_sex_talk_ever())}, striped = TRUE,
-                                                         caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_sex_talk_ever  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Parental Communication about Sexual Abuse Prevention (ever)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_sex_talk_ever <- renderPlotly({plot_sv2_sex_talk_ever()})
-    
-    # depression
-    table_sv2_depression_depressed <- reactive({summary_table_survey_last_week()$`Parental depression (depressed)`}) 
-    output$table_sv2_depression_depressed <- shiny::renderTable({(table_sv2_depression_depressed())}, striped = TRUE,
-                                                                caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_depression_depressed  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Parental depression (depressed)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_depression_depressed <- renderPlotly({plot_sv2_depression_depressed()})
-    
-    table_sv2_depression_effort <- reactive({summary_table_survey_last_week()$`Parental depression (effort)`}) 
-    output$table_sv2_depression_effort <- shiny::renderTable({(table_sv2_depression_effort())}, striped = TRUE,
-                                                             caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_depression_effort  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Parental depression (effort)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_depression_effort <- renderPlotly({plot_sv2_depression_effort()})
-    
-    table_sv2_depression_hopeful <- reactive({summary_table_survey_last_week()$`Parental depression (hopeful)`}) 
-    output$table_sv2_depression_hopeful <- shiny::renderTable({(table_sv2_depression_hopeful())}, striped = TRUE,
-                                                              caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_depression_hopeful  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Parental depression (hopeful)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_depression_hopeful <- renderPlotly({plot_sv2_depression_hopeful()})
-    
-    # supervision
-    table_sv2_supervision_people <- reactive({summary_table_survey_last_week()$`Parental supervision (people)`}) 
-    output$table_sv2_supervision_people <- shiny::renderTable({(table_sv2_supervision_people())}, striped = TRUE,
-                                                              caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_supervision_people  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Parental supervision (people)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_supervision_people <- renderPlotly({plot_sv2_supervision_people()})
-    
-    table_sv2_supervision_place <- reactive({summary_table_survey_last_week()$`Parental supervision (place)`}) 
-    output$table_sv2_supervision_place <- shiny::renderTable({(table_sv2_supervision_place())}, striped = TRUE,
-                                                             caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_supervision_place  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Parental supervision (place)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_supervision_place <- renderPlotly({plot_sv2_supervision_place()})
-    
-    table_sv2_supervision_time <- reactive({summary_table_survey_last_week()$`Parental supervision (time)`}) 
-    output$table_sv2_supervision_time <- shiny::renderTable({(table_sv2_supervision_time())}, striped = TRUE,
-                                                            caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_supervision_time  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$`Parental supervision (time)`, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_supervision_time <- renderPlotly({plot_sv2_supervision_time()})
-    # sv2_covid_safe a_9
-    # table_sv2_covid_safe <- reactive({
-    #   summary_table_survey_last_week()$`Teen COVID safe`  }) 
-    # plot_sv2_covid_safe  <- reactive({
-    #   summary_plot(selected_data_dem(), "rp.contact.field.survey_welcome_a_9_final", replace = "rp.contact.field.")})
-    # output$table_sv2_covid_safe <- shiny::renderTable({(table_sv2_covid_safe())}, striped = TRUE,
-    #                                                   caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    # output$plot_sv2_covid_safe <- renderPlotly({plot_sv2_covid_safe()})
-    table_sv2_risk <- reactive({summary_table_survey_last_week()$Risk}) 
-    output$table_sv2_risk <- shiny::renderTable({(table_sv2_risk())}, striped = TRUE,
-                                                caption = "no_value = selected 'choose not to answer'; null = skipped using the navigation buttons; NA = survey not accessed or data not synced")
-    plot_sv2_risk  <- reactive({
-      hp_mood_plot(data = summary_table_survey_last_week()$Risk, factors = "Org", limits = NULL, xlab = "")})
-    output$plot_sv2_risk <- renderPlotly({plot_sv2_risk()})
-    
-    # Final pilot survey 
-    # rp.contact.field.survey_final_completion_level # is it this variable?
-    
-    
+  
     #SIXTH Tab Parent Library
     summary_table_library <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
       summary_table_baseline_build <- summary_table_base_build(opt_factors = opt_factors(), data = selected_data_dem(), columns_to_summarise = data_library,
@@ -5450,12 +4158,11 @@ parentapp_shiny <- function(country, study){
     # TODO: fix.
     summary_download <- reactive({
       data <- download_data_start()
-      
       last_sync_data <- data %>%
-        mutate(last_sync_cat = ifelse(group_since_sync == "4", "Last sync over 60 days ago",
-                                      ifelse(group_since_sync == "3", "Last sync over 30 days ago",
-                                             ifelse(group_since_sync == "2", "Last sync over 14 days ago",
-                                                    ifelse(group_since_sync == "1", "Last sync over 7 days ago", "0"))))) %>%  group_by(opt_cluster, last_sync_cat) %>%
+        mutate(last_sync_cat = ifelse(group_since_sync == "4", "Last synced over 60 days ago",
+                                      ifelse(group_since_sync == "3", "Last synced over 30 days ago",
+                                             ifelse(group_since_sync == "2", "Last synced over 14 days ago",
+                                                    ifelse(group_since_sync == "1", "Last synced over 7 days ago", "0"))))) %>%  group_by(opt_cluster, last_sync_cat) %>%
         summarise(opt_cluster, last_sync_cat) %>%
         summarise(last_sync = n()) %>%
         filter(last_sync_cat != 0) %>%

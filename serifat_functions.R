@@ -1,4 +1,6 @@
 #### To Calculate the Module Completion Rate ####
+module_info <- read.csv("modules_info.csv")
+
 calculate_module_completion_percentage <- function() {
   # Create an empty data frame to store the results
   result_df <- data.frame(Module_ID = integer(),

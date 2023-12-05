@@ -8,7 +8,13 @@ country <- "Tanzania"
 study <- "RCT"
 
 additional_week_order <- c("Srh", "Svp", "Grief", "Learn")
-
+ltp_activites <- c("chores", "bao", "walk", "cook_traditional", "garden", "charades", "role_play",
+                   "find_pair", "mystery_box", "memory_game", "cook", "tell_stories", "dance",
+                   "short_term_goal", "long_term_goal", "clean", "reflect_positive", "check_in_chat",
+                   "dream_travel", "famous_party","two_truths", "time_machine", "superpowers",
+                   "friendly_chat", "interrupter", "three_options", "yes_no_maybe",
+                   "invent_story")
+ltp_activites_name <- naming_conventions(ltp_activites)
 ### Set up UIC data
 
 # add in start dates for clusters
@@ -310,9 +316,17 @@ plhdata_org_clean <- plhdata_org_clean %>%
 #  for (i in c("self_care", "1on1", "praise", "instruct", "stress", "money", "rules", "consequence", "solve", "safe", "crisis", "celebrate")){
 #   # which variables to select?
 #   json_data[[i]] <- data.frame(jsonlite::fromJSON(paste0("~/GitHub/parenting-app-ui/packages/app-data/sheets/data_list/generated/w_", i, "_task_gs.json")))
-#  }
+#  } # w_srh_task_gs.json
 # saveRDS(json_data, file = "data/json_data.RDS")
 json_data <- readRDS(file = "data/json_data.RDS")
+
+json_data_af <- NULL
+for (i in c("srh", "svp", "learn", "grief")){
+  json_data_todo <- jsonlite::fromJSON(paste0("~/GitHub/plh-teens-app-tz-content/app_data/sheets/data_list/generated/w_", i, "_task_gs.json"))
+  json_data_af[[i]] <- json_data_todo$rows$completed_field
+}
+#saveRDS(json_data_af, file = "data/json_data_af.RDS")
+json_data_af <- readRDS(file = "data/json_data_af.RDS")
 
 if (study %in% c("Optimisation", "RCT")){
   plhdata_org_clean_mod <- plhdata_org_clean %>% filter(rp.contact.field._app_skin %in% c("modular", "default"))
@@ -387,11 +401,11 @@ if (study == "RCT"){
   completion_var <- NULL
   new_modules <- c("learn", "svp", "grief", "srh")
   for (module_name in new_modules){
-    selected_var <- var_names[grep(paste0("^", "rp.contact.field.task_gp_w_", module_name, ".*"), var_names)]
-    selected_var <- selected_var[grep("_completed$", selected_var)]
-    selected_var_x <- plhdata_org_clean %>% dplyr::select(all_of(c("app_user_id", selected_var)))
+    completed_mods <- paste0("rp.contact.field.", json_data_af[[module_name]])
+    plhdata_org_clean <- add_na_variable(plhdata_org_clean, variable = completed_mods)
+    selected_var_x <- plhdata_org_clean %>% dplyr::select(all_of(c("app_user_id", completed_mods)))
     selected_var_x <- selected_var_x %>%
-      dplyr::mutate(across(selected_var, ~as.numeric(as.logical(.)))) %>%
+      dplyr::mutate(across(completed_mods, ~as.numeric(as.logical(.)))) %>%
       dplyr::select(-c(paste0("rp.contact.field.task_gp_w_", module_name, "_home_practice_completed")))
     completion_var[[which(new_modules == module_name)]] <- selected_var_x %>%
       dplyr::mutate("rp.contact.field.w_{module_name}_completion_level" := rowSums(.[2:length(selected_var_x)], na.rm = TRUE)/length(.[2:length(selected_var_x)]) * 100) %>%

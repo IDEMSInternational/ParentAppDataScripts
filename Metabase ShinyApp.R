@@ -451,7 +451,55 @@ parentapp_shiny <- function(country, study){
                                        ) #closes box
                                      ) #closes fluid row
                             ), # closes Additional Insights
-                            tabPanel("Activities"
+                            tabPanel("Activities",
+                                     
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Number of users who have started an activity",
+                                           status = "info",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "activity_plot_started", height = "240"),
+                                           shiny::tableOutput("activity_table_started")
+                                       )#closes box
+                                     ), #closes fluid row
+                                     
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Number of users who have self-reported trying the activity",
+                                           status = "info",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "activity_plot_done", height = "240"),
+                                           shiny::tableOutput("activity_table_done")
+                                       )#closes box
+                                     ), #closes fluid row
+                                     
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Number of repeat users for an activity",
+                                           status = "info",
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "activity_plot_repeat", height = "240"),
+                                           shiny::tableOutput("activity_table_repeat")
+                                       )#closes box
+                                     ), #closes fluid row
+                                     # 
+                                     fluidRow(
+                                       box(width = 12,
+                                           collapsible = TRUE,
+                                           solidHeader = TRUE,
+                                           title = "Number of activities started (for users who have done at least one)",
+                                           status = "info",  
+                                           style='width:100%;overflow-x: scroll;',
+                                           plotlyOutput(outputId = "activity_plot_total", height = "240"),
+                                           shiny::tableOutput("activity_table_total")
+                                       )#closes box
+                                     )
                             )
                 ) #closes tabsetPanel for additional insights
         ), #closes tabItem
@@ -2609,8 +2657,7 @@ parentapp_shiny <- function(country, study){
         last_sync_cat <- ifelse(is.na(time_diff), "5",
                                 ifelse(time_diff > 60*24, "4",
                                        ifelse(time_diff > 30*24, "3",
-                                              ifelse(time_diff > 14*24, "2",
-                                                     ifelse(time_diff > 7*24, "1", "0")))))
+                                              ifelse(time_diff > 14*24, "2", "1"))))
       }
     })
     
@@ -2636,7 +2683,7 @@ parentapp_shiny <- function(country, study){
       shinydashboard::valueBox(nrow(selected_data_dem() %>% filter(createdAt > as.Date(lubridate::now(tzone = "UTC")) - 7)), subtitle = "trial users joined in last 7 days", icon = icon("clock"),
                                color = "yellow")})
       output$myvaluebox1 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced 7-13 days ago")), subtitle = "Last synced 7-13 days ago", icon = icon("user"),
+        shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced less than 14 days ago")), subtitle = "Last synced less than 14 days ago", icon = icon("user"),
                                  color = "green")})
       output$myvaluebox2 <- shinydashboard::renderValueBox({
         shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced 14-29 days ago")), subtitle = "Last synced 14-29 days ago", icon = icon("user"),
@@ -2860,8 +2907,8 @@ parentapp_shiny <- function(country, study){
         mutate(last_sync_cat = ifelse(group_since_sync == "4", "Last synced over 60 days ago",
                                       ifelse(group_since_sync == "3", "Last synced 30-59 days ago",
                                              ifelse(group_since_sync == "2", "Last synced 14-29 days ago",
-                                                    ifelse(group_since_sync == "1", "Last synced 7-13 days ago", "0"))))) %>%
-        mutate(last_sync_cat = fct_relevel(last_sync_cat, c("Last synced 7-13 days ago", "Last synced 14-29 days ago", "Last synced 30-59 days ago", "Last synced over 60 days ago"))) %>%
+                                                    ifelse(group_since_sync == "1", "Last synced less than 14 days ago", "0"))))) %>%
+        mutate(last_sync_cat = fct_relevel(last_sync_cat, c("Last synced less than 14 days ago", "Last synced 14-29 days ago", "Last synced 30-59 days ago", "Last synced over 60 days ago"))) %>%
         dplyr::select(c(ClusterName, last_sync_cat, rp.contact.field.post_rct_access))
       return(last_sync_data)
     })
@@ -3089,6 +3136,12 @@ parentapp_shiny <- function(country, study){
       selected_data_dem() %>% filter(rp.contact.field.post_rct_access == "true")
       })
 
+    accessed_new_content_column <- reactive({
+      accessed_new_content() %>%
+        group_by(ClusterName) %>%
+        summarise(`Number accessed` = n())
+    })
+    
     additional_engagement_cut <- reactive({
       data <- accessed_new_content() %>%
         mutate(across(all_of(new_modules_completion_level),
@@ -3134,8 +3187,11 @@ parentapp_shiny <- function(country, study){
       
       # this should be done elsewhere - adding the week # into the plhdata.
       if (study == "RCT"){
+        additional_table_ws_started <- full_join(accessed_new_content_column(), additional_table_ws_started, multiple = "all")
         additional_table_ws_started <- full_join(UIC_onboarding_dates, additional_table_ws_started, multiple = "all") %>%
-          dplyr::select(c("ClusterName", "Weeks completed", "Srh", "Svp", "Grief", "Learn"))
+          mutate(`Number accessed` = replace_na(`Number accessed`, 0)) %>%
+          dplyr::select(c("ClusterName", "Number accessed", "Weeks completed", "Srh", "Svp", "Grief", "Learn"))
+        additional_table_ws_started$`Number accessed`[nrow(additional_table_ws_started)] <- sum(additional_table_ws_started$`Number accessed`)
         # additional_table_ws_started$`Weeks completed`[length(additional_table_ws_started$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
       }
       return(additional_table_ws_started)
@@ -3172,9 +3228,11 @@ parentapp_shiny <- function(country, study){
         mutate(perc_completed = paste0(n_completed, " (", perc_completed, "%)")) %>%
         pivot_wider(id_cols = opt_factors(), names_from = Workshop, values_from = perc_completed)
       if (study == "RCT"){
-        table_perc_completed <- full_join(UIC_onboarding_dates, table_perc_completed, multiple = "all")  %>%
-          dplyr::select(c("ClusterName", "Weeks completed", "Srh", "Svp", "Grief", "Learn"))
-        # table_perc_completed$`Weeks completed`[length(table_perc_completed$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
+        table_perc_completed <- full_join(accessed_new_content_column(), table_perc_completed, multiple = "all")
+        table_perc_completed <- full_join(UIC_onboarding_dates, table_perc_completed, multiple = "all") %>%
+          mutate(`Number accessed` = replace_na(`Number accessed`, 0)) %>%
+          dplyr::select(c("ClusterName", "Number accessed", "Weeks completed", "Srh", "Svp", "Grief", "Learn"))
+        table_perc_completed$`Number accessed`[nrow(table_perc_completed)] <- sum(table_perc_completed$`Number accessed`)
       }
       return(table_perc_completed)
     })
@@ -3199,11 +3257,15 @@ parentapp_shiny <- function(country, study){
                                                      summaries = "mean",
                                                      factors = opt_factors(),
                                                      include_margins = TRUE)
+      
       if (study == "RCT"){
-      summary_mean_completion_level <- full_join(UIC_onboarding_dates, summary_mean_completion_level, multiple = "all") %>%
-        dplyr::select(c("ClusterName", "Weeks completed", "Srh", "Svp", "Grief", "Learn"))
-      #summary_mean_completion_level$`Weeks completed`[length(summary_mean_completion_level$`Weeks completed`)] <- round(mean(UIC_onboarding_dates$`Weeks completed`, na.rm = TRUE), 0)
+        summary_mean_completion_level <- full_join(accessed_new_content_column(), summary_mean_completion_level, multiple = "all")
+        summary_mean_completion_level <- full_join(UIC_onboarding_dates, summary_mean_completion_level, multiple = "all") %>%
+          mutate(`Number accessed` = replace_na(`Number accessed`, 0)) %>%
+          dplyr::select(c("ClusterName", "Number accessed", "Weeks completed", "Srh", "Svp", "Grief", "Learn"))
+        summary_mean_completion_level$`Number accessed`[nrow(summary_mean_completion_level)] <- sum(summary_mean_completion_level$`Number accessed`)
       }
+      return(summary_mean_completion_level)
     })
     
     additional_plot_ws_totals  <- reactive({
@@ -3226,6 +3288,142 @@ parentapp_shiny <- function(country, study){
     # run our table_baselines and plot_baselines # TODO: in PLHr function, replace for loop with map like this.
     map2(c("Srh", "Svp", "Grief", "Learn"), c("w_srh", "w_svp", "w_grief", "w_learn"), .f = ~ additional_ws_completion_table(n = .y, j = .x))
     map2(c("rp.contact.field.w_learn_completion_level", "rp.contact.field.w_svp_completion_level", "rp.contact.field.w_grief_completion_level", "rp.contact.field.w_srh_completion_level"), c("w_learn", "w_svp", "w_grief", "w_srh"), .f = ~ additional_ws_completion_plot(n = .y, j = .x))
+    
+    # ACTIVITES - ADDITIONAL ----------
+    
+    # Number Started - at least one click:
+    ltp_activities <- reactive({
+      accessed_new_content() %>%
+      #plhdata_org_clean %>% dplyr::filter(rp.contact.field.post_rct_access == "true") %>%
+        dplyr::select(c(ClusterName, starts_with("rp.contact.field.ltp_"))) %>%
+        dplyr::select(c(ClusterName, ends_with("click_history")))
+    })
+    
+    # Total count
+    total_count <- reactive({
+      ltp_activities() %>%
+      mutate(across(ends_with("click_history"), ~ stringr::str_count(.x, "T")))
+    })
+    
+    # Calculation and Table of number started
+    activity_table_started <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+      number_started <- total_count() %>% 
+        group_by(ClusterName) %>%
+        summarise(across(ends_with("click_history"), ~ sum(!is.na(.x))))
+      names(number_started) <- naming_conventions(names(number_started), replace = "rp.contact.field.ltp_activity_", replace_after = "_click_history")
+      number_started <- number_started %>% janitor::adorn_totals(c("row", "col"))
+    })
+    
+    # Plot of number started
+    activity_plot_started  <- reactive({
+      number_started_total <- activity_table_started() %>% filter(ClusterName == "Total") %>%
+        pivot_longer(cols = !ClusterName) %>%
+        filter(name != "Total")
+      ltp_activites_names <- ltp_activites_name[ltp_activites_name %in% number_started_total$name]
+      ggplot(number_started_total, aes(x = as_factor(name), y = value, fill = value)) +
+        geom_bar(stat = "identity") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1), legend.position = "none") +
+        labs(x = "Activity", y = "Number started") +
+        scale_fill_gradient(low = "#cc0000", high = "#00cc44") +
+        scale_x_discrete(limits = ltp_activites_names)
+    }) 
+    output$activity_table_started <- shiny::renderTable({(activity_table_started())}, striped = TRUE)
+    output$activity_plot_started <- renderPlotly({activity_plot_started()})
+    
+    
+    # Calculation and Table of number started
+    activity_table_total <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+      total_count <- total_count()
+      total_count$number_started <- apply(!is.na(total_count), 1, sum) - 1
+      total_count %>%
+        filter(number_started != 0) %>%
+        group_by(ClusterName) %>%
+        summarise(Mean = mean(number_started),
+                  Max = max(number_started),
+                  SD = sd(number_started))
+    })
+    
+    # Plot of number started
+    activity_plot_total  <- reactive({
+      total_count <- total_count()
+      total_count$number_started <- apply(!is.na(total_count), 1, sum) - 1
+      ggplot(total_count %>% filter(number_started != 0), aes(x = number_started)) + geom_bar() + labs(x = "Number of activities started", y = "Number of users") +
+        scale_fill_gradient(low = "#cc0000", high = "#00cc44")
+    }) 
+    output$activity_table_total <- shiny::renderTable({(activity_table_total())}, striped = TRUE)
+    output$activity_plot_total <- renderPlotly({activity_plot_total()})
+    
+    
+    # activity_plot_repeat
+    # activity_table_repeat
+    activity_table_repeat <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+      ltp_activities_summary <- ltp_activities() %>%
+      mutate(across(ends_with("_click_history"), ~stringr::str_detect(.x, ";"))) %>%
+      pivot_longer(cols = !"ClusterName", names_to = "Activity") %>%
+      group_by(Activity) %>%
+      mutate(value = ifelse(value == TRUE, 1, 0)) %>%
+      summarise(`Number of users` = sum(value, na.rm = TRUE)) %>%
+      filter(`Number of users` != "0")
+    ltp_activities_summary$Activity <- 
+      naming_conventions(ltp_activities_summary$Activity, "rp.contact.field.ltp_activity_", "_click_history")
+    return(ltp_activities_summary)
+    })
+    activity_plot_repeat  <- reactive({
+      ltp_activities_summary <- activity_table_repeat()
+      ltp_activites_name <- ltp_activites_name[ltp_activites_name %in% ltp_activities_summary$Activity]
+      ggplot(ltp_activities_summary, aes(x = Activity, y = `Number of users`, fill = `Number of users`)) +
+        geom_bar(stat = "identity") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1), legend.position = "none") +
+        scale_fill_gradient(low = "#cc0000", high = "#00cc44") +
+        scale_x_discrete(limits = ltp_activites_name)
+    }) 
+    output$activity_table_repeat <- shiny::renderTable({(activity_table_repeat())}, striped = TRUE)
+    output$activity_plot_repeat <- renderPlotly({activity_plot_repeat()})
+    
+    
+    # # for each activity - if interested
+    # naming_ltp_activites <- paste0("rp.contact.field.ltp_activity_", ltp_activites, "_click_history")
+    # ltp_complete <- purrr::map(.x = naming_ltp_activites,
+    #                            .f = ~ total_count %>%
+    #                              dplyr::select(ClusterName, .x) %>%
+    #                              dplyr::filter(!is.na(get(.x))) %>%
+    #                              group_by(ClusterName, get(.x)) %>%
+    #                              summarise(n()) %>%
+    #                              pivot_wider(names_from = `get(.x)`, values_from = `n()`, values_fill = 0))
+    # # 
+
+    # Self reported - done
+    ltp_activities_done <- reactive({
+      accessed_new_content() %>%
+        dplyr::select(c(ClusterName, starts_with("rp.contact.field.ltp_"))) %>%
+        dplyr::select(c(ClusterName, ends_with("_hp_done")))
+    })
+    
+    # self reported = yes' ?
+    activity_table_done <- eventReactive(ifelse(input$goButton == 0, 1, input$goButton), {
+      ltp_activities_done <- ltp_activities_done() %>%
+        dplyr::mutate(across(ends_with("_hp_done"), ~str_count(.x, "yes"))) %>% # count number of yes'
+        group_by(ClusterName) %>%
+        summarise(across(ends_with("_hp_done"), ~sum(.x, na.rm = TRUE)))
+      names(ltp_activities_done) <- naming_conventions(names(ltp_activities_done), replace = "rp.contact.field.ltp_activity_", replace_after = "_hp_done")
+      ltp_activities_done <- ltp_activities_done %>% janitor::adorn_totals(c("row", "col"))
+      return(ltp_activities_done)
+    })
+    
+    activity_plot_done  <- reactive({
+      ltp_activities_done_plot <- activity_table_done() %>% filter(ClusterName == "Total") %>%
+        pivot_longer(cols = !ClusterName) %>%
+        filter(name != "Total")
+      ltp_activites_names <- ltp_activites_name[ltp_activites_name %in% ltp_activities_done_plot$name]
+      ggplot(ltp_activities_done_plot, aes(x = as_factor(name), y = value, fill = value)) +
+        geom_bar(stat = "identity") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1), legend.position = "none") +
+        labs(x = "Activity", y = "Number completed (self reported)") +
+        scale_fill_gradient(low = "#cc0000", high = "#00cc44") +
+        scale_x_discrete(limits = ltp_activites_names)
+    }) 
+    output$activity_table_done <- shiny::renderTable({(activity_table_done())}, striped = TRUE)
+    output$activity_plot_done <- renderPlotly({activity_plot_done()})
     
     # Parent Points Tab -----------------------------------------------
     values <- reactiveValues(total = 0)
@@ -3960,6 +4158,7 @@ parentapp_shiny <- function(country, study){
         }
       }
       rbind(summary_mean_library_data, means_total)
+      
     }) 
     
     plot_library_mean  <- reactive({

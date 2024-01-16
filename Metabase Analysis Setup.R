@@ -5,7 +5,7 @@
 ##################################
 
 country <- "Tanzania"
-study <- "RCT"
+#study <- "RCT"
 
 additional_week_order <- c("Srh", "Svp", "Grief", "Learn")
 ltp_activites <- c("chores", "bao", "walk", "cook_traditional", "garden", "charades", "role_play",
@@ -42,10 +42,10 @@ if (study == "RCT"){
   UIC_onboarding_dates <- readxl::read_excel("data/UIC_onboarding_dates.xlsx")
   UIC_onboarding_dates <- UIC_onboarding_dates %>%
     mutate(#date_first_chat = lubridate::as_date(`Date of onboarding`),
-           #date_data_bundle = lubridate::as_date(`Date first data bundle received`),
-           date_first_chat = lubridate::as_date(`Date of first WhatsApp Live Chat`) - 6,
-           # `Date of first WhatsApp Live Chat` is day SEVEN
-           `Cluster name` = toupper(`Cluster name`))
+      #date_data_bundle = lubridate::as_date(`Date first data bundle received`),
+      date_first_chat = lubridate::as_date(`Date of first WhatsApp Live Chat`) - 6,
+      # `Date of first WhatsApp Live Chat` is day SEVEN
+      `Cluster name` = toupper(`Cluster name`))
   
   # do based on first live chat
   UIC_onboarding_dates <- UIC_onboarding_dates %>% dplyr::select(c(ClusterNumber = `Cluster Number`, date_first_chat))
@@ -78,8 +78,8 @@ if (study == "WASH"){
 }
 
 plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
-                              UIC_Tracker = UIC_Tracker_Use,
-                                     country = country, study = study)
+                             UIC_Tracker = UIC_Tracker_Use,
+                             country = country, study = study)
 names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")  
 
 
@@ -224,7 +224,7 @@ if (country == "Tanzania"){
     plhdata_org_clean <- plhdata_org_clean #%>% filter(Org == "Optimisation Study")
   } else if (study == "Pilot") {
     plhdata_org_clean <- plhdata_org_clean %>% mutate(PilotSite = replace_na(PilotSite, "Unknown"))
-#    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
+    #    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
   } else {
     plhdata_org_clean <- plhdata_org_clean %>% mutate(ClusterName = replace_na(ClusterName, "Unknown"))
   }
@@ -320,11 +320,13 @@ plhdata_org_clean <- plhdata_org_clean %>%
 # saveRDS(json_data, file = "data/json_data.RDS")
 json_data <- readRDS(file = "data/json_data.RDS")
 
-json_data_af <- NULL
-for (i in c("srh", "svp", "learn", "grief")){
-  json_data_todo <- jsonlite::fromJSON(paste0("~/GitHub/plh-teens-app-tz-content/app_data/sheets/data_list/generated/w_", i, "_task_gs.json"))
-  json_data_af[[i]] <- json_data_todo$rows$completed_field
-}
+#json_data_af <- NULL
+#for (i in c("srh", "svp", "learn", "grief")){
+#  json_data_todo <- jsonlite::fromJSON(paste0("~/GitHub/plh-teens-app-tz-content/app_data/sheets/data_list/generated/w_", i, "_task_gs.json"))
+#  json_data_todo <- json_data_todo$rows
+#  json_data_todo <- json_data_todo %>% filter(individual == TRUE)
+#  json_data_af[[i]] <- json_data_todo$completed_field
+#}
 #saveRDS(json_data_af, file = "data/json_data_af.RDS")
 json_data_af <- readRDS(file = "data/json_data_af.RDS")
 
@@ -428,14 +430,14 @@ if (study == "RCT"){
 
 if (study != "RCT"){
   if (study != "WASH"){
-  plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level)
-  plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
-  plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
-  plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_clean$rp.contact.field.household_teens)
-  plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_clean$rp.contact.field.household_babies)
-  plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
-  plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
-  plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
+    plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level <- as.numeric(plhdata_org_clean$rp.contact.field.survey_welcome_and_setup_completion_level)
+    plhdata_org_clean$rp.contact.field.user_age <- as.numeric(plhdata_org_clean$rp.contact.field.user_age)
+    plhdata_org_clean$rp.contact.field.household_adults <- as.numeric(plhdata_org_clean$rp.contact.field.household_adults)
+    plhdata_org_clean$rp.contact.field.household_teens <- as.numeric(plhdata_org_clean$rp.contact.field.household_teens)
+    plhdata_org_clean$rp.contact.field.household_babies <- as.numeric(plhdata_org_clean$rp.contact.field.household_babies)
+    plhdata_org_clean$rp.contact.field.household_children <- as.numeric(plhdata_org_clean$rp.contact.field.household_children)
+    plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_1on1_diff_started_completed)
+    plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed <- as.numeric(plhdata_org_clean$rp.contact.field.w_self_care_diff_started_completed)
   }
 }
 
@@ -501,8 +503,8 @@ if (study == "RCT"){
 # Tab ?? ----------
 #Define workshop week order
 # if (study == "RCT"){
-  week_order <- c("Self care", "1on1", "Praise", "Instruct", "Stress", "Solve", "Money", "Rules", "Consequence", "Safe",
-                  "Crisis", "Celebrate" )
+week_order <- c("Self care", "1on1", "Praise", "Instruct", "Stress", "Solve", "Money", "Rules", "Consequence", "Safe",
+                "Crisis", "Celebrate" )
 # } else {
 #   week_order <- c("Self care", "1on1", "Praise", "Instruct", "Stress", "Money", "Rules", "Consequence", "Solve", "Safe",
 #                   "Crisis", "Celebrate" ) 
@@ -563,7 +565,7 @@ breathe_workshop_vars <- c( "rp.contact.field.parent_point_count_breathe_w_self_
                             "rp.contact.field.parent_point_count_breathe_w_stress", "rp.contact.field.parent_point_count_breathe_w_solve",
                             "rp.contact.field.parent_point_count_breathe_w_money",
                             "rp.contact.field.parent_point_count_breathe_w_rules", "rp.contact.field.parent_point_count_breathe_w_consequence",
-                             "rp.contact.field.parent_point_count_breathe_w_safe",
+                            "rp.contact.field.parent_point_count_breathe_w_safe",
                             "rp.contact.field.parent_point_count_breathe_w_crisis","rp.contact.field.parent_point_count_breathe_w_celebrate")
 # money points in each week
 money_workshop_vars <- c( "rp.contact.field.parent_point_count_money_w_self_care", "rp.contact.field.parent_point_count_money_w_1on1",
@@ -624,7 +626,7 @@ data_hp_mood <- c("rp.contact.field.w_1on1_hp_mood", "rp.contact.field.w_instruc
 challenge_vars <- c("rp.contact.field.w_1on1_hp_challenge_list", "rp.contact.field.w_instruct_hp_challenge_list",
                     "rp.contact.field.w_stress_hp_challenge_list",  "rp.contact.field.w_solve_hp_challenge_list", "rp.contact.field.w_money_hp_challenge_list",
                     "rp.contact.field.w_rules_hp_challenge_list", "rp.contact.field.w_consequence_hp_challenge_list", 
-                   "rp.contact.field.w_safe_hp_challenge_list", 
+                    "rp.contact.field.w_safe_hp_challenge_list", 
                     "rp.contact.field.w_crisis_hp_challenge_list")
 chall_ap_vars <- c("rp.contact.field.w_1on1_hp_challenge", "rp.contact.field.w_instruct_hp_challenge",
                    "rp.contact.field.w_stress_hp_challenge", "rp.contact.field.w_solve_hp_challenge", "rp.contact.field.w_money_hp_challenge",

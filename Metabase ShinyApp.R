@@ -354,6 +354,10 @@ parentapp_shiny <- function(country, study){
                   ) #closes column
                 ), #closes fluid row
                 
+                fluidRow(
+                  shinydashboard::valueBoxOutput("additional_total", width=6), 
+                  shinydashboard::valueBoxOutput("additional_starter", width=6)
+                ),
                 tabsetPanel(type = "tabs",
                             tabPanel("Overview",
                                      fluidRow(
@@ -2694,6 +2698,18 @@ parentapp_shiny <- function(country, study){
       output$myvaluebox4 <- shinydashboard::renderValueBox({
         shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced over 60 days ago")), subtitle = "not synced in over 60 days", icon = icon("user"),
                                  color = "orange")})
+      
+      output$additional_total <- shinydashboard::renderValueBox({
+        shinydashboard::valueBox(nrow(accessed_new_content()), subtitle = "users have accessed the additional modules",
+                                 icon = icon("person-running"),
+                                 color = "light-blue")})
+      output$additional_starter <- shinydashboard::renderValueBox({
+        total_count <- total_count()
+        total_count$number_started <- apply(!is.na(total_count), 1, sum) - 1
+        shinydashboard::valueBox(nrow(total_count %>% filter(number_started != 0)), subtitle = "users have started at least one activity",
+                                 icon = icon("play"),
+                                 color = "light-blue")
+        })
 
     #   } else {
     #     output$myvaluebox1 <- shinydashboard::renderValueBox({

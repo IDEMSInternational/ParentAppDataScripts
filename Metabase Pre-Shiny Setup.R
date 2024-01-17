@@ -9,9 +9,10 @@ data_baseline_survey$object_name[which(data_baseline_survey$object_name == "lang
 if (study == "RCT"){
   # filter to just RCT_display == TRUE
 }
-  # TODO, we want a "display RCT option for RCT ones only.
+# TODO, we want a "display RCT option for RCT ones only.
 data_completion_level_data <- r_variables_names %>% filter(location_ID == "data_completion_level") %>% filter(display == TRUE)
 data_completion_level <- data_completion_level_data$metabase_ID
+data_completion_level_names <- data_completion_level_data$display_name
 data_habit_parent_points_data <- r_variables_names %>% filter(location_ID == "data_habit_parent_points_all") %>% filter(display == TRUE)
 data_habit_parent_points_all <- data_habit_parent_points_data$metabase_ID
 
@@ -29,3 +30,10 @@ data_baseline_survey$object_name
 #w_safe
 #w_crisis
 #w_celebrate
+
+
+# TODO: 
+# redefine data_hp_started to use rp.contact.field.task_gp_w_1on1_hp_review_completed instead of rp.contact.field.w_1on1_hp_review_started
+
+
+

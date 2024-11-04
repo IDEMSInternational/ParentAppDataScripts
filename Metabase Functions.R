@@ -12,6 +12,27 @@ UIC_Tracker_RCT <- UIC_Tracker_RCT %>%
   dplyr::mutate(Study = ifelse(Condition == "Intervention", "RCT", "WASH"))
 UIC_Tracker_RCT$YourParentAppCode <- UIC_Tracker_RCT$Code
 
+
+calling_matomo_data <- function(date_from = "2021-10-25", date_to = "2024-10-25",
+                                token = token_matomo){
+  
+  segment_name <- "segment=countryCode%3D%3Dtz;pageTitle%3D%3DParentApp"
+  
+  json_file <- paste0("https://apps-server.idems.international/analytics/index.php?apiAction=getUsers&apiModule=UserId&date=", date_from, ",", date_to, "&expanded=1&filter_limit=-1&format=JSON&idSite=1&method=API.getProcessedReport&module=API&period=range&", segment_name, "&token_auth=", token)
+  
+  json_data <- jsonlite::fromJSON(txt=json_file, flatten = TRUE)
+  
+  our_data <- json_data$reportData
+  names(our_data) <- c("UUID", "Visits", "Actions", "C", "D", "Actions per visit", "Avg. Time on Website", "Bounce Rate")
+  our_data <- our_data %>% dplyr::select(-c("C", "D"))
+  our_data$`Bounce proportion` <- as.numeric(as.character(stringr::str_split(our_data$`Bounce Rate`, "%", simplify = TRUE)[,1]))/100
+  our_data <- our_data %>% mutate(Bounce = round(`Bounce proportion` * Visits, 0)) %>% dplyr::select(-c("Bounce Rate"))
+  our_data$`Avg. Time on Website` <- period_to_seconds(hms(x = our_data$`Avg. Time on Website`, format = "%H:%M:%S"))[1:length(our_data$`Avg. Time on Website`)]
+  our_data$`Time on Website` <- our_data$`Avg. Time on Website` * our_data$Visits # this is calculated so can be out by 10 seconds or so
+  
+  return(our_data)
+}
+
 #######################################
 # Specific to ParentApp --------------------------------------------------
 #######################################

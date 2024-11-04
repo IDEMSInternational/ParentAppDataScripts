@@ -2,13 +2,15 @@
 
 # taken from Metabase Analysis Setup.R
 country <- "Tanzania"
-study <- "Pilot"
+study <- "RCT"
 ### extract data ----------------------------------------------------------------------
 # to get user data
-plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
+#plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
+plhdata_org <- readRDS("plhdata_master_20230321.RDS")
 #plhdata_org <- plhdata_org1
 
-nf_data <- get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
+#nf_data <- get_nf_data(site = plh_con) #, UIC_Tracker = UIC.Tracker)
+nf_data <- readxl::read_excel("nf_data_master_20230321.xlsx")
 #nf_data <- nf_data1
 ## Data Cleaning - User Data ## --------------------------------------------------------
 ## Tidy up "Organisation" Variable:
@@ -492,7 +494,7 @@ nf_data <- nf_data %>% filter(app_user_id %in% plhdata_org_clean_all$`App user I
 nf_data <- nf_data %>%
   dplyr::select(c(`App user ID` = app_user_id, app_user_record_id, action_recorded_timestamp,
                   action_id, sent_recorded_timestamp, schedule_timestamp,
-                  notification_id = `id...16`, campaign_id))
+                  notification_id = `id...15`, campaign_id))
 
 #nf_data_wider <- nf_data %>% pivot_wider(id_cols = `App user ID`, names_from = app_user_record_id,
 #                                         values_from = action_recorded_timestamp)
@@ -506,8 +508,8 @@ nf_data <- nf_data %>%
 
 #nf_data <- nf_data1
 
-writexl::write_xlsx(plhdata_org_clean_all, path = "pilot_data_20230310.xlsx")
-writexl::write_xlsx(nf_data, path = "pilot_nf_data_20230310.xlsx")
+writexl::write_xlsx(plhdata_org_clean_all, path = "optimisation_data_614_20230321.xlsx")
+writexl::write_xlsx(nf_data, path = "optimisation_nf_data_614_20230321.xlsx")
 
 
 names(plhdata_org_clean_all)

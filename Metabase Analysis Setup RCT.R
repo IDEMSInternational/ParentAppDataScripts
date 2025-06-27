@@ -27,65 +27,60 @@ lookup_df <- data.frame(opt_cluster = c(1, 3, 4, 6, 7, 11, 13, 14),
 ### extract data ----------------------------------------------------------------------
 # to get user data
 
-  UIC_Tracker_Use <- UIC_Tracker_RCT[!duplicated(UIC_Tracker_RCT$Code), ]
-  UIC_Tracker_Use$ClusterName <- toupper(UIC_Tracker_Use$ClusterName)
+UIC_Tracker_Use <- UIC_Tracker_RCT[!duplicated(UIC_Tracker_RCT$Code), ]
+UIC_Tracker_Use$ClusterName <- toupper(UIC_Tracker_Use$ClusterName)
 
-if (study == "RCT"){
-  UIC_onboarding_dates <- readxl::read_excel("data/UIC_onboarding_dates.xlsx")
-  UIC_onboarding_dates <- UIC_onboarding_dates %>%
-    mutate(#date_first_chat = lubridate::as_date(`Date of onboarding`),
-      #date_data_bundle = lubridate::as_date(`Date first data bundle received`),
-      date_first_chat = lubridate::as_date(`Date of first WhatsApp Live Chat`) - 6,
-      # `Date of first WhatsApp Live Chat` is day SEVEN
-      `Cluster name` = toupper(`Cluster name`))
-  
-  # do based on first live chat
-  UIC_onboarding_dates <- UIC_onboarding_dates %>% dplyr::select(c(ClusterNumber = `Cluster Number`, date_first_chat))
-  
-  UIC_Tracker_Use_cn <- UIC_Tracker_Use %>%
-    dplyr::filter(Study == "RCT") %>%
-    dplyr::mutate(ClusterName = toupper(ClusterName)) %>%
-    dplyr::select(ClusterName, ClusterNumber)
-  UIC_Tracker_Use_cn <- unique(UIC_Tracker_Use_cn)
-  UIC_Tracker_Use_cn$ClusterNumber <- as.numeric(UIC_Tracker_Use_cn$ClusterNumber)
-  UIC_onboarding_dates <- full_join(UIC_Tracker_Use_cn, UIC_onboarding_dates, by = "ClusterNumber")  %>% dplyr::select(-"ClusterNumber") %>%
-    dplyr::filter(!is.na(ClusterName)) %>%
-    mutate(`Weeks completed` = as.integer(floor(as.numeric(Sys.Date() - date_first_chat)/7))) %>%
-    dplyr::select(-c("date_first_chat"))
-}
+UIC_onboarding_dates <- readxl::read_excel("data/UIC_onboarding_dates.xlsx")
+UIC_onboarding_dates <- UIC_onboarding_dates %>%
+  mutate(#date_first_chat = lubridate::as_date(`Date of onboarding`),
+    #date_data_bundle = lubridate::as_date(`Date first data bundle received`),
+    date_first_chat = lubridate::as_date(`Date of first WhatsApp Live Chat`) - 6,
+    # `Date of first WhatsApp Live Chat` is day SEVEN
+    `Cluster name` = toupper(`Cluster name`))
 
+# do based on first live chat
+UIC_onboarding_dates <- UIC_onboarding_dates %>% dplyr::select(c(ClusterNumber = `Cluster Number`, date_first_chat))
 
-if (study == "RCT"){
-  x <- which(UIC_Tracker_Use$YourParentAppCode == "a4085690410bCa24")
-  UIC_Tracker_Use$YourParentAppCode[x] <- "a4085690410bca24"
-}
+UIC_Tracker_Use_cn <- UIC_Tracker_Use %>%
+  dplyr::filter(Study == "RCT") %>%
+  dplyr::mutate(ClusterName = toupper(ClusterName)) %>%
+  dplyr::select(ClusterName, ClusterNumber)
+UIC_Tracker_Use_cn <- unique(UIC_Tracker_Use_cn)
+UIC_Tracker_Use_cn$ClusterNumber <- as.numeric(UIC_Tracker_Use_cn$ClusterNumber)
+UIC_onboarding_dates <- full_join(UIC_Tracker_Use_cn, UIC_onboarding_dates, by = "ClusterNumber")  %>% dplyr::select(-"ClusterNumber") %>%
+  dplyr::filter(!is.na(ClusterName)) %>%
+  mutate(`Weeks completed` = as.integer(floor(as.numeric(Sys.Date() - date_first_chat)/7))) %>%
+  dplyr::select(-c("date_first_chat"))
+
+x <- which(UIC_Tracker_Use$YourParentAppCode == "a4085690410bCa24")
+UIC_Tracker_Use$YourParentAppCode[x] <- "a4085690410bca24"
 
 # IF PILOT:
 #UIC_Tracker_Use <- UIC_Tracker_Use %>% filter(Study == "Pilot")
 #UIC_Tracker_Use <- UIC_Tracker_Use %>% mutate(YourParentAppCode = ifelse(is.na(`New list from NIMR 03/01/2023`), YourParentAppCode, `New list from NIMR 03/01/2023`))
-  plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
-                               filter_variable = "app_deployment_name",
-                               filter_variable_value = "plh_tz")
-  names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")  
-  
-  # all users for total number of downloads
-  plhdata_org_allusers <- plhdata_org
-  
-  app_users <- UIC_Tracker_Use %>%
-    filter(country == "Tanzania") %>%
-    filter(Study == "RCT") %>%
-    pull(YourParentAppCode)
-  
-  plhdata_org <- plhdata_org %>% filter(app_user_id %in% app_users)
-  
-  ####################################
-  
-  valid_ids <- UIC_Tracker_Use %>%
-    filter(complete.cases(YourParentAppCode))  %>%
-    filter(Study == "RCT") %>%
-    mutate(ClusterName = toupper(ClusterName)) %>%
-    select(c(YourParentAppCode, Ward, ClusterName, OnboardingDateShort))
-  plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
+plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
+                             filter_variable = "app_deployment_name",
+                             filter_variable_value = "plh_tz")
+names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")  
+
+# all users for total number of downloads
+plhdata_org_allusers <- plhdata_org
+
+app_users <- UIC_Tracker_Use %>%
+  filter(country == "Tanzania") %>%
+  filter(Study == "RCT") %>%
+  pull(YourParentAppCode)
+
+plhdata_org <- plhdata_org %>% filter(app_user_id %in% app_users)
+
+####################################
+
+valid_ids <- UIC_Tracker_Use %>%
+  filter(complete.cases(YourParentAppCode))  %>%
+  filter(Study == "RCT") %>%
+  mutate(ClusterName = toupper(ClusterName)) %>%
+  select(c(YourParentAppCode, Ward, ClusterName, OnboardingDateShort))
+plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 
 plhdata_org <- plhdata_org %>% filter(ClusterName != "https://wa.me/qr/5KAUP4HXZHGXP1")
 
@@ -109,35 +104,13 @@ if (country == "South Africa"){
 #####Create a subset for cleaned organisations ####
 plhdata_org_clean <- plhdata_org # %>% filter(Org != "Other")%>% mutate(Org = factor(Org))
 
-if ("ClusterName" %in% names(plhdata_org_clean)) {
-  plhdata_org_clean$ClusterName <- toupper(plhdata_org_clean$ClusterName)
-}
-# RCT TODO HERE
-# plhdata_org_clean <- plhdata_org_clean %>%
-#   dplyr::mutate(rp.contact.field.user_age = as.numeric(rp.contact.field.user_age)) %>%
-#   dplyr::mutate(rp.contact.field.user_age = replace(rp.contact.field.user_age,
-#                                                     rp.contact.field.user_age %in% c(-29, 2, 1794, 5655),
-#                                                     NA)) %>%
-#   dplyr::mutate(rp.contact.field.user_age = ifelse(rp.contact.field.user_age > 1960,
-#                                                    2023 - rp.contact.field.user_age, #todo: fix more pernamently
-#                                                    ifelse(rp.contact.field.user_age < 0, NA, rp.contact.field.user_age)))
-
-# Create subsets of the data based on valid app user ID's
-#plhdata_org_clean <- plhdata_org_clean %>% dplyr::filter(!is.na(app_version))
+plhdata_org_clean$ClusterName <- toupper(plhdata_org_clean$ClusterName)
 
 # add in country variable
 plhdata_org_clean <- plhdata_org_clean %>% mutate(country = country)
 
-
 if (country == "Tanzania"){
-  if (study == "Optimisation"){
-    plhdata_org_clean <- plhdata_org_clean #%>% filter(Org == "Optimisation Study")
-  } else if (study == "Pilot") {
-    plhdata_org_clean <- plhdata_org_clean %>% mutate(PilotSite = replace_na(PilotSite, "Unknown"))
-    #    plhdata_org_clean <- plhdata_org_clean %>% filter(Org == "ICS")
-  } else {
     plhdata_org_clean <- plhdata_org_clean %>% mutate(ClusterName = replace_na(ClusterName, "Unknown"))
-  }
 } else if (country == "South Africa"){
   plhdata_org_clean <- plhdata_org_clean %>% filter(Org %in% c("Amathuba", "Joy", "Dlalanathi", "Nontobeko"))
 }
@@ -563,16 +536,19 @@ data_library <- c("rp.contact.field.click_hs_parent_centre_count", "rp.contact.f
 #   split(.$Org) %>%
 #   map(~summary_table(data = .x, factor = NULL, columns_to_summarise = rp.contact.field.survey_welcome_complppplheted, replace = "rp.contact.field.survey"))
 
-plhdata_org_clean1 <- plhdata_org_clean %>% dplyr::filter(is.na(app_user_id))
-if (nrow(plhdata_org_clean1)>1) stop("NA app user ID. Check YourParentAppCode is correct.")
+# e67b2bb64d267ef2, 22117328
+
+# note: we have two users who are not merging correctly.
+#plhdata_org_clean1 <- plhdata_org_clean %>% dplyr::filter(is.na(app_user_id))
+#if (nrow(plhdata_org_clean1)>1) stop("NA app user ID. Check YourParentAppCode is correct.")
 
 plhdata_org_clean <- plhdata_org_clean %>% dplyr::filter(app_user_id != "2d0badbfbfe07360")
 
-########################
-########################
-### Matomo Data Pull ###
-########################
-########################
+###################################
+###################################
+####### Post RCT Statistics #######
+###################################
+###################################
 # In the last 30 days
 date_from <- as.Date(Sys.Date(), "%y %m %d") - 30
 
@@ -604,4 +580,5 @@ if (study != "WASH"){
   nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC_Tracker_Use, filter = TRUE,
                          study = study, country = country, app_user_id = "app_user_id")  
 }
+
 

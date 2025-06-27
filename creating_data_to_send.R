@@ -2,7 +2,7 @@
 
 # taken from Metabase Analysis Setup.R
 country <- "Tanzania"
-study <- "RCT"
+study <- "Optimisation"
 ### extract data ----------------------------------------------------------------------
 # to get user data
 #plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, UIC_Tracker = UIC.Tracker) # select 1 if you want to merge in changes (yes)
@@ -429,6 +429,15 @@ names(plhdata_org_clean_hp_mood) <- paste0("hp_mood_", naming_conventions(names(
                                                                           replace_after = "_hp_mood"))
 names(plhdata_org_clean_hp_mood)[[1]] <- c("App user ID")
 
+
+# hp completed
+plhdata_org_clean_hp_completed <- plhdata_org_clean %>%
+  dplyr::select(c(app_user_id, ends_with("_home_practice_completed")))
+names(plhdata_org_clean_hp_completed) <- paste0("home_practice_completed_", naming_conventions(names(plhdata_org_clean_hp_completed),
+                                                                          replace = "rp.contact.field.task_gp_w_",
+                                                                          replace_after = "_home_practice_completed"))
+names(plhdata_org_clean_hp_completed)[[1]] <- c("App user ID")
+
 # Survey responses
 if (study == "Optimisation"){
   initial_survey_id <- (r_variables_names %>% filter(location_ID == "survey_initial_1"))$metabase_ID
@@ -470,6 +479,7 @@ plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_appo
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_response, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_done, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_mood, by = "App user ID")
+plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_hp_completed, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_initial_survey, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_final_survey, by = "App user ID")
 plhdata_org_clean_all <- full_join(plhdata_org_clean_all, plhdata_org_clean_pp, by = "App user ID")
@@ -508,8 +518,8 @@ nf_data <- nf_data %>%
 
 #nf_data <- nf_data1
 
-writexl::write_xlsx(plhdata_org_clean_all, path = "optimisation_data_614_20230321.xlsx")
-writexl::write_xlsx(nf_data, path = "optimisation_nf_data_614_20230321.xlsx")
+writexl::write_xlsx(plhdata_org_clean_all, path = "optimisation_data_614_20230321_1.xlsx")
+writexl::write_xlsx(nf_data, path = "optimisation_nf_data_614_20230321_1.xlsx")
 
 
 names(plhdata_org_clean_all)

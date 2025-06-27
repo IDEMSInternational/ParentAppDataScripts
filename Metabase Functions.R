@@ -48,14 +48,23 @@ add_na_variable <- function(data = plhdata_org_clean, variable){
 }
 
 notification_summary <- function(data = nf_data, factors){
-  numerator <- data %>%
-    filter(action_id == "tap") %>%
-    group_by(across(all_of({{ factors }})), .drop = FALSE) %>%
-    summarise(replied = n())
-  denominator <- data %>%
-    group_by(across(all_of({{ factors }})), .drop = FALSE) %>%
-    summarise(received = n())
-  notifications_perc <- full_join(numerator, denominator)
+  if (is.null(factors)){
+    numerator <- data %>%
+      filter(action_id == "tap") %>%
+      summarise(replied = n())
+    denominator <- data %>%
+      summarise(received = n())
+    notifications_perc <- bind_cols(numerator, denominator)
+  } else {
+    numerator <- data %>%
+      filter(action_id == "tap") %>%
+      group_by(across(all_of({{ factors }})), .drop = FALSE) %>%
+      summarise(replied = n())
+    denominator <- data %>%
+      group_by(across(all_of({{ factors }})), .drop = FALSE) %>%
+      summarise(received = n())
+    notifications_perc <- full_join(numerator, denominator)
+  }
   return(notifications_perc)
 }
 
@@ -161,7 +170,8 @@ plot_totals_function <- function(data = table_pp_relax_ws_totals(), factors, fil
         filter(name != "Total")
     } else if (study == "Pilot") {
       summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name == "Total")
-    } else if (study %in% c("RCT", "WASH")) {
+    } else if (study %in% c("RCT", "WASH", "PAPP")) {
+      print("plot_totals_function")
       summary_workshop_long <- rename(summary_workshop_long, Org = factors) %>% filter(name == "Total")
     } else {
       stop("Undefined Study Type")
@@ -344,6 +354,14 @@ summary_table_base_build <- function(data = plhdata_org_clean,
                                    factors = opt_factors,
                                    include_perc = include_perc,
                                    retain_names_for_refactor = retain_names_for_refactor)) #))
+    } else if (study %in% c("PAPP")){
+      return(multiple_table_output(data = data,
+                                   columns_to_summarise = columns_to_summarise,
+                                   replace = replace,
+                                   replace_after = replace_after,
+                                   factors = NULL,
+                                   include_perc = include_perc,
+                                   retain_names_for_refactor = retain_names_for_refactor))
     } else {
       return(multiple_table_output(data = data,
                                    columns_to_summarise = columns_to_summarise,
@@ -382,7 +400,7 @@ hp_mood_plot <- function(data, factors, manipulation = "longer", limits = c("Sad
           tidyr::unite(col = "Org", {{ factors }})
       } else if (study == "Pilot"){
         plot_data <- plot_data %>% mutate(Org = PilotSite)
-      } else if (study %in% c("RCT", "WASH")){
+      } else if (study %in% c("RCT", "WASH", "PAPP")){
         #plot_data <- plot_data %>% mutate(Org = ClusterName)
       } else {
         stop("Undefined study type")
@@ -869,7 +887,7 @@ fluid_row_box <- function(variable1, variable2 = NULL, title1 = NULL, title2 = N
 }
 
 demographics_fluid_row <- function(study){
-  if (study %in% c("RCT", "WASH")){
+  if (study %in% c("RCT", "WASH", "PAPP")){
     return()
   } else {
     return(fluidRow(

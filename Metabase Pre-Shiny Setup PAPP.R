@@ -1,4 +1,4 @@
-study <- "RCT"
+study <- "PAPP"
 country <- "Tanzania"
 
 # TODO: 
@@ -10,6 +10,18 @@ data_baseline_survey <- r_variables_names %>%
   filter(display == TRUE)
 data_baseline_survey$display_name[which(data_baseline_survey$display_name == "app language")] <- " app language"
 data_baseline_survey$object_name[which(data_baseline_survey$object_name == "language")] <- "app_language"
+
+data_app_opens <- c("rp.contact.field.app_launch_count","rp.contact.field.app_launch_count_w_1on1", "rp.contact.field.app_launch_count_w_self_care",
+                    "rp.contact.field.app_launch_count_w_praise","rp.contact.field.app_launch_count_w_instruct",
+                    "rp.contact.field.app_launch_count_w_stress", "rp.contact.field.app_launch_count_w_solve",
+                    "rp.contact.field.app_launch_count_w_money",
+                    "rp.contact.field.app_launch_count_w_rules", "rp.contact.field.app_launch_count_w_consequence",
+                    "rp.contact.field.app_launch_count_w_safe",
+                    "rp.contact.field.app_launch_count_w_crisis", "rp.contact.field.app_launch_count_w_celebrate")
+
+data_app_opens_neat <- c("Overall", "1on1 (2)", "Self Care (1)", "Praise (3)", "Positive Instructions(4)",
+                         "Managing Stress(5)", "Problem Solving(6)", "Family Budget(7)","Rules(8)", "Calm Consequences(9)",  
+                         "Teen Safety(10)", "Crisis(11)", "Celebration & Next Steps(12)")
 
 if (study == "RCT"){
   # filter to just RCT_display == TRUE

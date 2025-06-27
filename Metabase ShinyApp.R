@@ -1,4 +1,7 @@
-
+print("shinyapp")
+study = "RCT"
+country = "Tanzania"
+print("shinyapp done")
 # 1. Functions -------------------------------------------------------------------------
 # 3. Define UI -----------------------------------------------------------------------------
 parentapp_shiny <- function(country, study){
@@ -21,10 +24,10 @@ parentapp_shiny <- function(country, study){
       fluidRow(
         shinydashboard::valueBoxOutput("total_n", width=6), 
         shinydashboard::valueBoxOutput("total_users", width=6), 
-        shinydashboard::valueBoxOutput("myvaluebox1", width=3), 
-        shinydashboard::valueBoxOutput("myvaluebox2", width=3),
-        shinydashboard::valueBoxOutput("myvaluebox3", width=3),
-        shinydashboard::valueBoxOutput("myvaluebox4", width=3)
+        #shinydashboard::valueBoxOutput("myvaluebox1", width=3), 
+        shinydashboard::valueBoxOutput("myvaluebox2", width=4),
+        shinydashboard::valueBoxOutput("myvaluebox3", width=4),
+        shinydashboard::valueBoxOutput("myvaluebox4", width=4)
       ),
       fluidRow(checkbox_input(inputId = "Dem", country = country, study = study)), #closes fluidRow
       tabItems(
@@ -2570,9 +2573,10 @@ parentapp_shiny <- function(country, study){
     
     observe({
       #if (study == "RCT"){
-      #  source(here("Metabase Analysis Setup RCT.R")) # approx 17 secs # so what's the rest of the time? # How long does it take overall, 
+      source(here("Metabase Analysis Setup.R")) # approx 17 secs # so what's the rest of the time? # How long does it take overall,
+      #source(here("Metabase Analysis Setup RCT.R")) # approx 17 secs # so what's the rest of the time? # How long does it take overall,
       #} else {
-        source(here("Metabase Analysis Setup.R")) # approx 17 secs # so what's the rest of the time? # How long does it take overall, 
+         # approx 17 secs # so what's the rest of the time? # How long does it take overall,
       #}
     })
     
@@ -2689,9 +2693,11 @@ parentapp_shiny <- function(country, study){
     output$total_users <- shinydashboard::renderValueBox({
       shinydashboard::valueBox(nrow(selected_data_dem() %>% filter(createdAt > as.Date(lubridate::now(tzone = "UTC")) - 7)), subtitle = "trial users joined in last 7 days", icon = icon("clock"),
                                color = "yellow")})
-      output$myvaluebox1 <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced less than 14 days ago")), subtitle = "Last synced less than 14 days ago", icon = icon("user"),
-                                 color = "green")})
+      # output$myvaluebox1 <- shinydashboard::renderValueBox({
+      #   shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced less than 14 days ago")), subtitle = "Last synced less than 14 days ago", icon = icon("user"),
+      #                            color = "green")})
+      
+      # if (study != "RCT"){
       output$myvaluebox2 <- shinydashboard::renderValueBox({
         shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced 14-29 days ago")), subtitle = "Last synced 14-29 days ago", icon = icon("user"),
                                  color = "fuchsia")})
@@ -2701,6 +2707,19 @@ parentapp_shiny <- function(country, study){
       output$myvaluebox4 <- shinydashboard::renderValueBox({
         shinydashboard::valueBox(nrow(data_engagement_weeks_all() %>% filter(last_sync_cat == "Last synced over 60 days ago")), subtitle = "not synced in over 60 days", icon = icon("user"),
                                  color = "orange")})
+      # } else {
+      #   output$myvaluebox2 <- shinydashboard::renderValueBox({
+      #     shinydashboard::valueBox(nrow(plhdata_org_allusers_count), subtitle = "All time users from Tanzania (matomo)", icon = icon("user"),
+      #                              color = "fuchsia")})
+      #   output$myvaluebox3 <- shinydashboard::renderValueBox({
+      #     shinydashboard::valueBox(nrow(plhdata_org_allusers_count %>% filter(as.Date(createdAt) > date_from)),
+      #                              subtitle = "New users in the last 30 days from Tanzania (matomo)", icon = icon("user"),
+      #                              color = "purple")})
+      #   output$myvaluebox4 <- shinydashboard::renderValueBox({
+      #     shinydashboard::valueBox(nrow(plhdata_org %>% filter(as.Date(updatedAt) > date_from)),
+      #                              subtitle = "opened the app in the last 30 days", icon = icon("user"),
+      #                              color = "orange")})
+      # }
       
       output$additional_total <- shinydashboard::renderValueBox({
         shinydashboard::valueBox(nrow(accessed_new_content()), subtitle = "users have accessed the additional modules",
@@ -4253,7 +4272,7 @@ parentapp_shiny <- function(country, study){
       if (study == "Optimisation"){
         plhdata_group_ids <- selected_data_dem() %>% select(c('app_user_id', "opt_cluster", "createdAt", all_of(data_completion_level)))
       } else if (study == "RCT"){
-        plhdata_group_ids <- selected_data_dem() %>% select(c('app_user_id', opt_cluster = "ClusterName", "createdAt", "updatedAt", `App version` = "app_version", all_of(data_completion_level)))
+        plhdata_group_ids <- selected_data_dem() %>% select(c('app_user_id', "updated_id", opt_cluster = "ClusterName", "createdAt", "updatedAt", `App version` = "app_version", all_of(data_completion_level)))
       }
       plhdata_group_ids_group_1 <- threshhold_function(data = plhdata_group_ids, threshhold = 0)
       plhdata_group_ids_group_1 <- plhdata_group_ids_group_1 %>%
@@ -4293,7 +4312,7 @@ parentapp_shiny <- function(country, study){
         plhdata_org_clean <- selected_data_dem()
         plhdata_org_clean_CL <- plhdata_org_clean %>%
           dplyr::mutate(across(data_completion_level, ~ifelse(. == 100, TRUE, FALSE))) %>%
-          dplyr::select(app_user_id, data_completion_level)
+          dplyr::select(app_user_id, updated_id, data_completion_level)
         colnames(plhdata_org_clean_CL) <- gsub("_completion_level", "_completed", colnames(plhdata_org_clean_CL))
         
         plhdata_org_clean_1 <- plhdata_org_clean %>%
@@ -4303,7 +4322,7 @@ parentapp_shiny <- function(country, study){
         # number of app opens -------------------
         plhdata_org_clean_appopens <- add_na_variable(plhdata_org_clean, data_app_opens)
         plhdata_org_clean_appopens <- plhdata_org_clean_appopens %>%
-          dplyr::select(app_user_id, data_app_opens)
+          dplyr::select(app_user_id, updated_id, data_app_opens)
         
         names(plhdata_org_clean_appopens) <- paste0("app_launch_", naming_conventions(names(plhdata_org_clean_appopens),
                                                                                       replace = "rp.contact.field.app_launch_count_w_"))
@@ -4312,7 +4331,7 @@ parentapp_shiny <- function(country, study){
         
         # home practice activity response (yes/no) for each home practice activity
         plhdata_org_clean_hp_response <- plhdata_org_clean %>%
-          dplyr::select(app_user_id, data_hp_started)
+          dplyr::select(app_user_id, updated_id, data_hp_started)
         names(plhdata_org_clean_hp_response) <- paste0("hp_started_", naming_conventions(names(plhdata_org_clean_hp_response),
                                                                                          replace = "rp.contact.field.w_",
                                                                                          replace_after = "_hp_review_started"))
@@ -4321,7 +4340,7 @@ parentapp_shiny <- function(country, study){
         # data_hp_done
         plhdata_org_clean_hp_done <- add_na_variable(plhdata_org_clean, data_hp_done)
         plhdata_org_clean_hp_done <- plhdata_org_clean_hp_done %>%
-          dplyr::select(app_user_id, data_hp_done)
+          dplyr::select(app_user_id, updated_id, data_hp_done)
         names(plhdata_org_clean_hp_done) <- paste0("hp_done_", naming_conventions(names(plhdata_org_clean_hp_done),
                                                                                   replace = "rp.contact.field.w_",
                                                                                   replace_after = "_hp_done"))
@@ -4330,7 +4349,7 @@ parentapp_shiny <- function(country, study){
         # data hp mood
         plhdata_org_clean_hp_mood <- add_na_variable(plhdata_org_clean, data_hp_mood)
         plhdata_org_clean_hp_mood <- plhdata_org_clean_hp_mood %>%
-          dplyr::select(app_user_id, data_hp_mood)
+          dplyr::select(app_user_id, updated_id, data_hp_mood)
         names(plhdata_org_clean_hp_mood) <- paste0("hp_mood_", naming_conventions(names(plhdata_org_clean_hp_mood),
                                                                                   replace = "rp.contact.field.w_",
                                                                                   replace_after = "_hp_mood"))
@@ -4338,7 +4357,7 @@ parentapp_shiny <- function(country, study){
         
         # parent points
         plhdata_org_clean_pp <- plhdata_org_clean %>%
-          dplyr::select(app_user_id, data_habit_parent_points_all)
+          dplyr::select(app_user_id, updated_id, data_habit_parent_points_all)
         names(plhdata_org_clean_pp) <- paste0("parent_point_", naming_conventions(names(plhdata_org_clean_pp),
                                                                                   replace = "rp.contact.field.parent_point_count_"))
         names(plhdata_org_clean_pp)[[1]] <- c("app_user_id")
@@ -4361,7 +4380,7 @@ parentapp_shiny <- function(country, study){
                                                                               solve_started, safe_started, crisis_started, celebrate_started))
       names(plhdata_group_ids_group_1) <- naming_conventions(names(plhdata_group_ids_group_1), replace = "rp.contact.field.w_")
       plhdata_group_ids_group_1 <- plhdata_group_ids_group_1 %>%
-        dplyr::select(c("App user id", "Opt cluster", "Engagement total", "Week number", "Engagement level",
+        dplyr::select(c("App user id", "Updated id", "Opt cluster", "Engagement total", "Week number", "Engagement level",
                         "CreatedAt", "App version", "Hours since sync", "1 Self care completion level" = "Self care completion level",
                         "2 1on1 completion level" = "1on1 completion level", "3 Praise completion level" = "Praise completion level",
                         "4 Instruct completion level" = "Instruct completion level", "5 Stress completion level" = "Stress completion level",
@@ -4408,18 +4427,30 @@ parentapp_shiny <- function(country, study){
     
     summary_download_workshop <- reactive({
       table_ws_started <- relative_perc_completed()
+      table_ws_started_additional <- additional_relative_perc_completed()
       table_ws_totals1 <- table_ws_totals() %>%
+        pivot_longer(cols = !"ClusterName",
+                     names_to = "Workshop",
+                     values_to = "Average completion level")
+      table_ws_totals1_additional <- additional_table_ws_totals() %>%
         pivot_longer(cols = !"ClusterName",
                      names_to = "Workshop",
                      values_to = "Average completion level")
       
       table_ws_totals1 <- full_join(table_ws_totals1, table_ws_started) %>%
         relocate("Average completion level", .after = last_col())
+      table_ws_totals1_additional <- full_join(table_ws_totals1_additional, table_ws_started_additional) %>%
+        relocate("Average completion level", .after = last_col())
+      table_ws_totals1 <- bind_rows(table_ws_totals1, table_ws_totals1_additional)
+      return(table_ws_totals1 %>% dplyr::filter(!Workshop %in% c("Weeks completed", "Number accessed")))
     })
     
     rct_access_data <- reactive({
       rct_access <- selected_data_dem() %>%
-        dplyr::select(c(app_user_id, ClusterName, RCT_access=rp.contact.field.post_rct_access))
+        dplyr::mutate(days_since_last_sync = as.Date(Sys.Date()) - as.Date(rp.contact.field._server_sync_latest)) %>%
+        dplyr::select(c(app_user_id, ClusterName, RCT_access=rp.contact.field.post_rct_access,
+                        last_sync = rp.contact.field._server_sync_latest,
+                        days_since_last_sync))
     })
     
     credentials <- shinyauthr::loginServer(

@@ -3,9 +3,8 @@
 ####### User Data Analysis #######
 ##################################
 ##################################
-
-country <- "Tanzania"
-study <- "RCT"
+country <- "Tanzania" # Tanzania, all
+study <- "RCT" # Optimisation, RCT, WASH, Pilot
 
 additional_week_order <- c("Srh", "Svp", "Grief", "Learn")
 ltp_activites <- c("chores", "bao", "walk", "cook_traditional", "garden", "charades", "role_play",
@@ -24,14 +23,8 @@ lookup_df <- data.frame(opt_cluster = c(1, 3, 4, 6, 7, 11, 13, 14),
                                                         "2022-11-24", "2022-11-26", "2023-01-10",
                                                         "2022-12-24", "2022-12-24")))
 
-# use left_join to add the lookup values to the main data frame
-#UIC_Tracker_Tanzania <- UIC_Tracker_Tanzania %>%
-#  left_join(lookup_df, by = "opt_cluster")
-
-
 ### extract data ----------------------------------------------------------------------
 # to get user data
-
 if (study %in% c("Optimisation", "Pilot")){
   UIC_Tracker_Use <- UIC_Tracker_Tanzania
 } else {
@@ -39,7 +32,7 @@ if (study %in% c("Optimisation", "Pilot")){
   UIC_Tracker_Use$ClusterName <- toupper(UIC_Tracker_Use$ClusterName)
 }
 if (study == "RCT"){
-  UIC_onboarding_dates <- readxl::read_excel("data/UIC_onboarding_dates.xlsx")
+  UIC_onboarding_dates <- readxl::read_excel(here("data/UIC_onboarding_dates.xlsx"))
   UIC_onboarding_dates <- UIC_onboarding_dates %>%
     mutate(#date_first_chat = lubridate::as_date(`Date of onboarding`),
       #date_data_bundle = lubridate::as_date(`Date first data bundle received`),
@@ -81,10 +74,60 @@ if (study == "WASH"){
 # IF PILOT:
 #UIC_Tracker_Use <- UIC_Tracker_Use %>% filter(Study == "Pilot")
 #UIC_Tracker_Use <- UIC_Tracker_Use %>% mutate(YourParentAppCode = ifelse(is.na(`New list from NIMR 03/01/2023`), YourParentAppCode, `New list from NIMR 03/01/2023`))
-plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
-                             app_user_id = "app_user_id",
-                             UIC_Tracker = UIC_Tracker_Use,
-                             country = country, study = study)
+# plhdata_org <- postgresr::get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE,
+#                              app_user_id = "app_user_id",
+#                              UIC_Tracker = UIC_Tracker_Use,
+#                              country = country, study = study)
+
+app_id <- UIC_Tracker_Use %>%
+  dplyr::filter(Country == country, Study == study) %>%
+  dplyr::pull(YourParentAppCode)
+
+if (study == "RCT"){
+  UIC_changed_QR_codes <- readxl::read_excel(here("data/ChangedQRCOdes21112024.xlsx"))
+  UIC_changed_QR_codes <- dplyr::rename(UIC_changed_QR_codes, ClusterName = cluster)
+  UIC_changed_QR_codes <- dplyr::rename(UIC_changed_QR_codes, old_app_user_id = app_user_id)
+  UIC_changed_QR_codes <- dplyr::rename(UIC_changed_QR_codes, YourParentAppCode = new_app_user_id)
+  UIC_changed_QR_codes$ClusterName <- toupper(UIC_changed_QR_codes$ClusterName)
+  UIC_changed_QR_codes <- UIC_changed_QR_codes %>%
+    mutate(ClusterName = ifelse(ClusterName == "IBANDA", "IBANDA (23)", ClusterName))
+  valid_ids <- UIC_Tracker_Use %>%
+    dplyr::filter(complete.cases(YourParentAppCode))  %>%
+    dplyr::filter(Study == "RCT") %>%
+    dplyr::mutate(ClusterName = toupper(ClusterName)) %>%
+    dplyr::select(c(YourParentAppCode, Ward, ClusterName, OnboardingDateShort))
+  
+  # link with the new QR Codes, and we need to reformat to give the new codes the correct ClusterName and bits.
+  valid_ids <- dplyr::bind_rows(valid_ids, UIC_changed_QR_codes)
+  
+  valid_ids <- valid_ids %>%
+    dplyr::group_by(ClusterName) %>%
+    dplyr::mutate(Ward = ifelse(is.na(Ward), dplyr::first(na.omit(Ward)), Ward)) %>%
+    dplyr::filter(!is.na(YourParentAppCode))
+  
+  valid_ids <- valid_ids %>%
+    dplyr::group_by(YourParentAppCode) %>%
+    dplyr::mutate(n = n()) %>%
+    dplyr::mutate(x = ifelse(n > 1 & is.na(old_app_user_id), 1, 0)) %>%
+    dplyr::filter(x == 0)
+  
+  app_id <- valid_ids$YourParentAppCode
+  app_id <- unique(app_id)
+}
+
+plhdata_org <- openappr::get_user_data(site = plh_con,
+                             filter = TRUE,
+                             filter_variable = "app_user_id",
+                             filter_variable_value = app_id)
+#plhdata_org_full <- plhdata_org
+
+#table(plhdata_org$`rp-contact-field.w_1on1_started`)
+
+#plhdata_org %>% group_by(`rp-contact-field.w_1on1_started`) %>%
+#  summarise(min(createdAt), max(createdAt))
+
+#table(plhdata_org$`rp-contact-field.w_self_care_started`)
+
 names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")  
 # 
 # df <- get_postgres_data(site = plh_con, name = "app_users", qry = qry)
@@ -108,8 +151,17 @@ names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement 
 #plhdata_org <- readRDS("plhdata_org_RCT_20230525.RDS")
 
 if (nrow(plhdata_org) == 0){
-  plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE, UIC_Tracker = UIC_Tracker_Tanzania,
-                               country = country, study = "Pilot")
+  app_id <- UIC_Tracker_Tanzania %>% 
+    dplyr::filter(Country == country, Study == study) %>% 
+    dplyr::pull(YourParentAppCode)
+  plhdata_org <- openappr::get_user_data(site = plh_con,
+                                         merge_check = FALSE,
+                                         filter = TRUE,
+                                         filter_variable = "app_user_id",
+                                         filter_variable_value = app_id)
+  
+  # plhdata_org <- postgresr::get_user_data(site = plh_con, merge_check = FALSE, filter = TRUE, UIC_Tracker = UIC_Tracker_Tanzania,
+  #                              country = country, study = "Pilot")
   names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement = ".")
   plhdata_org <- plhdata_org %>% mutate(across(everything(), as.numeric))
   plhdata_org <- naniar::replace_with_na_all(plhdata_org, ~.x)
@@ -168,12 +220,8 @@ if (study == "Optimisation"){
   # nrow((plhdata_org_pilot_site))
   # plhdata_org <- full_join(plhdata_org, plhdata_org_pilot_site, by = c("app_user_id" = "app_user_id"))
 } else if (study == "RCT") {
-  valid_ids <- UIC_Tracker_Use %>%
-    filter(complete.cases(YourParentAppCode))  %>%
-    filter(Study == "RCT") %>%
-    mutate(ClusterName = toupper(ClusterName)) %>%
-    select(c(YourParentAppCode, Ward, ClusterName, OnboardingDateShort))
-  plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
+  plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 0)
+  plhdata_org <- plhdata_org %>% filter(!is.na(createdAt))
 } else if (study == "WASH") {
   valid_ids <- UIC_Tracker_Use %>%
     filter(complete.cases(YourParentAppCode))  %>%
@@ -181,6 +229,8 @@ if (study == "Optimisation"){
     select(c(YourParentAppCode, Ward, ClusterName, OnboardingDateShort))
   plhdata_org <- fuzzyjoin::stringdist_full_join(x = plhdata_org, y = valid_ids, by = c("app_user_id" = "YourParentAppCode"), max_dist = 5)
 }
+
+#duplicates <- valid_ids$YourParentAppCode[duplicated(valid_ids$YourParentAppCode)]
 
 plhdata_org <- plhdata_org %>% filter(ClusterName != "https://wa.me/qr/5KAUP4HXZHGXP1")
 
@@ -203,6 +253,14 @@ if (country == "South Africa"){
 
 #####Create a subset for cleaned organisations ####
 plhdata_org_clean <- plhdata_org # %>% filter(Org != "Other")%>% mutate(Org = factor(Org))
+plhdata_org_clean <- plhdata_org_clean %>% filter(!is.na(app_user_id))
+# only take one of each app user id
+plhdata_org_clean <- plhdata_org_clean %>%
+  dplyr::group_by(app_user_id) %>%
+  filter(row_number() == 1) %>%
+  ungroup()
+
+#plhdata_org_clean <- plhdata_org_clean_1
 
 if ("ClusterName" %in% names(plhdata_org_clean)) {
   plhdata_org_clean$ClusterName <- toupper(plhdata_org_clean$ClusterName)
@@ -663,6 +721,13 @@ if (nrow(plhdata_org_clean1)>1) stop("NA app user ID. Check YourParentAppCode is
 
 plhdata_org_clean <- plhdata_org_clean %>% dplyr::filter(app_user_id != "2d0badbfbfe07360")
 
+
+# adding the new QR bits
+UIC_changed_QR_codes <- UIC_changed_QR_codes %>%
+  dplyr::select(c(app_user_id = old_app_user_id),
+                updated_id = YourParentAppCode)
+plhdata_org_clean <- full_join(plhdata_org_clean, UIC_changed_QR_codes)
+
 ##################################
 ##################################
 ### Notification Data Analysis ###
@@ -670,9 +735,12 @@ plhdata_org_clean <- plhdata_org_clean %>% dplyr::filter(app_user_id != "2d0badb
 ##################################
 
 # download push notification data
-# if (study != "WASH"){
-#   nf_data <- get_nf_data(site = plh_con, UIC_Tracker = UIC_Tracker_Use, filter = TRUE,
-#                          study = study, country = country, app_user_id = "app_user_id")  
-# }
+if (study != "WASH"){
+  nf_data <- get_nf_data(site = plh_con,
+                         filter = TRUE,
+                         filter_variable = "app_user_id",
+                         filter_variable_value = app_id
+  )
+}
 
 

@@ -17,7 +17,9 @@ library(dplyr)
 library(gt)
 library(readxl)
 library(openappr)
+library(postgresr)
 library(ggthemes)
+
 options(dplyr.summarise.inform = FALSE)
 options(dplyr.warning.inform = FALSE)
 country <- "Tanzania" # Tanzania, all
@@ -41,13 +43,11 @@ if (study == "WASH"){
   source(here("Metabase ShinyApp PAPP.R")) # TODO: add in Metabase Analysis Setup RCT
   parentapp_shiny(country = country, study = study)
 } else {
-  source(here("Metabase ShinyApp.R")) # TODO: add in Metabase Analysis Setup RCT
+  source(here("Metabase ShinyApp.R"))
   source(here("Metabase Pre-Shiny Setup.R"))
   parentapp_shiny(country = country, study = study)
 }
 #source(here("Metabase ShinyApp Demo.R"))
-
-# plhdata_org_clean$updatedAt
 
 # Please use `all_of(var)` (or `any_of(var)`) instead of `.data[[var]]`
 

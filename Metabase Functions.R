@@ -225,13 +225,13 @@ checkbox_input <- function(inputId, country = country, study = study){
                  actionButton("goButton", "Submit", class = "btn-success")))
     } else if (study %in% c("RCT", "WASH")) {
       return(box(width = 12,
-                      checkboxInput(inputId = "select_cluster",
-                                    label = "All clusters",
-                                    value = TRUE),
-                      textInput(inputId = "opt_cluster",
-                                label = "Cluster",
-                                placeholder = "Enter values separated by a comma..."),
-                      actionButton("goButton", "Submit", class = "btn-success")))
+                 checkboxInput(inputId = "select_cluster",
+                               label = "All clusters",
+                               value = TRUE),
+                 textInput(inputId = "opt_cluster",
+                           label = "Cluster",
+                           placeholder = "Enter values separated by a comma..."),
+                 actionButton("goButton", "Submit", class = "btn-success")))
     } else if (study == "Optimisation") {
       # return(box(checkboxInput(inputId = "chk_support",
       #                          label = "Group by support",
@@ -580,24 +580,24 @@ summary_calculation <- function(data = plhdata_org_clean, factors = NULL, column
     }
     if (include_margins){
       if (!is.null(factors)){
-      margin_tables <- list()
-      power_sets <- rje::powerSet(factors)
-      power_sets_outer <- power_sets[-(c(length(power_sets)))]
-      for (facts in power_sets_outer) {
-        if (length(facts) == 0) facts <- c()
-        new_output <- summary_output %>% group_by(across(all_of(facts))) %>% summarise(n = sum(n), .groups = "drop")
-        if (include_perc) {
-          new_output <- new_output %>% mutate(perc = n / sum(n) * 100)
+        margin_tables <- list()
+        power_sets <- rje::powerSet(factors)
+        power_sets_outer <- power_sets[-(c(length(power_sets)))]
+        for (facts in power_sets_outer) {
+          if (length(facts) == 0) facts <- c()
+          new_output <- summary_output %>% group_by(across(all_of(facts))) %>% summarise(n = sum(n), .groups = "drop")
+          if (include_perc) {
+            new_output <- new_output %>% mutate(perc = n / sum(n) * 100)
+          }
+          margin_tables[[length(margin_tables) + 1]] <- new_output
         }
-        margin_tables[[length(margin_tables) + 1]] <- new_output
-      }
-      names(margin_tables) <- 1:length(margin_tables)
-      summary_output <- summary_output %>% 
-        bind_rows(plyr::ldply(margin_tables)) %>%
-        ungroup() %>%
-        mutate(across(all_of({{ factors }}), ~ replace_na(.x, "Total"))) %>%
-        mutate(across(all_of({{ factors }}), ~ fct_relevel(.x, "Total", after = Inf))) %>% 
-        select(-c(".id"))
+        names(margin_tables) <- 1:length(margin_tables)
+        summary_output <- summary_output %>% 
+          bind_rows(plyr::ldply(margin_tables)) %>%
+          ungroup() %>%
+          mutate(across(all_of({{ factors }}), ~ replace_na(.x, "Total"))) %>%
+          mutate(across(all_of({{ factors }}), ~ fct_relevel(.x, "Total", after = Inf))) %>% 
+          select(-c(".id"))
       }
     }
     if (together && include_perc){

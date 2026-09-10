@@ -3429,7 +3429,6 @@ parentapp_shiny <- function(country, study){
     #                              summarise(n()) %>%
     #                              pivot_wider(names_from = `get(.x)`, values_from = `n()`, values_fill = 0))
     # # 
-
     # Self reported - done
     ltp_activities_done <- reactive({
       accessed_new_content() %>%

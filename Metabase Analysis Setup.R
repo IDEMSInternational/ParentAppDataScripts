@@ -138,6 +138,24 @@ names(plhdata_org) <- gsub(x = names(plhdata_org), pattern = "\\-", replacement 
 
 
 
+
+#plhdata_org <- get_user_data(site = plh_con, merge_check = FALSE, filter = FALSE)
+
+plhdata_org$app_user_id
+
+# app_deployment_name == early_family_math
+
+# plhdata_org_efm <- plhdata_org %>%
+#   filter(app_deployment_name == "early_family_math")
+# View(plhdata_org_efm)
+# 
+# plhdata_org_efm 
+# 
+# plhdata_org_efm1 <- plhdata_org_efm[,colSums(is.na(plhdata_org_efm))<nrow(plhdata_org_efm)]
+# names(plhdata_org_efm1) <- gsub(x = names(plhdata_org_efm1), pattern = "\\-", replacement = ".")  
+
+
+
 #plhdata_org <- readRDS("plhdata_org_RCT_20230525.RDS")
 
 if (nrow(plhdata_org) == 0){

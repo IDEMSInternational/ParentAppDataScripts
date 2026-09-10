@@ -6,16 +6,6 @@
 country <- "Tanzania" # Tanzania, all
 study <- "RCT" # Optimisation, RCT, WASH, Pilot
 
-additional_week_order <- c("Srh", "Svp", "Grief", "Learn")
-ltp_activites <- c("chores", "bao", "walk", "cook_traditional", "garden", "charades", "role_play",
-                   "find_pair", "mystery_box", "memory_game", "cook", "tell_stories", "dance",
-                   "short_term_goal", "long_term_goal", "clean", "reflect_positive", "check_in_chat",
-                   "dream_travel", "famous_party","two_truths", "time_machine", "superpowers",
-                   "friendly_chat", "interrupter", "three_options", "yes_no_maybe",
-                   "invent_story")
-ltp_activites_name <- naming_conventions(ltp_activites)
-### Set up UIC data
-
 # add in start dates for clusters
 # create a data frame with the lookup values
 lookup_df <- data.frame(opt_cluster = c(1, 3, 4, 6, 7, 11, 13, 14),
